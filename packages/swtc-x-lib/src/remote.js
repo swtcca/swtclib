@@ -629,6 +629,40 @@ Remote.prototype.requestOrderBook = function(options) {
     request.message.limit = options.limit;
     return request;
 };
+
+/*
+ * request brokerage,
+ * @param options
+ * @returns {Request}
+* */
+Remote.prototype.requestBrokerage = function(options) {
+    var request = new Request(this, 'Fee_Info');
+    if (typeof options !== 'object') {
+        request.message.type = new Error('invalid options type');
+        return request;
+    }
+    var issuer = options.issuer;
+    var app = options.app;
+    var currency = options.currency;
+    if (!utils.isValidAddress(issuer)) {
+        request.message.account = new Error('issuer parameter is invalid');
+        return request;
+    }
+    if(!/^[0-9]*[1-9][0-9]*$/.test(app)){//正整数
+        request.message.app = new Error('invalid app, it is a positive integer.');
+        return request;
+    }
+    if(!utils.isValidCurrency(currency)){//正整数
+        request.message.currency = new Error('invalid currency.');
+        return request;
+    }
+
+    request.message.issuer = issuer;
+    request.message.AppType = app;
+    request.message.currency = currency;
+    request.message.ledger_index = 'validated';
+    return request;
+};
 // ---------------------- path find request --------------------
 /**
  * @param options
@@ -899,6 +933,58 @@ Remote.prototype.buildSignTx = function(options) {
     return tx;
 };
 
+/**
+ * Brokerage 设置挂单手续费
+ * @param options
+ *    account, required
+ *    mol|molecule, required
+ *    den|denominator, required
+ *    app, required
+ *    amount, required
+ * @returns {Transaction}
+ */
+Remote.prototype.buildBrokerageTx = function(options) {
+    var tx = new Transaction(this);
+    if (typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
+        return tx;
+    }
+    var account = options.account;
+    var mol = options.mol || options.molecule;
+    var den = options.den || options.denominator;
+    var app = options.app;
+    var amount = options.amount;
+    if (!utils.isValidAddress(account)) {
+        tx.tx_json.src = new Error('invalid address');
+        return tx;
+    }
+    if(!/^\d+$/.test(mol)){//(正整数 + 0)
+        tx.tx_json.mol = new Error('invalid mol, it is a positive integer or zero.');
+        return tx;
+    }
+    if(!/^[0-9]*[1-9][0-9]*$/.test(den) || !/^[0-9]*[1-9][0-9]*$/.test(app)){//正整数
+        tx.tx_json.den = new Error('invalid den/app, it is a positive integer.');
+        return tx;
+    }
+    if(mol > den){
+        tx.tx_json.app = new Error('invalid mol/den, molecule can not exceed denominator.');
+        return tx;
+    }
+    if (!utils.isValidAmount(amount)) {
+        tx.tx_json.amount = new Error('invalid amount');
+        return tx;
+    }
+
+    tx.tx_json.TransactionType = 'Brokerage';
+    tx.tx_json.Account = account; //管理员账号
+    tx.tx_json.OfferFeeRateNum = mol; //分子(正整数 + 0)
+    tx.tx_json.OfferFeeRateDen = den; //分母(正整数)
+    tx.tx_json.AppType = app; //应用来源(正整数)
+    tx.tx_json.Amount = ToAmount(amount); //币种,这里amount字段中的value值只是占位，没有实际意义。
+
+    return tx;
+};
+
 Remote.prototype.__buildTrustSet = function(options, tx) {
     // var tx = new Transaction(this);
     // if (typeof options !== 'object') {
@@ -1130,6 +1216,7 @@ Remote.prototype.buildOfferCreateTx = function(options) {
     var src = options.source || options.from || options.account;
     var taker_gets = options.taker_gets || options.pays;
     var taker_pays = options.taker_pays || options.gets;
+    var app = options.app;
 
     if (!utils.isValidAddress(src)) {
         tx.tx_json.src = new Error('invalid source address');
@@ -1156,9 +1243,14 @@ Remote.prototype.buildOfferCreateTx = function(options) {
         tx.tx_json.taker_pays2 = new Error('invalid to gets amount object');
         return tx;
     }
+    if(app && !/^[0-9]*[1-9][0-9]*$/.test(app)) {//正整数
+        tx.tx_json.app = new Error('invalid app, it is a positive integer.');
+        return tx;
+    }
 
     tx.tx_json.TransactionType = 'OfferCreate';
     if (offer_type === 'Sell') tx.setFlags(offer_type);
+    if(app) tx.tx_json.AppType = app;
     tx.tx_json.Account = src;
     tx.tx_json.TakerPays = taker_pays2 ? taker_pays2 : ToAmount(taker_pays);
     tx.tx_json.TakerGets = taker_gets2 ? taker_gets2 : ToAmount(taker_gets);

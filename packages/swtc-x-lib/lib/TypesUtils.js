@@ -104,6 +104,7 @@ var FIELDS_MAP = {
         34: 'ClearFlag',
         35: "RelationType", 
         36: 'Method',
+        37: 'AppType',
         39: 'Contracttype'
     },
     3: { // Int64
@@ -114,7 +115,9 @@ var FIELDS_MAP = {
         5: 'BaseFee',
         6: 'ExchangeRate',
         7: 'LowNode',
-        8: 'HighNode'
+        8: 'HighNode',
+        9: 'OfferFeeRateNum',
+        10: 'OfferFeeRateDen'
     },
     4: { // Hash128
         1: 'EmailHash'
@@ -266,6 +269,7 @@ var INVERSE_FIELDS_MAP = {
     ClearFlag: [2, 34],
     RelationType: [2, 35], 
     Method: [2, 36],
+    AppType: [2, 37],
     Contracttype: [2, 39],
     IndexNext: [3, 1],
     IndexPrevious: [3, 2],
@@ -275,6 +279,8 @@ var INVERSE_FIELDS_MAP = {
     ExchangeRate: [3, 6],
     LowNode: [3, 7],
     HighNode: [3, 8],
+    OfferFeeRateNum: [3,9],
+    OfferFeeRateDen: [3,10],
     EmailHash: [4, 1],
     LedgerHash: [5, 1],
     ParentHash: [5, 2],

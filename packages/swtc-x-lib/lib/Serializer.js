@@ -70,6 +70,7 @@ var TRANSACTION_TYPES = {
     OfferCreate: [7].concat(base, [
         ['TakerPays', REQUIRED],
         ['TakerGets', REQUIRED],
+        ['AppType', OPTIONAL],
         ['Expiration', OPTIONAL]
     ]),
     OfferCancel: [8].concat(base, [
@@ -117,6 +118,12 @@ var TRANSACTION_TYPES = {
         ['Contracttype', OPTIONAL],
         ['ContractMethod', OPTIONAL],
         ['Args', OPTIONAL]
+    ]),
+    Brokerage: [205].concat(base,[
+        ['OfferFeeRateNum', REQUIRED],
+        ['OfferFeeRateDen', REQUIRED],
+        ['AppType', REQUIRED],
+        ['Amount', REQUIRED]
     ])
 };
 

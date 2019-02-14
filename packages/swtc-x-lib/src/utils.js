@@ -503,6 +503,8 @@ function processTx(txn, account) {
                     effect.got = AmountSubtract(parseAmount(node.fieldsPrev.TakerPays), parseAmount(node.fields.TakerPays));
                     effect.paid = AmountSubtract(parseAmount(node.fieldsPrev.TakerGets), parseAmount(node.fields.TakerGets));
                     effect.type = sell ? 'sold' : 'bought';
+                    if(node.fields.OfferFeeRateNum)
+                        effect.rate = new bignumber(parseInt(node.fields.OfferFeeRateNum, 16)).div(parseInt(node.fields.OfferFeeRateDen, 16)).toNumber();
                 } else {
                     // offer_funded, offer_created or offer_cancelled offer effect
                     effect.effect = node.diffType === 'CreatedNode' ? 'offer_created' : node.fieldsPrev.TakerPays ? 'offer_funded' : 'offer_cancelled';
@@ -513,6 +515,8 @@ function processTx(txn, account) {
                         effect.got = AmountSubtract(parseAmount(node.fieldsPrev.TakerPays), parseAmount(node.fields.TakerPays));
                         effect.paid = AmountSubtract(parseAmount(node.fieldsPrev.TakerGets), parseAmount(node.fields.TakerGets));
                         effect.type = sell ? 'sold' : 'bought';
+                        if(node.fields.OfferFeeRateNum)
+                            effect.rate = new bignumber(parseInt(node.fields.OfferFeeRateNum, 16)).div(parseInt(node.fields.OfferFeeRateDen, 16)).toNumber();
                     }
                     // 3. offer_created
                     if (effect.effect === 'offer_created') {
@@ -561,6 +565,10 @@ function processTx(txn, account) {
                 effect.regularkey = account;
             }
         }
+        if(node.entryType === 'Brokerage'){
+            result.rate = new bignumber(parseInt(node.fields.OfferFeeRateNum, 16)).div(parseInt(node.fields.OfferFeeRateDen, 16)).toNumber();
+        }
+
         // add effect
         if (!_.isEmpty(effect)) {
             if (node.diffType === 'DeletedNode' && effect.effect !== 'offer_bought') {
@@ -574,7 +582,17 @@ function processTx(txn, account) {
      * TODO check cross gateway when parse more effect, specially trust related effects, now ignore it
      *
      */
-
+    for(var i = 0; i < result.effects.length; i++){
+        var e = result.effects[i];
+        if(result.rate && e.effect === 'offer_bought'){
+            e.rate = result.rate;
+            e.got.value = e.got.value * (1 - e.rate);
+        }
+        if(e.rate && (e.effect === 'offer_funded' || e.effect === 'offer_partially_funded')){
+            e.got.value = e.got.value * (1 - e.rate);
+        }
+    }
+    delete result.rate;
     return result;
 }
 function arraySet(count, value) {

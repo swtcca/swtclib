@@ -72,7 +72,7 @@ Server.prototype.connect = function(callback) {
 
     self._ws.on('open', function() {
         self._opened = true;
-        var req = self._remote.subscribe(['ledger', 'server']);
+        var req = self._remote.subscribe(['ledger', 'server', 'transactions']);
         req.submit(callback);
     });
     self._ws.on('message', function(data) {

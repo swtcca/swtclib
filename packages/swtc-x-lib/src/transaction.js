@@ -288,7 +288,7 @@ Transaction.prototype.setSequence = function(sequence) {
 
     this.tx_json.Sequence = Number(sequence);
 };
-function signing(self) {
+function signing(self, callback) {
     const base = require('jingtum-base-lib').Wallet;
     var jser = require('../lib/Serializer').Serializer;
     self.tx_json.Fee = self.tx_json.Fee/1000000;
@@ -314,27 +314,32 @@ function signing(self) {
     if(self.tx_json.TakerGets && JSON.stringify(self.tx_json.TakerGets).indexOf('{') < 0){//基础货币
         self.tx_json.TakerGets = Number(self.tx_json.TakerGets)/1000000;
     }
-
-    var wt = new base(self._secret);
-    self.tx_json.SigningPubKey = wt.getPublicKey();
-    var prefix = 0x53545800;
-    var hash = jser.from_json(self.tx_json).hash(prefix);
-    self.tx_json.TxnSignature = wt.signTx(hash);
-    self.tx_json.blob =  jser.from_json(self.tx_json).to_hex();
-    self._local_sign = true;
-    return self.tx_json.blob;
+    try{
+        var wt = new base(self._secret);
+        self.tx_json.SigningPubKey = wt.getPublicKey();
+        var prefix = 0x53545800;
+        var hash = jser.from_json(self.tx_json).hash(prefix);
+        self.tx_json.TxnSignature = wt.signTx(hash);
+        self.tx_json.blob =  jser.from_json(self.tx_json).to_hex();
+        self._local_sign = true;
+        callback(null, self.tx_json.blob);
+    }catch (e){
+        callback(e);
+    }
 }
 
 Transaction.prototype.sign = function(callback) {
     var self = this;
     if(self.tx_json.Sequence){
-        callback(null, signing(self));
+        signing(self, callback);
+        // callback(null, signing(self));
     }else {
         var req = this._remote.requestAccountInfo({account: self.tx_json.Account, type: 'trust'});
         req.submit(function (err,data) {
             if(err) return callback(err);
             self.tx_json.Sequence = data.account_data.Sequence;
-            callback(null, signing(self));
+            signing(self, callback);
+            // callback(null, signing(self));
         });
     }
 };
