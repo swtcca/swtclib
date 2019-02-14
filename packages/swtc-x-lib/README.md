@@ -31,10 +31,10 @@ Then use the `dist/swtc-lib-*.js` in your web application
     var remote = new Remote({server: 'wss://c05.jingtum.com:5020', local_sign: true});
 ```
 
-## Modern usage (ES 2015 module)
-```
-    import { Wallet, Remote, Transaction } from 'swtc-lib'
-```
+## Modern usage
+-  es2015, es2017
+-  zero config for webpack transpiler
+-  develop with nearly all of the webpack powered framework
 
 ---------------------------------------------
 
