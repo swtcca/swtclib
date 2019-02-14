@@ -9,9 +9,9 @@
 
 var assert = require('assert');
 var extend = require('extend');
-var base_wallet = require('jingtum-base-lib').Wallet;
-var convertBytesToAddress = require('jingtum-base-lib/src/keypairs.js').convertBytesToAddress;
-var convertAddressToBytes = require('jingtum-base-lib/src/keypairs.js').convertAddressToBytes;
+var base_wallet = require('swtc-base-lib').Wallet;
+var convertBytesToAddress = require('swtc-base-lib/src/keypairs.js').convertBytesToAddress;
+var convertAddressToBytes = require('swtc-base-lib/src/keypairs.js').convertAddressToBytes;
 var BN = require('bn-plus.js');
 var UInt160 = require('./uint160').UInt160;
 var tum = require('./TumAmount');

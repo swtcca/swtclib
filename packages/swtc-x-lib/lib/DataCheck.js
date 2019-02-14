@@ -19,7 +19,7 @@
 const CURRENCY_NAME_LEN = 3;
 const CURRENCY_NAME_LEN2 = 6;
 const TUM_NAME_LEN = 40;
-const base = require('jingtum-base-lib').Wallet;
+const base = require('swtc-base-lib').Wallet;
 
 function allNumeric(in_text) {
     //assign a string with numbers (0-9) in the HTML form

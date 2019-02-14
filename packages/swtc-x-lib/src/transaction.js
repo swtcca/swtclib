@@ -3,7 +3,7 @@ var util = require('util');
 var Event = require('events').EventEmitter;
 var utf8 = require('utf8');
 var utils = require('./utils');
-var baselib = require('jingtum-base-lib').Wallet;
+var baselib = require('swtc-base-lib').Wallet;
 const fee = require('./config').fee || 10000;
 /**
  * Post request to server with account secret
@@ -289,7 +289,7 @@ Transaction.prototype.setSequence = function(sequence) {
     this.tx_json.Sequence = Number(sequence);
 };
 function signing(self, callback) {
-    const base = require('jingtum-base-lib').Wallet;
+    const base = require('swtc-base-lib').Wallet;
     var jser = require('../lib/Serializer').Serializer;
     self.tx_json.Fee = self.tx_json.Fee/1000000;
 

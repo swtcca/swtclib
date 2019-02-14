@@ -3,7 +3,7 @@
 // - Numbers in hex are big-endian.
 
 var extend = require('extend');
-var base_wallet = require('jingtum-base-lib').Wallet;
+var base_wallet = require('swtc-base-lib').Wallet;
 var BigInteger = require('bn-plus.js');
 var bignumber = require('bignumber.js');
 var isTumCode = require('./DataCheck').isTumCode;
