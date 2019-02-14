@@ -39,10 +39,10 @@
 	"dependencies": {
 		"bignumber.js": "^5.0.0",
 		"bn-plus.js": "^1.0.0",
-		"swtc-base-lib": "^1.0.9",
-		"lodash": "^4.17.2",
+		"lodash": "^4.17.11",
 		"lru-cache": "^4.0.1",
 		"sha1": "^1.1.1",
+		"swtc-base-lib": "^1.0.9",
 		"url": "^0.11.0",
 		"ws": "^1.1.1"
 	},
