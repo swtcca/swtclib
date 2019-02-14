@@ -1,0 +1,114 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "jingtum-lib",
+        "scope": null,
+        "escapedName": "jingtum-lib",
+        "name": "jingtum-lib",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/root"
+    ]
+  ],
+  "_from": "jingtum-lib@latest",
+  "_id": "jingtum-lib@1.3.8",
+  "_inCache": true,
+  "_location": "/jingtum-lib",
+  "_nodeVersion": "8.9.4",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/jingtum-lib_1.2.6_1521373520847_0.35375354674578285"
+  },
+  "_npmUser": {
+    "name": "wudan_npm",
+    "email": "1872776189@qq.com"
+  },
+  "_npmVersion": "5.7.1",
+  "_phantomChildren": {
+    "pseudomap": "1.0.2",
+    "yallist": "2.1.2"
+  },
+  "_requested": {
+    "raw": "jingtum-lib",
+    "scope": null,
+    "escapedName": "jingtum-lib",
+    "name": "jingtum-lib",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/jingtum-lib/-/jingtum-lib-1.3.8.tgz",
+  "_shasum": "d86bf5229ed784d2b3b9bd805199c24f73272d08",
+  "_shrinkwrap": null,
+  "_spec": "jingtum-lib",
+  "_where": "/root",
+  "author": {
+    "name": "jingtum inc."
+  },
+  "dependencies": {
+    "bn-plus.js": "^1.0.0",
+    "bignumber.js": "^5.0.0",
+    "extend": "^3.0.0",
+    "jingtum-base-lib": "^1.0.9",
+    "lodash": "^4.17.2",
+    "lru-cache": "^4.0.1",
+    "sha1": "^1.1.1",
+    "url": "^0.11.0",
+    "utf8": "^2.1.2",
+    "ws": "^1.1.1"
+  },
+  "description": "jingtum lib",
+  "devDependencies": {
+    "chai": "^3.5.0"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "dist": {
+    "integrity": "sha512-w/Jf99hFbG1h+uEeDwVh8JNrmQL5BZjhAT9gVXqJX18ZGPcrz0AFgF/4Yex4Il93RHYN7bulbSZfNoKWPZZUGg==",
+    "shasum": "d86bf5229ed784d2b3b9bd805199c24f73272d08",
+    "tarball": "https://registry.npmjs.org/jingtum-lib/-/jingtum-lib-1.2.6.tgz",
+    "fileCount": 26,
+    "unpackedSize": 416108
+  },
+  "gitHead": "d8dc17b0c01b30951397d1167804081797937914",
+  "keywords": [
+    "jingtum",
+    "blockchain",
+    "lib"
+  ],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "landoyjx",
+      "email": "landoyjx@163.com"
+    },
+    {
+      "name": "wanglizhuo",
+      "email": "wanglizhuo@aliyun.com"
+    },
+    {
+      "name": "wudan_npm",
+      "email": "1872776189@qq.com"
+    }
+  ],
+  "name": "jingtum-lib",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "http://git.jingtum.com/root/jingtum-lib.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.3.8"
+}
