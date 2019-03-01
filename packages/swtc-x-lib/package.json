@@ -41,7 +41,6 @@
 	"dependencies": {
 		"bignumber.js": "^5.0.0",
 		"bn-plus.js": "^1.0.0",
-		"isomorphic-ws": "^4.0.1",
 		"lodash": "^4.17.11",
 		"lru-cache": "^4.0.1",
 		"sha1": "^1.1.1",

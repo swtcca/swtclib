@@ -2,7 +2,7 @@
 var util = require('util');
 var url = require('url');
 var Event = require('events').EventEmitter;
-var WS = require('isomorphic-ws');
+var WS = require('ws');
 var extend = require('extend');
 
 /**
@@ -29,8 +29,6 @@ function Server(remote, opts) {
         this.opts = new TypeError('server options not supplied');
         return this;
     }
-
-    // ToFix: undefined, null is true, like 'aaaaa' is also true
     if (!Server.domainRE.test(opts.host)) {
         this.opts_host = new TypeError('server host incorrect');
         return this;
@@ -73,22 +71,20 @@ Server.prototype.connect = function (callback) {
         return callback(e);
     }
 
-    self._ws.onopen = function open() {
+    self._ws.on('open', function () {
         self._opened = true;
         var req = self._remote.subscribe(['ledger', 'server', 'transactions']);
         req.submit(callback);
-    };
-
-    self._ws.onclose = function close() {
+    });
+    self._ws.on('message', function(data) {
+        self._remote._handleMessage(data);
+    });
+    self._ws.on('close', function() {
         self._handleClose();
-    };
-    self._ws.onerror = function error(err) {
+    });
+    self._ws.on('error', function(err) {
         callback(err);
-    };
-
-    self._ws.onmessage = function message(e) {
-        self._remote._handleMessage(e);
-    };
+    });
 };
 
 /**
@@ -115,8 +111,8 @@ Server.prototype._handleClose = function () {
     self._setState('offline');
     if (self._timer !== 0) return;
     self._remote.emit('disconnect');
-    self._timer = setInterval(function () {
-        self.connect(function (err) {
+    self._timer = setInterval(function() {
+        self.connect(function(err, ret) {
             if (!err) {
                 clearInterval(self._timer);
                 self._timer = 0;
