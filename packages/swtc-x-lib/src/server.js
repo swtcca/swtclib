@@ -2,7 +2,7 @@
 var util = require('util');
 var url = require('url');
 var Event = require('events').EventEmitter;
-var WS = require('ws');
+var WS = require('isomorphic-ws');
 var extend = require('extend');
 
 /**
@@ -17,34 +17,37 @@ function Server(remote, opts) {
 
     if (typeof opts === 'string') {
         var parsed = url.parse(opts);
+        var secure = parsed.protocol === 'wss:';
         opts = {
             host: parsed.hostname,
-            port: parsed.port,
-            secure: (parsed.protocol === 'wss:') ? true : false
+            port: parsed.port ? Number(parsed.port) : secure ? 443 : 80,
+            secure: secure,
+            path: parsed.path
         }
     }
-    if (typeof opts !== 'object') {
+    if (opts === null || typeof opts !== 'object') {
         this.opts = new TypeError('server options not supplied');
         return this;
     }
+
+    // ToFix: undefined, null is true, like 'aaaaa' is also true
     if (!Server.domainRE.test(opts.host)) {
         this.opts_host = new TypeError('server host incorrect');
         return this;
     }
-    if (!(opts.port = Number(opts.port))) {
-        this.port =  new TypeError('server port not a number');
+    if (Number.isNaN(opts.port) || !Number.isFinite(opts.port)) {
+        this.port = new TypeError('server port not a number');
         return this;
     }
     if (opts.port < 1 || opts.port > 65535) {
-        this.port =  new TypeError('server port out of range');
+        this.port = new TypeError('server port out of range');
         return this;
     }
     if (typeof opts.secure !== 'boolean') {
         opts.secure = false;
     }
     this._opts = opts;
-    this._url = (this._opts.secure ? 'wss://' : 'ws://')
-        + this._opts.host + ':' + this._opts.port;
+    this._url = (this._opts.secure ? 'wss://' : 'ws://') + this._opts.host + ':' + this._opts.port + (this._opts.path ? this._opts.path : '');
     this._remote = remote;
 
     this._ws = null;
@@ -59,7 +62,7 @@ util.inherits(Server, Event);
 Server.domainRE = /^(?=.{1,255}$)[0-9A-Za-z](?:(?:[0-9A-Za-z]|[-_]){0,61}[0-9A-Za-z])?(?:\.[0-9A-Za-z](?:(?:[0-9A-Za-z]|[-_]){0,61}[0-9A-Za-z])?)*\.?$/;
 Server.onlineStates = ['syncing', 'tracking', 'proposing', 'validating', 'full', 'connected'];
 
-Server.prototype.connect = function(callback) {
+Server.prototype.connect = function (callback) {
     var self = this;
     if (self._connected) return;
     if (self._ws) self._ws.close();
@@ -70,31 +73,34 @@ Server.prototype.connect = function(callback) {
         return callback(e);
     }
 
-    self._ws.on('open', function() {
+    self._ws.onopen = function open() {
         self._opened = true;
         var req = self._remote.subscribe(['ledger', 'server', 'transactions']);
         req.submit(callback);
-    });
-    self._ws.on('message', function(data) {
-        self._remote._handleMessage(data);
-    });
-    self._ws.on('close', function() {
+    };
+
+    self._ws.onclose = function close() {
         self._handleClose();
-    });
-    self._ws.on('error', function(err) {
+    };
+    self._ws.onerror = function error(err) {
         callback(err);
-    });
+    };
+
+    self._ws.onmessage = function message(e) {
+        self._remote._handleMessage(e);
+    };
 };
 
 /**
  * close manual, not close connection until new connection
  */
-Server.prototype.disconnect = function() {
+Server.prototype.disconnect = function () {
     this._ws.close();
+    this._ws = null;
     this._setState('offline');
 };
 
-Server.prototype.isConnected = function() {
+Server.prototype.isConnected = function () {
     return this._connected;
 };
 
@@ -103,14 +109,14 @@ Server.prototype.isConnected = function() {
  * and should re-connect server after 3 seconds
  * @private
  */
-Server.prototype._handleClose = function() {
+Server.prototype._handleClose = function () {
     var self = this;
     if (self._state === 'offline') return;
     self._setState('offline');
     if (self._timer !== 0) return;
     self._remote.emit('disconnect');
-    self._timer = setInterval(function() {
-        self.connect(function(err, ret) {
+    self._timer = setInterval(function () {
+        self.connect(function (err) {
             if (!err) {
                 clearInterval(self._timer);
                 self._timer = 0;
@@ -120,7 +126,7 @@ Server.prototype._handleClose = function() {
     }, 3000);
 };
 
-Server.prototype._setState = function(state) {
+Server.prototype._setState = function (state) {
     var self = this;
     if (state === self._state) return;
 
@@ -135,12 +141,15 @@ Server.prototype._setState = function(state) {
  * refuse to send msg if connection blows out
  * @param message
  */
-Server.prototype.sendMessage = function(command, data) {
+Server.prototype.sendMessage = function (command, data) {
     var self = this;
     if (!self._opened) return;
     var req_id = self._id++;
 
-    var msg = extend({"id": req_id, "command": command}, data);
+    var msg = extend({
+        "id": req_id,
+        "command": command
+    }, data);
     self._ws.send(JSON.stringify(msg));
     return req_id;
 };

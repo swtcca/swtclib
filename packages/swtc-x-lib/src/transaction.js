@@ -2,8 +2,8 @@
 var util = require('util');
 var Event = require('events').EventEmitter;
 var utf8 = require('utf8');
-var utils = require('./utils');
-var baselib = require('swtc-base-lib').Wallet;
+const utils = require('./utils');
+var baselib = require('swtc-wallet').Wallet;
 const fee = require('./config').fee || 10000;
 /**
  * Post request to server with account secret
@@ -15,6 +15,7 @@ function Transaction(remote, filter) {
 
     var self = this;
     self._remote = remote;
+    self._token = remote._token || 'swt';
     self.tx_json = {Flags: 0, Fee: fee};
     self._filter = filter || function(v) {return v};
     self._secret = void(0);
@@ -112,7 +113,7 @@ Transaction.prototype.getTransactionType = function() {
  */
 Transaction.prototype.setSecret = function(secret) {
     if(!baselib.isValidSecret(secret)){
-        this.tx_json._secret = new Error('valid secret');
+        this.tx_json._secret = new Error('invalid secret');
         return;
     }
     this._secret = secret;
@@ -197,7 +198,7 @@ Transaction.prototype.setDestinationTag = function(tag) {
 */
 
 function MaxAmount(amount) {
-    var utils = require('./utils');
+	let utils = require('./utils')
     if (typeof amount === 'string' && Number(amount)) {
         var _amount = parseInt(Number(amount) * (1.0001));
         return String(_amount);
@@ -217,17 +218,18 @@ function MaxAmount(amount) {
  * when path set, sendmax is also set.
  * @param path
  */
-Transaction.prototype.setPath = function(key) {
+Transaction.prototype.setPath = function (key) {
     // sha1 string
-    if (typeof key !== 'string' && key.length !== 40) {
+    if (typeof key !== 'string' || key.length !== 40) {
         return new Error('invalid path key');
     }
     var item = this._remote._paths.get(key);
     if (!item) {
         return new Error('non exists path key');
     }
-    if(item.path === '[]')//沒有支付路径，不需要传下面的参数
+    if (item.path === '[]') { // 沒有支付路径，不需要传下面的参数
         return;
+    }
     var path = JSON.parse(item.path);
     this.tx_json.Paths = path;
     var amount = MaxAmount(item.choice);
@@ -239,6 +241,7 @@ Transaction.prototype.setPath = function(key) {
  * @param amount
  */
 Transaction.prototype.setSendMax = function(amount) {
+	let utils = require('./utils')
     if (!utils.isValidAmount(amount)) {
         return new Error('invalid send max amount');
     }
@@ -288,9 +291,9 @@ Transaction.prototype.setSequence = function(sequence) {
 
     this.tx_json.Sequence = Number(sequence);
 };
+
 function signing(self, callback) {
-    const base = require('swtc-base-lib').Wallet;
-    var jser = require('../lib/Serializer').Serializer;
+    var jser = require('swtc-serializer').Serializer;
     self.tx_json.Fee = self.tx_json.Fee/1000000;
 
     //payment
@@ -315,7 +318,7 @@ function signing(self, callback) {
         self.tx_json.TakerGets = Number(self.tx_json.TakerGets)/1000000;
     }
     try{
-        var wt = new base(self._secret);
+        var wt = new baselib(self._secret);
         self.tx_json.SigningPubKey = wt.getPublicKey();
         var prefix = 0x53545800;
         var hash = jser.from_json(self.tx_json).hash(prefix);

@@ -18,6 +18,7 @@ function Account(remote) {
     self.setMaxListeners(0);
     self._remote = remote;
     self._accounts = {};
+    self._token = remote._token || 'swt';
 
     self.on('newListener', function(account, listener) {
         if (account === 'removeListener') return;

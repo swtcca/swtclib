@@ -40,6 +40,7 @@ function OrderBook(remote) {
     var self = this;
     self._remote = remote;
     self._books = {};
+    self._token = remote._token || 'swt';
 
     self.on('newListener', function(key, listener) {
         if (key === 'removeListener') return;

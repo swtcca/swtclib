@@ -2,8 +2,10 @@
  * Created by Administrator on 2016/11/20.
  */
 var extend = require('extend');
-var baselib = require('swtc-base-lib').Wallet;
+var baselib = require('swtc-wallet').Wallet;
 var Transaction = require('./transaction');
+var _extend = require('lodash/extend');
+var _isEmpty = require('lodash/isEmpty');
 var _ = require('lodash');
 var utf8 = require('utf8');
 var config = require('./config');
@@ -38,6 +40,15 @@ var LEDGER_FLAGS = {
     }
 };
 
+var Flags = {
+    OfferCreate: {
+        Passive: 0x00010000,
+        ImmediateOrCancel: 0x00020000,
+        FillOrKill: 0x00040000,
+        Sell: 0x00080000
+    }
+}
+
 function hexToString(h) {
     var a = [];
     var i = 0;
@@ -69,7 +80,7 @@ function stringToHex(s) {
  * @returns {boolean}
  */
 function isValidAmount(amount) {
-    if (typeof amount !== 'object') {
+    if (amount === null || typeof amount !== 'object') {
         return false;
     }
     // check amount value
@@ -99,7 +110,7 @@ function isValidAmount(amount) {
  * @returns {boolean}
  */
 function isValidAmount0(amount) {
-    if (typeof amount !== 'object') {
+    if (amount === null || typeof amount !== 'object') {
         return false;
     }
     // check amount currency
@@ -179,18 +190,18 @@ function getTypeNode(node) {
 function processAffectNode(an) {
     var result = {};
 
-    ["CreatedNode", "ModifiedNode", "DeletedNode"].forEach(function(x) {
+    ["CreatedNode", "ModifiedNode", "DeletedNode"].forEach(function (x) {
         if (an[x]) result.diffType = x;
     });
 
-    if (!result.diffType) return null;
+    if (!result.diffType) return {};
 
     an = an[result.diffType];
 
     result.entryType = an.LedgerEntryType;
     result.ledgerIndex = an.LedgerIndex;
 
-    result.fields = _.extend({}, an.PreviousFields, an.NewFields, an.FinalFields);
+    result.fields = _extend({}, an.PreviousFields, an.NewFields, an.FinalFields);
     result.fieldsPrev = an.PreviousFields || {};
     result.fieldsNew = an.NewFields || {};
     result.fieldsFinal = an.FinalFields || {};
@@ -418,7 +429,7 @@ function processTx(txn, account) {
             result.amount = parseAmount(tx.Amount);
             break;
         case 'offernew':
-            result.offertype = tx.Flags & Transaction.flags.OfferCreate.Sell ? 'sell' : 'buy';
+            result.offertype = tx.Flags & Flags.OfferCreate.Sell ? 'sell' : 'buy';
             result.gets = parseAmount(tx.TakerGets);
             result.pays = parseAmount(tx.TakerPays);
             result.seq = tx.Sequence;
@@ -461,7 +472,7 @@ function processTx(txn, account) {
                     memo[property] = utf8.decode(hexToString(memo[property]));
                 } catch (e) {
                     // TODO to unify to utf8
-                    memo[property] = memo[property];
+                    // memo[property] = memo[property];
                 }
                 
             }
@@ -538,9 +549,8 @@ function processTx(txn, account) {
                     }
                 }
                 effect.seq = node.fields.Sequence;
-            }
+            } else if (tx.Account === account && !_.isEmpty(node.fieldsPrev)) {
             // 5. offer_bought
-            else if (tx.Account === account && !_.isEmpty(node.fieldsPrev)) {
                 effect.effect = 'offer_bought';
                 effect.counterparty =  { account: node.fields.Account, seq: node.fields.Sequence, hash: node.PreviousTxnID || node.fields.PreviousTxnID };
                 effect.paid = AmountSubtract(parseAmount(node.fieldsPrev.TakerPays), parseAmount(node.fields.TakerPays));
@@ -595,6 +605,7 @@ function processTx(txn, account) {
     delete result.rate;
     return result;
 }
+
 function arraySet(count, value) {
     var a = new Array(count);
 
@@ -607,6 +618,47 @@ function arraySet(count, value) {
 
 var ACCOUNT_ZERO =  config.ACCOUNT_ZERO;
 var ACCOUNT_ONE  =  config.ACCOUNT_ONE;
+
+// from jcc
+var getCurrency = function (token) {
+	let configs = require('./configs')
+    var config = configs.find(function (conf) {
+        return conf.currency.toLowerCase() === token.toLowerCase();
+    })
+    var currency = config ? config.currency : 'SWT';
+    return currency;
+}
+
+var parseKey = function (key, token) {
+    var parts = key.split(':');
+    if (parts.length !== 2) return null;
+    var currency = getCurrency(token);
+
+    function parsePart(part) {
+        if (part === currency) {
+            return {
+                currency: currency,
+                issuer: ''
+            };
+        }
+        var _parts = part.split('/');
+        if (_parts.length !== 2) return null;
+        if (!isValidCurrency(_parts[0])) return null;
+        if (!baselib.isValidAddress(_parts[1], currency)) return null;
+        return {
+            currency: _parts[0],
+            issuer: _parts[1]
+        };
+    }
+
+    var gets = parsePart(parts[0]);
+    var pays = parsePart(parts[1]);
+    if (!gets || !pays) return null;
+    return {
+        gets: gets,
+        pays: pays
+    };
+}
 
 module.exports = {
     hexToString: hexToString,
@@ -624,5 +676,12 @@ module.exports = {
     LEDGER_STATES: LEDGER_STATES,
     ACCOUNT_ZERO: ACCOUNT_ZERO,
     ACCOUNT_ONE: ACCOUNT_ONE,
-    arraySet:arraySet
-};
+    arraySet:arraySet,
+	// from jcc
+    getCurrency: getCurrency,
+    getFee: () => 10000,
+    getAccountZero: () => ACCOUNT_ZERO,
+    getAccountOne: () => ACCOUNT_ONE,
+    parseKey: parseKey
+}
+

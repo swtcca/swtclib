@@ -10,12 +10,8 @@ var Account = require('./account');
 var Transaction = require('./transaction');
 var OrderBook = require('./orderbook');
 var utils = require('./utils');
-var _ = require('lodash');
-const currency = require('./config').currency;
-var bignumber = require('bignumber.js');
-
-
-var LEDGER_OPTIONS = ['closed', 'header', 'current'];
+var _isNumber = require('lodash/isNumber');
+var Bignumber = require('bignumber.js');
 
 /**
  * main handler for backend system
@@ -42,13 +38,22 @@ function Remote(options) {
     }
     self._url = _opts.server;
     self._server = new Server(self, self._url);
-    self._status = {ledger_index: 0};
+    self._status = {
+        ledger_index: 0
+    };
     self._requests = {};
+    self._token = options.token || 'swt'
 
-    self._cache = LRU({max: 100, maxAge: 1000 * 60 * 5}); // 100 size, 5 min
-    self._paths = LRU({max: 100, maxAge: 1000 * 60 * 5}); // 2100 size, 5 min
+    self._cache = LRU({
+        max: 100,
+        maxAge: 1000 * 60 * 5
+    }); // 100 size, 5 min
+    self._paths = LRU({
+        max: 100,
+        maxAge: 1000 * 60 * 5
+    }); // 2100 size, 5 min
 
-    self.on('newListener', function(type, listener) {
+    self.on('newListener', function (type) {
         if (!self._server.isConnected()) return;
         if (type === 'removeListener') return;
         if (type === 'transactions') {
@@ -58,7 +63,7 @@ function Remote(options) {
             self.subscribe('ledger').submit();
         }
     });
-    self.on('removeListener', function(type) {
+    self.on('removeListener', function (type) {
         if (!self._server.isConnected()) return;
         if (type === 'transactions') {
             self.unsubscribe('transactions').submit();
@@ -76,7 +81,7 @@ util.inherits(Remote, Event);
  * @param callback
  * @returns {*}
  */
-Remote.prototype.connect = function(callback) {
+Remote.prototype.connect = function (callback) {
     if (!this._server) return callback('server not ready');
     this._server.connect(callback);
 };
@@ -84,7 +89,7 @@ Remote.prototype.connect = function(callback) {
 /**
  * disconnect manual, no reconnect
  */
-Remote.prototype.disconnect = function() {
+Remote.prototype.disconnect = function () {
     if (!this._server) return;
     this._server.disconnect();
 };
@@ -101,14 +106,16 @@ Remote.prototype.isConnected = function () {
  * @param data
  * @private
  */
-Remote.prototype._handleMessage = function(data) {
+Remote.prototype._handleMessage = function (e) {
     var self = this;
+    var data;
     try {
-        data = JSON.parse(data);
-    } catch(e) {}
+        data = JSON.parse(e.data);
+    } catch (e) {
+        data = "";
+    }
     if (typeof data !== 'object') return;
-
-    switch(data.type) {
+    switch (data.type) {
         case 'ledgerClosed':
             self._handleLedgerClosed(data);
             break;
@@ -134,7 +141,7 @@ Remote.prototype._handleMessage = function(data) {
  * @param data
  * @private
  */
-Remote.prototype._handleLedgerClosed = function(data) {
+Remote.prototype._handleLedgerClosed = function (data) {
     var self = this;
     if (data.ledger_index > self._status.ledger_index) {
         self._status.ledger_index = data.ledger_index;
@@ -153,7 +160,7 @@ Remote.prototype._handleLedgerClosed = function(data) {
  * @param data
  * @private
  */
-Remote.prototype._handleServerStatus = function(data) {
+Remote.prototype._handleServerStatus = function (data) {
     // TODO check data format
     this._updateServerStatus(data);
     this.emit('server_status', data);
@@ -164,11 +171,11 @@ Remote.prototype._handleServerStatus = function(data) {
  * @param data
  * @private
  */
-Remote.prototype._updateServerStatus = function(data) {
+Remote.prototype._updateServerStatus = function (data) {
     this._status.load_base = data.load_base;
     this._status.load_factor = data.load_factor;
     if (data.pubkey_node) {
-         this._status.pubkey_node = data.pubkey_node;
+        this._status.pubkey_node = data.pubkey_node;
     }
     this._status.server_status = data.server_status;
     var online = ~Server.onlineStates.indexOf(data.server_status);
@@ -180,10 +187,10 @@ Remote.prototype._updateServerStatus = function(data) {
  * @param data
  * @private
  */
-Remote.prototype._handleResponse = function(data) {
+Remote.prototype._handleResponse = function (data) {
     var req_id = data.id;
-    if (typeof req_id !== 'number'
-        || req_id < 0 || req_id > this._requests.length) {
+    if (typeof req_id !== 'number' ||
+        req_id < 0 || req_id > this._requests.length) {
         return;
     }
     var request = this._requests[req_id];
@@ -192,17 +199,18 @@ Remote.prototype._handleResponse = function(data) {
     delete data.id;
 
     // check if data contain server info
-    if (data.result && data.status === 'success'
-            && data.result.server_status) {
+    if (data.result && data.status === 'success' &&
+        data.result.server_status) {
         this._updateServerStatus(data.result);
     }
 
     // return to callback
+
     if (data.status === 'success') {
         var result = request.filter(data.result);
-        request.callback(null, result);
+        request && request.callback(null, result);
     } else if (data.status === 'error') {
-        request.callback(data.error_message || data.error_exception);
+        request && request.callback(data.error_exception || data.error_message);
     }
 };
 
@@ -212,7 +220,7 @@ Remote.prototype._handleResponse = function(data) {
  * @param data
  * @private
  */
-Remote.prototype._handleTransaction = function(data) {
+Remote.prototype._handleTransaction = function (data) {
     var self = this;
     var tx = data.transaction.hash;
     if (self._cache.get(tx)) return;
@@ -226,7 +234,7 @@ Remote.prototype._handleTransaction = function(data) {
  * @param data
  * @private
  */
-Remote.prototype._handlePathFind = function(data) {
+Remote.prototype._handlePathFind = function (data) {
     this.emit('path_find', data);
 };
 
@@ -238,9 +246,9 @@ Remote.prototype._handlePathFind = function(data) {
  * @param callback
  * @private
  */
-Remote.prototype._submit = function(command, data, filter, callback) {
+Remote.prototype._submit = function (command, data, filter, callback) {
     if (!callback || typeof callback !== 'function') {
-        callback = function() {};
+        callback = function () {};
     }
     var req_id = this._server.sendMessage(command, data);
     this._requests[req_id] = {
@@ -258,8 +266,8 @@ Remote.prototype._submit = function(command, data, filter, callback) {
  * no option is required
  * @returns {Request}
  */
-Remote.prototype.requestServerInfo = function() {
-    return new Request(this, 'server_info', function(data) {
+Remote.prototype.requestServerInfo = function () {
+    return new Request(this, 'server_info', function (data) {
         return {
             complete_ledgers: data.info.complete_ledgers,
             ledger: data.info.validated_ledger.hash,
@@ -277,8 +285,8 @@ Remote.prototype.requestServerInfo = function() {
  * no option is required
  * @returns {Request}
  */
-Remote.prototype.requestPeers = function() {
-    return new Request(this, 'peers', function(data) {
+Remote.prototype.requestPeers = function () {
+    return new Request(this, 'peers', function (data) {
         return data;
     });
 };
@@ -287,11 +295,11 @@ Remote.prototype.requestPeers = function() {
  * @returns {Request}
  */
 Remote.prototype.requestLedgerClosed = function () {
-    return new Request(this, 'ledger_closed', function(data) {
+    return new Request(this, 'ledger_closed', function (data) {
         return {
             // fee_base: data.fee_base,
             ledger_hash: data.ledger_hash,
-            ledger_index: data.ledger_index,
+            ledger_index: data.ledger_index
             // reserve_base: data.reserve_base,
             // reserve_inc: data.reserve_base,
             // txn_count: data.txn_count,
@@ -310,13 +318,13 @@ Remote.prototype.requestLedgerClosed = function () {
  * @param options
  * @returns {Request}
  */
-Remote.prototype.requestLedger = function(options) {
+Remote.prototype.requestLedger = function (options) {
     // if (typeof options !== 'object') {
     //     return new Error('invalid options type');
     // }
     var cmd = 'ledger';
     var filter = true;
-    var request = new Request(this, cmd, function(data) {
+    var request = new Request(this, cmd, function (data) {
         var ledger = data.ledger || data.closed.ledger;
         if (!filter) {
             return ledger;
@@ -330,7 +338,7 @@ Remote.prototype.requestLedger = function(options) {
             total_coins: ledger.total_coins
         };
     });
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -340,19 +348,19 @@ Remote.prototype.requestLedger = function(options) {
     if (utils.isValidHash(options.ledger_hash)) {
         request.message.ledger_hash = options.ledger_hash;
     }
-    if ('full' in options && typeof(options.full) === 'boolean') {
+    if ('full' in options && typeof (options.full) === 'boolean') {
         request.message['full'] = options.full;
         filter = false;
     }
-    if ('expand' in options && typeof(options.expand) === 'boolean') {
+    if ('expand' in options && typeof (options.expand) === 'boolean') {
         request.message['expand'] = options.expand;
         filter = false;
     }
-    if ('transactions' in options && typeof(options.transactions) === 'boolean') {
+    if ('transactions' in options && typeof (options.transactions) === 'boolean') {
         request.message['transactions'] = options.transactions;
         filter = false;
     }
-    if ('accounts' in options && typeof(options.accounts) === 'boolean') {
+    if ('accounts' in options && typeof (options.accounts) === 'boolean') {
         request.message['accounts'] = options.accounts;
         filter = false;
     }
@@ -364,13 +372,13 @@ Remote.prototype.requestLedger = function(options) {
  * for tx command
  * @param options
  * options: {
- *   hash: tx hash, string  
+ *   hash: tx hash, string
  * }
  * @returns {Request}
  */
-Remote.prototype.requestTx = function(options) {
+Remote.prototype.requestTx = function (options) {
     var request = new Request(this, 'tx');
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -387,13 +395,12 @@ Remote.prototype.requestTx = function(options) {
 
 function getRelationType(type) {
     switch (type) {
-        case 'trustline':
+        case 'trust':
             return 0;
         case 'authorize':
             return 1;
         case 'freeze':
             return 3;
-
     }
 }
 /**
@@ -403,9 +410,10 @@ function getRelationType(type) {
  * @returns {Request}
  * @private
  */
-Remote.prototype.__requestAccount = function(type, options, request, filter) {
+Remote.prototype.__requestAccount = function (type, options, request) {
     // var request = new Request(this, type, filter);
     request._command = type;
+    var self = this
     var account = options.account;
     var ledger = options.ledger;
     var peer = options.peer;
@@ -416,16 +424,16 @@ Remote.prototype.__requestAccount = function(type, options, request, filter) {
     // }
     request.message.relation_type = getRelationType(options.type);
     if (account) {
-        if(!utils.isValidAddress(account)){
+        if (!utils.isValidAddress(account, self._token)) {
             request.message.account = new Error('invalid account');
             return request;
-        }else {
+        } else {
             request.message.account = account;
         }
     }
     request.selectLedger(ledger);
 
-    if (utils.isValidAddress(peer)) {
+    if (utils.isValidAddress(peer, self._token)) {
         request.message.peer = peer;
     }
     if (Number(limit)) {
@@ -448,10 +456,10 @@ Remote.prototype.__requestAccount = function(type, options, request, filter) {
  *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
  * @returns {Request}
  */
-Remote.prototype.requestAccountInfo = function(options) {
+Remote.prototype.requestAccountInfo = function (options) {
     var request = new Request(this);
 
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -462,17 +470,17 @@ Remote.prototype.requestAccountInfo = function(options) {
  * account tums
  * return account supports currency, including
  *     send currency and receive currency
- * @param 
+ * @param
  *    account(required): the query account
  *    ledger(option): specify ledger, ledger can be:
- *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated 
+ *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
  *    no limit
  * @returns {Request}
  */
-Remote.prototype.requestAccountTums = function(options) {
+Remote.prototype.requestAccountTums = function (options) {
     var request = new Request(this);
 
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -485,15 +493,15 @@ Remote.prototype.requestAccountTums = function(options) {
  *    type: relation type
  *    account(required): the query account
  *    ledger(option): specify ledger, ledger can be:
- *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated  
+ *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
  *    limit min is 200,
  *    marker for more relations
  * @returns {Request}
  */
-Remote.prototype.requestAccountRelations = function(options) {
+Remote.prototype.requestAccountRelations = function (options) {
     var request = new Request(this);
 
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -518,14 +526,14 @@ Remote.prototype.requestAccountRelations = function(options) {
  * @param options
  *    account(required): the query account
  *    ledger(option): specify ledger, ledger can be:
- *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated  
+ *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
  *    limit min is 200, marker
  * @returns {Request}
  */
-Remote.prototype.requestAccountOffers = function(options) {
+Remote.prototype.requestAccountOffers = function (options) {
     var request = new Request(this);
 
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -537,29 +545,30 @@ Remote.prototype.requestAccountOffers = function(options) {
  * options parameters
  *    account(required): the query account
  *    ledger(option): specify ledger, ledger can be:
- *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated  
+ *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
  *    limit limit output tx record
  *    ledger_min default 0, ledger_max default -1
  *    marker: {ledger:xxx, seq: x}
  *    descending, if returns recently tx records
  * @returns {Request}
  */
-Remote.prototype.requestAccountTx = function(options) {
-    var request = new Request(this, 'account_tx', function(data) {
+Remote.prototype.requestAccountTx = function (options) {
+    var self = this
+    var request = new Request(this, 'account_tx', function (data) {
         var results = [];
         for (var i = 0; i < data.transactions.length; ++i) {
-            var _tx = utils.processTx(data.transactions[i], options.account);
+            var _tx = utils.processTx(data.transactions[i], options.account, self._token);
             results.push(_tx);
         }
         data.transactions = results;
         return data;
     });
 
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
-    if (!utils.isValidAddress(options.account)) {
+    if (!utils.isValidAddress(options.account, this._token)) {
         request.message.account = new Error('account parameter is invalid');
         return request;
     }
@@ -581,11 +590,11 @@ Remote.prototype.requestAccountTx = function(options) {
     if (options.offset && Number(options.offset)) {
         request.message.offset = Number(options.offset);
     }
-    if (typeof(options.marker) === 'object'
-            && Number(options.marker.ledger) !== NaN && Number(options.marker.seq) !== NaN) {
+    if (typeof (options.marker) === 'object' &&
+        !Number.isNaN(Number(options.marker.ledger)) && !Number.isNaN(Number(options.marker.seq))) {
         request.message.marker = options.marker;
     }
-    if(options.forward && typeof options.forward === 'boolean'){//true 正向；false反向
+    if (options.forward && typeof options.forward === 'boolean') { // true 正向；false反向
         request.message.forward = options.forward;
     }
     return request;
@@ -603,9 +612,9 @@ Remote.prototype.requestAccountTx = function(options) {
  * @param options
  * @returns {Request}
  */
-Remote.prototype.requestOrderBook = function(options) {
+Remote.prototype.requestOrderBook = function (options) {
     var request = new Request(this, 'book_offers');
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -619,13 +628,13 @@ Remote.prototype.requestOrderBook = function(options) {
         request.message.taker_pays = new Error('invalid taker pays amount');
         return request;
     }
-    if (_.isNumber(options.limit)) {
+    if (_isNumber(options.limit)) {
         options.limit = parseInt(options.limit);
     }
 
     request.message.taker_gets = taker_gets;
     request.message.taker_pays = taker_pays;
-    request.message.taker = options.taker ? options.taker : utils.ACCOUNT_ONE;
+    request.message.taker = options.taker ? options.taker : utils.getAccountOne(this._token);
     request.message.limit = options.limit;
     return request;
 };
@@ -634,25 +643,25 @@ Remote.prototype.requestOrderBook = function(options) {
  * request brokerage,
  * @param options
  * @returns {Request}
-* */
-Remote.prototype.requestBrokerage = function(options) {
+ * */
+Remote.prototype.requestBrokerage = function (options) {
     var request = new Request(this, 'Fee_Info');
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
     var issuer = options.issuer;
     var app = options.app;
     var currency = options.currency;
-    if (!utils.isValidAddress(issuer)) {
+    if (!utils.isValidAddress(issuer, this._token)) {
         request.message.account = new Error('issuer parameter is invalid');
         return request;
     }
-    if(!/^[0-9]*[1-9][0-9]*$/.test(app)){//正整数
+    if (!/^[0-9]*[1-9][0-9]*$/.test(app)) { // 正整数
         request.message.app = new Error('invalid app, it is a positive integer.');
         return request;
     }
-    if(!utils.isValidCurrency(currency)){//正整数
+    if (!utils.isValidCurrency(currency)) { // 正整数
         request.message.currency = new Error('invalid currency.');
         return request;
     }
@@ -673,9 +682,9 @@ Remote.prototype.requestBrokerage = function(options) {
  * }
  * @returns {Request}
  */
-Remote.prototype.requestPathFind = function(options) {
+Remote.prototype.requestPathFind = function (options) {
     var self = this;
-    var request = new Request(self, 'path_find', function(data) {
+    var request = new Request(self, 'path_find', function (data) {
         var request2 = new Request(self, 'path_find');
         request2.message.subcommand = 'close';
         request2.submit();
@@ -688,12 +697,13 @@ Remote.prototype.requestPathFind = function(options) {
                 choice: item.source_amount
             });
             _result.push({
-                choice: utils.parseAmount(item.source_amount), key: key
+                choice: utils.parseAmount(item.source_amount, self._token),
+                key: key
             });
         }
         return _result;
     });
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         request.message.type = new Error('invalid options type');
         return request;
     }
@@ -702,15 +712,15 @@ Remote.prototype.requestPathFind = function(options) {
     var dest = options.destination;
     var amount = options.amount;
 
-    if (!utils.isValidAddress(account)) {
+    if (!utils.isValidAddress(account, self._token)) {
         request.message.source_account = new Error('invalid source account');
         return request;
     }
-    if (!utils.isValidAddress(dest)) {
+    if (!utils.isValidAddress(dest, self._token)) {
         request.message.destination_account = new Error('invalid destination account');
         return request;
     }
-    if ((!utils.isValidAmount(amount))) {
+    if ((!utils.isValidAmount(amount, self._token))) {
         request.message.destination_amount = new Error('invalid amount');
         return request;
     }
@@ -718,49 +728,8 @@ Remote.prototype.requestPathFind = function(options) {
     request.message.subcommand = 'create';
     request.message.source_account = account;
     request.message.destination_account = dest;
-    request.message.destination_amount = ToAmount(amount);
+    request.message.destination_amount = ToAmount(amount, this._token);
     return request;
-};
-
-// ---------------------- subscribe --------------------
-/**
- * @param streams
- * @returns {Request}
- */
-Remote.prototype.subscribe = function(streams) {
-    var request = new Request(this, 'subscribe');
-    if (streams) {
-        request.message.streams = Array.isArray(streams) ? streams : [streams];
-    }
-    return request;
-};
-
-/**
- * @param streams
- * @returns {Request}
- */
-Remote.prototype.unsubscribe = function(streams) {
-    var request = new Request(this, 'unsubscribe');
-    if (streams) {
-        request.message.streams = Array.isArray(streams) ? streams : [streams];
-    }
-    return request;
-};
-
-/**
- * stub function for account event
- * @returns {Account}
- */
-Remote.prototype.createAccountStub = function() {
-    return new Account(this);
-};
-
-/** stub function for order book
- *
- * @returns {OrderBook}
- */
-Remote.prototype.createOrderBookStub = function() {
-    return new OrderBook(this);
 };
 
 // ---------------------- transaction request --------------------
@@ -769,13 +738,14 @@ Remote.prototype.createOrderBookStub = function() {
  * @param amount
  * @returns {Amount}
  */
-function ToAmount(amount) {
-    if(amount.value && Number(amount.value) > 100000000000){
+function ToAmount(amount, token) {
+    if (amount.value && Number(amount.value) > 100000000000) {
         return new Error('invalid amount: amount\'s maximum value is 100000000000');
     }
+    var currency = utils.getCurrency(token);
     if (amount.currency === currency) {
         // return new String(parseInt(Number(amount.value) * 1000000.00));
-        return new String(parseInt(new bignumber(amount.value).mul(1000000.00)));
+        return String(parseInt(new Bignumber(amount.value).mul(1000000.00)));
     }
     return amount;
 }
@@ -788,20 +758,20 @@ function ToAmount(amount) {
  *    amount payment amount, required
  * @returns {Transaction}
  */
-Remote.prototype.buildPaymentTx = function(options) {
+Remote.prototype.buildPaymentTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
     var src = options.source || options.from || options.account;
     var dst = options.destination || options.to;
     var amount = options.amount;
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
-    if (!utils.isValidAddress(dst)) {
+    if (!utils.isValidAddress(dst, this._token)) {
         tx.tx_json.dst = new Error('invalid destination address');
         return tx;
     }
@@ -812,7 +782,7 @@ Remote.prototype.buildPaymentTx = function(options) {
 
     tx.tx_json.TransactionType = 'Payment';
     tx.tx_json.Account = src;
-    tx.tx_json.Amount = ToAmount(amount);
+    tx.tx_json.Amount = ToAmount(amount, this._token);
     tx.tx_json.Destination = dst;
     return tx
 };
@@ -825,9 +795,9 @@ Remote.prototype.buildPaymentTx = function(options) {
  *    payload, required
  * @returns {Transaction}
  */
-Remote.prototype.deployContractTx = function(options) {
+Remote.prototype.deployContractTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
@@ -835,20 +805,20 @@ Remote.prototype.deployContractTx = function(options) {
     var amount = options.amount;
     var payload = options.payload;
     var params = options.params;
-    if (!utils.isValidAddress(account)) {
+    if (!utils.isValidAddress(account, this._token)) {
         tx.tx_json.account = new Error('invalid address');
         return tx;
     }
-    if (isNaN(amount)) {
+    if (isNaN(Number(amount))) {
         tx.tx_json.amount = new Error('invalid amount');
         return tx;
     }
-    if(typeof payload !== 'string'){
+    if (typeof payload !== 'string') {
         tx.tx_json.payload = new Error('invalid payload: type error.');
         return tx;
     }
     if (params && !Array.isArray(params)) {
-        tx.tx_json.params =  new Error('invalid options type');
+        tx.tx_json.params = new Error('invalid options type');
         return tx;
     }
 
@@ -858,9 +828,11 @@ Remote.prototype.deployContractTx = function(options) {
     tx.tx_json.Method = 0;
     tx.tx_json.Payload = payload;
     tx.tx_json.Args = [];
-    for(var i in params){
+    for (var i in params) {
         var obj = {};
-        obj.Arg = {Parameter : utils.stringToHex(params[i])};
+        obj.Arg = {
+            Parameter: utils.stringToHex(params[i])
+        };
         tx.tx_json.Args.push(obj);
     }
     return tx
@@ -874,31 +846,31 @@ Remote.prototype.deployContractTx = function(options) {
  *    params, required
  * @returns {Transaction}
  */
-Remote.prototype.callContractTx = function(options) {
+Remote.prototype.callContractTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
-        tx.tx_json.obj =  new Error('invalid options type');
+    if (options === null || typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
     var account = options.account;
     var des = options.destination;
     var params = options.params;
-    var foo = options.foo; //函数名
-    if (!utils.isValidAddress(account)) {
+    var foo = options.foo; // 函数名
+    if (!utils.isValidAddress(account, this._token)) {
         tx.tx_json.account = new Error('invalid address');
         return tx;
     }
-    if (!utils.isValidAddress(des)) {
+    if (!utils.isValidAddress(des, this._token)) {
         tx.tx_json.des = new Error('invalid destination');
         return tx;
     }
 
     if (params && !Array.isArray(params)) {
-        tx.tx_json.params =  new Error('invalid options type');
+        tx.tx_json.params = new Error('invalid options type');
         return tx;
     }
-    if(typeof foo !== 'string'){
-        tx.tx_json.foo =  new Error('foo must be string');
+    if (typeof foo !== 'string') {
+        tx.tx_json.foo = new Error('foo must be string');
         return tx;
     }
 
@@ -908,22 +880,24 @@ Remote.prototype.callContractTx = function(options) {
     tx.tx_json.ContractMethod = utils.stringToHex(foo);
     tx.tx_json.Destination = des;
     tx.tx_json.Args = [];
-    for(var i in params){
-        if(typeof params[i] !== 'string'){
-            tx.tx_json.params =  new Error('params must be string');
+    for (var i in params) {
+        if (typeof params[i] !== 'string') {
+            tx.tx_json.params = new Error('params must be string');
             return tx;
         }
         var obj = {};
-        obj.Arg = {Parameter : utils.stringToHex(params[i])};
+        obj.Arg = {
+            Parameter: utils.stringToHex(params[i])
+        };
         tx.tx_json.Args.push(obj);
     }
     return tx;
 };
 
-Remote.prototype.buildSignTx = function(options) {
+Remote.prototype.buildSignTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
-        tx.tx_json.obj =  new Error('invalid options type');
+    if (options === null || typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
 
@@ -943,9 +917,9 @@ Remote.prototype.buildSignTx = function(options) {
  *    amount, required
  * @returns {Transaction}
  */
-Remote.prototype.buildBrokerageTx = function(options) {
+Remote.prototype.buildBrokerageTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
+    if (options === null || typeof options !== 'object') {
         tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
@@ -954,19 +928,19 @@ Remote.prototype.buildBrokerageTx = function(options) {
     var den = options.den || options.denominator;
     var app = options.app;
     var amount = options.amount;
-    if (!utils.isValidAddress(account)) {
+    if (!utils.isValidAddress(account, this._token)) {
         tx.tx_json.src = new Error('invalid address');
         return tx;
     }
-    if(!/^\d+$/.test(mol)){//(正整数 + 0)
+    if (!/^\d+$/.test(mol)) { // (正整数 + 0)
         tx.tx_json.mol = new Error('invalid mol, it is a positive integer or zero.');
         return tx;
     }
-    if(!/^[0-9]*[1-9][0-9]*$/.test(den) || !/^[0-9]*[1-9][0-9]*$/.test(app)){//正整数
+    if (!/^[0-9]*[1-9][0-9]*$/.test(den) || !/^[0-9]*[1-9][0-9]*$/.test(app)) { // 正整数
         tx.tx_json.den = new Error('invalid den/app, it is a positive integer.');
         return tx;
     }
-    if(mol > den){
+    if (mol > den) {
         tx.tx_json.app = new Error('invalid mol/den, molecule can not exceed denominator.');
         return tx;
     }
@@ -976,16 +950,16 @@ Remote.prototype.buildBrokerageTx = function(options) {
     }
 
     tx.tx_json.TransactionType = 'Brokerage';
-    tx.tx_json.Account = account; //管理员账号
-    tx.tx_json.OfferFeeRateNum = mol; //分子(正整数 + 0)
-    tx.tx_json.OfferFeeRateDen = den; //分母(正整数)
-    tx.tx_json.AppType = app; //应用来源(正整数)
-    tx.tx_json.Amount = ToAmount(amount); //币种,这里amount字段中的value值只是占位，没有实际意义。
+    tx.tx_json.Account = account; // 管理员账号
+    tx.tx_json.OfferFeeRateNum = mol; // 分子(正整数 + 0)
+    tx.tx_json.OfferFeeRateDen = den; // 分母(正整数)
+    tx.tx_json.AppType = app; // 应用来源(正整数)
+    tx.tx_json.Amount = ToAmount(amount, this._token); // 币种,这里amount字段中的value值只是占位，没有实际意义。
 
     return tx;
 };
 
-Remote.prototype.__buildTrustSet = function(options, tx) {
+Remote.prototype.__buildTrustSet = function (options, tx) {
     // var tx = new Transaction(this);
     // if (typeof options !== 'object') {
     //     tx.tx_json.obj =  new Error('invalid options type');
@@ -996,7 +970,7 @@ Remote.prototype.__buildTrustSet = function(options, tx) {
     var quality_out = options.quality_out;
     var quality_in = options.quality_in;
 
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
@@ -1007,9 +981,7 @@ Remote.prototype.__buildTrustSet = function(options, tx) {
 
     tx.tx_json.TransactionType = 'TrustSet';
     tx.tx_json.Account = src;
-    if (limit !== void(0)) {
-        tx.tx_json.LimitAmount = limit;
-    }
+    tx.tx_json.LimitAmount = limit;
     if (quality_in) {
         tx.tx_json.QualityIn = quality_in;
     }
@@ -1019,7 +991,7 @@ Remote.prototype.__buildTrustSet = function(options, tx) {
     return tx;
 };
 
-Remote.prototype.__buildRelationSet = function(options, tx) {
+Remote.prototype.__buildRelationSet = function (options, tx) {
     // TODO
     // var tx = new Transaction(this);
     // if (typeof options !== 'object') {
@@ -1031,11 +1003,11 @@ Remote.prototype.__buildRelationSet = function(options, tx) {
     var des = options.target;
     var limit = options.limit;
 
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
-    if (!utils.isValidAddress(des)) {
+    if (!utils.isValidAddress(des, this._token)) {
         tx.tx_json.des = new Error('invalid target address');
         return tx;
     }
@@ -1044,13 +1016,11 @@ Remote.prototype.__buildRelationSet = function(options, tx) {
         return tx;
     }
 
-    tx.tx_json.TransactionType =  options.type === 'unfreeze' ? 'RelationDel' : 'RelationSet';
+    tx.tx_json.TransactionType = options.type === 'unfreeze' ? 'RelationDel' : 'RelationSet';
     tx.tx_json.Account = src;
     tx.tx_json.Target = des;
     tx.tx_json.RelationType = options.type === 'authorize' ? 1 : 3;
-    if (limit !== void(0)) {
-        tx.tx_json.LimitAmount = limit;
-    }
+    tx.tx_json.LimitAmount = limit;
     return tx;
 };
 
@@ -1064,10 +1034,10 @@ Remote.prototype.__buildRelationSet = function(options, tx) {
  *    quality_in, optional
  * @returns {Transaction}
  */
-Remote.prototype.buildRelationTx = function(options) {
+Remote.prototype.buildRelationTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
-        tx.tx_json.obj =  new Error('invalid options type');
+    if (options === null || typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
     if (!~Transaction.RelationTypes.indexOf(options.type)) {
@@ -1082,8 +1052,6 @@ Remote.prototype.buildRelationTx = function(options) {
         case 'unfreeze':
             return this.__buildRelationSet(options, tx);
     }
-    tx.tx_json.msg = new Error('build relation set should not go here');
-    return tx;
 };
 
 /**
@@ -1093,7 +1061,7 @@ Remote.prototype.buildRelationTx = function(options) {
  *    clear_flag, flags to clear
  * @returns {Transaction}
  */
-Remote.prototype.__buildAccountSet = function(options, tx) {
+Remote.prototype.__buildAccountSet = function (options, tx) {
     // var tx = new Transaction(this);
     // if (typeof options !== 'object') {
     //     tx.tx_json.obj =  new Error('invalid options type');
@@ -1103,19 +1071,18 @@ Remote.prototype.__buildAccountSet = function(options, tx) {
     var src = options.source || options.from || options.account;
     var set_flag = options.set_flag || options.set;
     var clear_flag = options.clear_flag || options.clear;
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
 
-    tx.tx_json.TransactionType= 'AccountSet';
+    tx.tx_json.TransactionType = 'AccountSet';
     tx.tx_json.Account = src;
 
     var SetClearFlags = Transaction.set_clear_flags.AccountSet;
 
     function prepareFlag(flag) {
-        return (typeof flag === 'number')
-            ? flag : (SetClearFlags[flag] || SetClearFlags['asf' + flag]);
+        return (typeof flag === 'number') ? flag : (SetClearFlags[flag] || SetClearFlags['asf' + flag]);
     }
 
     if (set_flag && (set_flag = prepareFlag(set_flag))) {
@@ -1136,7 +1103,7 @@ Remote.prototype.__buildAccountSet = function(options, tx) {
  *    delegate_key, delegate account, required
  * @returns {Transaction}
  */
-Remote.prototype.__buildDelegateKeySet = function(options, tx) {
+Remote.prototype.__buildDelegateKeySet = function (options, tx) {
     // var tx = new Transaction(this);
     // if (typeof options !== 'object') {
     //     tx.tx_json.obj =  new Error('invalid options type');
@@ -1146,11 +1113,11 @@ Remote.prototype.__buildDelegateKeySet = function(options, tx) {
     var src = options.source || options.account || options.from;
     var delegate_key = options.delegate_key;
 
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
-    if (!utils.isValidAddress(delegate_key)) {
+    if (!utils.isValidAddress(delegate_key, this._token)) {
         tx.tx_json.delegate_key = new Error('invalid regular key address');
         return tx;
     }
@@ -1162,7 +1129,7 @@ Remote.prototype.__buildDelegateKeySet = function(options, tx) {
     return tx;
 };
 
-Remote.prototype.__buildSignerSet = function(options, tx) {
+Remote.prototype.__buildSignerSet = function () {
     // TODO
     return null;
 };
@@ -1173,17 +1140,17 @@ Remote.prototype.__buildSignerSet = function(options, tx) {
  *    type: Transaction.AccountSetTypes
  * @returns {Transaction}
  */
-Remote.prototype.buildAccountSetTx = function(options) {
+Remote.prototype.buildAccountSetTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
-        tx.tx_json.obj =  new Error('invalid options type');
+    if (options === null || typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
     if (Transaction.AccountSetTypes.indexOf(options.type) === -1) {
         tx.tx_json.type = new Error('invalid account set type');
         return tx;
     }
-    switch(options.type) {
+    switch (options.type) {
         case 'property':
             return this.__buildAccountSet(options, tx);
         case 'delegate':
@@ -1191,9 +1158,6 @@ Remote.prototype.buildAccountSetTx = function(options) {
         case 'signer':
             return this.__buildSignerSet(options, tx);
     }
-
-    tx.tx_json.msg = new Error('build account set should not go here');
-    return tx;
 };
 
 /**
@@ -1205,10 +1169,10 @@ Remote.prototype.buildAccountSetTx = function(options) {
  *    taker_pays|gets amount to take in, required
  * @returns {Transaction}
  */
-Remote.prototype.buildOfferCreateTx = function(options) {
+Remote.prototype.buildOfferCreateTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
-        tx.tx_json.obj =  new Error('invalid options type');
+    if (options === null || typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
 
@@ -1218,7 +1182,7 @@ Remote.prototype.buildOfferCreateTx = function(options) {
     var taker_pays = options.taker_pays || options.gets;
     var app = options.app;
 
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
@@ -1226,7 +1190,6 @@ Remote.prototype.buildOfferCreateTx = function(options) {
         tx.tx_json.offer_type = new Error('invalid offer type');
         return tx;
     }
-    var taker_gets2, taker_pays2;
     if (typeof taker_gets === 'string' && !Number(taker_gets)) {
         tx.tx_json.taker_gets2 = new Error('invalid to pays amount');
         return tx;
@@ -1243,17 +1206,17 @@ Remote.prototype.buildOfferCreateTx = function(options) {
         tx.tx_json.taker_pays2 = new Error('invalid to gets amount object');
         return tx;
     }
-    if(app && !/^[0-9]*[1-9][0-9]*$/.test(app)) {//正整数
+    if (app && !/^[0-9]*[1-9][0-9]*$/.test(app)) { // 正整数
         tx.tx_json.app = new Error('invalid app, it is a positive integer.');
         return tx;
     }
 
     tx.tx_json.TransactionType = 'OfferCreate';
     if (offer_type === 'Sell') tx.setFlags(offer_type);
-    if(app) tx.tx_json.AppType = app;
+    if (app) tx.tx_json.AppType = app;
     tx.tx_json.Account = src;
-    tx.tx_json.TakerPays = taker_pays2 ? taker_pays2 : ToAmount(taker_pays);
-    tx.tx_json.TakerGets = taker_gets2 ? taker_gets2 : ToAmount(taker_gets);
+    tx.tx_json.TakerPays = ToAmount(taker_pays, this._token);
+    tx.tx_json.TakerGets = ToAmount(taker_gets, this._token);
 
     return tx;
 };
@@ -1265,17 +1228,17 @@ Remote.prototype.buildOfferCreateTx = function(options) {
  *    sequence, required
  * @returns {Transaction}
  */
-Remote.prototype.buildOfferCancelTx = function(options) {
+Remote.prototype.buildOfferCancelTx = function (options) {
     var tx = new Transaction(this);
-    if (typeof options !== 'object') {
-        tx.tx_json.obj =  new Error('invalid options type');
+    if (options === null || typeof options !== 'object') {
+        tx.tx_json.obj = new Error('invalid options type');
         return tx;
     }
 
     var src = options.source || options.from || options.account;
     var sequence = options.sequence;
 
-    if (!utils.isValidAddress(src)) {
+    if (!utils.isValidAddress(src, this._token)) {
         tx.tx_json.src = new Error('invalid source address');
         return tx;
     }
@@ -1291,5 +1254,45 @@ Remote.prototype.buildOfferCancelTx = function(options) {
     return tx;
 };
 
-module.exports = Remote;
+// ---------------------- subscribe --------------------
+/**
+ * @param streams
+ * @returns {Request}
+ */
+Remote.prototype.subscribe = function (streams) {
+    var request = new Request(this, 'subscribe');
+    if (streams) {
+        request.message.streams = Array.isArray(streams) ? streams : [streams];
+    }
+    return request;
+};
 
+/**
+ * @param streams
+ * @returns {Request}
+ */
+Remote.prototype.unsubscribe = function (streams) {
+    var request = new Request(this, 'unsubscribe');
+    if (streams) {
+        request.message.streams = Array.isArray(streams) ? streams : [streams];
+    }
+    return request;
+};
+
+/**
+ * stub function for account event
+ * @returns {Account}
+ */
+Remote.prototype.createAccountStub = function () {
+    return new Account(this);
+};
+
+/** stub function for order book
+ *
+ * @returns {OrderBook}
+ */
+Remote.prototype.createOrderBookStub = function () {
+    return new OrderBook(this);
+};
+
+module.exports = Remote;

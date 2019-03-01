@@ -1,7 +1,7 @@
 {
 	"name": "swtc-lib",
-	"version": "1.4.2",
-	"description": "swtc library for jingtum blockchain",
+	"version": "2.0.0",
+	"description": "swtc-lib@next for jingtum blockchain",
 	"main": "index.js",
 	"browser": {
 		"ws": "./src/wswrapper.js"
@@ -41,17 +41,25 @@
 	"dependencies": {
 		"bignumber.js": "^5.0.0",
 		"bn-plus.js": "^1.0.0",
+		"isomorphic-ws": "^4.0.1",
 		"lodash": "^4.17.11",
 		"lru-cache": "^4.0.1",
 		"sha1": "^1.1.1",
-		"swtc-base-lib": "^1.0.9",
+		"swtc-serializer": "^2.0.0",
+		"swtc-wallet": "^1.1.1",
 		"url": "^0.11.0",
+		"utf8": "^3.0.0",
 		"ws": "^1.1.1"
 	},
 	"devDependencies": {
+		"bwt-wallet": "^1.1.0",
 		"chai": "^4.2.0",
+		"chai-json-schema": "^1.5.0",
 		"gulp": "^4.0.0",
+		"jsbn": "^1.1.0",
 		"mocha": "^5.2.0",
+		"sinon": "^7.2.4",
+		"swtc-factory": "^1.1.0",
 		"webpack": "^4.29.3",
 		"webpack-cli": "^3.2.3",
 		"webpack-dev-server": "^3.1.14",

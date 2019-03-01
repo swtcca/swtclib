@@ -6,7 +6,7 @@ var Transaction = require('./src/transaction');
 var Account = require('./src/account');
 var OrderBook = require('./src/orderbook');
 var utils = require('./src/utils');
-var Wallet = require('swtc-base-lib').Wallet;
+var Wallet = require('swtc-wallet').Wallet;
 
 
 exports.Remote = Remote;
