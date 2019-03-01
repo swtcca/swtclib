@@ -1,7 +1,7 @@
 {
 	"name": "swtc-lib",
-	"version": "2.0.0",
-	"description": "swtc-lib@next for jingtum blockchain",
+	"version": "1.6.0",
+	"description": "swtc-lib for jingtum blockchain",
 	"main": "index.js",
 	"browser": {
 		"ws": "./src/wswrapper.js"
