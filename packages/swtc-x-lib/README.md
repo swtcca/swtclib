@@ -1,16 +1,20 @@
 
 #The SWTC JavaScript Library
 
-SWTC library for development with modern javascript in concern, functions include transactions and remote
-`swtc-lib` makes working with Node.js and in the browser or even certain mobile app easy and fashion via webpack.
-This library currently uses the same source code from jingtum-lib but properly package them for convenience.
+##SWTC heavily utilize jingtum-lib and jcc_jingtum_lib, but made it modular and **friendly** for developer
+-  keep the same interface as jingtum-lib or jcc_jingtum_lib, pass all related tests
+-  native node.js supporting LTS version including Boron-8, Carbon-10 and Dubnium-12
+-  web applications with zero effort webpack support
+-  nativescript mobile app support (use swtc-lib@nativescript)
 
 ##Getting `swtc-lib`
 
 **Via npm for Node.js**
 
 ```
-  $ npm install swtc-lib
+  $ npm install swtc-lib  // node.js and web app
+  $ npm install swtc-lib@jcc   // if you wish to use jcc like interfaces
+  $ npm install swtc-lib@nativescript   // mobile app
 ```
 
 **Build from the source and test**
@@ -21,20 +25,6 @@ This library currently uses the same source code from jingtum-lib but properly p
   $ npm run build or npm run build:production
   $ npm run test
 ```
-
-Then use the `dist/swtc-lib-*.js` in your web application
-
-##Quickstart
-```
-    var Wallet = require('swtc-lib').Wallet;
-    var Remote = require('swtc-lib').Remote;
-    var remote = new Remote({server: 'wss://c05.jingtum.com:5020', local_sign: true});
-```
-
-## Modern usage
--  es2015, es2017
--  zero config for webpack transpiler
--  develop with nearly all of the webpack powered framework
 
 ---------------------------------------------
 
