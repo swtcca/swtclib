@@ -1,7 +1,7 @@
 
 # The SWTC JavaScript Library
 
-## SWTC heavily utilize jingtum-lib and jcc_jingtum_lib, but made it modular and **friendly** for developer
+## SWTC heavily adjust and repackage jingtum-lib and jcc_jingtum_lib and ripple-*-libs, but made it modular and **friendly** for developer
 -  keep the same interface as jingtum-lib or jcc_jingtum_lib, pass all related tests
 -  native node.js supporting LTS version including Boron-8, Carbon-10 and Dubnium-12
 -  web applications with zero effort webpack support
