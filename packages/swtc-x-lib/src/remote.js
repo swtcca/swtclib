@@ -117,33 +117,51 @@ Remote.prototype._handleMessage = function (e) {
     var try_again = false;
     try {
         data = JSON.parse(e.data);
+        if (typeof data !== 'object') return;
+        switch (data.type) {
+            case 'ledgerClosed':
+                self._handleLedgerClosed(data);
+                break;
+            case 'serverStatus':
+                self._handleServerStatus(data);
+                break;
+            case 'response':
+                self._handleResponse(data);
+                break;
+            case 'transaction':
+                self._handleTransaction(data);
+                break;
+            case 'path_find':
+                self._handlePathFind(data);
+                break;
+        }
     } catch (error) {
         try_again = true;
     }
     if (try_again) {
         try {
             data = JSON.parse(e);
+            if (typeof data !== 'object') return;
+
+            switch (data.type) {
+                case 'ledgerClosed':
+                    self._handleLedgerClosed(data);
+                    break;
+                case 'serverStatus':
+                    self._handleServerStatus(data);
+                    break;
+                case 'response':
+                    self._handleResponse(data);
+                    break;
+                case 'transaction':
+                    self._handleTransaction(data);
+                    break;
+                case 'path_find':
+                    self._handlePathFind(data);
+                    break;
+            }
         } catch (error) {
         }
-    }
-    if (typeof data !== 'object') return;
-
-    switch (data.type) {
-        case 'ledgerClosed':
-            self._handleLedgerClosed(data);
-            break;
-        case 'serverStatus':
-            self._handleServerStatus(data);
-            break;
-        case 'response':
-            self._handleResponse(data);
-            break;
-        case 'transaction':
-            self._handleTransaction(data);
-            break;
-        case 'path_find':
-            self._handlePathFind(data);
-            break;
     }
 };
 
