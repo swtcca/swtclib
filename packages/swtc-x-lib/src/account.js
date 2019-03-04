@@ -20,16 +20,16 @@ function Account(remote) {
     self._accounts = {};
     self._token = remote._token || 'swt';
 
-    self.on('newListener', function(account, listener) {
+    self.on('newListener', function (account, listener) {
         if (account === 'removeListener') return;
-        if (!utils.isValidAddress(account)) {
+        if (!utils.isValidAddress(account, self._token)) {
             self.account = new Error("invalid account");
             return self;
         }
         self._accounts[account] = listener;
     });
-    self.on('removeListener', function(account) {
-        if (!utils.isValidAddress(account)) {
+    self.on('removeListener', function (account) {
+        if (!utils.isValidAddress(account, self._token)) {
             self.account = new Error("invalid account");
             return self;
         }
@@ -40,14 +40,14 @@ function Account(remote) {
 }
 util.inherits(Account, Event);
 
-Account.prototype.__infoAffectedAccounts = function(data) {
+Account.prototype.__infoAffectedAccounts = function (data) {
     var self = this;
     // dispatch
     var accounts = utils.affectedAccounts(data);
 
     for (var i in accounts) {
         var callback = self._accounts[accounts[i]];
-        var _tx = utils.processTx(data, accounts[i]);
+        var _tx = utils.processTx(data, accounts[i], self._token);
         if (callback) callback(_tx);
     }
 };

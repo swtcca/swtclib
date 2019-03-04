@@ -14,25 +14,27 @@ function Request(remote, command, filter) {
     Event.call(this);
     this._remote = remote;
     this._command = command;
-    this._filter = filter || function(v) {return v};
+    this._filter = filter || function (v) {
+        return v
+    };
     // directly modify message is supported
     this.message = {};
 }
 util.inherits(Request, Event);
 
-Request.prototype.submit = function(callback) {
+Request.prototype.submit = function (callback) {
     var self = this;
-    for(var key in self.message){
-        if(self.message[key] instanceof Error){
+    for (var key in self.message) {
+        if (self.message[key] instanceof Error) {
             return callback(self.message[key].message);
         }
     }
     self._remote._submit(self._command, self.message, self._filter, callback);
 };
 
-Request.prototype.selectLedger = function(ledger) {
-    if (typeof ledger === 'string'
-        && ~utils.LEDGER_STATES.indexOf(ledger)) {
+Request.prototype.selectLedger = function (ledger) {
+    if (typeof ledger === 'string' &&
+        ~utils.LEDGER_STATES.indexOf(ledger)) {
         this.message.ledger_index = ledger;
     } else if (Number(ledger)) {
         this.message.ledger_index = Number(ledger);
