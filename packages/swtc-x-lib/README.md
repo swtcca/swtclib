@@ -1,36 +1,43 @@
 
-# The SWTC JavaScript Library
+# The COMMUNITY SWTC JavaScript Library for DEVELOPERS
 
-## SWTC heavily adjust and repackage jingtum-lib and jcc_jingtum_lib and ripple-*-libs, but made it modular and **friendly** for developers
--  keep the same interface as jingtum-lib or jcc_jingtum_lib, pass all related tests
--  native node.js supporting LTS version including Boron-6, Carbon-8 and Dubnium-10
--  web applications with zero webpack support
--  nativescript mobile app support (use swtc-lib@nativescript)
+### swtc-lib heavily based on jingtum-lib and jcc_jingtum_lib and ripple-*-libs
+
+-  keep the **same interface** as jingtum-lib or jcc_jingtum_lib, passing all related tests
+-  modularized/decoupled for later enhancement
+-  native node.js supporting **all major LTS version** including Boron-6, Carbon-8 and Dubnium-10
+-  web applications with **zero** webpack support
+-  nativescript **mobile app** support (use swtc-lib@nativescript)
 
 ## Getting `swtc-lib`
 
 **Via npm for Node.js**
 
-```
+```shell
   $ npm install swtc-lib  // node.js and web app
-  $ npm install swtc-lib@jcc   // if you wish to use jcc like interfaces, just note that Wallet is added to exports so there is no need for base-lib 
+  $ npm install swtc-lib@jcc   // if you need to use jcc interfaces, just note that Wallet is added to exports 
   $ npm install swtc-lib@nativescript   // mobile nativescript app, simplified one line configuration
 ```
 
-**Via npm for Node.js**
+## Using `swtc-lib`
 
-```
+```javascript
 const Wallet = require('swtc-lib').Wallet // cjs import
 const Remote = require('swtc-lib').Remote // cjs import
+```
+or
+```javascript
 import { Wallet, Remote } from 'swtc-lib' // esm import
 ```
 
+## Involving `swtc-lib`
+
 **Build from the source and test**
 
-```
+```shell
   $ git clone https://github.com/swtcca/swtc-lib.git
   $ cd swtc-lib; npm install
-  $ (optional) npm run build or npm run build:production
+  $ npm run build or npm run build:production (optional for static browser)
   $ npm run test
 ```
 
@@ -44,11 +51,7 @@ Basic js lib to be used for interacting with jingtum blockchain network.
 - Subscribe events, include server, ledger, account and so on
 - Get other information from jingtum
 
-## INSTALL
-```
-$ npm install jingtum-lib
-```
-
 ## Documents
 
-For more information see `docs.md`
+- For more information see `docs.md`
+- Developer resource http://developer.jingtum.com/
