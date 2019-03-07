@@ -1,13 +1,13 @@
 
 # The COMMUNITY SWTC JavaScript Library for DEVELOPERS
 
-### swtc-lib heavily based on jingtum-lib and jcc_jingtum_lib and ripple-*-libs
+## Swtc-lib heavily based on jingtum-lib and jcc_jingtum_lib and ripple-*-libs
 
--  keep the **same interface** as jingtum-lib or jcc_jingtum_lib, passing all related tests
--  modularized/decoupled for later enhancement
--  native node.js supporting **all major LTS version** including Boron-6, Carbon-8 and Dubnium-10
--  web applications with **zero** webpack support
--  nativescript **mobile app** support (use swtc-lib@nativescript)
+> ### keep the **same interface** as jingtum-lib or jcc_jingtum_lib, passing all related tests
+> ### modularized/decoupled for later enhancement
+> ### native node.js supporting **all major LTS version** including Boron-6, Carbon-8 and Dubnium-10
+> ### web applications with **zero** webpack support
+> ### nativescript **mobile app** support (use swtc-lib@nativescript)
 
 ## Getting `swtc-lib`
 
