@@ -5,7 +5,7 @@ var config = {
     currency: 'SWT',
     ACCOUNT_ZERO: 'jjjjjjjjjjjjjjjjjjjjjhoLvTp',
     ACCOUNT_ONE : 'jjjjjjjjjjjjjjjjjjjjBZbvri',
-    fee: 10000
+    fee: 12
 };
 
 module.exports = config;
