@@ -44,6 +44,11 @@
     "url": "https://github.com/swtcca/swtc-lib/issues"
   },
   "homepage": "https://github.com/swtcca/swtc-lib#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --no-restage --verbose --bail"
+    }
+  },
   "dependencies": {
     "bignumber.js": "^5.0.0",
     "bn-plus.js": "^1.0.0",
