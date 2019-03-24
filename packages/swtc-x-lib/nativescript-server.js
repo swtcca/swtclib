@@ -2,7 +2,7 @@
 var util = require("util")
 var url = require("url")
 var Event = require("events").EventEmitter
-var WS = require("ws")
+var WS = require("nativescript-websockets")
 var extend = require("extend")
 
 /**
@@ -79,22 +79,23 @@ Server.prototype.connect = function(callback) {
 
   try {
     self._ws = new WS(self._url)
+    self._ws.open()
   } catch (e) {
     return callback(e)
   }
 
-  self._ws.on("open", function() {
+  self._ws.on("open", function(socket) {
     self._opened = true
     var req = self._remote.subscribe(["ledger", "server", "transactions"])
     req.submit(callback)
   })
-  self._ws.on("message", function(data) {
+  self._ws.on("message", function(socket, data) {
     self._remote._handleMessage(data)
   })
-  self._ws.on("close", function() {
+  self._ws.on("close", function(socket, code, result) {
     self._handleClose()
   })
-  self._ws.on("error", function(err) {
+  self._ws.on("error", function(socket, err) {
     callback(err)
   })
 }
@@ -125,9 +126,7 @@ Server.prototype._handleClose = function() {
   self._remote.emit("disconnect")
   self._timer = setInterval(function() {
     self.connect(function(err, ret) {
-      if (err) {
-        ret
-      } else {
+      if (!err) {
         clearInterval(self._timer)
         self._timer = 0
         self._remote.emit("reconnect")

@@ -1,15 +1,13 @@
-const base = require('swtc-wallet').Wallet;
-var jser = require('swtc-serializer').Serializer;
+const base = require("swtc-wallet").Wallet
+var jser = require("swtc-serializer").Serializer
 
 function jingtum_sign_tx(in_tx, in_v) {
-    var wt = new base(in_v.seed);
-    in_tx.SigningPubKey = wt.getPublicKey();
-    var prefix = 0x53545800;
-    var hash = jser.from_json(in_tx).hash(prefix);
-    in_tx.TxnSignature = wt.signTx(hash);
-    return jser.from_json(in_tx).to_hex();
+  var wt = new base(in_v.seed)
+  in_tx.SigningPubKey = wt.getPublicKey()
+  var prefix = 0x53545800
+  var hash = jser.from_json(in_tx).hash(prefix)
+  in_tx.TxnSignature = wt.signTx(hash)
+  return jser.from_json(in_tx).to_hex()
 }
 
-
-module.exports = jingtum_sign_tx;
-
+module.exports = jingtum_sign_tx
