@@ -7,11 +7,11 @@ var sha1 = require("sha1")
 var Server = require("./server")
 var Request = require("./request")
 var Account = require("./account")
-var Transaction = require("./transaction")
-var OrderBook = require("./orderbook")
-var utils = require("./utils")
+var Transaction = require("swtc-transaction").Transaction
+var OrderBook = require("swtc-transaction").OrderBook
+var utils = require("swtc-utils")
 var _isNumber = require("lodash/isNumber")
-const currency = require("./config").currency
+const currency = utils.getCurrency()
 var bignumber = require("bignumber.js")
 
 //var LEDGER_OPTIONS = ["closed", "header", "current"]

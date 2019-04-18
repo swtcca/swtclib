@@ -1,6 +1,6 @@
 {
   "name": "swtc-lib",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "description": "swtc-lib for jingtum blockchain",
   "main": "index.js",
   "browser": {
@@ -33,8 +33,6 @@
     "swtc",
     "jingtum",
     "account",
-    "orderbook",
-    "transaction",
     "ledger",
     "remote"
   ],
@@ -51,14 +49,9 @@
   },
   "dependencies": {
     "bignumber.js": "^5.0.0",
-    "bn-plus.js": "^1.0.0",
-    "lodash": "^4.17.11",
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
-    "swtc-serializer": "^2.0.6",
-    "swtc-wallet": "^1.1.7",
-    "url": "^0.11.0",
-    "utf8": "^2.1.2",
+    "swtc-transaction": "^1.0.1",
     "ws": "^1.1.1"
   },
   "devDependencies": {

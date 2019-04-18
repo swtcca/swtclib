@@ -2,16 +2,14 @@
 
 var Remote = require("./src/remote")
 var Request = require("./src/request")
-var Transaction = require("./src/transaction")
 var Account = require("./src/account")
-var OrderBook = require("./src/orderbook")
-var utils = require("./src/utils")
-var Wallet = require("swtc-wallet").Wallet
+var Transaction = require("swtc-transaction").Transaction
+var OrderBook = require("swtc-transaction").Orderbook
+var Wallet = require("swtc-factory").Wallet
 
 exports.Remote = Remote
 exports.Request = Request
-exports.Transaction = Transaction
 exports.Account = Account
+exports.Transaction = Transaction
 exports.OrderBook = OrderBook
-exports.utils = utils
 exports.Wallet = Wallet

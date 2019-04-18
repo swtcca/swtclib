@@ -3,7 +3,7 @@
  */
 var util = require("util")
 var Event = require("events").EventEmitter
-var utils = require("./utils")
+var utils = require("swtc-utils")
 
 /**
  * account stub for subscribe accounts transaction event

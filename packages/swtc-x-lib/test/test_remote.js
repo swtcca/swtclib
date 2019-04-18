@@ -7,6 +7,7 @@ const TEST_NODE = "ws://ts5.jingtum.com:5020"
 const Request = require("../src/request")
 const config = require("./config")
 const sinon = require("sinon")
+const OrderBook = require("swtc-transaction").OrderBook
 let { JT_NODE, testAddress, testDestinationAddress, testCreateHash } = config
 
 describe("test remote", function() {
@@ -1096,7 +1097,6 @@ describe("test remote", function() {
 
   describe("test createOrderBookStub", function() {
     it("create order book stub successfully", function() {
-      let OrderBook = require("../src/orderbook")
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
