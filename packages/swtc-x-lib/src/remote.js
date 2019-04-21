@@ -794,32 +794,7 @@ function ToAmount(amount) {
  * @returns {Transaction}
  */
 Remote.prototype.buildPaymentTx = function(options) {
-  var tx = new Transaction(this)
-  if (options === null || typeof options !== "object") {
-    tx.tx_json.obj = new Error("invalid options type")
-    return tx
-  }
-  var src = options.source || options.from || options.account
-  var dst = options.destination || options.to
-  var amount = options.amount
-  if (!utils.isValidAddress(src)) {
-    tx.tx_json.src = new Error("invalid source address")
-    return tx
-  }
-  if (!utils.isValidAddress(dst)) {
-    tx.tx_json.dst = new Error("invalid destination address")
-    return tx
-  }
-  if (!utils.isValidAmount(amount)) {
-    tx.tx_json.amount = new Error("invalid amount")
-    return tx
-  }
-
-  tx.tx_json.TransactionType = "Payment"
-  tx.tx_json.Account = src
-  tx.tx_json.Amount = ToAmount(amount)
-  tx.tx_json.Destination = dst
-  return tx
+  return Transaction.buildPaymentTx(options, this)
 }
 
 /**
@@ -998,72 +973,6 @@ Remote.prototype.buildBrokerageTx = function(options) {
   return tx
 }
 
-Remote.prototype.__buildTrustSet = function(options, tx) {
-  // var tx = new Transaction(this);
-  // if (typeof options !== 'object') {
-  //     tx.tx_json.obj =  new Error('invalid options type');
-  //     return tx;
-  // }
-  var src = options.source || options.from || options.account
-  var limit = options.limit
-  var quality_out = options.quality_out
-  var quality_in = options.quality_in
-
-  if (!utils.isValidAddress(src)) {
-    tx.tx_json.src = new Error("invalid source address")
-    return tx
-  }
-  if (!utils.isValidAmount(limit)) {
-    tx.tx_json.limit = new Error("invalid amount")
-    return tx
-  }
-
-  tx.tx_json.TransactionType = "TrustSet"
-  tx.tx_json.Account = src
-  tx.tx_json.LimitAmount = limit
-  if (quality_in) {
-    tx.tx_json.QualityIn = quality_in
-  }
-  if (quality_out) {
-    tx.tx_json.QualityOut = quality_out
-  }
-  return tx
-}
-
-Remote.prototype.__buildRelationSet = function(options, tx) {
-  // TODO
-  // var tx = new Transaction(this);
-  // if (typeof options !== 'object') {
-  //     tx.tx_json.obj =  new Error('invalid options type');
-  //     return tx;
-  // }
-
-  var src = options.source || options.from || options.account
-  var des = options.target
-  var limit = options.limit
-
-  if (!utils.isValidAddress(src)) {
-    tx.tx_json.src = new Error("invalid source address")
-    return tx
-  }
-  if (!utils.isValidAddress(des)) {
-    tx.tx_json.des = new Error("invalid target address")
-    return tx
-  }
-  if (!utils.isValidAmount(limit)) {
-    tx.tx_json.limit = new Error("invalid amount")
-    return tx
-  }
-
-  tx.tx_json.TransactionType =
-    options.type === "unfreeze" ? "RelationDel" : "RelationSet"
-  tx.tx_json.Account = src
-  tx.tx_json.Target = des
-  tx.tx_json.RelationType = options.type === "authorize" ? 1 : 3
-  tx.tx_json.LimitAmount = limit
-  return tx
-}
-
 /**
  * add wallet relation set
  * @param options
@@ -1075,23 +984,7 @@ Remote.prototype.__buildRelationSet = function(options, tx) {
  * @returns {Transaction}
  */
 Remote.prototype.buildRelationTx = function(options) {
-  var tx = new Transaction(this)
-  if (options === null || typeof options !== "object") {
-    tx.tx_json.obj = new Error("invalid options type")
-    return tx
-  }
-  if (!~Transaction.RelationTypes.indexOf(options.type)) {
-    tx.tx_json.type = new Error("invalid relation type")
-    return tx
-  }
-  switch (options.type) {
-    case "trust":
-      return this.__buildTrustSet(options, tx)
-    case "authorize":
-    case "freeze":
-    case "unfreeze":
-      return this.__buildRelationSet(options, tx)
-  }
+  return Transaction.buildRelationTx(options, this)
 }
 
 /**
@@ -1212,59 +1105,7 @@ Remote.prototype.buildAccountSetTx = function(options) {
  * @returns {Transaction}
  */
 Remote.prototype.buildOfferCreateTx = function(options) {
-  var tx = new Transaction(this)
-  if (options === null || typeof options !== "object") {
-    tx.tx_json.obj = new Error("invalid options type")
-    return tx
-  }
-
-  var offer_type = options.type
-  var src = options.source || options.from || options.account
-  var taker_gets = options.taker_gets || options.pays
-  var taker_pays = options.taker_pays || options.gets
-  var app = options.app
-
-  if (!utils.isValidAddress(src)) {
-    tx.tx_json.src = new Error("invalid source address")
-    return tx
-  }
-  if (
-    typeof offer_type !== "string" ||
-    !~Transaction.OfferTypes.indexOf(offer_type)
-  ) {
-    tx.tx_json.offer_type = new Error("invalid offer type")
-    return tx
-  }
-  if (typeof taker_gets === "string" && !Number(taker_gets)) {
-    tx.tx_json.taker_gets2 = new Error("invalid to pays amount")
-    return tx
-  }
-  if (typeof taker_gets === "object" && !utils.isValidAmount(taker_gets)) {
-    tx.tx_json.taker_gets2 = new Error("invalid to pays amount object")
-    return tx
-  }
-  if (typeof taker_pays === "string" && !Number(taker_pays)) {
-    tx.tx_json.taker_pays2 = new Error("invalid to gets amount")
-    return tx
-  }
-  if (typeof taker_pays === "object" && !utils.isValidAmount(taker_pays)) {
-    tx.tx_json.taker_pays2 = new Error("invalid to gets amount object")
-    return tx
-  }
-  if (app && !/^[0-9]*[1-9][0-9]*$/.test(app)) {
-    // 正整数
-    tx.tx_json.app = new Error("invalid app, it is a positive integer.")
-    return tx
-  }
-
-  tx.tx_json.TransactionType = "OfferCreate"
-  if (offer_type === "Sell") tx.setFlags(offer_type)
-  if (app) tx.tx_json.AppType = app
-  tx.tx_json.Account = src
-  tx.tx_json.TakerPays = ToAmount(taker_pays, this._token)
-  tx.tx_json.TakerGets = ToAmount(taker_gets, this._token)
-
-  return tx
+  return Transaction.buildOfferCreateTx(options, this)
 }
 
 /**
@@ -1275,29 +1116,7 @@ Remote.prototype.buildOfferCreateTx = function(options) {
  * @returns {Transaction}
  */
 Remote.prototype.buildOfferCancelTx = function(options) {
-  var tx = new Transaction(this)
-  if (options === null || typeof options !== "object") {
-    tx.tx_json.obj = new Error("invalid options type")
-    return tx
-  }
-
-  var src = options.source || options.from || options.account
-  var sequence = options.sequence
-
-  if (!utils.isValidAddress(src)) {
-    tx.tx_json.src = new Error("invalid source address")
-    return tx
-  }
-  if (!Number(sequence)) {
-    tx.tx_json.sequence = new Error("invalid sequence param")
-    return tx
-  }
-
-  tx.tx_json.TransactionType = "OfferCancel"
-  tx.tx_json.Account = src
-  tx.tx_json.OfferSequence = Number(sequence)
-
-  return tx
+  return Transaction.buildOfferCancelTx(options, this)
 }
 
 // ---------------------- subscribe --------------------
