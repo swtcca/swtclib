@@ -69,3 +69,4 @@ typings/
 **/dist
 **/package-lock.json
 **/*local.js
+src

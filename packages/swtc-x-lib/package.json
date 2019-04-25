@@ -2,7 +2,7 @@
   "name": "swtc-lib",
   "version": "1.6.8",
   "description": "swtc-lib for jingtum blockchain",
-  "main": "index.js",
+  "main": "src/index.js",
   "browser": {
     "ws": "./src/wswrapper.js"
   },
@@ -13,9 +13,11 @@
   "scripts": {
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c --no-semi index.js src/*.js",
-    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json index.js src/*.js",
-    "eslint": "eslint index.js src/*.js",
+    "prettier:check": "prettier -c tssrc/*.ts tssrc/*.js",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts tssrc/*.js",
+    "tsc": "tsc && cp tssrc/*js src/",
+    "tslint": "tslint tssrc/*.ts",
+    "eslint": "eslint tssrc/*.js",
     "gulp": "gulp dev",
     "gulp:production": "gulp production",
     "build": "webpack",
@@ -55,6 +57,7 @@
     "ws": "^1.1.1"
   },
   "devDependencies": {
+    "@types/node": "^11.13.7",
     "chai": "^4.2.0",
     "chai-json-schema": "^1.5.0",
     "eslint": "^5.15.3",
@@ -66,6 +69,8 @@
     "prettier": "^1.16.4",
     "pretty-quick": "^1.10.0",
     "sinon": "^7.2.4",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3",
     "webpack-stream": "^5.2.1"
