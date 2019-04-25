@@ -159,7 +159,9 @@ Remote.prototype._handleMessage = function(e) {
           self._handlePathFind(data)
           break
       }
-    } catch (error) {}
+    } catch (error) {
+      try_again = false
+    }
   }
 }
 
