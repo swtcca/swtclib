@@ -1,6 +1,7 @@
 const chai = require("chai")
 const expect = chai.expect
-const Server = require("../src/server")
+// const Server = require("../src/server")
+const Server = require("../src/server").Server
 const Remote = require("../").Remote
 const config = require("./config")
 const sinon = require("sinon")
@@ -261,7 +262,7 @@ describe("test server", function() {
           // clearInterval(remote._server._timer)
           expect(spy1.callCount).to.at.least(2)
           expect(spy1.args[0][0]).to.equal("disconnect")
-          let existed = spy1.args.find(arg => {
+          let existed = spy1.args.find((arg) => {
             return arg[0] === "reconnect"
           })
           if (existed) {

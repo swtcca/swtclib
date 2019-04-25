@@ -1084,7 +1084,7 @@ describe("test remote", function() {
 
   describe("test createAccountStub", function() {
     it("create account stub successfully", function() {
-      let Account = require("../src/account")
+      let Account = require("../").Account
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,

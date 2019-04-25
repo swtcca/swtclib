@@ -4,9 +4,10 @@ var util = require("util")
 var LRU = require("lru-cache")
 var sha1 = require("sha1")
 
-var Server = require("./server")
-var Request = require("./request")
-var Account = require("./account")
+var Server = require("./server").Server
+// var Server = require("./server")
+var Request = require("./request").Request
+var Account = require("./account").Account
 var Transaction = require("swtc-transaction").Transaction
 var OrderBook = require("swtc-transaction").OrderBook
 var utils = require("swtc-utils")
