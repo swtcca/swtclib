@@ -10,11 +10,11 @@ import utils from "swtc-utils"
  * @constructor
  */
 class Request extends EventEmitter {
-  protected message
-  private _remote
-  private _command
-  private _filter
-  constructor(remote, command, filter = (v) => v) {
+  public message
+  public _remote
+  public _command
+  public _filter
+  constructor(remote, command = null, filter = (v) => v) {
     super()
     this._remote = remote
     this._command = command
@@ -23,7 +23,7 @@ class Request extends EventEmitter {
     this.message = {}
   }
 
-  public submit(callback) {
+  public submit(callback = (m) => m) {
     for (const key in this.message) {
       if (this.message[key] instanceof Error) {
         return callback(this.message[key].message)

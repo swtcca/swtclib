@@ -130,7 +130,9 @@ class Server extends EventEmitter {
     this._remote.emit("disconnect")
     this._timer = setInterval(() => {
       this.connect((err, ret) => {
-        if (!err) {
+        if (err) {
+          ret === 0
+        } else {
           clearInterval(this._timer)
           this._timer = 0
           this._remote.emit("reconnect")
