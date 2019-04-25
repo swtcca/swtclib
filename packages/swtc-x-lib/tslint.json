@@ -18,6 +18,7 @@
   },
   "rules": {
     "curly": [true, "ignore-same-line"],
+    "max-classes-per-file": false,
     "no-bitwise": false,
     "object-literal-sort-keys": false,
     "quotemark": [true, "double", "avoid-escape", "jsx-double"],
