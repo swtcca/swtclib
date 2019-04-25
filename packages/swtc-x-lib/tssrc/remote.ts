@@ -1,12 +1,13 @@
 import { Account } from "./account"
+import { EventEmitter } from "events"
 import { Request } from "./request"
 import { Server } from "./server"
-import { EventEmitter } from "events"
 import { OrderBook, Transaction } from "swtc-transaction"
+
 import LRU from "lru-cache"
-import utils from "swtc-utils"
-import sha1 from "sha1"
 import isNumber from "lodash/isNumber"
+import sha1 from "sha1"
+import utils from "swtc-utils"
 
 // var LEDGER_OPTIONS = ["closed", "header", "current"]
 function getRelationType(type) {
@@ -43,7 +44,7 @@ class Remote extends EventEmitter {
   public _paths
   constructor(options) {
     super()
-    var _opts = options || {}
+    const _opts = options || {}
     this._local_sign = !!_opts.local_sign
     if (typeof _opts.server !== "string") {
       this.type = new TypeError("server config not supplied")
@@ -117,8 +118,8 @@ class Remote extends EventEmitter {
    * @param data
    */
   public _handleMessage(e) {
-    var data
-    var try_again = false
+    let data
+    let try_again = false
     try {
       data = JSON.parse(e.data)
       if (typeof data !== "object") return
@@ -213,7 +214,7 @@ class Remote extends EventEmitter {
       this._status.pubkey_node = data.pubkey_node
     }
     this._status.server_status = data.server_status
-    var online = ~Server.onlineStates.indexOf(data.server_status)
+    const online = ~Server.onlineStates.indexOf(data.server_status)
     this._server._setState(online ? "online" : "offline")
   }
 
@@ -223,7 +224,7 @@ class Remote extends EventEmitter {
    * @private
    */
   public _handleResponse(data) {
-    var req_id = data.id
+    const req_id = data.id
     if (
       typeof req_id !== "number" ||
       req_id < 0 ||
@@ -231,7 +232,7 @@ class Remote extends EventEmitter {
     ) {
       return
     }
-    var request = this._requests[req_id]
+    const request = this._requests[req_id]
     // pass process it when null callback
     delete this._requests[req_id]
     delete data.id
@@ -243,10 +244,14 @@ class Remote extends EventEmitter {
 
     // return to callback
     if (data.status === "success") {
-      var result = request.filter(data.result)
-      request && request.callback(null, result)
+      const result = request.filter(data.result)
+      if (request) {
+        request.callback(null, result)
+      }
     } else if (data.status === "error") {
-      request && request.callback(data.error_exception || data.error_message)
+      if (request) {
+        request.callback(data.error_exception || data.error_message)
+      }
     }
   }
 
@@ -257,7 +262,7 @@ class Remote extends EventEmitter {
    * @private
    */
   public _handleTransaction(data) {
-    var tx = data.transaction.hash
+    const tx = data.transaction.hash
     if (this._cache.get(tx)) return
     this._cache.set(tx, 1)
     this.emit("transactions", data)
@@ -281,8 +286,8 @@ class Remote extends EventEmitter {
    * @param callback
    * @private
    */
-  public _submit(command, data, filter, callback = () => {}) {
-    var req_id = this._server.sendMessage(command, data)
+  public _submit(command, data, filter, callback: any) {
+    const req_id = this._server.sendMessage(command, data)
     this._requests[req_id] = {
       command,
       data,
@@ -354,10 +359,10 @@ class Remote extends EventEmitter {
     // if (typeof options !== 'object') {
     //     return new Error('invalid options type');
     // }
-    var cmd = "ledger"
-    var filter = true
-    var request = new Request(this, cmd, (data) => {
-      var ledger = data.ledger || data.closed.ledger
+    const cmd = "ledger"
+    let filter = true
+    const request = new Request(this, cmd, (data) => {
+      const ledger = data.ledger || data.closed.ledger
       if (!filter) {
         return ledger
       }
@@ -381,22 +386,22 @@ class Remote extends EventEmitter {
       request.message.ledger_hash = options.ledger_hash
     }
     if ("full" in options && typeof options.full === "boolean") {
-      request.message["full"] = options.full
+      request.message.full = options.full
       filter = false
     }
     if ("expand" in options && typeof options.expand === "boolean") {
-      request.message["expand"] = options.expand
+      request.message.expand = options.expand
       filter = false
     }
     if (
       "transactions" in options &&
       typeof options.transactions === "boolean"
     ) {
-      request.message["transactions"] = options.transactions
+      request.message.transactions = options.transactions
       filter = false
     }
     if ("accounts" in options && typeof options.accounts === "boolean") {
-      request.message["accounts"] = options.accounts
+      request.message.accounts = options.accounts
       filter = false
     }
 
@@ -412,13 +417,13 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestTx(options) {
-    var request = new Request(this, "tx")
+    const request = new Request(this, "tx")
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
       return request
     }
 
-    var hash = options.hash
+    const hash = options.hash
     if (!utils.isValidHash(hash)) {
       request.message.hash = new Error("invalid tx hash")
       return request
@@ -438,11 +443,11 @@ class Remote extends EventEmitter {
   public __requestAccount(type, options, request) {
     // var request = new Request(this, type, filter);
     request._command = type
-    var account = options.account
-    var ledger = options.ledger
-    var peer = options.peer
-    var limit = options.limit
-    var marker = options.marker
+    const account = options.account
+    const ledger = options.ledger
+    const peer = options.peer
+    let limit = options.limit
+    const marker = options.marker
     // if (marker && (Number(ledger) <= 0 || !utils.isValidHash(ledger))) {
     //     throw new Error('marker needs a ledger_index or ledger_hash');
     // }
@@ -481,7 +486,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountInfo(options) {
-    var request = new Request(this)
+    const request = new Request(this)
 
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
@@ -502,7 +507,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountTums(options) {
-    var request = new Request(this)
+    const request = new Request(this)
 
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
@@ -523,7 +528,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountRelations(options) {
-    var request = new Request(this)
+    const request = new Request(this)
 
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
@@ -555,7 +560,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountOffers(options) {
-    var request = new Request(this)
+    const request = new Request(this)
 
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
@@ -577,11 +582,10 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountTx(options) {
-    var request = new Request(this, "account_tx", (data) => {
-      var results = []
-      for (var i = 0; i < data.transactions.length; ++i) {
-        var _tx = utils.processTx(data.transactions[i], options.account)
-        results.push(_tx)
+    const request = new Request(this, "account_tx", (data) => {
+      const results = []
+      for (const data_transaction of data.transactions) {
+        results.push(utils.processTx(data_transaction, options.account))
       }
       data.transactions = results
       return data
@@ -621,7 +625,7 @@ class Remote extends EventEmitter {
       request.message.marker = options.marker
     }
     if (options.forward && typeof options.forward === "boolean") {
-      //true 正向；false反向
+      // true 正向；false反向
       request.message.forward = options.forward
     }
     return request
@@ -640,23 +644,23 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestOrderBook(options) {
-    var request = new Request(this, "book_offers")
+    const request = new Request(this, "book_offers")
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
       return request
     }
-    var taker_gets = options.taker_gets || options.pays
+    const taker_gets = options.taker_gets || options.pays
     if (!utils.isValidAmount0(taker_gets)) {
       request.message.taker_gets = new Error("invalid taker gets amount")
       return request
     }
-    var taker_pays = options.taker_pays || options.gets
+    const taker_pays = options.taker_pays || options.gets
     if (!utils.isValidAmount0(taker_pays)) {
       request.message.taker_pays = new Error("invalid taker pays amount")
       return request
     }
     if (isNumber(options.limit)) {
-      options.limit = parseInt(options.limit)
+      options.limit = parseInt(options.limit, 10)
     }
 
     request.message.taker_gets = taker_gets
@@ -672,14 +676,14 @@ class Remote extends EventEmitter {
    * @returns {Request}
    * */
   public requestBrokerage(options) {
-    var request = new Request(this, "Fee_Info")
+    const request = new Request(this, "Fee_Info")
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
       return request
     }
-    var issuer = options.issuer
-    var app = options.app
-    var currency = options.currency
+    const issuer = options.issuer
+    const app = options.app
+    const currency = options.currency
     if (!utils.isValidAddress(issuer)) {
       request.message.account = new Error("issuer parameter is invalid")
       return request
@@ -712,7 +716,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestPathFind(options) {
-    var request = new Request(this, "path_find", (data) => {
+    const request = new Request(this, "path_find", (data) => {
       const request2 = new Request(this, "path_find")
       request2.message.subcommand = "close"
       request2.submit()
@@ -735,9 +739,9 @@ class Remote extends EventEmitter {
       return request
     }
 
-    var account = options.account
-    var dest = options.destination
-    var amount = options.amount
+    const account = options.account
+    const dest = options.destination
+    const amount = options.amount
 
     if (!utils.isValidAddress(account)) {
       request.message.source_account = new Error("invalid source account")
@@ -782,46 +786,7 @@ class Remote extends EventEmitter {
    * @returns {Transaction}
    */
   public deployContractTx(options) {
-    var tx = new Transaction(this)
-    if (options === null || typeof options !== "object") {
-      tx.tx_json.obj = new Error("invalid options type")
-      return tx
-    }
-    var account = options.account
-    var amount = options.amount
-    var payload = options.payload
-    var params = options.params
-    if (!utils.isValidAddress(account)) {
-      tx.tx_json.account = new Error("invalid address")
-      return tx
-    }
-    if (isNaN(Number(amount))) {
-      tx.tx_json.amount = new Error("invalid amount")
-      return tx
-    }
-    if (typeof payload !== "string") {
-      tx.tx_json.payload = new Error("invalid payload: type error.")
-      return tx
-    }
-    if (params && !Array.isArray(params)) {
-      tx.tx_json.params = new Error("invalid options type")
-      return tx
-    }
-
-    tx.tx_json.TransactionType = "ConfigContract"
-    tx.tx_json.Account = account
-    tx.tx_json.Amount = Number(amount) * 1000000
-    tx.tx_json.Method = 0
-    tx.tx_json.Payload = payload
-    tx.tx_json.Args = []
-    for (const param of params) {
-      const obj: any = {}
-      obj.Arg = {
-        Parameter: utils.stringToHex(param)
-      }
-      tx.tx_json.Args.push(obj)
-    }
-    return tx
+    return Transaction.deployContractTx(options, this)
   }
 
   /**
@@ -833,51 +798,7 @@ class Remote extends EventEmitter {
    * @returns {Transaction}
    */
   public callContractTx(options) {
-    var tx = new Transaction(this)
-    if (options === null || typeof options !== "object") {
-      tx.tx_json.obj = new Error("invalid options type")
-      return tx
-    }
-    var account = options.account
-    var des = options.destination
-    var params = options.params
-    var foo = options.foo // 函数名
-    if (!utils.isValidAddress(account)) {
-      tx.tx_json.account = new Error("invalid address")
-      return tx
-    }
-    if (!utils.isValidAddress(des)) {
-      tx.tx_json.des = new Error("invalid destination")
-      return tx
-    }
-
-    if (params && !Array.isArray(params)) {
-      tx.tx_json.params = new Error("invalid options type")
-      return tx
-    }
-    if (typeof foo !== "string") {
-      tx.tx_json.foo = new Error("foo must be string")
-      return tx
-    }
-
-    tx.tx_json.TransactionType = "ConfigContract"
-    tx.tx_json.Account = account
-    tx.tx_json.Method = 1
-    tx.tx_json.ContractMethod = utils.stringToHex(foo)
-    tx.tx_json.Destination = des
-    tx.tx_json.Args = []
-    for (const param of params) {
-      if (typeof param !== "string") {
-        tx.tx_json.params = new Error("params must be string")
-        return tx
-      }
-      var obj: any = {}
-      obj.Arg = {
-        Parameter: utils.stringToHex(param)
-      }
-      tx.tx_json.Args.push(obj)
-    }
-    return tx
+    return Transaction.callContractTx(options, this)
   }
 
   public buildSignTx(options) {
@@ -952,7 +873,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public subscribe(streams) {
-    var request = new Request(this, "subscribe")
+    const request = new Request(this, "subscribe")
     if (streams) {
       request.message.streams = Array.isArray(streams) ? streams : [streams]
     }
@@ -964,7 +885,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public unsubscribe(streams) {
-    var request = new Request(this, "unsubscribe")
+    const request = new Request(this, "unsubscribe")
     if (streams) {
       request.message.streams = Array.isArray(streams) ? streams : [streams]
     }

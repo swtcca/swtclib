@@ -21,7 +21,15 @@
     "max-classes-per-file": false,
     "max-line-length": [true, 160],
     "no-bitwise": false,
+    "no-unused-expression": false,
     "object-literal-sort-keys": false,
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "any"
+      }
+    ],
     "quotemark": [true, "double", "avoid-escape", "jsx-double"],
     "semicolon": false,
     "trailing-comma": false,
