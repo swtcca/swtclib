@@ -97,15 +97,45 @@ class Server extends EventEmitter {
       const req = this._remote.subscribe(["ledger", "server", "transactions"])
       req.submit(callback)
     })
-    this._ws.on("message", (data) => {
+    this._ws.on("message", data => {
       this._remote._handleMessage(data)
     })
     this._ws.on("close", () => {
       this._handleClose()
     })
-    this._ws.on("error", (err) => callback(err))
+    this._ws.on("error", err => callback(err))
   }
 
+  public async connectPromise() {
+    return new Promise((resolve, reject) => {
+      if (this._connected) {
+        resolve(`this._server is connected already`)
+      }
+      if (this._ws) this._ws.close()
+
+      try {
+        this._ws = new WS(this._url)
+      } catch (e) {
+        reject(e)
+      }
+
+      this._ws.on("open", () => {
+        this._opened = true
+        const req = this._remote.subscribe(["ledger", "server", "transactions"])
+        req
+          .submitPromise()
+          .then(result => resolve(result))
+          .catch(error => reject(error))
+      })
+      this._ws.on("message", data => {
+        this._remote._handleMessage(data)
+      })
+      this._ws.on("close", () => {
+        this._handleClose()
+      })
+      this._ws.on("error", err => reject(err))
+    })
+  }
   /**
    * close manual, not close connection until new connection
    */

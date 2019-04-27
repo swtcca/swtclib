@@ -11,6 +11,8 @@
 > ### web applications with **zero** webpack support
 >
 > ### nativescript **mobile app** support (use swtc-lib@nativescript)
+>
+> ### native **Async Actions** support
 
 ## Getting `swtc-lib`
 

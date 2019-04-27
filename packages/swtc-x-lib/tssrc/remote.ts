@@ -66,7 +66,7 @@ class Remote extends EventEmitter {
       maxAge: 1000 * 60 * 5
     }) // 2100 size, 5 min
 
-    this.on("newListener", (type) => {
+    this.on("newListener", type => {
       if (!this._server.isConnected()) return
       if (type === "removeListener") return
       if (type === "transactions") {
@@ -76,7 +76,7 @@ class Remote extends EventEmitter {
         this.subscribe("ledger").submit()
       }
     })
-    this.on("removeListener", (type) => {
+    this.on("removeListener", type => {
       if (!this._server.isConnected()) return
       if (type === "transactions") {
         this.unsubscribe("transactions").submit()
@@ -96,6 +96,16 @@ class Remote extends EventEmitter {
   public connect(callback) {
     if (!this._server) return callback("server not ready")
     this._server.connect(callback)
+  }
+
+  public connectPromise() {
+    return new Promise((resolve, reject) => {
+      if (!this._server) return reject(new Error("server not ready"))
+      this._server
+        .connectPromise()
+        .then(result => resolve(result))
+        .catch(error => reject(error))
+    })
   }
 
   /**
@@ -304,7 +314,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestServerInfo() {
-    return new Request(this, "server_info", (data) => {
+    return new Request(this, "server_info", data => {
       return {
         complete_ledgers: data.info.complete_ledgers,
         ledger: data.info.validated_ledger.hash,
@@ -323,7 +333,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestPeers() {
-    return new Request(this, "peers", (data) => {
+    return new Request(this, "peers", data => {
       return data
     })
   }
@@ -332,7 +342,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestLedgerClosed() {
-    return new Request(this, "ledger_closed", (data) => {
+    return new Request(this, "ledger_closed", data => {
       return {
         // fee_base: data.fee_base,
         ledger_hash: data.ledger_hash,
@@ -361,7 +371,7 @@ class Remote extends EventEmitter {
     // }
     const cmd = "ledger"
     let filter = true
-    const request = new Request(this, cmd, (data) => {
+    const request = new Request(this, cmd, data => {
       const ledger = data.ledger || data.closed.ledger
       if (!filter) {
         return ledger
@@ -582,7 +592,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountTx(options) {
-    const request = new Request(this, "account_tx", (data) => {
+    const request = new Request(this, "account_tx", data => {
       const results = []
       for (const data_transaction of data.transactions) {
         results.push(utils.processTx(data_transaction, options.account))
@@ -716,7 +726,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestPathFind(options) {
-    const request = new Request(this, "path_find", (data) => {
+    const request = new Request(this, "path_find", data => {
       const request2 = new Request(this, "path_find")
       request2.message.subcommand = "close"
       request2.submit()

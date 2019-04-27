@@ -14,7 +14,7 @@ class Request extends EventEmitter {
   public _remote
   public _command
   public _filter
-  constructor(remote, command = null, filter = (v) => v) {
+  constructor(remote, command = null, filter = v => v) {
     super()
     this._remote = remote
     this._command = command
@@ -23,7 +23,29 @@ class Request extends EventEmitter {
     this.message = {}
   }
 
-  public submit(callback = (m) => m) {
+  public async submitPromise() {
+    return new Promise((resolve, reject) => {
+      for (const key in this.message) {
+        if (this.message[key] instanceof Error) {
+          reject(this.message[key].message)
+        }
+      }
+      this._remote._submit(
+        this._command,
+        this.message,
+        this._filter,
+        (error, result) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        }
+      )
+    })
+  }
+
+  public submit(callback = m => m) {
     for (const key in this.message) {
       if (this.message[key] instanceof Error) {
         return callback(this.message[key].message)
