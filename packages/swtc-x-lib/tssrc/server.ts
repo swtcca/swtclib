@@ -23,15 +23,15 @@ class Server extends EventEmitter {
   public opts: any
   public opts_host: any
   public port: any
-  public _opts
-  public _url
-  public _remote
-  public _ws
-  public _connected
-  public _opened
-  public _state
-  public _id
-  public _timer
+  private _opts
+  private _url
+  private _remote
+  private _ws
+  private _connected
+  private _opened
+  private _state
+  private _id
+  private _timer
   constructor(remote, opts) {
     super()
     this.setMaxListeners(0)
@@ -150,28 +150,6 @@ class Server extends EventEmitter {
   }
 
   /**
-   * handle close and error exception
-   * and should re-connect server after 3 seconds
-   */
-  public _handleClose() {
-    if (this._state === "offline") return
-    this._setState("offline")
-    if (this._timer !== 0) return
-    this._remote.emit("disconnect")
-    this._timer = setInterval(() => {
-      this.connect((err, ret) => {
-        if (err) {
-          ret === 0
-        } else {
-          clearInterval(this._timer)
-          this._timer = 0
-          this._remote.emit("reconnect")
-        }
-      })
-    }, 3000)
-  }
-
-  /**
    * refuse to send msg if connection blows out
    * @param message
    */
@@ -198,6 +176,28 @@ class Server extends EventEmitter {
     if (!this._connected) {
       this._opened = false
     }
+  }
+
+  /**
+   * handle close and error exception
+   * and should re-connect server after 3 seconds
+   */
+  private _handleClose() {
+    if (this._state === "offline") return
+    this._setState("offline")
+    if (this._timer !== 0) return
+    this._remote.emit("disconnect")
+    this._timer = setInterval(() => {
+      this.connect((err, ret) => {
+        if (err) {
+          ret === 0
+        } else {
+          clearInterval(this._timer)
+          this._timer = 0
+          this._remote.emit("reconnect")
+        }
+      })
+    }, 3000)
   }
 }
 

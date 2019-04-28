@@ -33,19 +33,19 @@ function getRelationType(type) {
  * @constructor
  */
 class Remote extends EventEmitter {
-  public _local_sign
   public type
-  public _url
-  public _server
-  public _status
-  public _requests
-  public _token
-  public _cache
-  public _paths
+  protected _local_sign
+  protected _token
+  private _url
+  private _server
+  private _status
+  private _requests
+  private _cache
+  private _paths
   constructor(options) {
     super()
     const _opts = options || {}
-    this._local_sign = !!_opts.local_sign
+    this._local_sign = true
     if (typeof _opts.server !== "string") {
       this.type = new TypeError("server config not supplied")
       return this
@@ -85,6 +85,15 @@ class Remote extends EventEmitter {
         this.unsubscribe("ledger").submit()
       }
     })
+  }
+
+  // show instance basic configuration
+  public config() {
+    return {
+      _local_sign: this._local_sign,
+      _server: this._server,
+      _token: this._token
+    }
   }
 
   /**
@@ -179,113 +188,6 @@ class Remote extends EventEmitter {
         try_again = false
       }
     }
-  }
-
-  /**
-   * update server ledger status
-   * TODO
-   * supply data to outside include ledger, reserve and fee
-   * @param data
-   * @private
-   */
-  public _handleLedgerClosed(data) {
-    if (data.ledger_index > this._status.ledger_index) {
-      this._status.ledger_index = data.ledger_index
-      this._status.ledger_time = data.ledger_time
-      this._status.reserve_base = data.reserve_base
-      this._status.reserve_inc = data.reserve_inc
-      this._status.fee_base = data.fee_base
-      this._status.fee_ref = data.fee_ref
-      this.emit("ledger_closed", data)
-    }
-  }
-
-  /**
-   * TODO
-   * supply data to outside about server status
-   * @param data
-   * @private
-   */
-  public _handleServerStatus(data) {
-    // TODO check data format
-    this._updateServerStatus(data)
-    this.emit("server_status", data)
-  }
-
-  /**
-   * update remote state and server state
-   * @param data
-   * @private
-   */
-  public _updateServerStatus(data) {
-    this._status.load_base = data.load_base
-    this._status.load_factor = data.load_factor
-    if (data.pubkey_node) {
-      this._status.pubkey_node = data.pubkey_node
-    }
-    this._status.server_status = data.server_status
-    const online = ~Server.onlineStates.indexOf(data.server_status)
-    this._server._setState(online ? "online" : "offline")
-  }
-
-  /**
-   * handle response by every websocket request
-   * @param data
-   * @private
-   */
-  public _handleResponse(data) {
-    const req_id = data.id
-    if (
-      typeof req_id !== "number" ||
-      req_id < 0 ||
-      req_id > this._requests.length
-    ) {
-      return
-    }
-    const request = this._requests[req_id]
-    // pass process it when null callback
-    delete this._requests[req_id]
-    delete data.id
-
-    // check if data contain server info
-    if (data.result && data.status === "success" && data.result.server_status) {
-      this._updateServerStatus(data.result)
-    }
-
-    // return to callback
-    if (data.status === "success") {
-      const result = request.filter(data.result)
-      if (request) {
-        request.callback(null, result)
-      }
-    } else if (data.status === "error") {
-      if (request) {
-        request.callback(data.error_exception || data.error_message)
-      }
-    }
-  }
-
-  /**
-   * handle transaction type response
-   * TODO supply more friendly transaction data
-   * @param data
-   * @private
-   */
-  public _handleTransaction(data) {
-    const tx = data.transaction.hash
-    if (this._cache.get(tx)) return
-    this._cache.set(tx, 1)
-    this.emit("transactions", data)
-  }
-
-  /**
-   * emit path find date to other
-   * TODO supply more friendly data
-   * @param data
-   * @private
-   */
-  public _handlePathFind(data) {
-    this.emit("path_find", data)
   }
 
   /**
@@ -442,51 +344,6 @@ class Remote extends EventEmitter {
     request.message.transaction = hash
     return request
   }
-
-  /**
-   * request account info, internal function
-   * @param type
-   * @param options
-   * @returns {Request}
-   * @private
-   */
-  public __requestAccount(type, options, request) {
-    // var request = new Request(this, type, filter);
-    request._command = type
-    const account = options.account
-    const ledger = options.ledger
-    const peer = options.peer
-    let limit = options.limit
-    const marker = options.marker
-    // if (marker && (Number(ledger) <= 0 || !utils.isValidHash(ledger))) {
-    //     throw new Error('marker needs a ledger_index or ledger_hash');
-    // }
-    request.message.relation_type = getRelationType(options.type)
-    if (account) {
-      if (!utils.isValidAddress(account)) {
-        request.message.account = new Error("invalid account")
-        return request
-      } else {
-        request.message.account = account
-      }
-    }
-    request.selectLedger(ledger)
-
-    if (utils.isValidAddress(peer)) {
-      request.message.peer = peer
-    }
-    if (Number(limit)) {
-      limit = Number(limit)
-      if (limit < 0) limit = 0
-      if (limit > 1e9) limit = 1e9
-      request.message.limit = limit
-    }
-    if (marker) {
-      request.message.marker = marker
-    }
-    return request
-  }
-
   /**
    * account info
    * @param options, options:
@@ -916,6 +773,157 @@ class Remote extends EventEmitter {
    */
   public createOrderBookStub() {
     return new OrderBook(this)
+  }
+
+  /**
+   * update server ledger status
+   * TODO
+   * supply data to outside include ledger, reserve and fee
+   * @param data
+   * @private
+   */
+  private _handleLedgerClosed(data) {
+    if (data.ledger_index > this._status.ledger_index) {
+      this._status.ledger_index = data.ledger_index
+      this._status.ledger_time = data.ledger_time
+      this._status.reserve_base = data.reserve_base
+      this._status.reserve_inc = data.reserve_inc
+      this._status.fee_base = data.fee_base
+      this._status.fee_ref = data.fee_ref
+      this.emit("ledger_closed", data)
+    }
+  }
+
+  /**
+   * TODO
+   * supply data to outside about server status
+   * @param data
+   * @private
+   */
+  private _handleServerStatus(data) {
+    // TODO check data format
+    this._updateServerStatus(data)
+    this.emit("server_status", data)
+  }
+
+  /**
+   * update remote state and server state
+   * @param data
+   * @private
+   */
+  private _updateServerStatus(data) {
+    this._status.load_base = data.load_base
+    this._status.load_factor = data.load_factor
+    if (data.pubkey_node) {
+      this._status.pubkey_node = data.pubkey_node
+    }
+    this._status.server_status = data.server_status
+    const online = ~Server.onlineStates.indexOf(data.server_status)
+    this._server._setState(online ? "online" : "offline")
+  }
+
+  /**
+   * handle response by every websocket request
+   * @param data
+   * @private
+   */
+  private _handleResponse(data) {
+    const req_id = data.id
+    if (
+      typeof req_id !== "number" ||
+      req_id < 0 ||
+      req_id > this._requests.length
+    ) {
+      return
+    }
+    const request = this._requests[req_id]
+    // pass process it when null callback
+    delete this._requests[req_id]
+    delete data.id
+
+    // check if data contain server info
+    if (data.result && data.status === "success" && data.result.server_status) {
+      this._updateServerStatus(data.result)
+    }
+
+    // return to callback
+    if (data.status === "success") {
+      const result = request.filter(data.result)
+      if (request) {
+        request.callback(null, result)
+      }
+    } else if (data.status === "error") {
+      if (request) {
+        request.callback(data.error_exception || data.error_message)
+      }
+    }
+  }
+
+  /**
+   * handle transaction type response
+   * TODO supply more friendly transaction data
+   * @param data
+   * @private
+   */
+  private _handleTransaction(data) {
+    const tx = data.transaction.hash
+    if (this._cache.get(tx)) return
+    this._cache.set(tx, 1)
+    this.emit("transactions", data)
+  }
+
+  /**
+   * emit path find date to other
+   * TODO supply more friendly data
+   * @param data
+   * @private
+   */
+  private _handlePathFind(data) {
+    this.emit("path_find", data)
+  }
+
+  /**
+   * request account info, internal function
+   * @param type
+   * @param options
+   * @returns {Request}
+   * @private
+   */
+  private __requestAccount(type, options, request) {
+    // var request = new Request(this, type, filter);
+    request._command = type
+    const account = options.account
+    const ledger = options.ledger
+    const peer = options.peer
+    let limit = options.limit
+    const marker = options.marker
+    // if (marker && (Number(ledger) <= 0 || !utils.isValidHash(ledger))) {
+    //     throw new Error('marker needs a ledger_index or ledger_hash');
+    // }
+    request.message.relation_type = getRelationType(options.type)
+    if (account) {
+      if (!utils.isValidAddress(account)) {
+        request.message.account = new Error("invalid account")
+        return request
+      } else {
+        request.message.account = account
+      }
+    }
+    request.selectLedger(ledger)
+
+    if (utils.isValidAddress(peer)) {
+      request.message.peer = peer
+    }
+    if (Number(limit)) {
+      limit = Number(limit)
+      if (limit < 0) limit = 0
+      if (limit > 1e9) limit = 1e9
+      request.message.limit = limit
+    }
+    if (marker) {
+      request.message.marker = marker
+    }
+    return request
   }
 }
 

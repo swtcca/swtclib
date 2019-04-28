@@ -11,9 +11,9 @@ import utils from "swtc-utils"
  */
 class Request extends EventEmitter {
   public message
-  public _remote
-  public _command
-  public _filter
+  private _remote
+  private _command
+  private _filter
   constructor(remote, command = null, filter = v => v) {
     super()
     this._remote = remote

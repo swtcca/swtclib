@@ -1,5 +1,6 @@
 module.exports = {
-  JT_NODE: "ws://swtclib.daszichan.com:5020",
+  JT_NODE: "wss://c05.jingtum.com:5020",
+  // JT_NODE: "ws://swtclib.daszichan.com:5020",
   TEST_NODE: "ws://ts5.jingtum.com:5020",
   testAddress: "jfdqBEDsbk3eMSXX2t7CGeu2RPkEjHs6ie",
   testSecret: "shVCQFSxkF7DLXkrHY8X2PBKCKxS9",
