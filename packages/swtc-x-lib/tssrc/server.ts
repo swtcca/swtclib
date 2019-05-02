@@ -88,6 +88,9 @@ class Server extends EventEmitter {
 
     try {
       this._ws = new WS(this._url)
+      if ("open" in this._ws) {
+        this._ws.open()
+      }
     } catch (e) {
       return callback(e)
     }

@@ -1,13 +1,14 @@
 import { Account } from "./account"
 import { EventEmitter } from "events"
+import { OrderBook } from "./orderbook"
 import { Request } from "./request"
 import { Server } from "./server"
-import { OrderBook, Transaction } from "swtc-transaction"
+import { Transaction } from "swtc-transaction"
 
 import LRU from "lru-cache"
 import isNumber from "lodash/isNumber"
 import sha1 from "sha1"
-import utils from "swtc-utils"
+import { utils } from "swtc-utils"
 
 // var LEDGER_OPTIONS = ["closed", "header", "current"]
 function getRelationType(type) {

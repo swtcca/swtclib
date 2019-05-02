@@ -1,7 +1,7 @@
 "use strict"
 
 import { EventEmitter } from "events"
-import utils from "swtc-utils"
+import { utils } from "swtc-utils"
 
 /**
  * request server and account info without secret

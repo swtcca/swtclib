@@ -2,7 +2,7 @@
  * Created by Administrator on 2016/11/21.
  */
 import { EventEmitter } from "events"
-import utils from "swtc-utils"
+import { utils } from "swtc-utils"
 
 /**
  * account stub for subscribe accounts transaction event

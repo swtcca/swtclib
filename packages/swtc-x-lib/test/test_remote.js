@@ -7,7 +7,7 @@ const TEST_NODE = "ws://ts5.jingtum.com:5020"
 const Request = require("../").Request
 const config = require("./config")
 const sinon = require("sinon")
-const OrderBook = require("swtc-transaction").OrderBook
+const OrderBook = require("../").OrderBook
 let { JT_NODE, testAddress, testDestinationAddress, testCreateHash } = config
 
 describe("test remote", function() {
@@ -243,7 +243,7 @@ describe("test remote", function() {
     it("should request tx successfully", function(done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: TEST_NODE,
         local_sign: true,
         token: "swt"
       })
@@ -397,7 +397,7 @@ describe("test remote", function() {
     it("if the ledger is hash code", function() {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: TEST_NODE,
         local_sign: true,
         token: "swt"
       })
