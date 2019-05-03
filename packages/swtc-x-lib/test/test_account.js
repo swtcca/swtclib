@@ -5,7 +5,7 @@ const Remote = require("../").Remote
 const config = require("./config")
 const txData = require("./tx_data")
 const sinon = require("sinon")
-const utils = require("swtc-utils").utils
+const utils = require("../").utils
 let { JT_NODE, testAddress } = config
 
 describe("test account", function() {
@@ -22,6 +22,7 @@ describe("test account", function() {
   })
 
   describe("test transactions event", function() {
+    // temporary
     it("emit transactions with meta data", function() {
       let remote = new Remote({
         server: JT_NODE,
@@ -34,6 +35,7 @@ describe("test account", function() {
       sinon.restore()
     })
 
+    // temporary
     it("emit transactions without meta data", function() {
       let remote = new Remote({
         server: JT_NODE,

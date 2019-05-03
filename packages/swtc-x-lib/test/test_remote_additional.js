@@ -4,7 +4,7 @@ const Remote = require("../").Remote
 const config = require("./config")
 const DATA = require("./config")
 const sinon = require("sinon")
-const utils = require("swtc-utils").utils
+const utils = require("swtc-utils").Factory()
 const sleep = time => new Promise(res => setTimeout(() => res(), time))
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"

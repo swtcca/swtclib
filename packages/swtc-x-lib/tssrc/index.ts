@@ -1,8 +1,11 @@
-import { Transaction } from "swtc-transaction"
 import { Wallet } from "swtc-wallet"
-import { Account } from "./account"
-import { OrderBook } from "./orderbook"
-import { Remote } from "./remote"
-import { Request } from "./request"
+import { Factory } from "./remote"
 
-export { Remote, Request, Account, Transaction, OrderBook, Wallet }
+const Remote = Factory(Wallet)
+const Transaction = Remote.Transaction
+const OrderBook = Remote.OrderBook
+const Account = Remote.Account
+const Request = Remote.Request
+const utils = Remote.utils
+
+export { Remote, Wallet, Transaction, OrderBook, Account, Request, utils }

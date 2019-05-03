@@ -4,10 +4,8 @@ const Remote = require("../").Remote
 const schema = require("./schema")
 const expect = chai.expect
 const TEST_NODE = "ws://ts5.jingtum.com:5020"
-const Request = require("../").Request
 const config = require("./config")
 const sinon = require("sinon")
-const OrderBook = require("swtc-transaction").OrderBook
 let {
   JT_NODE,
   testSecret,

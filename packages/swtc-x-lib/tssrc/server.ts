@@ -1,5 +1,4 @@
 import { EventEmitter } from "events"
-import extend from "extend"
 import url from "url"
 import WS from "ws"
 
@@ -191,7 +190,8 @@ class Server extends EventEmitter {
     if (!this._opened) return
     const req_id = this._id++
 
-    const msg = extend(
+    const msg = Object.assign(
+      {},
       {
         id: req_id,
         command

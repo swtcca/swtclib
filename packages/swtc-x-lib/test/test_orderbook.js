@@ -5,7 +5,7 @@ const Remote = require("../").Remote
 const config = require("./config")
 const txData = require("./tx_data")
 const sinon = require("sinon")
-const utils = require("swtc-utils").utils
+const utils = require("../").utils
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 
@@ -23,6 +23,7 @@ describe("test orderbook", function() {
   })
 
   describe("test transaction event", function() {
+    // temporary
     it("emit transactions with meta data", function() {
       let remote = new Remote({
         server: JT_NODE,
@@ -34,6 +35,7 @@ describe("test orderbook", function() {
       expect(spy.calledOnce).to.equal(true)
       sinon.restore()
     })
+    // temporary
     it("emit transactions without meta data", function() {
       let remote = new Remote({
         server: JT_NODE,

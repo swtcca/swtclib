@@ -8,6 +8,7 @@ const Request = require("../").Request
 const config = require("./config")
 const sinon = require("sinon")
 const OrderBook = require("../").OrderBook
+const Account = require("../").Account
 let { JT_NODE, testAddress, testDestinationAddress, testCreateHash } = config
 
 describe("test remote", function() {
@@ -1084,7 +1085,6 @@ describe("test remote", function() {
 
   describe("test createAccountStub", function() {
     it("create account stub successfully", function() {
-      let Account = require("../").Account
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
