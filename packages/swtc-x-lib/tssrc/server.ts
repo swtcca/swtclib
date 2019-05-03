@@ -100,13 +100,27 @@ class Server extends EventEmitter {
       const req = this._remote.subscribe(["ledger", "server", "transactions"])
       req.submit(callback)
     })
-    this._ws.on("message", data => {
-      this._remote._handleMessage(data)
-    })
+    if ("open" in this._ws) {
+      this._ws.on("message", (socket, data) => {
+        this._remote._handleMessage(data)
+        socket === null
+      })
+    } else {
+      this._ws.on("message", data => {
+        this._remote._handleMessage(data)
+      })
+    }
     this._ws.on("close", () => {
       this._handleClose()
     })
-    this._ws.on("error", err => callback(err))
+    if ("open" in this._ws) {
+      this._ws.on("error", (socket, err) => {
+        callback(err)
+        socket === null
+      })
+    } else {
+      this._ws.on("error", err => callback(err))
+    }
   }
 
   public async connectPromise() {
@@ -118,6 +132,9 @@ class Server extends EventEmitter {
 
       try {
         this._ws = new WS(this._url)
+        if ("open" in this._ws) {
+          this._ws.open()
+        }
       } catch (e) {
         reject(e)
       }
@@ -130,13 +147,27 @@ class Server extends EventEmitter {
           .then(result => resolve(result))
           .catch(error => reject(error))
       })
-      this._ws.on("message", data => {
-        this._remote._handleMessage(data)
-      })
+      if ("open" in this._ws) {
+        this._ws.on("message", (socket, data) => {
+          this._remote._handleMessage(data)
+          socket === null
+        })
+      } else {
+        this._ws.on("message", data => {
+          this._remote._handleMessage(data)
+        })
+      }
       this._ws.on("close", () => {
         this._handleClose()
       })
-      this._ws.on("error", err => reject(err))
+      if ("open" in this._ws) {
+        this._ws.on("error", (socket, err) => {
+          reject(err)
+          socket === null
+        })
+      } else {
+        this._ws.on("error", err => reject(err))
+      }
     })
   }
   /**
