@@ -1,11 +1,11 @@
 const chai = require("chai")
 const expect = chai.expect
-const Account = require("../").Account
 const Remote = require("../").Remote
+const Account = Remote.Account
 const config = require("./config")
 const txData = require("./tx_data")
 const sinon = require("sinon")
-const utils = require("../").utils
+const utils = Remote.utils
 let { JT_NODE, testAddress } = config
 
 describe("test account", function() {

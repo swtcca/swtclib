@@ -4,7 +4,7 @@ const Remote = require("../").Remote
 const config = require("./config")
 const DATA = require("./config")
 const sinon = require("sinon")
-const utils = require("swtc-utils").Factory()
+const utils = Remote.utils
 const sleep = time => new Promise(res => setTimeout(() => res(), time))
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
@@ -158,7 +158,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test .submitPromise()", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     it(".submitPromise()", async function() {
       let tx = remote.buildPaymentTx(
         {
@@ -168,7 +168,7 @@ describe("test transaction additions", function() {
         },
         remote
       )
-      await sleep(11000)
+      await sleep(15000)
       let result = await tx.submitPromise(DATA.secret)
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
@@ -184,7 +184,7 @@ describe("test transaction additions", function() {
         to: DATA.address2,
         amount: { value: 0.1, currency: "SWT", issuer: "" }
       })
-      await sleep(13000)
+      await sleep(15000)
       let result = await tx.submitPromise(DATA.secret)
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
@@ -202,7 +202,7 @@ describe("test transaction additions", function() {
         },
         remote
       )
-      await sleep(11000)
+      await sleep(15000)
       let result = await tx.submitPromise(DATA.secret, "hello memo")
       expect(tx.tx_json).to.have.property("Memos")
       expect(tx.tx_json.Memos).to.be.a("array")

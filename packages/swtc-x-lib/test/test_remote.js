@@ -4,11 +4,11 @@ const Remote = require("../").Remote
 const schema = require("./schema")
 const expect = chai.expect
 const TEST_NODE = "ws://ts5.jingtum.com:5020"
-const Request = require("../").Request
+const Request = Remote.Request
 const config = require("./config")
 const sinon = require("sinon")
-const OrderBook = require("../").OrderBook
-const Account = require("../").Account
+const OrderBook = Remote.OrderBook
+const Account = Remote.Account
 let { JT_NODE, testAddress, testDestinationAddress, testCreateHash } = config
 
 describe("test remote", function() {

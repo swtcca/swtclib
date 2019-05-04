@@ -1,11 +1,11 @@
 const chai = require("chai")
 const expect = chai.expect
-const OrderBook = require("../").OrderBook
 const Remote = require("../").Remote
+const OrderBook = Remote.OrderBook
 const config = require("./config")
 const txData = require("./tx_data")
 const sinon = require("sinon")
-const utils = require("../").utils
+const utils = Remote.utils
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 

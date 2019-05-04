@@ -1,7 +1,4 @@
-import { Factory as AccountFactory } from "./account"
 import { EventEmitter } from "events"
-import { Factory as OrderBookFactory } from "./orderbook"
-import { Factory as RequestFactory } from "./request"
 import { Server } from "./server"
 import { Factory as TransactionFactory } from "swtc-transaction"
 
@@ -16,11 +13,176 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("Account need a Wallet class")
   }
-  const Account = AccountFactory(Wallet)
-  const OrderBook = OrderBookFactory(Wallet)
-  const Request = RequestFactory(Wallet)
   const Transaction = TransactionFactory(Wallet)
   const utils = UtilsFactory(Wallet)
+
+  /**
+   * request server and account info without secret
+   * @param remote
+   * @param command
+   * @constructor
+   */
+  const Request = class extends EventEmitter {
+    public message
+    public _remote
+    public _command
+    public _filter
+    constructor(remote, command = null, filter = v => v) {
+      super()
+      this._remote = remote
+      this._command = command
+      this._filter = filter
+      // directly modify message is supported
+      this.message = {}
+    }
+
+    public async submitPromise() {
+      return new Promise((resolve, reject) => {
+        for (const key in this.message) {
+          if (this.message[key] instanceof Error) {
+            reject(this.message[key].message)
+          }
+        }
+        this._remote._submit(
+          this._command,
+          this.message,
+          this._filter,
+          (error, result) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(result)
+            }
+          }
+        )
+      })
+    }
+
+    public submit(callback = m => m) {
+      for (const key in this.message) {
+        if (this.message[key] instanceof Error) {
+          return callback(this.message[key].message)
+        }
+      }
+      this._remote._submit(this._command, this.message, this._filter, callback)
+    }
+
+    public selectLedger(ledger) {
+      if (typeof ledger === "string" && ~utils.LEDGER_STATES.indexOf(ledger)) {
+        this.message.ledger_index = ledger
+      } else if (Number(ledger)) {
+        this.message.ledger_index = Number(ledger)
+      } else if (/^[A-F0-9]+$/.test(ledger)) {
+        this.message.ledger_hash = ledger
+      } else {
+        this.message.ledger_index = "validated"
+      }
+      return this
+    }
+  }
+  /**
+   * order book stub for all order book
+   * key: currency/issuer:currency/issuer
+   *  if swt, currency/issuer=SWT
+   *  TODO keep every order book up state, and return state when needed
+   *  not need to query jingtumd again
+   * @param remote
+   * @constructor
+   */
+  const OrderBook = class extends EventEmitter {
+    public _books
+    public _token
+    public _remote
+    constructor(remote: any) {
+      super()
+      this._remote = remote
+      this._books = {}
+      this._token = remote._token || "swt"
+      this.on("newListener", function(key, listener) {
+        if (key === "removeListener") return
+        const pair = utils.parseKey(key)
+        if (!pair) {
+          this.pair = new Error("invalid key")
+          return this
+        }
+        this._books[key] = listener
+      })
+      this.on("removeListener", function(key) {
+        const pair = utils.parseKey(key)
+        if (!pair) {
+          this.pair = new Error("invalid key")
+          return this
+        }
+        delete this._books[key]
+      })
+      // same implement as account stub, subscribe all and dispatch
+      this._remote.on("transactions", this.__updateBooks.bind(this))
+    }
+
+    public __updateBooks(data) {
+      // dispatch
+      if (data.meta) {
+        const books = utils.affectedBooks(data)
+        const _data = {
+          tx: data.transaction,
+          meta: data.meta,
+          engine_result: data.engine_result,
+          engine_result_code: data.engine_result_code,
+          engine_result_message: data.engine_result_message,
+          ledger_hash: data.ledger_hash,
+          ledger_index: data.ledger_index,
+          validated: data.validated
+        }
+        const _tx = utils.processTx(_data, data.transaction.Account)
+        for (const book of books) {
+          const callback = this._books[books[book]]
+          if (callback) callback(_tx)
+        }
+      }
+    }
+  }
+  const Account = class extends EventEmitter {
+    public _token
+    public _accounts
+    public _remote
+    constructor(remote) {
+      super()
+      this.setMaxListeners(0)
+      this._remote = remote
+      this._accounts = {}
+      this._token = remote._token || "swt"
+
+      this.on("newListener", function(account, listener) {
+        if (account === "removeListener") return
+        if (!utils.isValidAddress(account, this._token)) {
+          this.account = new Error("invalid account")
+          return this
+        }
+        this._accounts[account] = listener
+      })
+      this.on("removeListener", function(account) {
+        if (!utils.isValidAddress(account, this._token)) {
+          this.account = new Error("invalid account")
+          return this
+        }
+        delete this._accounts[account]
+      })
+      // subscribe all transactions, so just dispatch event by account
+      this._remote.on("transactions", this.__infoAffectedAccounts.bind(this))
+    }
+
+    public __infoAffectedAccounts(data) {
+      // dispatch
+      const accounts = utils.affectedAccounts(data)
+      for (const account of accounts) {
+        const callback = this._accounts[accounts[account]]
+        const _tx = utils.processTx(data, accounts[account], this._token)
+        if (callback) {
+          callback(_tx)
+        }
+      }
+    }
+  }
 
   // var LEDGER_OPTIONS = ["closed", "header", "current"]
 
@@ -47,6 +209,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
    * @constructor
    */
   return class Remote extends EventEmitter {
+    public static Wallet = Wallet
     public static Account = Account
     public static OrderBook = OrderBook
     public static Request = Request
