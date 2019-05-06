@@ -21,7 +21,7 @@ let {
 
 describe("test async actions", function() {
   this.timeout(10000)
-  describe("test .connectAsync() requestServerInfo", function() {
+  describe("test .connectPromise() requestServerInfo", function() {
     it("should request server info successfully", async function() {
       let remote = new Remote({
         server: JT_NODE,
@@ -40,7 +40,7 @@ describe("test async actions", function() {
     })
   })
 
-  describe("test submitAsync() requestLedgerClosed", function() {
+  describe("test submitPromise() requestLedgerClosed", function() {
     it("should request ledger closed successfully", async function() {
       let remote = new Remote({
         server: JT_NODE,

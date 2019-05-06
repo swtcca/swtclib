@@ -219,6 +219,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
     public type
     public _local_sign
     public _token
+    public _issuer
     public _url
     public _server
     public _status
@@ -239,7 +240,8 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         ledger_index: 0
       }
       this._requests = {}
-      this._token = options.token || "swt"
+      this._token = options.token || Wallet.token
+      this._issuer = options.issuer || Wallet.config.issuer
       this._cache = LRU({
         max: 100,
         maxAge: 1000 * 60 * 5
@@ -275,8 +277,21 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       return {
         _local_sign: this._local_sign,
         _server: this._server,
-        _token: this._token
+        _token: this._token,
+        _issuer: this._issuer
       }
+    }
+
+    // makeCurrency and makeAmount
+    public makeCurrency(currency = this._token, issuer = this._issuer) {
+      return Wallet.makeCurrency(currency, issuer)
+    }
+    public makeAmount(
+      value = 1,
+      currency = this._token,
+      issuer = this._issuer
+    ) {
+      return Wallet.makeAmount(value, currency, issuer)
     }
 
     /**
