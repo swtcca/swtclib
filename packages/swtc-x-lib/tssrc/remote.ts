@@ -882,6 +882,38 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       return Transaction.buildPaymentTx(options, this)
     }
 
+    public initContract(options) {
+      return Transaction.initContract(options, this)
+    }
+    public invokeContract(options) {
+      return Transaction.invokeContract(options, this)
+    }
+    public AlethEvent = function(options) {
+      const request = new Request(this, "aleth_eventlog", data => data)
+      if (typeof options !== "object") {
+        request.message.obj = new Error("invalid options type")
+        return request
+      }
+      const des = options.destination
+      const abi = options.abi
+
+      if (!utils.isValidAddress(des)) {
+        request.message.des = new Error("invalid destination")
+        return request
+      }
+      if (!abi) {
+        request.message.abi = new Error("not found abi")
+        return request
+      }
+      if (!Array.isArray(abi)) {
+        request.message.params = new Error("invalid abi: type error.")
+        return request
+      }
+      this.abi = abi
+      request.message.Destination = des
+      return request
+    }
+
     /**
      * contract
      * @param options
