@@ -194,6 +194,8 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         return 1
       case "freeze":
         return 3
+      default:
+        return null
     }
   }
 
@@ -489,7 +491,15 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         request.message.type = new Error("invalid options type")
         return request
       }
-      if (Number(options.ledger_index)) {
+      if (
+        options.ledger_index &&
+        !/^[1-9]\d{0,9}$/.test(options.ledger_index)
+      ) {
+        // 支持0-10位数字查询
+        request.message.ledger_index = new Error("invalid ledger_index")
+        return request
+      }
+      if (options.ledger_index) {
         request.message.ledger_index = Number(options.ledger_index)
       }
       if (utils.isValidHash(options.ledger_hash)) {
@@ -514,7 +524,35 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         request.message.accounts = options.accounts
         filter = false
       }
+      return request
+    }
 
+    /*
+     * get all accounts at some ledger_index
+     */
+    public requestAccounts = function(options) {
+      const request = new Request(this, "account_count")
+      if (options === null || typeof options !== "object") {
+        request.message.type = new Error("invalid options type")
+        return request
+      }
+      if (
+        options.ledger_index &&
+        !/^[1-9]\d{0,9}$/.test(options.ledger_index)
+      ) {
+        // 支持0-10位数字查询
+        request.message.ledger_index = new Error("invalid ledger_index")
+        return request
+      }
+      if (options.ledger_index) {
+        request.message.ledger_index = Number(options.ledger_index)
+      }
+      if (utils.isValidHash(options.ledger_hash)) {
+        request.message.ledger_hash = options.ledger_hash
+      }
+      if (options.marker) {
+        request.message.marker = options.marker
+      }
       return request
     }
 
@@ -1053,13 +1091,9 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       // return to callback
       if (data.status === "success") {
         const result = request.filter(data.result)
-        if (request) {
-          request.callback(null, result)
-        }
+        request && request.callback(null, result)
       } else if (data.status === "error") {
-        if (request) {
-          request.callback(data.error_exception || data.error_message)
-        }
+        request && request.callback(data.error_exception || data.error_message)
       }
     }
 
@@ -1115,7 +1149,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       }
       request.selectLedger(ledger)
 
-      if (utils.isValidAddress(peer)) {
+      if (peer && utils.isValidAddress(peer)) {
         request.message.peer = peer
       }
       if (Number(limit)) {
