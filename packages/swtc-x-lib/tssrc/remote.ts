@@ -242,8 +242,11 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         ledger_index: 0
       }
       this._requests = {}
-      this._token = options.token || Wallet.token
-      this._issuer = options.issuer || Wallet.config.issuer
+      this._token = options.token || Wallet.token || "swt"
+      this._issuer =
+        options.issuer ||
+        Wallet.config.issuer ||
+        "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       this._cache = LRU({
         max: 100,
         maxAge: 1000 * 60 * 5
