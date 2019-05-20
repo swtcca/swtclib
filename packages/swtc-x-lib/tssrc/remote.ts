@@ -883,10 +883,10 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
     }
 
     public initContract(options) {
-      return Transaction.initContract(options, this)
+      return Transaction.initContractTx(options, this)
     }
     public invokeContract(options) {
-      return Transaction.invokeContract(options, this)
+      return Transaction.invokeContractTx(options, this)
     }
     public AlethEvent = function(options) {
       const request = new Request(this, "aleth_eventlog", data => data)
