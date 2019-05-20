@@ -10,7 +10,7 @@ module.exports = {
   },
   entry: "./src/index.js",
   output: {
-    library: "swtc_lib",
+    library: "swtc_x_lib",
     path: path.resolve(__dirname, "dist"),
     filename: ["swtc-lib-", ".min.js"].join(pkg.version)
   }
