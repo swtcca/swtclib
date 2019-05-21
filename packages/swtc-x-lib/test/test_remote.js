@@ -1,6 +1,6 @@
 const chai = require("chai")
 chai.use(require("chai-json-schema"))
-const Remote = require("../").Remote
+const Remote = require("../").Factory()
 const schema = require("./schema")
 const expect = chai.expect
 const TEST_NODE = "ws://ts5.jingtum.com:5020"

@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const Remote = require("../").Remote
+const Remote = require("../").Factory()
 const OrderBook = Remote.OrderBook
 const config = require("./config")
 const txData = require("./tx_data")
