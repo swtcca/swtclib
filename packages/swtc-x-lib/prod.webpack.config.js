@@ -12,6 +12,6 @@ module.exports = {
   output: {
     library: "swtc_x_lib",
     path: path.resolve(__dirname, "dist"),
-    filename: ["swtc-lib-", ".min.js"].join(pkg.version)
+    filename: ["swtc-x-lib-", ".min.js"].join(pkg.version)
   }
 }

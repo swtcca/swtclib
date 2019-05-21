@@ -9,7 +9,13 @@ import sha1 from "sha1"
 import { Factory as WalletFactory } from "swtc-wallet"
 import { Factory as UtilsFactory } from "swtc-utils"
 
-const Factory = (Wallet = WalletFactory("jingtum")) => {
+const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
+  let Wallet
+  if (typeof wallet_or_chain_or_token === "string") {
+    Wallet = WalletFactory(wallet_or_chain_or_token)
+  } else {
+    Wallet = wallet_or_chain_or_token
+  }
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("Account need a Wallet class")
   }
