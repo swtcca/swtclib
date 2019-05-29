@@ -1,0 +1,45 @@
+{
+  "name": "swtc-address-codec",
+  "version": "2.0.7",
+  "description": "encode decode base58 SWTC identifiers",
+  "main": "src/index.js",
+  "license": "ISC",
+  "dependencies": {
+    "create-hash": "^1.1.2",
+    "swtc-chains": "^1.0.1",
+    "x-address-codec": "^0.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/swtcca/swtc-address-codec.git"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c --no-semi src/*.js",
+    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json src/*.js",
+    "eslint": "eslint src/*.js",
+    "test": "mocha",
+    "test:extended": "mocha \"*.js\"",
+    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+  },
+  "devDependencies": {
+    "buffer": "^5.2.1",
+    "coveralls": "^3.0.3",
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0"
+  },
+  "keywords": [
+    "codec",
+    "swtc",
+    "jingtum",
+    "address"
+  ],
+  "readmeFilename": "README.md",
+  "engines": {
+    "node": ">=6"
+  }
+}

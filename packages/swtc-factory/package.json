@@ -1,0 +1,52 @@
+{
+  "name": "swtc-factory",
+  "version": "1.2.5",
+  "description": "swtc base lib factory",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
+    "tsc": "tsc",
+    "tslint": "tslint tssrc/*.ts",
+    "test": "mocha \"test/test*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swtcca/swtc-factory.git"
+  },
+  "keywords": [
+    "factory",
+    "swtc",
+    "jcc"
+  ],
+  "author": "Lospring Liu <lospringliu@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/swtcca/swtc-factory/issues"
+  },
+  "homepage": "https://github.com/swtcca/swtc-factory#readme",
+  "dependencies": {
+    "swtc-keypairs": "^0.11.15"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.2",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "esm": "^3.2.22",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
+  },
+  "babel": {
+    "presets": [],
+    "plugins": []
+  }
+}

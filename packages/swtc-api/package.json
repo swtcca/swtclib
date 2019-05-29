@@ -1,0 +1,56 @@
+{
+  "name": "swtc-api",
+  "version": "1.1.2",
+  "description": "swtc lib api",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c --no-semi tssrc/*.ts",
+    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json tssrc/*.ts",
+    "tsc": "tsc",
+    "tslint": "tslint tssrc/*.ts",
+    "test": "mocha -r esm \"test/test*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swtcca/swtc-api.git"
+  },
+  "keywords": [
+    "api",
+    "swtc",
+    "jingtum"
+  ],
+  "author": "Lospring Liu <lospringliu@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/swtcca/swtc-api/issues"
+  },
+  "homepage": "https://github.com/swtcca/swtc-api#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "swtc-transaction": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.0.2",
+    "@types/utf8": "^2.1.6",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "esm": "^3.2.22",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0",
+    "swtc-tum3": "^0.1.2",
+    "tslint": "^5.16.0",
+    "tum3-eth-abi": "^1.0.2",
+    "typescript": "^3.4.5"
+  },
+  "babel": {
+    "presets": [],
+    "plugins": []
+  }
+}

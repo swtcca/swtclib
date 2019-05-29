@@ -1,0 +1,58 @@
+{
+  "dependencies": {
+    "bignumber.js": "^5.0.0",
+    "bn-plus.js": "^1.0.0",
+    "extend": "^3.0.2",
+    "jsbn": "^1.1.0",
+    "sha1": "^1.1.1",
+    "swtc-wallet": "^1.1.10"
+  },
+  "deprecated": false,
+  "description": "swtc-serializer@jcc",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-json-schema": "^1.5.0",
+    "coveralls": "^3.0.3",
+    "eslint": "^5.16.0",
+    "install": "^0.12.2",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0",
+    "sinon": "^7.2.4"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [
+    "serializer",
+    "swtc",
+    "jingtum"
+  ],
+  "license": "Apache-2.0",
+  "main": "lib/Serializer.js",
+  "name": "swtc-serializer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swtcca/swtc-serializer.git"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c --no-semi lib/*.js",
+    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json lib/*.js",
+    "eslint": "eslint lib/*.js",
+    "test": "mocha test/test_*.js",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+  },
+  "version": "2.1.2",
+  "author": "Lospring Liu",
+  "bugs": {
+    "url": "https://github.com/swtcca/swtc-serializer/issues"
+  },
+  "homepage": "https://github.com/swtcca/swtc-serializer#readme",
+  "files": [
+    "lib"
+  ]
+}

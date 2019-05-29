@@ -1,0 +1,38 @@
+{
+  "name": "swtc-chains",
+  "version": "1.0.7",
+  "description": "swtc chain information",
+  "main": "src/index.js",
+  "license": "ISC",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/swtcca/swtc-chains.git"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c --no-semi src/*.js",
+    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json src/*.js",
+    "eslint": "eslint src/*.js",
+    "test": "mocha",
+    "test:extended": "mocha \"*.js\"",
+    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0"
+  },
+  "keywords": [
+    "swtc",
+    "chains",
+    "alphabet"
+  ],
+  "readmeFilename": "README.md",
+  "engines": {
+    "node": ">=6"
+  }
+}

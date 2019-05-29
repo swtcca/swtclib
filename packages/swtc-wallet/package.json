@@ -1,0 +1,57 @@
+{
+  "name": "swtc-wallet",
+  "version": "1.1.11",
+  "description": "swtc wallet library",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
+    "tsc": "tsc",
+    "tslint": "tslint tssrc/*.ts",
+    "test": "mocha \"test/*.js\"",
+    "gulp": "gulp dev",
+    "gulp:production": "gulp production",
+    "build": "webpack",
+    "build:production": "webpack --config prod.webpack.config",
+    "test:extended": "mocha \"test/*.js\"",
+    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swtcca/swtc-wallet.git"
+  },
+  "keywords": [
+    "swtc",
+    "jingtum",
+    "wallet"
+  ],
+  "author": "Lospring Liu <lospringliu@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/swtcca/swtc-wallet/issues"
+  },
+  "homepage": "https://github.com/swtcca/swtc-wallet#readme",
+  "dependencies": {
+    "swtc-keypairs": "^0.11.15"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "gulp": "^4.0.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-server": "^3.1.14",
+    "webpack-stream": "^5.2.1"
+  }
+}

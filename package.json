@@ -1,0 +1,26 @@
+{
+  "name": "root",
+  "private": true,
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier"
+    }
+  },
+  "scripts": {
+    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && lerna run tsc --stream",
+    "lerna": "lerna",
+    "clean": "lerna clean --yes",
+    "cleanall": "lerna clean --yes && rm -fr node_modules package-lock.json",
+    "lint": "lerna run tslint --stream && lerna run tsc --stream && lerna run eslint --stream && lerna run prettier:check --stream",
+    "prettier": "pretty-quick --staged --no-restage --verbose --bail",
+    "pretty": "lerna run pretty-quick --stream",
+    "test": "npm run bootstrap && npm run lint && npm run testonly",
+    "testonly": "npm run tsc --stream && lerna run test --stream --ignore swtc-api --ignore swtc-lib && lerna run test --stream --scope swtc-api && lerna run test --stream --scope swtc-lib"
+  },
+  "devDependencies": {
+    "husky": "^2.3.0",
+    "lerna": "^3.14.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0"
+  }
+}

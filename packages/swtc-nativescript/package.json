@@ -1,0 +1,41 @@
+{
+  "name": "swtc-nativescript",
+  "version": "1.0.0",
+  "description": "make swtc lib nativescript easy",
+  "main": "index.js",
+  "directories": {
+    "test": "test",
+    "src": "src"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c --no-semi index.js",
+    "test": "mocha \"test/test*.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swtcca/swtc-nativescript.git"
+  },
+  "keywords": [
+    "swtc",
+    "jingtum",
+    "nativescript"
+  ],
+  "author": "Lospring Liu <lospringliu@gmail.com>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/swtcca/swtc-nativescript/issues"
+  },
+  "homepage": "https://github.com/swtcca/swtc-nativescript#readme",
+  "dependencies": {
+    "nativescript-websockets": "^1.5.3",
+    "swtc-nativescript-brorand": "^1.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0"
+  }
+}
