@@ -87,7 +87,7 @@ npm install --save swtc-lib
 ## <a name="structure"></a>2 项目文件结构
 ### swtc-lib库基于ws协议跟底层交互，其中ws封装到Server类中，Server类是一个内部类，不对 外开放;Server类封装在Remote类中，Remote类提供对外访问接口并可创建两类对象:Get方 式请求的Request对象和Post方式请求的Transaction对象，这两类对象都通过submit()方法提交 数据到底层。
 文件结构图如下
-![structure](./structure.png)
+![structure](https://raw.githubusercontent.com/swtcca/swtc-app-examples/master/images/structure.png)
 
 ## <a name="wallet"></a>3 创建钱包
 > ### 首先引入swtc-lib库的Wallet对象，然后使用以下两种方法创建钱包

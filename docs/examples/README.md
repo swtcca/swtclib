@@ -1,32 +1,5 @@
----
-home: true
-heroText: 社区版井通nodejs库
-tagline: 应用开发者专用
-features:
-- title: 完全兼容
-  details: 井通接口 井畅接口
-- title: 独享便利
-  details: 零配置webpack支持 零配置browserify支持
-- title: 多框架支持
-  details: node web mobile   angular vue react
-- title: 模块化
-  details: 理顺依赖关系 反馈正式版本
-- title: Typescript Promise
-  details: 原生Promise, typescript编辑器关联提示
-- title: 扩展性
-  details: 已经增加api, 可加代理版remote
-- title: 联盟链支持
-  details: 等同支持所有井通联盟链
-
----
-
 
 # DAPP Examples Using Javascript and SWTC-LIB
-
-## [swtc-api](docapi) 
-## [swtc-x-lib 联盟链](docxlib)
-## [swtc-lib swtc-x-lib 增强](docswtc) 
-## [swtc-lib 文档](doc)
 
 ## 使用swtc-lib
 
