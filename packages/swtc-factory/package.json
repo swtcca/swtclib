@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swtcca/swtc-factory.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "keywords": [
     "factory",
@@ -27,9 +27,9 @@
   "author": "Lospring Liu <lospringliu@gmail.com>",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-factory/issues"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
-  "homepage": "https://github.com/swtcca/swtc-factory#readme",
+  "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
     "swtc-keypairs": "^0.11.15"
   },

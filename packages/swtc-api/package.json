@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swtcca/swtc-api.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "keywords": [
     "api",
@@ -27,9 +27,9 @@
   "author": "Lospring Liu <lospringliu@gmail.com>",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-api/issues"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
-  "homepage": "https://github.com/swtcca/swtc-api#readme",
+  "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
     "axios": "^0.18.0",
     "swtc-transaction": "^1.2.0"

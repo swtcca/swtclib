@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swtcca/swtc-lib.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "keywords": [
     "swtc",
@@ -36,16 +36,16 @@
   "author": "Lospring Liu <lospringliu@gmail.com>",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-lib/issues"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
-  "homepage": "https://github.com/swtcca/swtc-lib#readme",
+  "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
     "axios": "^0.18.0",
     "bignumber.js": "^5.0.0",
     "lodash": "^4.17.11",
     "swtc-serializer": "^2.1.0",
     "swtc-utils": "^1.1.6",
-    "url": "^0.11.0",
+    "url": "git+https://github.com/swtcca/swtclib.git",
     "utf8": "^2.1.2"
   },
   "devDependencies": {

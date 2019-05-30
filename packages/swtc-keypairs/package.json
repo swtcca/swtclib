@@ -35,12 +35,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/swtcca/swtc-keypairs.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-keypairs/issues"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
-  "homepage": "https://github.com/swtcca/swtc-keypairs#readme",
+  "homepage": "https://github.com/swtcca/swtclib",
   "license": "ISC",
   "readmeFilename": "README.md",
   "keywords": [

@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swtcca/swtc-nativescript.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "keywords": [
     "swtc",
@@ -25,9 +25,9 @@
   "author": "Lospring Liu <lospringliu@gmail.com>",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-nativescript/issues"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
-  "homepage": "https://github.com/swtcca/swtc-nativescript#readme",
+  "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
     "nativescript-websockets": "^1.5.3",
     "swtc-nativescript-brorand": "^1.1.1"

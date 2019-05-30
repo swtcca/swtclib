@@ -34,7 +34,7 @@
   "name": "swtc-serializer",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swtcca/swtc-serializer.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "scripts": {
     "prettier": "prettier",
@@ -49,9 +49,9 @@
   "version": "2.1.2",
   "author": "Lospring Liu",
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-serializer/issues"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
-  "homepage": "https://github.com/swtcca/swtc-serializer#readme",
+  "homepage": "https://github.com/swtcca/swtclib",
   "files": [
     "lib"
   ]
