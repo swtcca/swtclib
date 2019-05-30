@@ -1,6 +1,6 @@
 {
   "name": "swtc-transaction",
-  "version": "1.2.9",
+  "version": "1.2.10",
   "description": "swtc transaction package",
   "main": "src/index.js",
   "directories": {
@@ -43,8 +43,8 @@
     "axios": "^0.18.0",
     "bignumber.js": "^5.0.0",
     "lodash": "^4.17.11",
-    "swtc-serializer": "^2.1.0",
-    "swtc-utils": "^1.1.6",
+    "swtc-serializer": "^2.1.3",
+    "swtc-utils": "^1.1.7",
     "url": "git+https://github.com/swtcca/swtclib.git",
     "utf8": "^2.1.2"
   },

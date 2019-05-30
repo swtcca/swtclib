@@ -1,10 +1,9 @@
 {
   "name": "swtc-chains",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "swtc chain information",
   "main": "src/index.js",
   "license": "ISC",
-  "dependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/swtcca/swtclib.git"
