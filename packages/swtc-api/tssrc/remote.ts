@@ -310,6 +310,24 @@ class Remote {
   public callContractTx(options) {
     return Transaction.callContractTx(options, this)
   }
+  public initContract(options) {
+    return Transaction.initContractTx(options, this)
+  }
+  public invokeContract(options) {
+    return Transaction.invokeContractTx(options, this)
+  }
+  public initContractTx(options) {
+    return Transaction.initContractTx(options, this)
+  }
+  public invokeContractTx(options) {
+    return Transaction.invokeContractTx(options, this)
+  }
+  public buildContractInitTx(options) {
+    return Transaction.initContractTx(options, this)
+  }
+  public buildContractInvokeTx(options) {
+    return Transaction.invokeContractTx(options, this)
+  }
   public buildBrokerageTx(options) {
     return Transaction.callContractTx(options, this)
   }
