@@ -2,6 +2,8 @@
 
 ## [Offical Doc 官方](http://developer.jingtum.com/api2_doc.html)
 
+## [编程接口](../api/)
+
 ## changelog
 
 - added .txSignPromise() and .txSubmitPromise()
@@ -22,10 +24,10 @@
 ### import
 
 ```javascript
-const API = require("swtc-api")
-const Remote = API.Remote
+const API = require("swtc-api");
+const Remote = API.Remote;
 // or
-import { Remote } from "swtc-api"
+import { Remote } from "swtc-api";
 ```
 
 ### transaction operations
@@ -290,74 +292,74 @@ signed blob: 1200152200000000240000006420230000000363800000000000000000000000000
 ### function calls
 
 ```typescript
-import DATA from "./config"
-import { Remote } from "swtc-api"
-const remote = new Remote({ server: DATA.server })
+import DATA from "./config";
+import { Remote } from "swtc-api";
+const remote = new Remote({ server: DATA.server });
 
 async function main() {
   try {
-    console.log(`// query balances and demo param`)
-    let result: any = await remote.getAccountBalances(DATA.address)
+    console.log(`// query balances and demo param`);
+    let result: any = await remote.getAccountBalances(DATA.address);
     result.balances.forEach(balance =>
       console.log(`${balance.value.padEnd(16)}${balance.currency}`)
-    )
-    result = await remote.getAccountBalances(DATA.address, { currency: "CNY" })
-    console.log(result)
+    );
+    result = await remote.getAccountBalances(DATA.address, { currency: "CNY" });
+    console.log(result);
 
-    console.log(`\n// query transactions and demo paging`)
+    console.log(`\n// query transactions and demo paging`);
     for (let page = 1; page < 4; page++) {
-      console.log(`page # ${page}`)
+      console.log(`page # ${page}`);
       result = await remote.getAccountTransactions(DATA.address, {
         results_per_page: 2,
         page
-      })
+      });
       if ("marker" in result) {
-        console.log(result.marker)
+        console.log(result.marker);
       }
-      result.transactions.forEach(tx => console.log(tx.hash))
+      result.transactions.forEach(tx => console.log(tx.hash));
     }
-    console.log(result)
-    console.log(`\n// query payments history`)
+    console.log(result);
+    console.log(`\n// query payments history`);
     result = await remote.getAccountPayments(DATA.address, {
       results_per_page: 4
-    })
-    console.log(result)
-    console.log(`\n// query active orders`)
+    });
+    console.log(result);
+    console.log(`\n// query active orders`);
     result = await remote.getAccountOrders(DATA.address, {
       results_per_page: 10
-    })
-    console.log(result)
-    console.log(`\n// query ledger`)
-    result = await remote.getLedger()
-    const ledger_index = result.ledger_index
-    const ledger_hash = result.ledger_hash
-    console.log(result)
-    result = await remote.getLedger(ledger_index)
-    result = await remote.getLedger(parseInt(ledger_index))
-    result = await remote.getLedger(ledger_hash)
-    console.log(result)
-    console.log(`\n// query orderbook`)
+    });
+    console.log(result);
+    console.log(`\n// query ledger`);
+    result = await remote.getLedger();
+    const ledger_index = result.ledger_index;
+    const ledger_hash = result.ledger_hash;
+    console.log(result);
+    result = await remote.getLedger(ledger_index);
+    result = await remote.getLedger(parseInt(ledger_index));
+    result = await remote.getLedger(ledger_hash);
+    console.log(result);
+    console.log(`\n// query orderbook`);
     result = await remote.getOrderBooks("SWT", `CNY+${DATA.issuer}`, {
       results_per_page: 4
-    })
+    });
     result = await remote.getOrderBooksBids("SWT", `CNY+${DATA.issuer}`, {
       results_per_page: 4
-    })
+    });
     result = await remote.getOrderBooksAsks("SWT", `CNY+${DATA.issuer}`, {
       results_per_page: 2
-    })
-    console.log(result)
-    console.log(`\n// submit locally signed transactions`)
+    });
+    console.log(result);
+    console.log(`\n// submit locally signed transactions`);
     result = await remote.postBlob({
       blob:
         "120000220000000024000002326140000000000186A0684000000000002710732102197F1426BCA2F59B6B910F0391E55888B4FE80AF962478493104A33274B1B03A74473045022100F0175B4AFF5B1E348FC46A8C0021FF22B16CF87113C0B6E042174374416B071102203CB8A47A82576B69DB50051DF943C87872BB8F065A2D12B01ACA03890FAC8E548114AF09183A11AA70DA06E115E03B0E5478232740B58314DA976A4DE4827163F062B09050832D8D78025D5A"
-    })
-    console.log(result)
+    });
+    console.log(result);
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
-main()
+main();
 ```
 
 ### output

@@ -1,4 +1,4 @@
-<h2 align="center">SWTCLIB - 社区版公链应用开发库</h2>
+<h2 align="center">SWTCLIB - SWTC公链应用开发库</h2>
 <h2 align="center"><a href="http://swtc.daszichan.com">专为应用开发者打造</a></h2>
 
 <p align="center">
