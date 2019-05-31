@@ -20,7 +20,7 @@ class Remote {
     this._server =
       options.server || Wallet.config.apiserver || "https://api.jingtum.com"
     this._token = options.token || Wallet.token || "SWT"
-    this._solidity = options._solidity ? true : false
+    this._solidity = options.solidity ? true : false
     if (this._solidity) {
       try {
         this.AbiCoder = require("tum3-eth-abi").AbiCoder
