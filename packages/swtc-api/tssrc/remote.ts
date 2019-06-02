@@ -5,6 +5,17 @@ const Wallet = Transaction.Wallet
 const Serializer = Transaction.Serializer
 const utils = Transaction.utils
 import { IRemoteOptions } from "./types"
+import {
+  // IAmount,
+  // ISwtcTxOptions,
+  IPaymentTxOptions,
+  IOfferCreateTxOptions,
+  IOfferCancelTxOptions,
+  IContractInitTxOptions,
+  IContractInvokeTxOptions,
+  IContractDeployTxOptions,
+  IContractCallTxOptions
+} from "./types"
 
 class Remote {
   public static Wallet = Wallet
@@ -284,13 +295,13 @@ class Remote {
 
   // here we extend beyond api calls to interact with swtc-transactions
   // we try to use the same as that has been in swtc-lib
-  public buildPaymentTx(options) {
+  public buildPaymentTx(options: IPaymentTxOptions) {
     return Transaction.buildPaymentTx(options, this)
   }
-  public buildOfferCreateTx(options) {
+  public buildOfferCreateTx(options: IOfferCreateTxOptions) {
     return Transaction.buildOfferCreateTx(options, this)
   }
-  public buildOfferCancelTx(options) {
+  public buildOfferCancelTx(options: IOfferCancelTxOptions) {
     return Transaction.buildOfferCancelTx(options, this)
   }
   public buildRelationTx(options) {
@@ -299,34 +310,34 @@ class Remote {
   public buildAccountSetTx(options) {
     return Transaction.buildAccountSetTx(options, this)
   }
-  public buildContractDeployTx(options) {
+  public buildContractDeployTx(options: IContractDeployTxOptions) {
     return Transaction.deployContractTx(options, this)
   }
-  public deployContractTx(options) {
+  public deployContractTx(options: IContractDeployTxOptions) {
     return Transaction.deployContractTx(options, this)
   }
-  public buildContractCallTx(options) {
+  public buildContractCallTx(options: IContractCallTxOptions) {
     return Transaction.callContractTx(options, this)
   }
-  public callContractTx(options) {
+  public callContractTx(options: IContractCallTxOptions) {
     return Transaction.callContractTx(options, this)
   }
-  public initContract(options) {
+  public initContract(options: IContractInitTxOptions) {
     return Transaction.initContractTx(options, this)
   }
-  public invokeContract(options) {
+  public invokeContract(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
-  public initContractTx(options) {
+  public initContractTx(options: IContractInitTxOptions) {
     return Transaction.initContractTx(options, this)
   }
-  public invokeContractTx(options) {
+  public invokeContractTx(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
-  public buildContractInitTx(options) {
+  public buildContractInitTx(options: IContractInitTxOptions) {
     return Transaction.initContractTx(options, this)
   }
-  public buildContractInvokeTx(options) {
+  public buildContractInvokeTx(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
   public buildBrokerageTx(options) {

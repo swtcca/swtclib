@@ -8,6 +8,17 @@ import LRU from "lru-cache"
 import isNumber from "lodash/isNumber"
 import sha1 from "sha1"
 import { IRemoteOptions } from "./types"
+import {
+  // IAmount,
+  // ISwtcTxOptions,
+  IPaymentTxOptions,
+  IOfferCreateTxOptions,
+  IOfferCancelTxOptions,
+  IContractInitTxOptions,
+  IContractInvokeTxOptions,
+  IContractDeployTxOptions,
+  IContractCallTxOptions
+} from "./types"
 
 const Wallet = Transaction.Wallet
 const utils = Transaction.utils
@@ -711,20 +722,20 @@ class Remote extends EventEmitter {
    *    amount payment amount, required
    * @returns {Transaction}
    */
-  public buildPaymentTx(options) {
+  public buildPaymentTx(options: IPaymentTxOptions) {
     return Transaction.buildPaymentTx(options, this)
   }
 
-  public initContract(options) {
+  public initContract(options: IContractInitTxOptions) {
     return Transaction.initContractTx(options, this)
   }
-  public invokeContract(options) {
+  public invokeContract(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
-  public initContractTx(options) {
+  public initContractTx(options: IContractInitTxOptions) {
     return Transaction.initContractTx(options, this)
   }
-  public invokeContractTx(options) {
+  public invokeContractTx(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
   public AlethEvent = function(options) {
@@ -761,7 +772,7 @@ class Remote extends EventEmitter {
    *    payload, required
    * @returns {Transaction}
    */
-  public deployContractTx(options) {
+  public deployContractTx(options: IContractDeployTxOptions) {
     return Transaction.deployContractTx(options, this)
   }
 
@@ -773,7 +784,7 @@ class Remote extends EventEmitter {
    *    params, required
    * @returns {Transaction}
    */
-  public callContractTx(options) {
+  public callContractTx(options: IContractCallTxOptions) {
     return Transaction.callContractTx(options, this)
   }
 
@@ -828,7 +839,7 @@ class Remote extends EventEmitter {
    *    taker_pays|gets amount to take in, required
    * @returns {Transaction}
    */
-  public buildOfferCreateTx(options) {
+  public buildOfferCreateTx(options: IOfferCreateTxOptions) {
     return Transaction.buildOfferCreateTx(options, this)
   }
 
@@ -839,7 +850,7 @@ class Remote extends EventEmitter {
    *    sequence, required
    * @returns {Transaction}
    */
-  public buildOfferCancelTx(options) {
+  public buildOfferCancelTx(options: IOfferCancelTxOptions) {
     return Transaction.buildOfferCancelTx(options, this)
   }
 
