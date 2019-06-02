@@ -1,3 +1,13 @@
+export interface IMarker {
+  ledger: string | number
+  seq: string | number
+}
+
+export interface ICurrency {
+  currency: string
+  issuer: string
+}
+
 export interface IAmount {
   currency: string
   issuer: string
@@ -7,7 +17,7 @@ export interface IAmount {
 export interface ISwtcTxOptions {
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
 }
 
 export interface IPaymentTxOptions {
@@ -19,7 +29,7 @@ export interface IPaymentTxOptions {
   to?: string
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
 }
 
 export interface IOfferCreateTxOptions {
@@ -34,7 +44,7 @@ export interface IOfferCreateTxOptions {
   app?: any
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
 }
 
 export interface IOfferCancelTxOptions {
@@ -51,10 +61,10 @@ export interface IContractInitTxOptions {
   account: string
   abi: any[]
   payload: string
-  params?: string[] | null | undefined
+  params?: string[]
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
 }
 
 export interface IContractInvokeTxOptions {
@@ -65,27 +75,60 @@ export interface IContractInvokeTxOptions {
   func: string
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
 }
 
 export interface IContractDeployTxOptions {
   amount: IAmount
   account: string
   payload: string
-  params?: string[] | null | undefined
+  params?: string[]
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
 }
 
 export interface IContractCallTxOptions {
   amount: IAmount
   account: string
   destination: string
-  params?: string[] | null | undefined
+  params?: string[]
   func?: string
   foo?: string
   memo?: string
   secret?: string
-  sequence?: string
+  sequence?: string | number
+}
+
+export interface ISignTxOptions {
+  blob: string
+}
+
+export interface IAccountSetTxOptions {
+  type: string
+  source?: string
+  from?: string
+  account?: string
+  set?: string | number
+  set_flag?: string | number
+  clear?: string | number
+  clear_flag?: string | number
+  delegate_key?: string
+  memo?: string
+  secret?: string
+  sequence?: string | number
+}
+
+export interface IRelationTxOptions {
+  type: string
+  source?: string
+  from?: string
+  account?: string
+  target: string
+  limit: IAmount
+  quality_out: any
+  quality_in: any
+  memo?: string
+  secret?: string
+  sequence?: string | number
 }

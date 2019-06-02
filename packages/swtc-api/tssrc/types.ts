@@ -1,4 +1,7 @@
+import { IMarker } from "swtc-transaction"
 export {
+  IMarker,
+  ICurrency,
   IAmount,
   ISwtcTxOptions,
   IPaymentTxOptions,
@@ -7,7 +10,10 @@ export {
   IContractInitTxOptions,
   IContractInvokeTxOptions,
   IContractDeployTxOptions,
-  IContractCallTxOptions
+  IContractCallTxOptions,
+  ISignTxOptions,
+  IAccountSetTxOptions,
+  IRelationTxOptions
 } from "swtc-transaction"
 
 export interface IRemoteOptions {
@@ -15,4 +21,12 @@ export interface IRemoteOptions {
   issuer?: string
   token?: string
   solidity?: boolean
+}
+
+export interface IParams {
+  results_per_page?: number
+  page?: number
+  marker?: IMarker
+  currency?: string
+  issuer?: string
 }

@@ -5,6 +5,8 @@ const Transaction = Factory()
 
 export { Factory, Transaction }
 export {
+  IMarker,
+  ICurrency,
   IAmount,
   ISwtcTxOptions,
   IPaymentTxOptions,
@@ -13,5 +15,8 @@ export {
   IContractInitTxOptions,
   IContractInvokeTxOptions,
   IContractDeployTxOptions,
-  IContractCallTxOptions
+  IContractCallTxOptions,
+  ISignTxOptions,
+  IAccountSetTxOptions,
+  IRelationTxOptions
 } from "./types"

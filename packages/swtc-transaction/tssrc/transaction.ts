@@ -4,6 +4,8 @@ import { Factory as UtilsFactory } from "swtc-utils"
 import { Factory as WalletFactory } from "swtc-wallet"
 import * as utf8 from "utf8"
 import {
+  // IMarker
+  // ICurrency,
   // IAmount,
   // ISwtcTxOptions,
   IPaymentTxOptions,
@@ -12,7 +14,10 @@ import {
   IContractInitTxOptions,
   IContractInvokeTxOptions,
   IContractDeployTxOptions,
-  IContractCallTxOptions
+  IContractCallTxOptions,
+  ISignTxOptions,
+  IAccountSetTxOptions,
+  IRelationTxOptions
 } from "./types"
 
 function Factory(Wallet = WalletFactory("jingtum")) {
@@ -555,7 +560,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
 
     // signer set, seems discontinued
-    public static buildSignTx(options, remote: any = {}) {
+    public static buildSignTx(options: ISignTxOptions, remote: any = {}) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -574,7 +579,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    type: Transaction.AccountSetTypes
      * @returns {Transaction}
      */
-    public static buildAccountSetTx(options, remote: any = {}) {
+    public static buildAccountSetTx(
+      options: IAccountSetTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -604,7 +612,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    quality_in, optional
      * @returns {Transaction}
      */
-    public static buildRelationTx(options, remote: any = {}) {
+    public static buildRelationTx(
+      options: IRelationTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")

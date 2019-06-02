@@ -4,8 +4,9 @@ import * as utf8 from "utf8"
 const Wallet = Transaction.Wallet
 const Serializer = Transaction.Serializer
 const utils = Transaction.utils
-import { IRemoteOptions } from "./types"
+import { IRemoteOptions, IParams } from "./types"
 import {
+  // IMarker,
   // IAmount,
   // ISwtcTxOptions,
   IPaymentTxOptions,
@@ -14,7 +15,10 @@ import {
   IContractInitTxOptions,
   IContractInvokeTxOptions,
   IContractDeployTxOptions,
-  IContractCallTxOptions
+  IContractCallTxOptions,
+  ISignTxOptions,
+  IAccountSetTxOptions,
+  IRelationTxOptions
 } from "./types"
 
 class Remote {
@@ -158,7 +162,7 @@ class Remote {
     return this.getRequest(url)
   }
 
-  public getAccountBalances(address: string, params: object = {}) {
+  public getAccountBalances(address: string, params: IParams = {}) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -175,7 +179,7 @@ class Remote {
     const url = `accounts/${address}/payments/${hash}`
     return this.getRequest(url)
   }
-  public getAccountPayments(address: string, params: object = {}) {
+  public getAccountPayments(address: string, params: IParams = {}) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -209,7 +213,7 @@ class Remote {
     const url = `accounts/${address}/orders/${hash}`
     return this.getRequest(url)
   }
-  public getAccountOrders(address: string, params: object = {}) {
+  public getAccountOrders(address: string, params: IParams = {}) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -234,26 +238,34 @@ class Remote {
     return this.deleteRequest(url, data)
   }
 
-  public getOrderBooks(base: string, counter: string, params: object = {}) {
+  public getOrderBooks(base: string, counter: string, params: IParams = {}) {
     base = base.trim()
     counter = counter.trim()
     const url = `order_book/${base}/${counter}`
     return this.getRequest(url, { params })
   }
-  public getOrderBooksBids(base: string, counter: string, params: object = {}) {
+  public getOrderBooksBids(
+    base: string,
+    counter: string,
+    params: IParams = {}
+  ) {
     base = base.trim()
     counter = counter.trim()
     const url = `order_book/bids/${base}/${counter}`
     return this.getRequest(url, { params })
   }
-  public getOrderBooksAsks(base: string, counter: string, params: object = {}) {
+  public getOrderBooksAsks(
+    base: string,
+    counter: string,
+    params: IParams = {}
+  ) {
     base = base.trim()
     counter = counter.trim()
     const url = `order_book/asks/${base}/${counter}`
     return this.getRequest(url, { params })
   }
 
-  public getAccountTransactions(address: string, params: object = {}) {
+  public getAccountTransactions(address: string, params: IParams = {}) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -304,11 +316,14 @@ class Remote {
   public buildOfferCancelTx(options: IOfferCancelTxOptions) {
     return Transaction.buildOfferCancelTx(options, this)
   }
-  public buildRelationTx(options) {
+  public buildRelationTx(options: IRelationTxOptions) {
     return Transaction.buildRelationTx(options, this)
   }
-  public buildAccountSetTx(options) {
+  public buildAccountSetTx(options: IAccountSetTxOptions) {
     return Transaction.buildAccountSetTx(options, this)
+  }
+  public buildSignTx(options: ISignTxOptions) {
+    return Transaction.buildSignTx(options, this)
   }
   public buildContractDeployTx(options: IContractDeployTxOptions) {
     return Transaction.deployContractTx(options, this)
