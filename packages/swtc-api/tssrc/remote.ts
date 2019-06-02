@@ -4,6 +4,7 @@ import * as utf8 from "utf8"
 const Wallet = Transaction.Wallet
 const Serializer = Transaction.Serializer
 const utils = Transaction.utils
+import { IRemoteOptions } from "./types"
 
 class Remote {
   public static Wallet = Wallet
@@ -16,7 +17,7 @@ class Remote {
   private _issuer: string
   private _axios: any
   private _solidity: boolean = false
-  constructor(options: any = {}) {
+  constructor(options: IRemoteOptions = {}) {
     this._server =
       options.server || Wallet.config.apiserver || "https://api.jingtum.com"
     this._token = options.token || Wallet.token || "SWT"
@@ -57,7 +58,7 @@ class Remote {
   }
 
   // show instance basic configuration
-  public config(options: any = {}) {
+  public config(options: IRemoteOptions = {}) {
     if ("server" in options) {
       this._server = options.server
       this._axios = axios.create({ baseURL: this._server + "/v2/" })

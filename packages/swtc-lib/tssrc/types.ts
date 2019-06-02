@@ -1,9 +1,3 @@
-"use strict"
-
-import { Factory } from "./transaction"
-const Transaction = Factory()
-
-export { Factory, Transaction }
 export {
   IAmount,
   ISwtcTxOptions,
@@ -14,4 +8,12 @@ export {
   IContractInvokeTxOptions,
   IContractDeployTxOptions,
   IContractCallTxOptions
-} from "./types"
+} from "swtc-transaction"
+
+export interface IRemoteOptions {
+  server?: string
+  issuer?: string
+  token?: string
+  solidity?: boolean
+  local_sign?: boolean
+}

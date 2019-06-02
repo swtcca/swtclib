@@ -16,8 +16,8 @@
   "scripts": {
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c --no-semi src/*.js",
-    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json src/*.js",
+    "prettier:check": "prettier -c src/*.js",
+    "prettier:tabs": "prettier --use-tabs --write package.json src/*.js",
     "eslint": "eslint src/*.js",
     "test": "mocha",
     "test:extended": "mocha \"*.js\"",

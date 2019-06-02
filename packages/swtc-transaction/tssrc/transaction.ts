@@ -471,7 +471,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const account = options.account
       const des = options.destination
       const params = options.params
-      const foo = options.foo // 函数名
+      const foo = options.func || options.foo // 函数名
       if (!utils.isValidAddress(account)) {
         tx.tx_json.account = new Error("invalid address")
         return tx

@@ -6,3 +6,5 @@ const Account = Remote.Account
 const OrderBook = Remote.OrderBook
 
 export { Remote, Request, Account, Transaction, OrderBook, Wallet }
+
+export { IRemoteOptions } from "./types"

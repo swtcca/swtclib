@@ -39,8 +39,8 @@
   "scripts": {
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c --no-semi lib/*.js",
-    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json lib/*.js",
+    "prettier:check": "prettier -c lib/*.js",
+    "prettier:tabs": "prettier --use-tabs --write package.json lib/*.js",
     "eslint": "eslint lib/*.js",
     "test": "mocha test/test_*.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",

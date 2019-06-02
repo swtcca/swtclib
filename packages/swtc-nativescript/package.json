@@ -10,7 +10,7 @@
   "scripts": {
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c --no-semi index.js",
+    "prettier:check": "prettier -c index.js",
     "test": "mocha \"test/test*.js\""
   },
   "repository": {

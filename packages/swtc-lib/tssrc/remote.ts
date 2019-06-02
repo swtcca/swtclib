@@ -7,6 +7,7 @@ import { Transaction } from "swtc-transaction"
 import LRU from "lru-cache"
 import isNumber from "lodash/isNumber"
 import sha1 from "sha1"
+import { IRemoteOptions } from "./types"
 
 const Wallet = Transaction.Wallet
 const utils = Transaction.utils
@@ -57,7 +58,7 @@ class Remote extends EventEmitter {
   private _cache
   private _paths
   private _solidity: boolean = false
-  constructor(options) {
+  constructor(options: IRemoteOptions = { local_sign: true }) {
     super()
     const _opts = options || {}
     this._local_sign = true

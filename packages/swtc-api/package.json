@@ -9,8 +9,8 @@
   "scripts": {
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c --no-semi tssrc/*.ts",
-    "prettier:tabs": "prettier --no-semi --use-tabs --write package.json tssrc/*.ts",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tsc": "tsc",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha -r esm \"test/test*.js\""
