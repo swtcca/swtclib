@@ -17,7 +17,8 @@ import {
   IContractCallTxOptions,
   ISignTxOptions,
   IAccountSetTxOptions,
-  IRelationTxOptions
+  IRelationTxOptions,
+  IAmount
 } from "./types"
 
 function Factory(Wallet = WalletFactory("jingtum")) {
@@ -924,7 +925,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * set secret
      * @param secret
      */
-    public setSecret(secret) {
+    public setSecret(secret: string) {
       if (!baselib.isValidSecret(secret)) {
         this.tx_json._secret = new Error("invalid secret")
         return
@@ -991,7 +992,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * when path set, sendmax is also set.
      * @param path
      */
-    public setPath(key) {
+    public setPath(key: string) {
       // sha1 string
       if (typeof key !== "string" || key.length !== 40) {
         return new Error("invalid path key")
@@ -1014,7 +1015,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * limit send max amount
      * @param amount
      */
-    public setSendMax(amount) {
+    public setSendMax(amount: IAmount) {
       if (!utils.isValidAmount(amount)) {
         return new Error("invalid send max amount")
       }
@@ -1055,8 +1056,8 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
 
     /* set sequence */
-    public setSequence(sequence) {
-      if (!/^\+?[1-9][0-9]*$/.test(sequence)) {
+    public setSequence(sequence: string | number) {
+      if (!/^\+?[1-9][0-9]*$/.test(String(sequence))) {
         // 正整数
         this.tx_json.Sequence = new TypeError("invalid sequence")
         return this
@@ -1119,7 +1120,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
     }
 
-    public async signPromise(secret = "", memo = "", sequence = 0) {
+    public async signPromise(
+      secret = "",
+      memo = "",
+      sequence = 0
+    ): Promise<any> {
       if (!this.tx_json) {
         return Promise.reject("a valid transaction is expected")
       } else if ("blob" in this.tx_json) {
@@ -1199,7 +1204,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
     }
 
-    public async submitPromise(secret = "", memo = "", sequence = 0) {
+    public async submitPromise(
+      secret = "",
+      memo = "",
+      sequence = 0
+    ): Promise<any> {
       for (const key in this.tx_json) {
         if (this.tx_json[key] instanceof Error) {
           return Promise.reject(this.tx_json[key].message)
