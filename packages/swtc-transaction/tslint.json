@@ -21,6 +21,13 @@
     "curly": [true, "ignore-same-line"],
     "no-bitwise": false,
     "object-literal-sort-keys": false,
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "any"
+      }
+    ],
     "quotemark": [true, "double", "avoid-escape", "jsx-double"],
     "semicolon": false,
     "trailing-comma": false,

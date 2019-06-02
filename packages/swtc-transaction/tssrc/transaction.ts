@@ -3,6 +3,17 @@ import { Factory as SerializerFactory } from "swtc-serializer"
 import { Factory as UtilsFactory } from "swtc-utils"
 import { Factory as WalletFactory } from "swtc-wallet"
 import * as utf8 from "utf8"
+import {
+  // IAmount,
+  // ISwtcTxOptions,
+  IPaymentTxOptions,
+  IOfferCreateTxOptions,
+  IOfferCancelTxOptions,
+  IContractInitTxOptions,
+  IContractInvokeTxOptions,
+  IContractDeployTxOptions,
+  IContractCallTxOptions
+} from "./types"
 
 function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
@@ -82,7 +93,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    amount payment amount, required
      * @returns {Transaction}
      */
-    public static buildPaymentTx(options, remote: any = {}) {
+    public static buildPaymentTx(options: IPaymentTxOptions, remote: any = {}) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -129,7 +140,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    taker_pays|gets amount to take in, required
      * @returns {Transaction}
      */
-    public static buildOfferCreateTx(options, remote: any = {}) {
+    public static buildOfferCreateTx(
+      options: IOfferCreateTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -201,7 +215,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    sequence, required
      * @returns {Transaction}
      */
-    public static buildOfferCancelTx(options, remote: any = {}) {
+    public static buildOfferCancelTx(
+      options: IOfferCancelTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -245,17 +262,23 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    payload, required
      * @returns {Transaction}
      */
-    public static initContractTx(options, remote: any = {}) {
+    public static initContractTx(
+      options: IContractInitTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
         return tx
       }
       if (remote._solidity) {
+        let params = []
         const account = options.account
         const amount = options.amount
         const payload = options.payload
-        const params = options.params || []
+        if ("params" in options) {
+          params = options.params
+        }
         const abi = options.abi
         if (!utils.isValidAddress(account)) {
           tx.tx_json.account = new Error("invalid address")
@@ -300,7 +323,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         throw new Error("initialize your remote for solidity first")
       }
     }
-    public static invokeContractTx(options, remote: any = {}) {
+    public static invokeContractTx(
+      options: IContractInvokeTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -402,7 +428,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
     }
 
-    public static deployContractTx(options, remote: any = {}) {
+    public static deployContractTx(
+      options: IContractDeployTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -462,15 +491,21 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    params, required
      * @returns {Transaction}
      */
-    public static callContractTx(options, remote: any = {}) {
+    public static callContractTx(
+      options: IContractCallTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
         return tx
       }
+      let params = []
       const account = options.account
       const des = options.destination
-      const params = options.params
+      if ("params" in options) {
+        params = options.params || []
+      }
       const foo = options.func || options.foo // 函数名
       if (!utils.isValidAddress(account)) {
         tx.tx_json.account = new Error("invalid address")

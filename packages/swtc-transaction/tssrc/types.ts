@@ -17,6 +17,9 @@ export interface IPaymentTxOptions {
   account?: string
   destination?: string
   to?: string
+  memo?: string
+  secret?: string
+  sequence?: string
 }
 
 export interface IOfferCreateTxOptions {
@@ -29,6 +32,9 @@ export interface IOfferCreateTxOptions {
   taker_gets?: IAmount
   taker_pays?: IAmount
   app?: any
+  memo?: string
+  secret?: string
+  sequence?: string
 }
 
 export interface IOfferCancelTxOptions {
@@ -36,21 +42,30 @@ export interface IOfferCancelTxOptions {
   source?: string
   from?: string
   account?: string
+  memo?: string
+  secret?: string
 }
 
 export interface IContractInitTxOptions {
-  amount: IAmount
+  amount: number
   account: string
   abi: any[]
   payload: string
   params?: string[] | null | undefined
+  memo?: string
+  secret?: string
+  sequence?: string
 }
 
 export interface IContractInvokeTxOptions {
-  amount: IAmount
+  amount: number
   account: string
+  destination: string
   abi: any[]
   func: string
+  memo?: string
+  secret?: string
+  sequence?: string
 }
 
 export interface IContractDeployTxOptions {
@@ -58,12 +73,19 @@ export interface IContractDeployTxOptions {
   account: string
   payload: string
   params?: string[] | null | undefined
+  memo?: string
+  secret?: string
+  sequence?: string
 }
 
 export interface IContractCallTxOptions {
   amount: IAmount
   account: string
   destination: string
+  params?: string[] | null | undefined
   func?: string
   foo?: string
+  memo?: string
+  secret?: string
+  sequence?: string
 }
