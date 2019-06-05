@@ -1,8 +1,9 @@
 {
   "name": "swtc-x-lib",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "swtc-x-lib for jingtum alliance chains",
   "main": "src/index.js",
+  "unpkg": "dist/swtc-x-lib.js",
   "browser": {
     "ws": "./src/wswrapper.js"
   },
@@ -17,18 +18,15 @@
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tsc": "tsc",
     "tslint": "tslint tssrc/*.ts",
-    "gulp": "gulp dev",
-    "gulp:production": "gulp production",
+    "build:dev": "webpack --mode development",
     "build": "webpack",
-    "build:production": "webpack --config prod.webpack.config",
-    "dev": "webpack-dev-server",
     "test": "mocha \"test/test*.js\"",
     "test:extended": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swtcca/swtc-lib.git"
+    "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "keywords": [
     "swtc",
@@ -40,9 +38,9 @@
   "author": "Lospring Liu <lospringliu@gmail.com>",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/swtcca/swtc-lib/issues"
+    "url": "https://github.com/swtcca/swtclib/issues"
   },
-  "homepage": "https://github.com/swtcca/swtc-lib#readme",
+  "homepage": "https://github.com/swtcca/swtclib#readme",
   "husky": {
     "hooks": {
       "pre-commit": "pretty-quick --staged --no-restage --verbose --bail"
@@ -54,27 +52,26 @@
     "sha1": "^1.1.1",
     "swtc-nativescript": "^1.0.0",
     "swtc-transaction": "^1.2.8",
+    "swtc-utils": "^1.1.7",
     "ws": "^6.2.1"
   },
   "devDependencies": {
-    "@types/node": "^11.13.7",
+    "@types/node": "^12.0.2",
     "chai": "^4.2.0",
     "chai-json-schema": "^1.5.0",
-    "eslint": "^5.15.3",
+    "eslint": "^5.16.0",
     "esm": "^3.2.22",
-    "gulp": "^4.0.0",
-    "husky": "^1.3.1",
+    "husky": "^2.3.0",
     "jsbn": "^1.1.0",
-    "mocha": "^5.2.0",
-    "nyc": "^14.0.0",
-    "prettier": "^1.16.4",
-    "pretty-quick": "^1.10.0",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "pretty-quick": "^1.11.0",
     "sinon": "^7.2.4",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "typescript": "^3.4.5",
     "webpack": "^4.29.3",
-    "webpack-cli": "^3.2.3",
-    "webpack-stream": "^5.2.1"
+    "webpack-cli": "^3.2.3"
   }
 }

@@ -307,7 +307,7 @@ describe("test server", function() {
       expect(spy.callCount).to.equal(0)
       expect(spy1.callCount).to.equal(0)
       new Promise(resolve => {
-        setTimeout(() => resolve(server.disconnect()), 500)
+        setTimeout(() => resolve(server.disconnect()), 1500)
       })
       done()
     })
