@@ -5,8 +5,8 @@ module.exports = {
   cache: false,
   entry: "./src/index.js",
   output: {
-    library: "swtc_wallet",
+    library: "swtc_api",
     path: path.resolve(__dirname, "dist"),
-    filename: "swtc-wallet.js"
+    filename: "swtc-api.js"
   }
 }

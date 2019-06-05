@@ -11,11 +11,12 @@
     "lerna": "lerna",
     "clean": "lerna clean --yes",
     "cleanall": "lerna clean --yes && rm -fr node_modules package-lock.json",
-    "lint": "lerna run tslint --stream && lerna run tsc --stream && lerna run eslint --stream && lerna run prettier:check --stream",
+    "build": "lerna run tslint --stream && lerna run tsc --stream && lerna run build --stream",
+    "lint": "lerna run tslint --stream && lerna run tsc --stream && lerna run eslint --stream && lerna run prettier:check --stream && lerna run build --stream",
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "test": "npm run bootstrap && npm run lint && npm run testonly",
-    "testonly": "lerna run tsc --stream && lerna run test --stream --ignore swtc-api --ignore swtc-lib && lerna run test --stream --scope swtc-api && lerna run test --stream --scope swtc-lib"
+    "testonly": "lerna run tsc --stream && lerna run test --stream --ignore swtc-api --ignore swtc-lib --ignore swtc-x-lib && lerna run test --stream --scope swtc-api && lerna run test --stream --scope swtc-lib && lerna run test --stream --scope swtc-x-lib"
   },
   "devDependencies": {
     "husky": "^2.3.0",

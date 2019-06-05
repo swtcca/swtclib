@@ -1,9 +1,10 @@
 {
   "name": "swtc-x-lib",
-  "version": "1.0.5",
+  "version": "1.0.4",
   "description": "swtc-x-lib for jingtum alliance chains",
   "main": "src/index.js",
   "unpkg": "dist/swtc-x-lib.js",
+  "jsdelivr": "dist/swtc-x-lib.js",
   "browser": {
     "ws": "./src/wswrapper.js"
   },
@@ -18,8 +19,8 @@
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tsc": "tsc",
     "tslint": "tslint tssrc/*.ts",
-    "build:dev": "webpack --mode development",
-    "build": "webpack",
+    "build:dev": "tsc && webpack --mode development",
+    "build": "tsc && webpack",
     "test": "mocha \"test/test*.js\"",
     "test:extended": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
@@ -54,6 +55,10 @@
     "swtc-transaction": "^1.2.8",
     "swtc-utils": "^1.1.7",
     "ws": "^6.2.1"
+  },
+  "optionalDependencies": {
+    "swtc-tum3": "^0.1.2",
+    "tum3-eth-abi": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^12.0.2",

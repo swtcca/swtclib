@@ -3,6 +3,8 @@
   "version": "1.1.12",
   "description": "swtc wallet library",
   "main": "src/index.js",
+  "unpkg": "dist/swtc-wallet.js",
+  "jsdelivr": "dist/swtc-wallet.js",
   "directories": {
     "test": "test"
   },
@@ -14,10 +16,8 @@
     "tsc": "tsc",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha \"test/*.js\"",
-    "gulp": "gulp dev",
-    "gulp:production": "gulp production",
-    "build": "webpack",
-    "build:production": "webpack --config prod.webpack.config",
+    "build:dev": "tsc && webpack --mode development",
+    "build": "tsc && webpack",
     "test:extended": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },
@@ -42,7 +42,6 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
-    "gulp": "^4.0.0",
     "mocha": "^6.1.4",
     "nyc": "^14.1.1",
     "prettier": "^1.17.1",
@@ -51,7 +50,6 @@
     "typescript": "^3.4.5",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-stream": "^5.2.1"
+    "webpack-dev-server": "^3.1.14"
   }
 }
