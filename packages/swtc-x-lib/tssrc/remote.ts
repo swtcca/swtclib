@@ -9,6 +9,34 @@ import sha1 from "sha1"
 import { Factory as WalletFactory } from "swtc-wallet"
 import { Factory as UtilsFactory } from "swtc-utils"
 
+import {
+  IRemoteOptions,
+  IRequestLedgerOptions,
+  IRequestAccountsOptions,
+  IRequestTxOptions,
+  IRequestAccountInfoOptions,
+  IRequestAccountTumsOptions,
+  IRequestAccountRelationsOptions,
+  IRequestAccountOffersOptions,
+  IRequestAccountTxOptions,
+  IRequestOrderBookOptions
+} from "./types"
+import {
+  // IMarker,
+  // IAmount,
+  // ISwtcTxOptions,
+  IPaymentTxOptions,
+  IOfferCreateTxOptions,
+  IOfferCancelTxOptions,
+  IContractInitTxOptions,
+  IContractInvokeTxOptions,
+  IContractDeployTxOptions,
+  IContractCallTxOptions,
+  ISignTxOptions,
+  IAccountSetTxOptions,
+  IRelationTxOptions
+} from "./types"
+
 const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
   let Wallet
   if (typeof wallet_or_chain_or_token === "string") {
@@ -225,8 +253,12 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     public static utils = utils
 
     public type
-    public _local_sign
+    public abi?
+    public fun?
+    public readonly AbiCoder: any = null
+    public readonly Tum3: any = null
     public _token
+    public _local_sign
     public _issuer
     public _url
     public _server
@@ -234,10 +266,22 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     public _requests
     public _cache
     public _paths
-    constructor(options) {
+    public _solidity: boolean = false
+    constructor(options: IRemoteOptions = { local_sign: true }) {
       super()
       const _opts = options || {}
       this._local_sign = true
+      if (_opts.solidity) {
+        this._solidity = true
+        try {
+          this.AbiCoder = require("tum3-eth-abi").AbiCoder
+          this.Tum3 = require("swtc-tum3")
+        } catch (error) {
+          throw Error(
+            "install tum3-eth-abi and swtc-tum3 to enable solidity support"
+          )
+        }
+      }
       if (typeof _opts.server !== "string") {
         this.type = new TypeError("server config not supplied")
         return this
@@ -476,7 +520,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      * @param options
      * @returns {Request}
      */
-    public requestLedger(options) {
+    public requestLedger(options: IRequestLedgerOptions) {
       // if (typeof options !== 'object') {
       //     return new Error('invalid options type');
       // }
@@ -502,7 +546,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
       }
       if (
         options.ledger_index &&
-        !/^[1-9]\d{0,9}$/.test(options.ledger_index)
+        !/^[1-9]\d{0,9}$/.test(String(options.ledger_index))
       ) {
         // 支持0-10位数字查询
         request.message.ledger_index = new Error("invalid ledger_index")
@@ -539,7 +583,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     /*
      * get all accounts at some ledger_index
      */
-    public requestAccounts = function(options) {
+    public requestAccounts = function(options: IRequestAccountsOptions) {
       const request = new Request(this, "account_count")
       if (options === null || typeof options !== "object") {
         request.message.type = new Error("invalid options type")
@@ -547,7 +591,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
       }
       if (
         options.ledger_index &&
-        !/^[1-9]\d{0,9}$/.test(options.ledger_index)
+        !/^[1-9]\d{0,9}$/.test(String(options.ledger_index))
       ) {
         // 支持0-10位数字查询
         request.message.ledger_index = new Error("invalid ledger_index")
@@ -573,7 +617,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      * }
      * @returns {Request}
      */
-    public requestTx(options) {
+    public requestTx(options: IRequestTxOptions) {
       const request = new Request(this, "tx")
       if (options === null || typeof options !== "object") {
         request.message.type = new Error("invalid options type")
@@ -597,7 +641,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    ledger_index=xxx, ledger_hash=xxx, or ledger=closed|current|validated
      * @returns {Request}
      */
-    public requestAccountInfo(options) {
+    public requestAccountInfo(options: IRequestAccountInfoOptions) {
       const request = new Request(this)
 
       if (options === null || typeof options !== "object") {
@@ -618,7 +662,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    no limit
      * @returns {Request}
      */
-    public requestAccountTums(options) {
+    public requestAccountTums(options: IRequestAccountTumsOptions) {
       const request = new Request(this)
 
       if (options === null || typeof options !== "object") {
@@ -639,7 +683,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    marker for more relations
      * @returns {Request}
      */
-    public requestAccountRelations(options) {
+    public requestAccountRelations(options: IRequestAccountRelationsOptions) {
       const request = new Request(this)
 
       if (options === null || typeof options !== "object") {
@@ -671,7 +715,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    limit min is 200, marker
      * @returns {Request}
      */
-    public requestAccountOffers(options) {
+    public requestAccountOffers(options: IRequestAccountOffersOptions) {
       const request = new Request(this)
 
       if (options === null || typeof options !== "object") {
@@ -693,7 +737,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    descending, if returns recently tx records
      * @returns {Request}
      */
-    public requestAccountTx(options) {
+    public requestAccountTx(options: IRequestAccountTxOptions) {
       const request = new Request(this, "account_tx", data => {
         const results = []
         for (const data_transaction of data.transactions) {
@@ -755,7 +799,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      * @param options
      * @returns {Request}
      */
-    public requestOrderBook(options) {
+    public requestOrderBook(options: IRequestOrderBookOptions) {
       const request = new Request(this, "book_offers")
       if (options === null || typeof options !== "object") {
         request.message.type = new Error("invalid options type")
@@ -772,7 +816,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
         return request
       }
       if (isNumber(options.limit)) {
-        options.limit = parseInt(options.limit, 10)
+        options.limit = parseInt(String(options.limit), 10)
       }
 
       request.message.taker_gets = taker_gets
@@ -887,16 +931,23 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    amount payment amount, required
      * @returns {Transaction}
      */
-    public buildPaymentTx(options) {
+    public buildPaymentTx(options: IPaymentTxOptions) {
       return Transaction.buildPaymentTx(options, this)
     }
 
-    public initContract(options) {
+    public initContract(options: IContractInitTxOptions) {
       return Transaction.initContractTx(options, this)
     }
-    public invokeContract(options) {
+    public invokeContract(options: IContractInvokeTxOptions) {
       return Transaction.invokeContractTx(options, this)
     }
+    public initContractTx(options: IContractInitTxOptions) {
+      return Transaction.initContractTx(options, this)
+    }
+    public invokeContractTx(options: IContractInvokeTxOptions) {
+      return Transaction.invokeContractTx(options, this)
+    }
+
     public AlethEvent = function(options) {
       const request = new Request(this, "aleth_eventlog", data => data)
       if (typeof options !== "object") {
@@ -931,7 +982,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    payload, required
      * @returns {Transaction}
      */
-    public deployContractTx(options) {
+    public deployContractTx(options: IContractDeployTxOptions) {
       return Transaction.deployContractTx(options, this)
     }
 
@@ -943,11 +994,11 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    params, required
      * @returns {Transaction}
      */
-    public callContractTx(options) {
+    public callContractTx(options: IContractCallTxOptions) {
       return Transaction.callContractTx(options, this)
     }
 
-    public buildSignTx(options) {
+    public buildSignTx(options: ISignTxOptions) {
       return Transaction.buildSignTx(options, this)
     }
 
@@ -975,7 +1026,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    quality_in, optional
      * @returns {Transaction}
      */
-    public buildRelationTx(options) {
+    public buildRelationTx(options: IRelationTxOptions) {
       return Transaction.buildRelationTx(options, this)
     }
 
@@ -985,7 +1036,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    type: Transaction.AccountSetTypes
      * @returns {Transaction}
      */
-    public buildAccountSetTx(options) {
+    public buildAccountSetTx(options: IAccountSetTxOptions) {
       return Transaction.buildAccountSetTx(options, this)
     }
 
@@ -998,7 +1049,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    taker_pays|gets amount to take in, required
      * @returns {Transaction}
      */
-    public buildOfferCreateTx(options) {
+    public buildOfferCreateTx(options: IOfferCreateTxOptions) {
       return Transaction.buildOfferCreateTx(options, this)
     }
 
@@ -1009,7 +1060,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
      *    sequence, required
      * @returns {Transaction}
      */
-    public buildOfferCancelTx(options) {
+    public buildOfferCancelTx(options: IOfferCancelTxOptions) {
       return Transaction.buildOfferCancelTx(options, this)
     }
 
