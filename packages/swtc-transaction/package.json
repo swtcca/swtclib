@@ -1,6 +1,6 @@
 {
   "name": "swtc-transaction",
-  "version": "1.2.13",
+  "version": "1.2.14",
   "description": "swtc transaction package",
   "main": "src/index.js",
   "unpkg": "dist/swtc-transaction.js",
