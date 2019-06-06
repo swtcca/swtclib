@@ -5,6 +5,10 @@
 ## swtc-api 接口说明
 
 > ### swtc-api 对 jingtum-api 作出包装， 消除不安全操作 并且提供类似 swtc-lib 的接口支持 jingtum-api 缺失的操作
+>
+> ### 强制本地签名
+>
+> ### 合约测试只能在特定节点运行, solidity 支持到 0.5.4, 需要安装 swtc-tum3 / tum3-eth-abi
 
 ## 目录
 
@@ -89,7 +93,10 @@
    >
    > - 4.24.1 创建执行合约对象
    > - 4.24.2 执行合约
-5. ### [本地签名](#localSign)
+5. ### [本地签名和可选参数](#localSignOptionalParams)
+   > ### 5.1 [本地签名](#localSign)
+   >
+   > ### 5.2 [可选参数](#optionalParameters)
 6. ### [交易信息](#transaction)
 7. ### 工具类 swtc-utils 类是工具类
 8. ### [底层常见错误附录](#errors)
@@ -980,10 +987,9 @@ remote
 
 #### 参数:
 
-| 参数    | 类型   |        说明 |
-| ------- | ------ | ----------: |
-| address | String |    钱包地址 |
-| hash    | String | 交易的 hash |
+| 参数 | 类型   |        说明 |
+| ---- | ------ | ----------: |
+| hash | String | 交易的 hash |
 
 #### 返回: Promise - json
 
@@ -2297,7 +2303,9 @@ tx.submitPromise(v.secret)
       '7968F7E8C341F8F12DD1943B3EFE909A4F553FCFEE07E3605E2303CDF3C4641C' } }
 ```
 
-## <a name="localSign"></a>5 本地签名
+## <a name="localSignOptionalParams"></a>5 本地签名和可选参数
+
+### <a name="localSign"></a>5.1 本地签名
 
 #### 方法: postBlob(blob);
 
@@ -2354,6 +2362,34 @@ remote
       '3045022100FD7DF650C0C753C0589159C383A809C5F2DB7AA53705E1880EF882DFAB577EB702202A91F83336E81EA709C937E1C3DD531BBF52D9A39A386A5AEB49571F7D07F0B7',
      hash:
       '7968F7E8C341F8F12DD1943B3EFE909A4F553FCFEE07E3605E2303CDF3C4641C' } }
+```
+
+### <a name="optionalParameters"></a>5.2 可选参数
+
+#### 方法: .getXYZ()
+
+#### 可选参数:
+
+可选参数自身是一个 javascript 对象， 放在参数后面， 常见的包括
+|参数|类型|说明|
+|----|----|---:|
+|results_per_page|Number|分页显示时每页显示的数目|
+|page|Number|分页显示返回的页码|
+|marker|Object|分页相关，位置标记|
+|currency|String|通证代码|
+|issuer|String|银关|
+
+#### 返回: Promise - json
+
+#### 例子
+
+```javascript
+remote.getAccountBalances("jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz", {
+  currency: "CNY"
+});
+remote.getAccountOffers("jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz", {
+  results_per_page: 100
+});
 ```
 
 ## <a name="transaction"></a>6 交易记录信息
