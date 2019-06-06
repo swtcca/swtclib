@@ -13,7 +13,7 @@ let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 
 describe("test transaction additions", function() {
   describe("test build payment transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = TX.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -96,7 +96,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test build offer create transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = TX.buildOfferCreateTx({
       type: "Buy",
       account: DATA.address,
@@ -164,7 +164,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test build offer cancel transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = TX.buildOfferCancelTx({ account: DATA.address, sequence: 100 })
     it("if did not provide remote", function() {
       expect(tx._remote).to.deep.equal({})
@@ -217,7 +217,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test relation transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = TX.buildRelationTx({
       target: DATA.address2,
       account: DATA.address,
@@ -285,7 +285,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test .signPromise()", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = TX.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -364,7 +364,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test .submitPromise()", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     it(".submitPromise()", async function() {
       let tx = TX.buildPaymentTx(
         {

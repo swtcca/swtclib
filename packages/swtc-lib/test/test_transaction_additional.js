@@ -18,7 +18,7 @@ const remote = new Remote({
 
 describe("test transaction additions", function() {
   describe("test build payment transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = remote.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -76,7 +76,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test build offer create transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = remote.buildOfferCreateTx({
       type: "Buy",
       account: DATA.address,
@@ -126,7 +126,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test build offer cancel transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = remote.buildOfferCancelTx({ account: DATA.address, sequence: 100 })
     it("setSecret", function() {
       tx.setSecret(DATA.secret)
@@ -169,7 +169,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test relation transaction", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = remote.buildRelationTx({
       target: DATA.address2,
       account: DATA.address,
@@ -219,7 +219,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test .signPromise()", function() {
-    this.timeout(15000)
+    this.timeout(20000)
     let tx = remote.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
