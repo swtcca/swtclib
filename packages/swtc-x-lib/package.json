@@ -56,10 +56,6 @@
     "swtc-utils": "^1.1.8",
     "ws": "^6.2.1"
   },
-  "optionalDependencies": {
-    "swtc-tum3": "^0.1.2",
-    "tum3-eth-abi": "^1.0.2"
-  },
   "devDependencies": {
     "@types/node": "^12.0.2",
     "chai": "^4.2.0",
@@ -73,8 +69,10 @@
     "prettier": "^1.17.1",
     "pretty-quick": "^1.11.0",
     "sinon": "^7.2.4",
+    "swtc-tum3": "^0.1.2",
     "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
+    "tum3-eth-abi": "^1.0.2",
     "typescript": "^3.4.5",
     "webpack": "^4.29.3",
     "webpack-cli": "^3.2.3"
