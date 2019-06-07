@@ -1106,9 +1106,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         // use api.jingtum.com to get sequence
         axios
           .get(
-            `https://api.jingtum.com/v2/accounts/${
-              self.tx_json.Account
-            }/balances`
+            `https://api.jingtum.com/v2/accounts/${self.tx_json.Account}/balances`
           )
           .then(response => {
             self.tx_json.Sequence = response.data.sequence
@@ -1331,9 +1329,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         } else {
           // use api.jingtum.com to get sequence
           response = await axios.get(
-            `https://api.jingtum.com/v2/accounts/${
-              this.tx_json.Account
-            }/balances`
+            `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
           )
           this.tx_json.Sequence = response.data.sequence
           return Promise.resolve(this)
