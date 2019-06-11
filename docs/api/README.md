@@ -1299,10 +1299,6 @@ remote
 
 ##### 返回: Promise
 
-##### 方法: tx.submit(callback);
-
-##### 参数:无
-
 #### 设置关系完整例子
 
 ```javascript

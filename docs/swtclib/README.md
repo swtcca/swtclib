@@ -8,13 +8,6 @@
 
 ## [应用实例](../examples/)
 
-## 版本历史
-
-| 版本  | 简介            | 作者        | 日期     |
-| ----- | --------------- | ----------- | -------- |
-| 2.0.3 | swtc-lib        | lospringliu | 2019/4/2 |
-| 2.1.0 | 合约类 solidity | lospringliu | 2019/5/7 |
-
 ## 目录
 
 1. ### [安装](#installation)
@@ -336,7 +329,7 @@ remote
 
 ### <a name="requestServerInfo"></a> 4.4 请求底层服务器信息
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得井通底层的服务器信息，包含 服务程序版本号 version、该服务器缓存的账本区间 ledgers、节点公钥 node、服务器当前状态 state。其中服务器当前状态包含可提供服务状态 full 和验证节点状态 proposing。
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得井通底层的服务器信息，包含 服务程序版本号 version、该服务器缓存的账本区间 ledgers、节点公钥 node、服务器当前状态 state。其中服务器当前状态包含可提供服务状态 full 和验证节点状态 proposing。
 
 #### 方法:requestServerInfo()
 
@@ -386,7 +379,7 @@ remote
 
 ### <a name='requestLedgerClosed'></a> 4.5 获取最新账本信息
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得最新账本信息，包括区块高度(ledger_index)与区块 hash(ledger_hash)
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得最新账本信息，包括区块高度(ledger_index)与区块 hash(ledger_hash)
 
 #### 方法: requestLedgerClosed()
 
@@ -430,7 +423,7 @@ remote
 
 ### <a name="requestLedger"></a> 4.6 获取某一账本具体信息
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一账本的具体信息
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一账本的具体信息
 
 #### 方法:remote.requestLedger({ledger_index:’8488670’,transactions:true});
 
@@ -517,7 +510,7 @@ remote
 
 ### <a name="requestTx"></a> 4.7 查询某一交易具体信息
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一交易的具体信息。
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一交易的具体信息。
 
 #### 方法:remote.requestTx({hash:’xxx’});
 
@@ -607,7 +600,7 @@ remote
 
 ### <a name="requestAccountInfo"></a> 4.8 请求账号信息
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一账号的交易信息。
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一账号的交易信息。
 
 #### 方法:remote.requestAccountInfo({account:’xxx’});
 
@@ -684,7 +677,7 @@ remote
 
 ### <a name="requestAccountTums"></a> 4.9 获得账号可接收和发送的货币
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一账号可发送和接收的货币种类。
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一账号可发送和接收的货币种类。
 
 #### 方法:remote.requestAccountTums({account:’xxx’});
 
@@ -742,7 +735,7 @@ remote
 
 #### 井通账户之间会建立各种不同的关系。这些关系由井通后台的关系(relations)机制来处理，目前支持以下关系:信任(trust)、授权(authorize)、冻结(freeze)。
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一账号指定关系的信息
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一账号指定关系的信息
 
 #### 方法:remote.requestAccountRelations({account:’xxx’,type:’xxx’});
 
@@ -817,7 +810,7 @@ remote
 
 ### <a name="requestAccountOffers"></a> 4.11 获得账号挂单
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一账号的挂单信息
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一账号的挂单信息
 
 #### 方法:remote.requestAccountOffers({account:’xxx’});
 
@@ -885,7 +878,7 @@ remote
 
 ### <a name="requestAccountTx"></a> 4.12 获得账号交易列表
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得某一账号的交易列表信息。
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得某一账号的交易列表信息。
 
 #### 方法:remote.requestAccountTx({account:’xxx’});
 
@@ -972,7 +965,7 @@ remote
 
 ### <a name="requestOrderBook"></a> 4.13 获得市场挂单
 
-#### 首先通过本方法返回一个 Request 对象，然后通过 submit 方法获得市场挂单列表信息。
+#### 首先通过本方法返回一个 Request 对象，然后通过 submitPromise 方法获得市场挂单列表信息。
 
 #### 方法:remote.requestOrderBook({});
 
@@ -1060,7 +1053,7 @@ remote
 
 ### <a name="requestBrokerage"></a> 4.14 获得挂单佣金设置信息
 
-#### 首先通过 requestBrokerage 方法返回一个 Transaction 对象，然后通过 submit 方法提交。
+#### 首先通过 requestBrokerage 方法返回一个 Transaction 对象，然后通过 submitPromise 方法提交。
 
 ##### 方法: remote.requestBrokerage({});
 
@@ -1068,7 +1061,7 @@ remote
 
 ### <a name="paymentTx"></a> 4.15 支付
 
-#### 首先通过 buildPaymentTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，addMemo 添加备注为可选项，最后通过 submit 方法提交支付信息。
+#### 首先通过 buildPaymentTx 方法返回一个 Transaction 对象，addMemo 添加备注为可选项，最后通过 submitPromise 方法提交支付信息。
 
 #### <a name="paymentBuildTx"></a> 4.15.1 创建支付对象
 
@@ -1176,7 +1169,7 @@ remote
 
 ### <a name="relationTx"></a> 4.16 设置关系
 
-#### 首先通过 buildRelationTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最 后通过 submit 方法提交支付信息。目前支持的关系类型:信任(trust)、授权(authorize)、冻结 (freeze)
+#### 首先通过 buildRelationTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法提交支付信息。目前支持的关系类型:信任(trust)、授权(authorize)、冻结 (freeze)
 
 #### <a name="relationBuildTx"></a> 4.16.1 创建关系对象
 
@@ -1298,7 +1291,7 @@ remote
 
 ### <a name="accountSetTx"></a> 4.17 设置账号属性 ------待完善
 
-#### 首先通过 buildAccountSetTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥， 最后通过 submit 方法设置账号属性。目前支持的三类:`property`、`delegate` 、`signer`。property 用于设置账号一般属性;delegate 用于某账号设置委托帐户;signer 用于设置签名。
+#### 首先通过 buildAccountSetTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法设置账号属性。目前支持的三类:`property`、`delegate` 、`signer`。property 用于设置账号一般属性;delegate 用于某账号设置委托帐户;signer 用于设置签名。
 
 #### <a name="accountSetBuild"></a>4.17.1 创建属性对象
 
@@ -1377,7 +1370,7 @@ remote.connect(function(err, result) {
 
 ### <a name="offerCreate"></a> 4.18 挂单
 
-#### 首先通过 buildOfferCreateTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最后通过 submit 方法提交挂单。
+#### 首先通过 buildOfferCreateTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法提交挂单。
 
 #### <a name="offerCreateBuild"></a> 4.18.1 创建挂单对象
 
@@ -1495,7 +1488,7 @@ remote
 
 ### <a name="offerCancel"></a> 4.19 取消挂单
 
-#### 首先通过 buildOfferCancelTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最后通过 submit 方法取消挂单。
+#### 首先通过 buildOfferCancelTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法取消挂单。
 
 #### 4.19.1 <a name="offerCancelBuild"></a> 创建取消挂单对象
 
@@ -1593,7 +1586,7 @@ remote
 
 ### <a name="contractDeploy"></a>4.20 部署合约 lua
 
-#### 首先通过 deployContractTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最后通过 submit 方法部署合约。
+#### 首先通过 deployContractTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法部署合约。
 
 #### <a name="contractDeployBuild"></a>4.20.1 创建部署合约对象
 
@@ -1710,7 +1703,7 @@ remote.connect(function(err, result) {
 
 ### <a name="contractCall"></a> 4.21 执行合约 lua
 
-#### 首先通过 callContractTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最后通过 submit 方法执行合约
+#### 首先通过 callContractTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法执行合约
 
 #### <a name="contractCallBuild"></a> 4.21.1 创建执行合约对象
 
@@ -1824,7 +1817,7 @@ remote.connect(function(err, result) {
 
 ### <a name="buildBrokerageTx"></a> 4.22 设置挂单佣金
 
-#### 首先通过 buildBrokerageTx 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最后 通过 submit 方法设置平台手续费
+#### 首先通过 buildBrokerageTx 方法返回一个 Transaction 对象，然后通过 submitPromise 方法设置平台手续费
 
 #### 4.22.1 创建挂单佣金对象
 
@@ -1851,9 +1844,9 @@ remote.connect(function(err, result) {
 
 #### 4.22.3 设置挂单佣金
 
-##### 方法:tx.submit(callback);
+##### 方法:tx.submitPromise(secret);
 
-##### 参数:无
+##### 参数: `secret` 密钥
 
 ### <a name="initContract"></a>4.23 部署合约 Solidity 版
 
@@ -2055,7 +2048,7 @@ remote
 
 ### <a name="invokeContract"></a>4.24 调用合约(Solidity 版)
 
-#### 首先通过 invokeContract 方法返回一个 Transaction 对象，然后通过 setSecret 传入密钥，最后通过 submit 方法完成合约的调用。
+#### 首先通过 invokeContract 方法返回一个 Transaction 对象，然后通过 submitPromise 方法完成合约的调用。
 
 #### 4.24.1 创建合约调用对象
 

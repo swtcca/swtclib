@@ -83,9 +83,7 @@ $ mkdir dist; touch dist/main.js
               let price =
                 Math.floor((1000000 * 1000 * 100) / Number(offer.quality)) /
                 100000;
-              price_list += `\n价格: ${price}\t挂单量: ${quantity}\t${
-                offer.Account
-              }`;
+              price_list += `\n价格: ${price}\t挂单量: ${quantity}\t${offer.Account}`;
             });
             dom_price.innerHTML = `<pre>${price_list}</pre>`;
           })
