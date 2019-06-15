@@ -17,8 +17,9 @@ const remote = new Remote({
 })
 
 describe("test transaction additions", function() {
-  describe("test build payment transaction", function() {
+  describe("test build payment transaction", async function() {
     this.timeout(20000)
+    await remote.connectPromise()
     let tx = remote.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -41,37 +42,23 @@ describe("test transaction additions", function() {
       tx.setSequence(101)
       expect(tx.tx_json.Sequence).to.equal(101)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          throw error
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = remote.buildPaymentTx({
         source: DATA.address,
         to: DATA.address2,
         amount: remote.makeAmount(0.1)
       })
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("sign and submit", async function() {
-      await remote.connectPromise()
       let result = await tx.submitPromise()
-      console.log(result.data)
+      // console.log(result.data)
       expect(result).to.be.an("object")
     })
   })
@@ -91,33 +78,20 @@ describe("test transaction additions", function() {
       tx.setSequence(100)
       expect(tx.tx_json.Sequence).to.equal(100)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          throw error
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise()
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = remote.buildOfferCreateTx({
         type: "Buy",
         account: DATA.address,
         taker_gets: { value: 1, currency: "SWT", issuer: "" },
         taker_pays: { value: 0.007, currency: "CNY", issuer: DATA.issuer }
       })
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
       let result = await tx.submitPromise()
@@ -136,31 +110,18 @@ describe("test transaction additions", function() {
       tx.setSequence(100)
       expect(tx.tx_json.Sequence).to.equal(100)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise()
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = remote.buildOfferCancelTx(
         { account: DATA.address, sequence: 100 },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
       let result = await tx.submitPromise()
@@ -184,33 +145,20 @@ describe("test transaction additions", function() {
       tx.setSequence(100)
       expect(tx.tx_json.Sequence).to.equal(100)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise()
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = remote.buildRelationTx({
         target: DATA.address2,
         account: DATA.address,
         type: "freeze",
         limit: { value: 11, currency: "CNY", issuer: DATA.issuer }
       })
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
       let result = await tx.submitPromise()

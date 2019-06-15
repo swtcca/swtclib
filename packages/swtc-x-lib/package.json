@@ -6,6 +6,8 @@
   "unpkg": "dist/swtc-x-lib.js",
   "jsdelivr": "dist/swtc-x-lib.js",
   "browser": {
+    "swtc-tum3": false,
+    "tum3-eth-abi": false,
     "ws": "./src/wswrapper.js"
   },
   "directories": {
@@ -70,7 +72,6 @@
     "pretty-quick": "^1.11.0",
     "sinon": "^7.2.4",
     "swtc-tum3": "^0.1.2",
-    "ts-node": "^8.1.0",
     "tslint": "^5.16.0",
     "tum3-eth-abi": "^1.0.2",
     "typescript": "^3.4.5",

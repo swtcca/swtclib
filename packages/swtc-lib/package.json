@@ -6,6 +6,8 @@
   "unpkg": "dist/swtc-lib.js",
   "jsdelivr": "dist/swtc-lib.js",
   "browser": {
+    "swtc-tum3": false,
+    "tum3-eth-abi": false,
     "ws": "./src/wswrapper.js"
   },
   "directories": {

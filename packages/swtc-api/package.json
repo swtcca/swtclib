@@ -5,6 +5,10 @@
   "main": "src/index.js",
   "unpkg": "dist/swtc-api.js",
   "jsdelivr": "dist/swtc-api.js",
+  "browser": {
+    "swtc-tum3": false,
+    "tum3-eth-abi": false
+  },
   "directories": {
     "test": "test"
   },

@@ -13,7 +13,7 @@ let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 
 describe("test transaction additions", function() {
   describe("test build payment transaction", function() {
-    this.timeout(20000)
+    this.timeout(30000)
     let tx = TX.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -59,17 +59,11 @@ describe("test transaction additions", function() {
     it("has tx_json.Memos if in options", function() {
       expect(tx.tx_json.Memos).to.be.an("array")
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          throw error
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let result = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.blob).to.equal(result)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = TX.buildPaymentTx(
         {
           source: DATA.address,
@@ -78,16 +72,9 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let result = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(result)
     })
     it("sign and submit", async function() {
       let result = await tx.submitPromise()
@@ -96,7 +83,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test build offer create transaction", function() {
-    this.timeout(20000)
+    this.timeout(25000)
     let tx = TX.buildOfferCreateTx({
       type: "Buy",
       account: DATA.address,
@@ -126,17 +113,11 @@ describe("test transaction additions", function() {
       tx.setSequence(100)
       expect(tx.tx_json.Sequence).to.equal(100)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          throw error
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise()
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = TX.buildOfferCreateTx(
         {
           type: "Buy",
@@ -146,25 +127,18 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
-      let result = await tx.submitPromise()
+      let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
   })
   describe("test build offer cancel transaction", function() {
-    this.timeout(20000)
+    this.timeout(25000)
     let tx = TX.buildOfferCancelTx({ account: DATA.address, sequence: 100 })
     it("if did not provide remote", function() {
       expect(tx._remote).to.deep.equal({})
@@ -184,31 +158,18 @@ describe("test transaction additions", function() {
       tx.setSequence(100)
       expect(tx.tx_json.Sequence).to.equal(100)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise()
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = TX.buildOfferCancelTx(
         { account: DATA.address, sequence: 100 },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
       let result = await tx.submitPromise()
@@ -217,7 +178,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test relation transaction", function() {
-    this.timeout(20000)
+    this.timeout(30000)
     let tx = TX.buildRelationTx({
       target: DATA.address2,
       account: DATA.address,
@@ -247,17 +208,11 @@ describe("test transaction additions", function() {
       tx.setSequence(100)
       expect(tx.tx_json.Sequence).to.equal(100)
     })
-    it("sign with sequence set", function() {
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+    it("sign with sequence set", async function() {
+      let blob = await tx.signPromise()
+      expect(tx.tx_json.blob).to.equal(blob)
     })
-    it("sign without sequence set", function() {
+    it("sign without sequence set", async function() {
       let tx = TX.buildRelationTx(
         {
           target: DATA.address2,
@@ -267,25 +222,18 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
-      tx.setSecret(DATA.secret)
-      let callback = (error, blob) => {
-        if (error) {
-          expect(error).to.equal("should not throw")
-        } else {
-          expect(tx.tx_json.Sequence).to.be.a("number")
-          expect(tx.tx_json.blob).to.equal(blob)
-        }
-      }
-      tx.sign(callback)
+      let blob = await tx.signPromise(DATA.secret)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
-      let result = await tx.submitPromise()
-      // console.log(result.data)
+      // console.log(tx.tx_json)
+      let result = await tx.submitPromise(DATA.secret)
       expect(result).to.be.an("object")
     })
   })
   describe("test .signPromise()", function() {
-    this.timeout(20000)
+    this.timeout(30000)
     let tx = TX.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -364,7 +312,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test .submitPromise()", function() {
-    this.timeout(20000)
+    this.timeout(25000)
     it(".submitPromise()", async function() {
       let tx = TX.buildPaymentTx(
         {
