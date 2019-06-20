@@ -59,7 +59,7 @@
 <h2 align="center">支持开源SWTCLIB 支持公链生态</h2>
 
 <p align="center"> **金主** 经济支援单位。可以参与影响库规划, 享受专业支持</p>
-<p align="center"> **赞助** 欢迎喜欢项目的个人捐献</p>
+<p align="center"> **赞助** 欢迎喜欢项目的个人捐助</p>
 <p align="center"> **用户** 列出公司或者个人也是对项目的支持</p>
 
 <a name="sponsors"></a>
@@ -79,7 +79,7 @@
 </h3>
 <p align="center">
 	<img valign="middle" src="https://img.shields.io/badge/swtc-donate-blue.svg" alt="swtc-donate" /> jGxW97eCqxfAWvmqSgNkwc2apCejiM89bG
-	<br><img align="center" src="https://raw.githubusercontent.com/swtcca/swtc-app-examples/master/images/donate.png" alt="捐赠" />
+	<br><img align="center" src="https://raw.githubusercontent.com/swtcca/swtc-app-examples/master/images/donate.png" alt="捐助" />
 </p>
 
 <a name="users"></a>
@@ -88,6 +88,6 @@
 	用户
 </h3>
 <p align="center">
-	CA节点 | 畅节点 <br>
+	CA节点 | 畅节点 | 至尚节点 | JSKY节点  <br>
 	<img align="center" src="https://raw.githubusercontent.com/swtcca/swtc-app-examples/master/images/jccdex.png" alt="井畅" height="100" />
 </p>
