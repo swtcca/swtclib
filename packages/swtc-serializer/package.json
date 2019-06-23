@@ -46,7 +46,7 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },
-  "version": "2.1.4",
+  "version": "2.1.5",
   "author": "Lospring Liu",
   "bugs": {
     "url": "git+https://github.com/swtcca/swtclib.git"

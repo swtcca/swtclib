@@ -1,6 +1,6 @@
 {
   "name": "swtc-x-lib",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "swtc-x-lib for jingtum alliance chains",
   "main": "src/index.js",
   "unpkg": "dist/swtc-x-lib.js",
@@ -54,8 +54,8 @@
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
     "swtc-nativescript": "^1.0.0",
-    "swtc-transaction": "^1.2.15",
-    "swtc-utils": "^1.1.8",
+    "swtc-transaction": "^1.2.16",
+    "swtc-utils": "^1.1.9",
     "ws": "^6.2.1"
   },
   "devDependencies": {
