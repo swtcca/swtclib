@@ -355,17 +355,17 @@ function Factory(Wallet = WalletFactory()) {
       (tx.LimitAmount && tx.LimitAmount.issuer === account)
     ) {
       switch (tx.TransactionType) {
-        case "Payment":
+        case "Payment": // 支付类
           return tx.Account === account
             ? tx.Destination === account
               ? "convert"
               : "sent"
             : "received"
-        case "OfferCreate":
+        case "OfferCreate": // 创建挂单类
           return "offernew"
-        case "OfferCancel":
+        case "OfferCancel": // 取消挂单类
           return "offercancel"
-        case "TrustSet":
+        case "TrustSet": // 设置信任线
           return tx.Account === account ? "trusting" : "trusted"
         case "RelationDel":
         case "AccountSet":
@@ -373,8 +373,9 @@ function Factory(Wallet = WalletFactory()) {
         case "RelationSet":
         case "SignSet":
         case "Operation":
-        case "ConfigContract":
-        case "AlethContract":
+        case "ConfigContract": //lua版本合约类
+        case "AlethContract": //solidity版本合约类
+        case "Brokerage": //设置手续费类
           // TODO to sub-class tx type
           return tx.TransactionType.toLowerCase()
         default:
@@ -524,6 +525,13 @@ function Factory(Wallet = WalletFactory()) {
           result.destination = tx.Destination
         }
         break
+      case "brokerage":
+        result.feeAccount = tx.FeeAccountID
+        result.mol = parseInt(tx.OfferFeeRateNum, 16)
+        result.den = parseInt(tx.OfferFeeRateDen, 16)
+        result.amount = parseAmount(tx.Amount)
+        result.seq = tx.Sequence
+        break
       default:
         // TODO parse other type
         break
@@ -548,6 +556,17 @@ function Factory(Wallet = WalletFactory()) {
     if (!meta || meta.TransactionResult !== "tesSUCCESS") {
       return result
     }
+    let cos = [] // cos.length求出几类货币撮合
+    let getsValue = 0 // 实际对方获得的
+    let paysValue = 0 // 实际对方支付的
+    let totalRate = 0 // 一共收取的挂单手续费
+
+    if (result.gets) {
+      cos.push(result.gets.currency)
+      cos.push(result.pays.currency)
+    }
+    result.balances = {} // 存放交易后余额
+    result.balancesPrev = {} // 存放交易前余额
 
     // process effects
     meta.AffectedNodes.forEach(function(n) {
@@ -595,12 +614,14 @@ function Factory(Wallet = WalletFactory()) {
               parseAmount(node.fields.TakerGets)
             )
             effect.type = sell ? "sold" : "bought"
-            if (node.fields.OfferFeeRateNum)
+            if (node.fields.OfferFeeRateNum) {
+              effect.platform = node.fields.Platform
               effect.rate = new Bignumber(
                 parseInt(node.fields.OfferFeeRateNum, 16)
               )
                 .div(parseInt(node.fields.OfferFeeRateDen, 16))
                 .toNumber()
+            }
           } else {
             // offer_funded, offer_created or offer_cancelled offer effect
             effect.effect =
@@ -626,18 +647,28 @@ function Factory(Wallet = WalletFactory()) {
                 parseAmount(node.fields.TakerGets)
               )
               effect.type = sell ? "sold" : "bought"
-              if (node.fields.OfferFeeRateNum)
+              if (node.fields.OfferFeeRateNum) {
+                effect.platform = node.fields.Platform
                 effect.rate = new Bignumber(
                   parseInt(node.fields.OfferFeeRateNum, 16)
                 )
                   .div(parseInt(node.fields.OfferFeeRateDen, 16))
                   .toNumber()
+              }
             }
             // 3. offer_created
             if (effect.effect === "offer_created") {
               effect.gets = parseAmount(fieldSet.TakerGets)
               effect.pays = parseAmount(fieldSet.TakerPays)
               effect.type = sell ? "sell" : "buy"
+              if (node.fields.OfferFeeRateNum) {
+                effect.platform = fieldSet.Platform
+                effect.rate = new Bignumber(
+                  parseInt(node.fields.OfferFeeRateNum, 16)
+                )
+                  .div(parseInt(node.fields.OfferFeeRateDen, 16))
+                  .toNumber()
+              }
             }
             // 4. offer_cancelled
             if (effect.effect === "offer_cancelled") {
@@ -650,6 +681,14 @@ function Factory(Wallet = WalletFactory()) {
               effect.gets = parseAmount(fieldSet.TakerGets)
               effect.pays = parseAmount(fieldSet.TakerPays)
               effect.type = sell ? "sell" : "buy"
+              if (node.fields.OfferFeeRateNum) {
+                effect.platform = fieldSet.Platform
+                effect.rate = new Bignumber(
+                  parseInt(node.fields.OfferFeeRateNum, 16)
+                )
+                  .div(parseInt(node.fields.OfferFeeRateDen, 16))
+                  .toNumber()
+              }
             }
           }
           effect.seq = node.fields.Sequence
@@ -704,11 +743,48 @@ function Factory(Wallet = WalletFactory()) {
         }
       }
       if (node && node.entryType === "Brokerage") {
+        result.platform = node.fields.Platform
         result.rate = new Bignumber(parseInt(node.fields.OfferFeeRateNum, 16))
           .div(parseInt(node.fields.OfferFeeRateDen, 16))
           .toNumber()
       }
-
+      if (node && node.entryType === "SkywellState") {
+        // 其他币种余额
+        if (
+          node.fields.HighLimit.issuer === account ||
+          node.fields.LowLimit.issuer === account
+        ) {
+          result.balances[node.fields.Balance.currency] = Math.abs(
+            node.fields.Balance.value
+          )
+          if (node.fieldsPrev.Balance) {
+            result.balancesPrev[node.fieldsPrev.Balance.currency] = Math.abs(
+              node.fieldsPrev.Balance.value
+            )
+          } else if (node.fieldsNew.Balance) {
+            // 新增币种
+            result.balancesPrev[node.fields.Balance.currency] = 0
+          } else {
+            delete result.balances[node.fields.Balance.currency]
+          }
+        }
+      }
+      if (node && node.entryType === "AccountRoot") {
+        // 基础币种余额
+        if (node.fields.Account === account) {
+          result.balances[getCurrency()] = node.fields.Balance / 1000000
+          if (node.fieldsPrev.Balance) {
+            result.balancesPrev[getCurrency()] = Math.abs(
+              node.fieldsPrev.Balance / 1000000
+            )
+          } else if (node.fieldsNew.Balance) {
+            result.balancesPrev[getCurrency()] = 0
+          } else {
+            // 交易前后余额没有变化
+            delete result.balances[getCurrency()]
+          }
+        }
+      }
       // add effect
       if (!_.isEmpty(effect)) {
         if (
@@ -719,6 +795,25 @@ function Factory(Wallet = WalletFactory()) {
         }
         result.effects.push(effect)
       }
+      if (result.type === "offernew" && effect.got) {
+        if (result.gets.currency === effect.paid.currency) {
+          getsValue = new Bignumber(effect.paid.value)
+            .plus(getsValue)
+            .toNumber()
+        }
+        if (result.pays.currency === effect.got.currency) {
+          paysValue = new Bignumber(effect.got.value).plus(paysValue).toNumber()
+        }
+        if (
+          result.gets.currency !== effect.paid.currency ||
+          result.pays.currency !== effect.got.currency
+        ) {
+          if (cos.indexOf(effect.got.currency) === -1)
+            cos.push(effect.got.currency)
+          if (cos.indexOf(effect.paid.currency) === -1)
+            cos.push(effect.paid.currency)
+        }
+      }
     })
 
     /**
@@ -728,17 +823,61 @@ function Factory(Wallet = WalletFactory()) {
     for (var i = 0; i < result.effects.length; i++) {
       var e = result.effects[i]
       if (result.rate && e.effect === "offer_bought") {
+        if (e.got && result.pays && e.got.currency === result.pays.currency)
+          // 涉及多路径
+          totalRate = new Bignumber(e.got.value)
+            .multipliedBy(result.rate)
+            .plus(totalRate)
+            .toNumber()
         e.rate = result.rate
         e.got.value = e.got.value * (1 - e.rate)
+        e.platform = result.platform
+        e.got.value = new Bignumber(e.got.value)
+          .multipliedBy(1 - e.rate)
+          .toString()
       }
       if (
         e.rate &&
         (e.effect === "offer_funded" || e.effect === "offer_partially_funded")
       ) {
-        e.got.value = e.got.value * (1 - e.rate)
+        // 不涉及多路径
+        totalRate = new Bignumber(e.got.value)
+          .multipliedBy(e.rate)
+          .plus(totalRate)
+          .toNumber()
+        e.got.value = new Bignumber(e.got.value)
+          .multipliedBy(1 - e.rate)
+          .toString()
       }
     }
     delete result.rate
+    delete result.platform
+    if (getsValue) {
+      result.dealGets = {
+        value: getsValue + "",
+        currency: result.gets.currency,
+        issuer: result.gets.issuer || ""
+      }
+      result.dealPays = {
+        value: paysValue + "",
+        currency: result.pays.currency,
+        issuer: result.pays.issuer || ""
+      }
+      result.totalRate = {
+        value: totalRate + "",
+        currency: result.pays.currency,
+        issuer: result.pays.issuer || ""
+      }
+      result.dealPrice =
+        result.offertype === "sell"
+          ? new Bignumber(paysValue).div(getsValue).toString()
+          : new Bignumber(getsValue).div(paysValue).toString()
+      result.dealNum = cos.length
+    }
+    getsValue = null
+    paysValue = null
+    cos = null
+    totalRate = null
     return result
   }
 
@@ -796,7 +935,10 @@ function Factory(Wallet = WalletFactory()) {
     if (amount.currency === currency) {
       // return String(parseInt((new BigNumber(amount.value)).mul(1000000.0)))
       return String(
-        parseInt(new Bignumber(amount.value).mul(1000000.0).toString(), 10)
+        parseInt(
+          new Bignumber(amount.value).multipliedBy(1000000.0).toString(),
+          10
+        )
       )
     }
     return amount

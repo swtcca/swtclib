@@ -160,7 +160,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const src = options.source || options.from || options.account
       const taker_gets = options.taker_gets || options.pays
       const taker_pays = options.taker_pays || options.gets
-      const app = options.app
+      const platform = options.platform
 
       if (!utils.isValidAddress(src)) {
         tx.tx_json.src = new Error("invalid source address")
@@ -189,15 +189,17 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         tx.tx_json.taker_pays2 = new Error("invalid to gets amount object")
         return tx
       }
-      if (app && !/^[0-9]*[1-9][0-9]*$/.test(app)) {
+      if (platform && !utils.isValidAddress(platform)) {
         // 正整数
-        tx.tx_json.app = new Error("invalid app, it is a positive integer.")
+        tx.tx_json.platform = new Error(
+          "invalid platform, it must be a valid address."
+        )
         return tx
       }
 
       tx.tx_json.TransactionType = "OfferCreate"
       if (offer_type === "Sell") tx.setFlags(offer_type)
-      if (app) tx.tx_json.AppType = app
+      if (platform) tx.tx_json.Platform = platform
       tx.tx_json.Account = src
       tx.tx_json.TakerPays = utils.ToAmount(taker_pays)
       tx.tx_json.TakerGets = utils.ToAmount(taker_gets)
@@ -512,7 +514,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       if ("params" in options) {
         params = options.params || []
       }
-      const foo = options.func || options.foo // 函数名
+      const func = options.func // 函数名
       if (!utils.isValidAddress(account)) {
         tx.tx_json.account = new Error("invalid address")
         return tx
@@ -526,15 +528,15 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         tx.tx_json.params = new Error("invalid options type")
         return tx
       }
-      if (typeof foo !== "string") {
-        tx.tx_json.foo = new Error("foo must be string")
+      if (typeof func !== "string") {
+        tx.tx_json.func = new Error("func must be string")
         return tx
       }
 
       tx.tx_json.TransactionType = "ConfigContract"
       tx.tx_json.Account = account
       tx.tx_json.Method = 1
-      tx.tx_json.ContractMethod = utils.stringToHex(foo)
+      tx.tx_json.ContractMethod = utils.stringToHex(func)
       tx.tx_json.Destination = des
       tx.tx_json.Args = []
       for (const param of params) {
@@ -653,9 +655,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         return tx
       }
       const account = options.account
+      const feeAccount = options.feeAccount
       const mol = options.mol || options.molecule
       const den = options.den || options.denominator
-      const app = options.app
       const amount = options.amount
       if (!utils.isValidAddress(account)) {
         tx.tx_json.src = new Error("invalid address")
@@ -668,15 +670,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         )
         return tx
       }
-      if (
-        !/^[0-9]*[1-9][0-9]*$/.test(den) ||
-        !/^[0-9]*[1-9][0-9]*$/.test(app)
-      ) {
-        // 正整数
-        tx.tx_json.den = new Error("invalid den/app, it is a positive integer.")
+      if (isNaN(Number(den))) {
+        tx.tx_json.den = new Error("invalid den, it is a number")
         return tx
       }
-      if (mol > den) {
+
+      if (Number(mol) > Number(den)) {
         tx.tx_json.app = new Error(
           "invalid mol/den, molecule can not exceed denominator."
         )
@@ -688,10 +687,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
       tx.tx_json.TransactionType = "Brokerage"
       tx.tx_json.Account = account // 管理员账号
-      tx.tx_json.OfferFeeRateNum = mol // 分子(正整数 + 0)
-      tx.tx_json.OfferFeeRateDen = den // 分母(正整数)
-      tx.tx_json.AppType = app // 应用来源(正整数)
+      tx.tx_json.OfferFeeRateNum = Number(mol) // 分子(正整数 + 0)
+      tx.tx_json.OfferFeeRateDen = Number(den) // 分母(正整数)
       tx.tx_json.Amount = utils.ToAmount(amount) // 币种,这里amount字段中的value值只是占位，没有实际意义
+      tx.tx_json.FeeAccountID = feeAccount // 收费账号
 
       if ("memo" in options && options.memo) {
         tx.addMemo(options.memo)

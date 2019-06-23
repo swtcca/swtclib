@@ -141,6 +141,8 @@ const output1 = {
     currency: "SWT",
     issuer: ""
   },
+  balances: {},
+  balancesPrev: {},
   effects: []
 }
 
@@ -241,6 +243,8 @@ const output6 = {
   result: "tesSUCCESS",
   memos: [],
   offerseq: 4582,
+  balances: {},
+  balancesPrev: {},
   effects: []
 }
 
@@ -297,6 +301,8 @@ const output7 = {
     value: "1"
   },
   seq: 4583,
+  balances: {},
+  balancesPrev: {},
   effects: []
 }
 
@@ -353,6 +359,8 @@ const output8 = {
     value: "80000"
   },
   seq: 4653,
+  balances: {},
+  balancesPrev: {},
   effects: []
 }
 
@@ -1374,6 +1382,8 @@ const output17 = {
   fee: "0.00001",
   result: "tesSUCCESS",
   memos: [[]],
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "offer_partially_funded",
@@ -1394,7 +1404,7 @@ const output17 = {
         value: "1"
       },
       got: {
-        value: -0.9414062465075401,
+        value: "-0.9414062465075401",
         currency: "JJCC",
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
@@ -1403,6 +1413,7 @@ const output17 = {
         currency: "CNY",
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
+      platform: undefined,
       type: "sold",
       rate: 0.05859375349245986,
       seq: 14845556,
@@ -1439,6 +1450,7 @@ const output17 = {
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
         value: "0.00001"
       },
+      platform: undefined,
       type: "bought",
       rate: NaN,
       seq: 4583,
@@ -1454,6 +1466,8 @@ const output18 = {
   fee: "0.00001",
   result: "tesSUCCESS",
   memos: [[]],
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "offer_created",
@@ -1492,6 +1506,8 @@ const output19 = {
   fee: "0.00001",
   result: "tesSUCCESS",
   memos: [[]],
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "offer_funded",
@@ -1510,6 +1526,7 @@ const output19 = {
         currency: "JMOAC",
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
+      platform: undefined,
       type: "sold",
       rate: NaN,
       seq: 4583,
@@ -1548,6 +1565,8 @@ const output20 = {
   fee: "0.00001",
   result: "tesSUCCESS",
   memos: [[]],
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "offer_cancelled",
@@ -1596,6 +1615,8 @@ const output21 = {
   result: "tesSUCCESS",
   memos: [[]],
   offerseq: 30454,
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "offer_cancelled",
@@ -1636,6 +1657,8 @@ const output22 = {
   result: "tesSUCCESS",
   memos: [[]],
   offerseq: 30454,
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "offer_bought",
@@ -1650,10 +1673,11 @@ const output22 = {
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
       got: {
-        value: 0,
+        value: "0",
         currency: "JMOAC",
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
+      platform: undefined,
       type: "sold",
       price: "NaN",
       rate: 0.05859375349245986
@@ -1671,10 +1695,11 @@ const output22 = {
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
       got: {
-        value: 0,
+        value: "0",
         currency: "JMOAC",
         issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       },
+      platform: undefined,
       type: "bought",
       price: "NaN",
       rate: 0.05859375349245986
@@ -1689,6 +1714,8 @@ const output23 = {
   fee: "0.00001",
   result: "tesSUCCESS",
   memos: [[]],
+  balances: {},
+  balancesPrev: {},
   effects: [
     {
       effect: "set_regular_key",

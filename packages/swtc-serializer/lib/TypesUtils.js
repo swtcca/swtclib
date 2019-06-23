@@ -198,7 +198,9 @@ function Factory(Wallet = WalletFactory()) {
       3: "Destination",
       4: "Issuer",
       7: "Target",
-      8: "RegularKey"
+      8: "RegularKey",
+      9: "FeeAccountID",
+      13: "Platform"
     },
     14: {
       // Object
@@ -359,6 +361,8 @@ function Factory(Wallet = WalletFactory()) {
     Issuer: [8, 4],
     Target: [8, 7],
     RegularKey: [8, 8],
+    FeeAccountID: [8, 9],
+    Platform: [8, 13],
     undefined: [15, 1],
     TransactionMetaData: [14, 2],
     CreatedNode: [14, 3],

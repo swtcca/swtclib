@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "bignumber.js": "^5.0.0",
+    "bignumber.js": "^8.1.1",
     "lodash": "^4.17.11",
     "swtc-wallet": "^1.1.13",
     "url": "^0.11.0",

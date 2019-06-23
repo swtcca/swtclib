@@ -152,7 +152,9 @@ function Factory(Wallet = WalletFactory()) {
               vpow = Number(vpow.substr(vpow.lastIndexOf("e") + 1))
               var offset = 15 - vpow
               var factor = Math.pow(10, offset)
-              var newvalue = new Bignumber(in_json.value).mul(factor).toString()
+              var newvalue = new Bignumber(in_json.value)
+                .multipliedBy(factor)
+                .toString()
               this._value = new BigInteger(newvalue, 10)
               this._offset = -1 * offset
             } else {
@@ -189,11 +191,11 @@ function Factory(Wallet = WalletFactory()) {
       if (m[3] === void 0) {
         // Integer notation
         // Changed to agree with floating, values multiplied by 1,000,000.
-        this._value = m[2] * 1e6 // new BigInteger(m[2]);
+        this._value = new Bignumber(m[2]).multipliedBy(1e6).toNumber() // new BigInteger(m[2]);
       } else {
         // Float notation : values multiplied by 1,000,000.
         // only keep 6 digits after the decimal point.
-        this._value = (m[2] + m[3]) * 1e6 // int_part+fraction_part;//int_part.add(fraction_part);
+        this._value = new Bignumber(m[2] + m[3]).multipliedBy(1e6).toNumber() // int_part+fraction_part;//int_part.add(fraction_part);
       }
 
       this._is_native = true

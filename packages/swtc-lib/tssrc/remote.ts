@@ -651,27 +651,12 @@ class Remote extends EventEmitter {
       request.message.type = new Error("invalid options type")
       return request
     }
-    const issuer = options.issuer
-    const app = options.app
-    const currency = options.currency
-    if (!utils.isValidAddress(issuer)) {
-      request.message.account = new Error("issuer parameter is invalid")
+    const account = options.account
+    if (!utils.isValidAddress(account)) {
+      request.message.account = new Error("account parameter is invalid")
       return request
     }
-    if (!/^[0-9]*[1-9][0-9]*$/.test(app)) {
-      // 正整数
-      request.message.app = new Error("invalid app, it is a positive integer.")
-      return request
-    }
-    if (!utils.isValidCurrency(currency)) {
-      // 正整数
-      request.message.currency = new Error("invalid currency.")
-      return request
-    }
-
-    request.message.issuer = issuer
-    request.message.AppType = app
-    request.message.currency = currency
+    request.message.account = account
     request.message.ledger_index = "validated"
     return request
   }

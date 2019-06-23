@@ -76,7 +76,7 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json.blob).to.equal(result)
     })
-    it("sign and submit", async function() {
+    xit("sign and submit", async function() {
       let result = await tx.submitPromise()
       // console.log(result.data)
       expect(result).to.be.an("object")

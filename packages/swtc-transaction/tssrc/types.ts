@@ -41,7 +41,7 @@ export interface IOfferCreateTxOptions {
   pays?: IAmount
   taker_gets?: IAmount
   taker_pays?: IAmount
-  app?: any
+  platform?: any
   memo?: string
   secret?: string
   sequence?: string | number

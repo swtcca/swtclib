@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "bignumber.js": "^5.0.0",
+    "bignumber.js": "^8.1.1",
     "bn-plus.js": "^1.0.0",
     "extend": "^3.0.2",
     "jsbn": "^1.1.0",

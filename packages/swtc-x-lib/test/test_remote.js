@@ -9,7 +9,13 @@ const config = require("./config")
 const sinon = require("sinon")
 const OrderBook = Remote.OrderBook
 const Account = Remote.Account
-let { JT_NODE, testAddress, testDestinationAddress, testCreateHash } = config
+let {
+  JT_NODE,
+  testAddress,
+  testDestinationAddress,
+  testCreateHash,
+  testPlatform
+} = config
 
 describe("test remote", function() {
   describe("test constructor", function() {
@@ -881,15 +887,11 @@ describe("test remote", function() {
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
-        app: 1,
-        currency: "SWT"
+        account: testPlatform
       })
       expect(req._command).to.equal("Fee_Info")
       expect(req.message).to.deep.equal({
-        issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
-        AppType: 1,
-        currency: "SWT",
+        account: testPlatform,
         ledger_index: "validated"
       })
     })
@@ -908,7 +910,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the issuer is not object", function(done) {
+    it("throw error if the account is not object", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -916,15 +918,15 @@ describe("test remote", function() {
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        issuer: "aaaa"
+        account: "invalid platform address"
       })
       req.submit((err, result) => {
-        expect(err).to.equal("issuer parameter is invalid")
+        expect(err).to.equal("account parameter is invalid")
         done()
       })
     })
 
-    it("throw error if the app is not object", function(done) {
+    xit("throw error if the app is not object", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -932,7 +934,7 @@ describe("test remote", function() {
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        account: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
         app: "aa"
       })
       req.submit((err, result) => {
@@ -941,7 +943,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the currency is not object", function(done) {
+    xit("throw error if the currency is not object", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -949,7 +951,7 @@ describe("test remote", function() {
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        account: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
         app: 1,
         currency: "Sw"
       })
@@ -1164,7 +1166,7 @@ describe("test remote", function() {
           currency: "SWT",
           issuer: ""
         },
-        app: 1
+        platform: testPlatform
       }
       let tx = remote.buildOfferCreateTx(options)
       expect(tx.tx_json).to.deep.equal({
@@ -1178,7 +1180,7 @@ describe("test remote", function() {
           currency: "CNY",
           issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
         },
-        AppType: 1
+        Platform: testPlatform
       })
     })
 
@@ -1303,7 +1305,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the app is invalid", function(done) {
+    it("throw error if the platform is not valid address", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1313,12 +1315,20 @@ describe("test remote", function() {
       let req = remote.buildOfferCreateTx({
         account: testAddress,
         type: "Sell",
-        pays: "1",
-        gets: "1",
-        app: "aaaa"
+        pays: {
+          value: "0.00001",
+          currency: "CNY",
+          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+        },
+        gets: {
+          value: "1",
+          currency: "SWT",
+          issuer: ""
+        },
+        platform: 111
       })
       req.submit((err, result) => {
-        expect(err).to.equal("invalid app, it is a positive integer.")
+        expect(err).to.equal("invalid platform, it must be a valid address.")
         done()
       })
     })
@@ -1614,7 +1624,7 @@ describe("test remote", function() {
       let tx = remote.callContractTx({
         account: testAddress,
         destination: testDestinationAddress,
-        foo: "test",
+        func: "test",
         params: ["sss"]
       })
       expect(tx.tx_json).to.deep.equal({
@@ -1710,7 +1720,7 @@ describe("test remote", function() {
       let req = remote.callContractTx({
         account: testAddress,
         destination: testDestinationAddress,
-        foo: "test",
+        func: "test",
         params: [null]
       })
       req.submit((err, result) => {
@@ -1719,7 +1729,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the foo is not string", function(done) {
+    it("throw error if the func is not string", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1730,10 +1740,10 @@ describe("test remote", function() {
         account: testAddress,
         destination: testDestinationAddress,
         params: ["aaa"],
-        foo: 111
+        func: 111
       })
       req.submit((err, result) => {
-        expect(err).to.equal("foo must be string")
+        expect(err).to.equal("func must be string")
         done()
       })
     })
@@ -1785,7 +1795,7 @@ describe("test remote", function() {
         account: testAddress,
         molecule: 10,
         denominator: 20,
-        app: 1,
+        feeAccount: testPlatform,
         amount: {
           value: "1",
           currency: "SWT",
@@ -1797,9 +1807,9 @@ describe("test remote", function() {
         Fee: 10000,
         TransactionType: "Brokerage",
         Account: testAddress,
+        FeeAccountID: testPlatform,
         OfferFeeRateNum: 10,
         OfferFeeRateDen: 20,
-        AppType: 1,
         Amount: "1000000"
       })
     })
@@ -1860,16 +1870,22 @@ describe("test remote", function() {
       })
       let req = remote.buildBrokerageTx({
         account: testAddress,
+        feeAccount: testPlatform,
         molecule: 10,
+        amount: {
+          value: "1",
+          currency: "SWT",
+          issuer: ""
+        },
         denominator: "bb"
       })
       req.submit((err, result) => {
-        expect(err).to.equal("invalid den/app, it is a positive integer.")
+        expect(err).to.equal("invalid den, it is a number")
         done()
       })
     })
 
-    it("throw error if the app is invalid", function(done) {
+    xit("throw error if the app is invalid", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1878,6 +1894,7 @@ describe("test remote", function() {
       })
       let req = remote.buildBrokerageTx({
         account: testAddress,
+        feeAccount: testPlatform,
         molecule: 10,
         denominator: 20,
         app: "aa"
