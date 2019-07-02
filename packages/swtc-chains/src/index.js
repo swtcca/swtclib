@@ -47,6 +47,12 @@ const SWTC_CHAINS = [
       EKT: "JEKT",
       ETH: "JETH"
     },
+    XLIB: {
+      default_ws: "ws.swtclib.ca:5020",
+      default_api: "api.swtclib.ca",
+      default_ws_failover: "ws-failover.swtclib.ca:5020",
+      default_api_failover: "api-failover.swtclib.ca"
+    },
     ACCOUNT_ALPHABET:
       "jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz",
     SEED_PREFIX: 33,
