@@ -76,8 +76,16 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json.blob).to.equal(result)
     })
-    xit("sign and submit", async function() {
-      let result = await tx.submitPromise()
+    it("sign and submit", async function() {
+      let tx = TX.buildPaymentTx(
+        {
+          source: DATA.address,
+          to: DATA.address2,
+          amount: { value: 0.1, currency: "SWT", issuer: "" }
+        },
+        { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
+      )
+      let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
@@ -132,6 +140,15 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
+      let tx = TX.buildOfferCreateTx(
+        {
+          type: "Buy",
+          account: DATA.address,
+          taker_gets: { value: 1, currency: "SWT", issuer: "" },
+          taker_pays: { value: 0.007, currency: "CNY", issuer: DATA.issuer }
+        },
+        { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
+      )
       let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
@@ -144,7 +161,7 @@ describe("test transaction additions", function() {
       expect(tx._remote).to.deep.equal({})
     })
     it("remote using tapi", function() {
-      let tx = TX.buildOfferCreateTx(
+      let tx = TX.buildOfferCancelTx(
         { account: DATA.address, sequence: 100 },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
@@ -172,7 +189,11 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
-      let result = await tx.submitPromise()
+      let tx = TX.buildOfferCancelTx(
+        { account: DATA.address, sequence: 100 },
+        { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
+      )
+      let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
@@ -228,6 +249,15 @@ describe("test transaction additions", function() {
     })
     it("submit", async function() {
       // console.log(tx.tx_json)
+      let tx = TX.buildRelationTx(
+        {
+          target: DATA.address2,
+          account: DATA.address,
+          type: "trust",
+          limit: { value: 11, currency: "CNY", issuer: DATA.issuer }
+        },
+        { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
+      )
       let result = await tx.submitPromise(DATA.secret)
       expect(result).to.be.an("object")
     })
@@ -322,6 +352,7 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
+      await sleep(3000)
       tx.setSecret(DATA.secret)
       let result = await tx.submitPromise()
       expect(tx.tx_json).to.have.property("Sequence")
@@ -342,6 +373,7 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
+      await sleep(3000)
       let result = await tx.submitPromise(DATA.secret)
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
@@ -361,6 +393,7 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
+      await sleep(3000)
       let result = await tx.submitPromise(DATA.secret, "hello memo")
       expect(tx.tx_json).to.have.property("Memos")
       expect(tx.tx_json.Memos).to.be.a("array")
@@ -383,6 +416,7 @@ describe("test transaction additions", function() {
         },
         { _axios: axios.create({ baseURL: `${DATA.server}/v2/` }) }
       )
+      await sleep(3000)
       let result = await tx.submitPromise(DATA.secret, "", 10)
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")

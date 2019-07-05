@@ -69,6 +69,7 @@ class Remote extends EventEmitter {
   public static OrderBook = OrderBook
   public static Transaction = Transaction
   public static utils = utils
+  public static XLIB = Wallet.config.XLIB || {}
   public type
   public abi?
   public fun?
@@ -77,16 +78,25 @@ class Remote extends EventEmitter {
   public readonly _token
   public readonly _local_sign
   protected _issuer
-  private _url
+  private _url: string = `ws://${Remote.XLIB.default_ws ||
+    "ws.swtclib.ca:5020"}`
+  private _url_failover: string = `ws://${Remote.XLIB.default_ws_failover ||
+    "ws-failover.swtclib.ca:5020"}`
   private _server
   private _status
   private _requests
   private _cache
   private _paths
   private _solidity: boolean = false
+  private _timeout: number = 20 * 1000
+  private _failover: boolean = false
   constructor(options: IRemoteOptions = { local_sign: true }) {
     super()
     const _opts = options || {}
+    if (_opts.hasOwnProperty("timeout")) {
+      const timeout = Number(_opts.timeout)
+      this._timeout = timeout > 5 * 1000 ? timeout : 20 * 1000
+    }
     this._local_sign = true
     if (_opts.solidity) {
       this._solidity = true
@@ -99,11 +109,25 @@ class Remote extends EventEmitter {
         )
       }
     }
-    if (typeof _opts.server !== "string") {
-      this.type = new TypeError("server config not supplied")
-      return this
+    if (!_opts.hasOwnProperty("server")) {
+      this._failover = true
+    } else {
+      if (typeof _opts.server !== "string") {
+        this.type = new TypeError("server config not supplied")
+        return this
+      }
+      this._url = _opts.server
     }
-    this._url = _opts.server
+    if (_opts.hasOwnProperty("server_failover")) {
+      if (typeof _opts.server_failover !== "string") {
+        this.type = new TypeError("server_failover config not supplied")
+        return this
+      }
+      this._url_failover = _opts.server_failover
+    }
+    if (_opts.failover) {
+      this._failover = true
+    }
     this._server = new Server(this, this._url)
     this._status = {
       ledger_index: 0
@@ -148,10 +172,14 @@ class Remote extends EventEmitter {
   public config() {
     return {
       _local_sign: this._local_sign,
-      _server: this._server,
+      _failover: this._failover,
+      _url: this._url,
+      _url_failover: this._url_failover,
+      _url_active: this._server._url,
       _token: this._token,
       _issuer: this._issuer,
-      _solidity: this._solidity
+      _solidity: this._solidity,
+      _timeout: this._timeout
     }
   }
 
@@ -180,7 +208,21 @@ class Remote extends EventEmitter {
       this._server
         .connectPromise()
         .then(result => resolve(result))
-        .catch(error => reject(error))
+        .catch(error => {
+          if (!this._failover) {
+            reject(error)
+          } else {
+            if (this._server._url === this._url) {
+              this._server = new Server(this, this._url_failover)
+            } else {
+              this._server = new Server(this, this._url)
+            }
+            this._server
+              .connectPromise()
+              .then(result_failover => resolve(result_failover))
+              .catch(error_failover => reject(error_failover))
+          }
+        })
     })
   }
 

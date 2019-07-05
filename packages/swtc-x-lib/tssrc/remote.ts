@@ -250,6 +250,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     public static OrderBook = OrderBook
     public static Request = Request
     public static Transaction = Transaction
+    public static XLIB = Wallet.config.XLIB || {}
     public static utils = utils
 
     public type
@@ -260,16 +261,25 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     public _token
     public _local_sign
     public _issuer
-    public _url
+    public _url: string = `ws://${Remote.XLIB.default_ws ||
+      "ws.swtclib.ca:5020"}`
+    public _url_failover: string = `ws://${Remote.XLIB.default_ws_failover ||
+      "ws-failover.swtclib.ca:5020"}`
     public _server
     public _status
     public _requests
     public _cache
     public _paths
     public _solidity: boolean = false
+    public _timeout: number = 20 * 1000
+    public _failover: boolean = false
     constructor(options: IRemoteOptions = { local_sign: true }) {
       super()
       const _opts = options || {}
+      if (_opts.hasOwnProperty("timeout")) {
+        const timeout = Number(_opts.timeout)
+        this._timeout = timeout > 5 * 1000 ? timeout : 20 * 1000
+      }
       this._local_sign = true
       if (_opts.solidity) {
         this._solidity = true
@@ -282,11 +292,25 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
           )
         }
       }
-      if (typeof _opts.server !== "string") {
-        this.type = new TypeError("server config not supplied")
-        return this
+      if (!_opts.hasOwnProperty("server")) {
+        this._failover = true
+      } else {
+        if (typeof _opts.server !== "string") {
+          this.type = new TypeError("server config not supplied")
+          return this
+        }
+        this._url = _opts.server
       }
-      this._url = _opts.server
+      if (_opts.hasOwnProperty("server_failover")) {
+        if (typeof _opts.server_failover !== "string") {
+          this.type = new TypeError("server_failover config not supplied")
+          return this
+        }
+        this._url_failover = _opts.server_failover
+      }
+      if (_opts.failover) {
+        this._failover = true
+      }
       this._server = new Server(this, this._url)
       this._status = {
         ledger_index: 0
@@ -331,9 +355,14 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     public config() {
       return {
         _local_sign: this._local_sign,
-        _server: this._server,
+        _failover: this._failover,
+        _url: this._url,
+        _url_failover: this._url_failover,
+        _url_active: this._server._url,
         _token: this._token,
-        _issuer: this._issuer
+        _issuer: this._issuer,
+        _solidity: this._solidity,
+        _timeout: this._timeout
       }
     }
 
@@ -366,7 +395,21 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
         this._server
           .connectPromise()
           .then(result => resolve(result))
-          .catch(error => reject(error))
+          .catch(error => {
+            if (!this._failover) {
+              reject(error)
+            } else {
+              if (this._server._url === this._url) {
+                this._server = new Server(this, this._url_failover)
+              } else {
+                this._server = new Server(this, this._url)
+              }
+              this._server
+                .connectPromise()
+                .then(result_failover => resolve(result_failover))
+                .catch(error_failover => reject(error_failover))
+            }
+          })
       })
     }
 

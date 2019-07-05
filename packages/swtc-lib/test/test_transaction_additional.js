@@ -57,13 +57,14 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.blob).to.equal(blob)
     })
     it("sign and submit", async function() {
+      await sleep(5000)
       let result = await tx.submitPromise()
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
   })
   describe("test build offer create transaction", function() {
-    this.timeout(20000)
+    this.timeout(30000)
     let tx = remote.buildOfferCreateTx({
       type: "Buy",
       account: DATA.address,
@@ -94,7 +95,13 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
-      let result = await tx.submitPromise()
+      let tx = remote.buildOfferCreateTx({
+        type: "Buy",
+        account: DATA.address,
+        taker_gets: remote.makeAmount(0.1),
+        taker_pays: remote.makeAmount(0.007, "CNY")
+      })
+      let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
@@ -124,7 +131,11 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
-      let result = await tx.submitPromise()
+      let tx = remote.buildOfferCancelTx({
+        account: DATA.address,
+        sequence: 100
+      })
+      let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
@@ -161,7 +172,13 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.blob).to.equal(blob)
     })
     it("submit", async function() {
-      let result = await tx.submitPromise()
+      let tx = remote.buildRelationTx({
+        target: DATA.address2,
+        account: DATA.address,
+        type: "authorize",
+        limit: { value: 11, currency: "CNY", issuer: DATA.issuer }
+      })
+      let result = await tx.submitPromise(DATA.secret)
       // console.log(result.data)
       expect(result).to.be.an("object")
     })
@@ -226,7 +243,7 @@ describe("test transaction additions", function() {
     })
   })
   describe("test .submitPromise()", function() {
-    this.timeout(20000)
+    this.timeout(30000)
     it(".submitPromise()", async function() {
       let tx = remote.buildPaymentTx({
         source: DATA.address,
@@ -234,8 +251,8 @@ describe("test transaction additions", function() {
         amount: remote.makeAmount(1.9999099)
       })
       tx.setSecret(DATA.secret)
-      let result = await tx.submitPromise()
       await sleep(15000)
+      let result = await tx.submitPromise()
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
@@ -250,8 +267,8 @@ describe("test transaction additions", function() {
         to: DATA.address2,
         amount: { value: 0.99999099, currency: "SWT", issuer: "" }
       })
-      let result = await tx.submitPromise(DATA.secret)
       await sleep(15000)
+      let result = await tx.submitPromise(DATA.secret)
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
@@ -266,8 +283,8 @@ describe("test transaction additions", function() {
         to: DATA.address2,
         amount: { value: 1.999999, currency: "SWT", issuer: "" }
       })
-      let result = await tx.submitPromise(DATA.secret, "hello memo")
       await sleep(15000)
+      let result = await tx.submitPromise(DATA.secret, "hello memo")
       expect(tx.tx_json).to.have.property("Memos")
       expect(tx.tx_json.Memos).to.be.a("array")
       expect(tx.tx_json).to.have.property("Sequence")

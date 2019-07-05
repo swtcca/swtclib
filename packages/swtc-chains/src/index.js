@@ -49,9 +49,9 @@ const SWTC_CHAINS = [
     },
     XLIB: {
       default_ws: "ws.swtclib.ca:5020",
-      default_api: "api.swtclib.ca",
+      default_api: "api.swtclib.ca:5080",
       default_ws_failover: "ws-failover.swtclib.ca:5020",
-      default_api_failover: "api-failover.swtclib.ca"
+      default_api_failover: "api-failover.swtclib.ca:5080"
     },
     ACCOUNT_ALPHABET:
       "jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz",
@@ -65,6 +65,12 @@ const SWTC_CHAINS = [
     code: "bizain",
     currency: "BWT",
     issuer: "bf42S78serP2BeSx7HGtwQR2QASYaHVqyb",
+    XLIB: {
+      default_ws: "ws-bwt.swtclib.ca:5020",
+      default_api: "api-bwt.swtclib.ca:5080",
+      default_ws_failover: "ws-bwt-failover.swtclib.ca:5020",
+      default_api_failover: "api-bwt-failover.swtclib.ca:5080"
+    },
     ACCOUNT_ALPHABET:
       "bpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2jcdeCg65rkm8oFqi1tuvAxyz",
     SEED_PREFIX: 33,

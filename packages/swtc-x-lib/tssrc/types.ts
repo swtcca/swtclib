@@ -18,10 +18,13 @@ export {
 
 export interface IRemoteOptions {
   server?: string
+  server_failover?: string
   issuer?: string
   token?: string
   solidity?: boolean
   local_sign?: boolean
+  timeout?: number
+  failover?: boolean
 }
 
 export interface IRequestLedgerOptions {
