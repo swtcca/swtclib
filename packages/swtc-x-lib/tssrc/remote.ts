@@ -254,8 +254,6 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     public static utils = utils
 
     public type
-    public abi?
-    public fun?
     public readonly AbiCoder: any = null
     public readonly Tum3: any = null
     public _token
@@ -1194,6 +1192,9 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
       }
       const request = this._requests[req_id]
       // pass process it when null callback
+      if (request.data && request.data.abi) {
+        data.abi = request.data.abi
+      }
       delete this._requests[req_id]
       delete data.id
 
@@ -1206,12 +1207,97 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
         this._updateServerStatus(data.result)
       }
 
-      // return to callback
-      if (data.status === "success") {
-        const result = request.filter(data.result)
-        request && request.callback(null, result)
-      } else if (data.status === "error") {
-        request && request.callback(data.error_exception || data.error_message)
+      if (this._solidity) {
+        // return to callback
+        if (data.status === "success") {
+          const result = request.filter(data.result)
+          if (
+            result.ContractState &&
+            result.tx_json.TransactionType === "AlethContract" &&
+            result.tx_json.Method === 1
+          ) {
+            // 调用合约时，如果是获取变量，则转换一下
+            const method = utils.hexToString(result.tx_json.MethodSignature)
+            result.func = method.substring(0, method.indexOf("(")) // 函数名
+            result.func_parms = method
+              .substring(method.indexOf("(") + 1, method.indexOf(")"))
+              .split(",") // 函数参数
+            if (result.func_parms.length === 1 && result.func_parms[0] === "") {
+              // 没有参数，返回空数组
+              result.func_parms = []
+            }
+            const abi = new this.AbiCoder()
+            const types = utils.getTypes(data.abi, result.func)
+            result.ContractState = abi.decodeParameters(
+              types,
+              result.ContractState
+            )
+            types.forEach((type, i) => {
+              if (type === "address") {
+                const adr = result.ContractState[i].slice(2)
+                const buf = new Buffer(20)
+                buf.write(adr, 0, "hex")
+                result.ContractState[i] = Wallet.KeyPair.__encode(buf)
+              }
+            })
+          }
+          if (result.AlethLog) {
+            const logValue = []
+            const item = { address: "", data: {} }
+            const logs = result.AlethLog
+            logs.forEach(log => {
+              const _log = JSON.parse(log.item)
+              const _adr = _log.address.slice(2)
+              const buf = new Buffer(20)
+              buf.write(_adr, 0, "hex")
+              item.address = Wallet.KeyPair.__encode(buf)
+
+              const abi = new this.AbiCoder()
+              data.abi
+                .filter(json => {
+                  return json.type === "event"
+                })
+                .map(json => {
+                  const types = json.inputs.map(input => {
+                    return input.type
+                  })
+                  const foo = json.name + "(" + types.join(",") + ")"
+                  if (abi.encodeEventSignature(foo) === _log.topics[0]) {
+                    const data2 = abi.decodeLog(
+                      json.inputs,
+                      _log.data,
+                      _log.topics
+                    )
+                    json.inputs.forEach((input, i) => {
+                      if (input.type === "address") {
+                        const _adr2 = data2[i].slice(2)
+                        const buf2 = new Buffer(20)
+                        buf2.write(_adr2, 0, "hex")
+                        item.data[i] = Wallet.KeyPair.__encode(buf2)
+                      } else {
+                        item.data[i] = data2[i]
+                      }
+                    })
+                  }
+                })
+
+              logValue.push(item)
+            })
+            result.AlethLog = logValue
+          }
+          request && request.callback(null, result)
+        } else if (data.status === "error") {
+          request &&
+            request.callback(data.error_message || data.error_exception)
+        }
+      } else {
+        if (data.status === "success") {
+          const result = request.filter(data.result)
+          request && request.callback(null, result)
+        } else if (data.status === "error") {
+          request &&
+            request.callback(data.error_exception || data.error_message)
+        }
       }
     }
 

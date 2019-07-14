@@ -189,7 +189,8 @@ function Factory(Wallet = WalletFactory()) {
       15: "payload",
       16: "Payload",
       18: "ContractMethod",
-      19: "Parameter"
+      19: "Parameter",
+      20: "MethodSignature"
     },
     8: {
       // Account
@@ -355,6 +356,7 @@ function Factory(Wallet = WalletFactory()) {
     Payload: [7, 16],
     ContractMethod: [7, 18],
     Parameter: [7, 19],
+    MethodSignature: [7, 20],
     Account: [8, 1],
     Owner: [8, 2],
     Destination: [8, 3],

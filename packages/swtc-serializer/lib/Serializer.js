@@ -125,6 +125,7 @@ function Factory(Wallet = WalletFactory()) {
       ["ContractMethod", OPTIONAL],
       ["Amount", OPTIONAL],
       ["Payload", OPTIONAL],
+      ["MethodSignature", OPTIONAL],
       ["Args", OPTIONAL],
       ["Destination", OPTIONAL]
     ]),

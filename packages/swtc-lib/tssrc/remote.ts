@@ -71,8 +71,6 @@ class Remote extends EventEmitter {
   public static utils = utils
   public static XLIB = Wallet.config.XLIB || {}
   public type
-  public abi?
-  public fun?
   public readonly AbiCoder: any = null
   public readonly Tum3: any = null
   public readonly _token
@@ -1006,6 +1004,9 @@ class Remote extends EventEmitter {
     }
     const request = this._requests[req_id]
     // pass process it when null callback
+    if (request.data && request.data.abi) {
+      data.abi = request.data.abi
+    }
     delete this._requests[req_id]
     delete data.id
 
@@ -1014,7 +1015,6 @@ class Remote extends EventEmitter {
       this._updateServerStatus(data.result)
     }
 
-    const self = this
     if (this._solidity) {
       // return to callback
       if (data.status === "success") {
@@ -1025,8 +1025,17 @@ class Remote extends EventEmitter {
           result.tx_json.Method === 1
         ) {
           // 调用合约时，如果是获取变量，则转换一下
+          const method = utils.hexToString(result.tx_json.MethodSignature)
+          result.func = method.substring(0, method.indexOf("(")) // 函数名
+          result.func_parms = method
+            .substring(method.indexOf("(") + 1, method.indexOf(")"))
+            .split(",") // 函数参数
+          if (result.func_parms.length === 1 && result.func_parms[0] === "") {
+            // 没有参数，返回空数组
+            result.func_parms = []
+          }
           const abi = new this.AbiCoder()
-          const types = utils.getTypes(self.abi, self.fun)
+          const types = utils.getTypes(data.abi, result.func)
           result.ContractState = abi.decodeParameters(
             types,
             result.ContractState
@@ -1052,7 +1061,7 @@ class Remote extends EventEmitter {
             item.address = Wallet.KeyPair.__encode(buf)
 
             const abi = new this.AbiCoder()
-            self.abi
+            data.abi
               .filter(json => {
                 return json.type === "event"
               })

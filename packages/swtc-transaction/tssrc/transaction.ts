@@ -379,8 +379,8 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         }
         // remote or tx ?
         // issue potential when remote.fuc changed
-        remote.fun = func.substring(0, func.indexOf("("))
-        const fun = remote.fun
+        // remote.fun = func.substring(0, func.indexOf("("))
+        const fun = func.substring(0, func.indexOf("("))
         if (amount) {
           abi.forEach(a => {
             if (a.name === fun && !a.payable) {
@@ -395,7 +395,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         const tum3 = new remote.Tum3()
         tum3.mc.defaultAccount = account
         const MyContract = tum3.mc.contract(abi)
-        remote.abi = abi
+        tx.abi = abi
         const myContractInstance = MyContract.at(des) // initiate contract for an address
         let result: any = false
         if (fun in myContractInstance) {
@@ -885,6 +885,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     public tx_json
     public readonly _token: string
     public _secret: string | undefined
+    public abi: any[] | undefined
     public _remote: any
     public _filter
     constructor(remote, filter = v => v) {
@@ -1184,8 +1185,15 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       let data = {}
       if ("blob" in self.tx_json) {
         // 直接将blob传给底层
-        data = {
-          tx_blob: self.tx_json.blob
+        if (!self.abi) {
+          data = {
+            tx_blob: self.tx_json.blob
+          }
+        } else {
+          data = {
+            tx_blob: self.tx_json.blob,
+            abi: self.abi
+          }
         }
         self._remote._submit("submit", data, self._filter, callback)
       } else {
@@ -1194,7 +1202,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           if (err) {
             return callback("sign error: " + err)
           } else {
-            data = { tx_blob: blob }
+            if (!self.abi) {
+              data = { tx_blob: blob }
+            } else {
+              data = { tx_blob: blob, abi: self.abi }
+            }
             self._remote._submit("submit", data, self._filter, callback)
           }
         })
@@ -1213,7 +1225,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
       try {
         const blob = await this.signPromise(secret, memo, sequence)
-        const data = { blob }
+        let data: any = { blob }
+        if (this.abi) {
+          data = { blob, abi: this.abi }
+        }
         if ("_submit" in this._remote) {
           // lib remote
           return new Promise((resolve, reject) => {

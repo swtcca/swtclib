@@ -525,6 +525,27 @@ function Factory(Wallet = WalletFactory()) {
           result.destination = tx.Destination
         }
         break
+      case "alethcontract":
+        if (tx.Method === 0) {
+          result.method = "deploy"
+          result.seq = tx.Sequence
+          result.payload = tx.Payload
+        } else if (tx.Method === 1) {
+          result.method = "call"
+          result.seq = tx.Sequence
+          result.destination = tx.Destination
+          result.amount = Number(tx.Amount)
+          var method = hexToString(tx.MethodSignature)
+          result.func = method.substring(0, method.indexOf("(")) // 函数名
+          result.func_parms = method
+            .substring(method.indexOf("(") + 1, method.indexOf(")"))
+            .split(",") // 函数参数
+          if (result.func_parms.length === 1 && result.func_parms[0] === "") {
+            // 没有参数，返回空数组
+            result.func_parms = []
+          }
+        }
+        break
       case "brokerage":
         result.feeAccount = tx.FeeAccountID
         result.mol = parseInt(tx.OfferFeeRateNum, 16)
