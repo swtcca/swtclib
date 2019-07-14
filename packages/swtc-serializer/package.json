@@ -5,7 +5,7 @@
     "extend": "^3.0.2",
     "jsbn": "^1.1.0",
     "sha1": "^1.1.1",
-    "swtc-wallet": "^1.1.13"
+    "swtc-wallet": "^1.1.14"
   },
   "deprecated": false,
   "description": "swtc-serializer@jcc",
@@ -46,7 +46,7 @@
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },
-  "version": "2.1.5",
+  "version": "2.1.6",
   "author": "Lospring Liu",
   "bugs": {
     "url": "git+https://github.com/swtcca/swtclib.git"

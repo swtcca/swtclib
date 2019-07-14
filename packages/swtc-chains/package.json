@@ -1,6 +1,6 @@
 {
   "name": "swtc-chains",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "swtc chain information",
   "main": "src/index.js",
   "license": "ISC",
