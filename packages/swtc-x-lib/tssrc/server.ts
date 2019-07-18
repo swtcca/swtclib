@@ -86,9 +86,7 @@ class Server extends EventEmitter {
     if (this._ws) this._ws.close()
 
     try {
-      this._ws = new WS(this._url, "", {
-        timeout: this._remote._timeout || 20 * 1000
-      })
+      this._ws = new WS(this._url)
       if ("open" in this._ws) {
         this._ws.open()
       }
