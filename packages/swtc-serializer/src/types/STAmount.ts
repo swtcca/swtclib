@@ -1,6 +1,6 @@
 import BN = require("bn-plus.js")
 import BigInteger from "jsbn"
-import { arraySet, convertHexToByteArray } from "../Utils"
+import { convertHexToByteArray } from "../Utils"
 import SerializedType from "./SerializedType"
 const STAmount = new SerializedType({
   serialize(so, val) {
@@ -11,7 +11,7 @@ const STAmount = new SerializedType({
     }
 
     // Amount (64-bit integer)
-    let valueBytes = arraySet(8, 0)
+    let valueBytes = new Array(8).fill(0)
 
     // For SWT, offset is 0
     // only convert the value

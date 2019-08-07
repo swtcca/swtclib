@@ -523,18 +523,7 @@ const isHexInt64String = val => {
   return isString(val) && /^[0-9A-F]{0,16}$/i.test(val)
 }
 
-const arraySet = (count, value) => {
-  const a = new Array(count)
-
-  for (let i = 0; i < count; i++) {
-    a[i] = value
-  }
-
-  return a
-}
-
 export {
-  arraySet,
   convertByteArrayToHex,
   convertHexToByteArray,
   convertIntegerToByteArray,

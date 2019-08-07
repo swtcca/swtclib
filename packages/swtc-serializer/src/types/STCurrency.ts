@@ -10,10 +10,7 @@ const STCurrency = new SerializedType({
   from_json_to_bytes(j) {
     // return (new Currency()).parse_json(j, shouldInterpretSWT);
 
-    let val = new Array(20) // return byte array representing currency code
-    for (let i = 0; i < 20; i++) {
-      val[i] = 0
-    }
+    let val = new Array(20).fill(0)
     switch (typeof j) {
       case "string":
         // For Tum code with 40 chars, such as
