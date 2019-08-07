@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/node": "^12.7.0",
     "bignumber.js": "^8.1.1",
     "bn-plus.js": "^1.0.0",
     "extend": "^3.0.2",
@@ -41,10 +42,10 @@
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c lib/*.js",
     "prettier:tabs": "prettier --use-tabs --write package.json lib/*.js",
-    "eslint": "eslint lib/*.js",
-    "test": "mocha test/test_*.js",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+    "tslint": "tslint --project tsconfig.json --config tslint.json",
+    "test": "tsc && mocha test/*.spec.js",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"
   },
   "version": "2.1.6",
   "author": "Lospring Liu",
