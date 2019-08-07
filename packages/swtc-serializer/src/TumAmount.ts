@@ -9,6 +9,7 @@ import { Factory as WalletFactory } from "swtc-wallet"
 import { AMOUNT_CONSTS } from "./Constant"
 import { Factory as isTumCodeFactory } from "./DataCheck"
 import { IAmount } from "./model"
+import { isNumber } from "./Utils"
 //
 // Amount class in the style of Java's BigInteger class
 // https://docs.oracle.com/javase/7/docs/api/java/math/BigInteger.html
@@ -46,6 +47,9 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
     }
 
     public is_valid(): boolean {
+      if (this.is_native()) {
+        return isNumber(this._value)
+      }
       return isAmount({
         value: this._value.toString(),
         currency: this._currency,
@@ -129,8 +133,6 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       } else {
         this._value = NaN
       }
-      this._currency = "SWT"
-      this._issuer = ""
       return this
     }
 
