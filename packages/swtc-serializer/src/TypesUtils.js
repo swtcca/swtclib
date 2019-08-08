@@ -47,17 +47,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STInt8.id = 16
 
-  var STInt16 = (EXPORTS.Int16 = new SerializedType({
-    serialize: function(so, val) {
-      so.append(convertIntegerToByteArray(val, 2))
-    },
-    parse: function(so) {
-      return readAndSum(so, 2)
-    }
-  }))
-
-  STInt16.id = 1
-
   var STInt32 = (EXPORTS.Int32 = new SerializedType({
     serialize: function(so, val) {
       so.append(convertIntegerToByteArray(val, 4))
