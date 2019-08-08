@@ -36,18 +36,6 @@ function Factory(Wallet = WalletFactory()) {
   const Amount = tumFactory(Wallet)
   const DataCheck = dataCheckFactory(Wallet)
 
-  var STInt8 = (EXPORTS.Int8 = new SerializedType({
-    serialize: function(so, val) {
-      so.append(convertIntegerToByteArray(val, 1))
-    },
-    parse: function(so) {
-      return readAndSum(so, 1)
-    }
-  }))
-
-  STInt8.id = 16
-
-
   var STVL = (EXPORTS.VariableLength = EXPORTS.VL = new SerializedType({
     serialize: function(so, val) {
       if (typeof val === "string") {
