@@ -280,51 +280,6 @@ function Factory(Wallet = WalletFactory()) {
     return [field_name, type.parse(so)] // key, value
   }
 
-  var STObject = (EXPORTS.Object = new SerializedType({
-    serialize: function(so, val, no_marker) {
-      var keys = []
-
-      Object.keys(val).forEach(function(key) {
-        // Ignore lowercase field names - they're non-serializable fields by
-        // convention.
-        if (key[0] === key[0].toLowerCase()) {
-          return
-        }
-
-        if (typeof INVERSE_FIELDS_MAP[key] === "undefined") {
-          throw new Error('JSON contains unknown field: "' + key + '"')
-        }
-
-        keys.push(key)
-      })
-
-      // Sort fields
-      keys = sort_fields(keys)
-
-      for (var i = 0; i < keys.length; i++) {
-        serialize(so, keys[i], val[keys[i]])
-      }
-
-      if (!no_marker) {
-        // Object ending marker
-        STInt8.serialize(so, 0xe1)
-      }
-    },
-
-    parse: function(so) {
-      var output = {}
-      while (so.peek(1)[0] !== 0xe1) {
-        var keyval = parse(so)
-        output[keyval[0]] = keyval[1]
-      }
-      so.read(1)
-      return output
-    }
-  }))
-
-  STObject.id = 14
-
-
   return EXPORTS
 }
 
