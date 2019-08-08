@@ -52,26 +52,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STVL.id = 7
 
-  var STVector256 = (EXPORTS.Vector256 = new SerializedType({
-    serialize: function(so, val) {
-      // Assume val is an array of STHash256 objects.
-      for (var i = 0, l = val.length; i < l; i++) {
-        STHash256.serialize(so, val[i])
-      }
-    },
-    parse: function(so) {
-      var length = this.parse_varint(so)
-      var output = []
-      // length is number of bytes not number of Hash256
-      for (var i = 0; i < length / 32; i++) {
-        output.push(STHash256.parse(so))
-      }
-      return output
-    }
-  }))
-
-  STVector256.id = 19
-
   EXPORTS.serialize = EXPORTS.serialize_whatever = serialize
 
   function serialize(so, field_name, value) {
