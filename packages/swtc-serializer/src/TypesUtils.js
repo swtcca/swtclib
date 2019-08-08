@@ -7,6 +7,8 @@
  * SerializedObject.parse() or SerializedObject.serialize().
  */
 
+import SerializedType from "./types/SerializedType"
+
 var assert = require("assert")
 var extend = require("extend")
 var WalletFactory = require("swtc-wallet").Factory
@@ -403,10 +405,6 @@ function Factory(Wallet = WalletFactory()) {
     Amendments: [19, 3]
   }
 
-  var SerializedType = function(methods) {
-    extend(this, methods)
-  }
-
   function isNumber(val) {
     return typeof val === "number" && isFinite(val)
   }
@@ -497,49 +495,6 @@ function Factory(Wallet = WalletFactory()) {
       out_str += String.fromCharCode(parseInt(tmp))
     }
     return decodeURIComponent(escape(out_str)) // out_str.toUpperCase();/
-  }
-
-  SerializedType.serialize_varint = function(so, val) {
-    if (val < 0) {
-      throw new Error("Variable integers are unsigned.")
-    }
-
-    if (val <= 192) {
-      so.append([val])
-    } else if (val <= 12480) {
-      val -= 193
-      so.append([193 + (val >>> 8), val & 0xff])
-    } else if (val <= 918744) {
-      val -= 12481
-      so.append([241 + (val >>> 16), (val >>> 8) & 0xff, val & 0xff])
-    } else {
-      throw new Error("Variable integer overflow.")
-    }
-  }
-
-  SerializedType.prototype.parse_varint = function(so) {
-    var b1 = so.read(1)[0]
-
-    var b2
-    var b3
-    var result
-
-    if (b1 > 254) {
-      throw new Error("Invalid varint length indicator")
-    }
-
-    if (b1 <= 192) {
-      result = b1
-    } else if (b1 <= 240) {
-      b2 = so.read(1)[0]
-      result = 193 + (b1 - 193) * 256 + b2
-    } else if (b1 <= 254) {
-      b2 = so.read(1)[0]
-      b3 = so.read(1)[0]
-      result = 12481 + (b1 - 241) * 65536 + b2 * 256 + b3
-    }
-
-    return result
   }
 
   // In the following, we assume that the inputs are in the proper range. Is this correct?
