@@ -47,57 +47,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STInt8.id = 16
 
-  /*
-   * Convert int64 big number input
-   * to HEX string, then serialize it.
-   * -2,147,483,648 to +2,147,483,648
-   */
-  var STInt64 = (EXPORTS.Int64 = new SerializedType({
-    serialize: function(so, val) {
-      var big_num_in_hex_str // NumObject;
-
-      if (isNumber(val)) {
-        val = Math.floor(val)
-        if (val < 0) {
-          throw new Error("Negative value for unsigned Int64 is invalid.")
-        }
-        // bigNumObject = new BigInteger(String(val), 10);
-        var bn = new BN(val, 10)
-        big_num_in_hex_str = bn.toString(16)
-        // var a = new BN('dead', 16);
-        // var b = new BN('101010', 2);
-      } else if (isString(val)) {
-        //
-        if (!isHexInt64String(val)) {
-          throw new Error("Not a valid hex Int64.")
-        }
-
-        big_num_in_hex_str = val
-      } else {
-        throw new Error("Invalid type for Int64")
-      }
-
-      if (big_num_in_hex_str.length > 16) {
-        throw new Error("Int64 is too large")
-      }
-
-      while (big_num_in_hex_str.length < 16) {
-        big_num_in_hex_str = "0" + big_num_in_hex_str
-      }
-
-      serializeHex(so, big_num_in_hex_str, true) // noLength = true
-    },
-    parse: function(so) {
-      var bytes = so.read(8)
-      // We need to add a 0, so if the high bit is set it won't think it's a
-      // pessimistic numeric fraek. What doth lief?
-      var result = new BigInteger([0].concat(bytes), 256)
-      assert(result instanceof BigInteger)
-      return result.toString(10)
-    }
-  }))
-
-  STInt64.id = 3
 
   var STVL = (EXPORTS.VariableLength = EXPORTS.VL = new SerializedType({
     serialize: function(so, val) {
