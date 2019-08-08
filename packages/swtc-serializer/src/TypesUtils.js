@@ -137,20 +137,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STHash256.id = 5
 
-  /*
-   * Convert the HASH160 to bytes array
-   * and back
-   */
-  var STHash160 = (EXPORTS.Hash160 = new SerializedType({
-    serialize: function(so, val) {
-      serializeHex(so, convertHexToByteArray(val), true)
-    },
-    parse: function(so) {
-      return KeyPair.convertBytesToAddress(so.read(20))
-    }
-  }))
-
-  STHash160.id = 17
 
   var STVL = (EXPORTS.VariableLength = EXPORTS.VL = new SerializedType({
     serialize: function(so, val) {
