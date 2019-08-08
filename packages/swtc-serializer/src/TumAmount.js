@@ -2,13 +2,13 @@
 // in Jingtum.
 // - Numbers in hex are big-endian.
 
+import { AMOUNT_CONSTS } from "./Constant"
 var extend = require("extend")
 var WalletFactory = require("swtc-wallet").Factory
 var BigInteger = require("bn-plus.js")
 var Bignumber = require("bignumber.js")
 var isTumCodeFactory = require("./DataCheck").Factory
-var CURRENCY_NAME_LEN = 3 // 货币长度
-var CURRENCY_NAME_LEN2 = 6 // 货币长度
+
 //
 // Amount class in the style of Java's BigInteger class
 // https://docs.oracle.com/javase/7/docs/api/java/math/BigInteger.html
@@ -30,37 +30,8 @@ function Factory(Wallet = WalletFactory()) {
     this._issuer = null // new String;
   }
 
-  var consts = {
-    currency_xns: 0,
-    currency_one: 1,
-    xns_precision: 6,
-
-    // BigInteger values prefixed with bi_.
-    bi_5: 5, // new BigInteger('5'),
-    bi_7: 7, // new BigInteger('7'),
-    bi_10: 10, // new BigInteger('10'),
-    bi_1e14: 1e14, // new BigInteger(String(1e14)),
-    bi_1e16: 1e16, // new BigInteger(String(1e16)),
-    bi_1e17: 1e17, // new BigInteger(String(1e17)),
-    bi_1e32: 1e32, // new BigInteger('100000000000000000000000000000000'),
-    bi_man_max_value: 9999999999999999, // new BigInteger('9999999999999999'),
-    bi_man_min_value: 1e15, // new BigInteger('1000000000000000'),
-    bi_xns_max: 9e18, // new BigInteger('9000000000000000000'), // Json wire limit.
-    bi_xns_min: -9e18, // new BigInteger('-9000000000000000000'),// Json wire limit.
-    bi_xns_unit: 1e6, // new BigInteger('1000000'),
-
-    cMinOffset: -96,
-    cMaxOffset: 80,
-
-    // Maximum possible amount for non-SWT currencies using the maximum mantissa
-    // with maximum exponent. Corresponds to hex 0xEC6386F26FC0FFFF.
-    max_value: "9999999999999999e80",
-    // Minimum possible amount for non-SWT currencies.
-    min_value: "-1000000000000000e-96"
-  }
-
   // Add constants to Amount class
-  extend(Amount, consts)
+  extend(Amount, AMOUNT_CONSTS)
 
   Amount.Wallet = Wallet
   Amount.from_json = function(j) {

@@ -16,9 +16,8 @@
  *
  * Data functions used to check the valid data types.
  */
-var CURRENCY_NAME_LEN = 3
-var CURRENCY_NAME_LEN2 = 6
-var TUM_NAME_LEN = 40
+
+import { MAX_CURRENCY_LEN, MIN_CURRENCY_LEN, TUM_NAME_LEN } from "./Constant"
 var WalletFactory = require("swtc-wallet").Factory
 
 function Factory(Wallet = WalletFactory()) {
@@ -63,8 +62,8 @@ function Factory(Wallet = WalletFactory()) {
     return (
       typeof code === "string" &&
       (!!code &&
-        code.length >= CURRENCY_NAME_LEN &&
-        code.length <= CURRENCY_NAME_LEN2)
+        code.length >= MIN_CURRENCY_LEN &&
+        code.length <= MAX_CURRENCY_LEN)
     )
   }
 
