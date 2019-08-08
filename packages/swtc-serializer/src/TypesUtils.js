@@ -47,17 +47,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STInt8.id = 16
 
-  var STInt32 = (EXPORTS.Int32 = new SerializedType({
-    serialize: function(so, val) {
-      so.append(convertIntegerToByteArray(val, 4))
-    },
-    parse: function(so) {
-      return readAndSum(so, 4)
-    }
-  }))
-
-  STInt32.id = 2
-
   /*
    * Convert int64 big number input
    * to HEX string, then serialize it.
