@@ -121,23 +121,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STInt64.id = 3
 
-  var STHash256 = (EXPORTS.Hash256 = new SerializedType({
-    serialize: function(so, val) {
-      if (isString(val) && /^[0-9A-F]{0,16}$/i.test(val) && val.length <= 64) {
-        serializeHex(so, val, true) // noLength = true
-      } else {
-        throw new Error("Invalid Hash256")
-      }
-    },
-    parse: function() {
-      // return UInt256.from_bytes(so.read(32));
-      return NaN
-    }
-  }))
-
-  STHash256.id = 5
-
-
   var STVL = (EXPORTS.VariableLength = EXPORTS.VL = new SerializedType({
     serialize: function(so, val) {
       if (typeof val === "string") {
