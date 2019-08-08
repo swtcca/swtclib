@@ -665,43 +665,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STObject.id = 14
 
-  var STArray = (EXPORTS.Array = new SerializedType({
-    serialize: function(so, val) {
-      for (var i = 0, l = val.length; i < l; i++) {
-        var keys = Object.keys(val[i])
-
-        if (keys.length !== 1) {
-          throw Error(
-            "Cannot serialize an array containing non-single-key objects"
-          )
-        }
-
-        var field_name = keys[0]
-        var value = val[i][field_name]
-        serialize(so, field_name, value)
-      }
-
-      // Array ending marker
-      STInt8.serialize(so, 0xf1)
-    },
-
-    parse: function(so) {
-      var output = []
-
-      while (so.peek(1)[0] !== 0xf1) {
-        var keyval = parse(so)
-        var obj = {}
-        obj[keyval[0]] = keyval[1]
-        output.push(obj)
-      }
-
-      so.read(1)
-
-      return output
-    }
-  }))
-
-  STArray.id = 15
 
   return EXPORTS
 }
