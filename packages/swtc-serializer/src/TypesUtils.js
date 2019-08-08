@@ -121,39 +121,6 @@ function Factory(Wallet = WalletFactory()) {
 
   STInt64.id = 3
 
-  /*
-   * serialize
-   * Input: HEX value for a 128 bit Int
-   * Output: byte array of the value appended to the buffer.
-   * parse
-   * Input: byte array
-   * Output: HEX value
-   */
-  var STHash128 = (EXPORTS.Hash128 = new SerializedType({
-    serialize: function(so, val) {
-      // var hash = UInt128.from_json(val);
-      if (isString(val) && /^[0-9A-F]{0,16}$/i.test(val) && val.length <= 32) {
-        serializeHex(so, val, true) // noLength = true
-      } else {
-        throw new Error("Invalid Hash128")
-      }
-    },
-    parse: function(so) {
-      var val = so.read(16)
-      if (!Array.isArray(val) || val.length !== 16) {
-        // this._value = NaN;
-        return NaN
-      } else {
-        // this._value  = new BigInteger([0].concat(j), 256);
-        // TODO: need to verify
-        return NaN // new BigNumber(val, 256);
-      }
-      // return UInt128.from_bytes(so.read(16));
-    }
-  }))
-
-  STHash128.id = 4
-
   var STHash256 = (EXPORTS.Hash256 = new SerializedType({
     serialize: function(so, val) {
       if (isString(val) && /^[0-9A-F]{0,16}$/i.test(val) && val.length <= 64) {
