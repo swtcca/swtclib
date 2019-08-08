@@ -894,4 +894,6 @@ function Factory(Wallet = WalletFactory()) {
   return EXPORTS
 }
 
-module.exports = { Factory, stypes: Factory() }
+const stypes = Factory()
+
+export { Factory, stypes }
