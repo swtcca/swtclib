@@ -36,22 +36,6 @@ function Factory(Wallet = WalletFactory()) {
   const Amount = tumFactory(Wallet)
   const DataCheck = dataCheckFactory(Wallet)
 
-  var STVL = (EXPORTS.VariableLength = EXPORTS.VL = new SerializedType({
-    serialize: function(so, val) {
-      if (typeof val === "string") {
-        serializeHex(so, val)
-      } else {
-        throw new Error("Unknown datatype.")
-      }
-    },
-    parse: function(so) {
-      var len = this.parse_varint(so)
-      return convertByteArrayToHex(so.read(len))
-    }
-  }))
-
-  STVL.id = 7
-
   EXPORTS.serialize = EXPORTS.serialize_whatever = serialize
 
   function serialize(so, field_name, value) {
