@@ -26,6 +26,14 @@ import {
   REQUIRED,
   TRANSACTION_TYPES
 } from "./Constant"
+import {
+  get_char_from_num,
+  get_ledger_entry_type,
+  get_transaction_result,
+  get_transaction_type,
+  hex_str_to_byte_array
+} from "./Utils"
+
 var assert = require("assert")
 var extend = require("extend")
 
@@ -38,69 +46,6 @@ function Factory(Wallet = WalletFactory()) {
     throw Error("Serializer need a Wallet class")
   }
   const stypes = stypesFactory(Wallet)
-
-  // defined results of transaction
-
-  /*
-   * convert a HEX to dec number
-   * 0-9 to the same digit
-   * a-f, A-F to 10 - 15,
-   * all others to 0
-   */
-  function get_dec_from_hexchar(in_char) {
-    if (in_char.length > 1) {
-      return 0
-    }
-    var asc_code = in_char.charCodeAt(0)
-    if (asc_code > 48) {
-      if (asc_code < 58) {
-        // digit 1-9
-        return asc_code - 48
-      } else {
-        if (asc_code > 64) {
-          if (asc_code < 91) {
-            // letter A-F
-            return asc_code - 55
-          } else {
-            if (asc_code > 96 && asc_code < 123) {
-              return asc_code - 87
-            }
-          }
-        }
-      }
-    }
-    return 0
-  }
-
-  // HEX string to bytes
-  // for a string, returns as byte array
-  // Input is not even, add 0 to the end.
-  // a0c -> a0 c0
-  function hex_str_to_byte_array(in_str) {
-    var i
-    var out = []
-    var str = in_str.replace(/\s|0x/g, "")
-    for (i = 0; i < str.length; i += 2) {
-      if (i + 1 > str.length) {
-        out.push(get_dec_from_hexchar(str.charAt(i)) * 16)
-      } else {
-        out.push(
-          get_dec_from_hexchar(str.charAt(i)) * 16 +
-          get_dec_from_hexchar(str.charAt(i + 1))
-        )
-      }
-    }
-    return out
-  }
-
-  function get_char_from_num(in_num) {
-    if (in_num >= 0 && in_num < 10) {
-      return in_num + 48
-    } // 0-9
-    if (in_num >= 10 && in_num < 16) {
-      return in_num + 55
-    } // A-F
-  }
 
   /*
    * Convert the byte array to HEX values as String
@@ -319,13 +264,13 @@ function Factory(Wallet = WalletFactory()) {
       case "number":
         switch (field_name) {
           case "LedgerEntryType":
-            output = stypes.get_ledger_entry_type(structure) // TODO: REPLACE, return string
+            output = get_ledger_entry_type(structure) // TODO: REPLACE, return string
             break
           case "TransactionResult":
-            output = stypes.get_transaction_result(structure) // TRANSACTION_RESULTS[structure];//TODO: REPLACE, return string
+            output = get_transaction_result(structure) // TRANSACTION_RESULTS[structure];//TODO: REPLACE, return string
             break
           case "TransactionType":
-            output = stypes.get_transaction_type(structure) // TRANSACTION_TYPES[structure];
+            output = get_transaction_type(structure) // TRANSACTION_TYPES[structure];
             break
           default:
             output = structure

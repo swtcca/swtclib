@@ -3,6 +3,8 @@
 // - Numbers in hex are big-endian.
 
 import { AMOUNT_CONSTS } from "./Constant"
+import { isNumber } from "./Utils"
+
 var extend = require("extend")
 var WalletFactory = require("swtc-wallet").Factory
 var BigInteger = require("bn-plus.js")
@@ -42,7 +44,7 @@ function Factory(Wallet = WalletFactory()) {
   //
   Amount.prototype.is_valid = function() {
     if (this.is_native()) {
-      return typeof this._value === "number" && isFinite(this._value)
+      return isNumber(this._value)
     }
     return isAmount({
       value: this._value.toString(),
