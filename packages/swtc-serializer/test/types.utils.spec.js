@@ -4,7 +4,6 @@ const tu = require("../lib/TypesUtils").Factory()
 const Serializer = require("../lib/Serializer").Factory()
 const sinon = require("sinon")
 const BigInteger = require("jsbn").BigInteger
-const { testAddress, testDestinationAddress } = require("./config")
 describe("test TypesUtils", function() {
   describe("test get_transaction_type api", function() {
     it("return Payment if the structure is 0", function() {
@@ -339,13 +338,11 @@ describe("test TypesUtils", function() {
 
     it("success if serialize", function() {
       let so = new Serializer([])
-      let data = [
-        {
-          Memo: {
-            MemoData: "\u0000\u0000"
-          }
+      let data = [{
+        Memo: {
+          MemoData: "\u0000\u0000"
         }
-      ]
+      }]
       tu.Array.serialize(so, data)
       expect(so.buffer).to.deep.equal([234, 125, 2, 0, 0, 225, 241])
       expect(so.pointer).to.equal(7)
@@ -353,14 +350,12 @@ describe("test TypesUtils", function() {
 
     it("throw error if keys's length is not equal to 1 when serialize", function() {
       let so = new Serializer([])
-      let data = [
-        {
-          Memo: {
-            MemoData: "test"
-          },
-          test: "test"
-        }
-      ]
+      let data = [{
+        Memo: {
+          MemoData: "test"
+        },
+        test: "test"
+      }]
       expect(() => tu.Array.serialize(so, data)).to.throw(
         "Cannot serialize an array containing non-single-key objects"
       )
@@ -369,13 +364,11 @@ describe("test TypesUtils", function() {
     it("success if parse", function() {
       let so = new Serializer([234, 125, 2, 0, 0, 225, 241])
       let value = tu.Array.parse(so)
-      expect(value).to.deep.equal([
-        {
-          Memo: {
-            MemoData: "0000"
-          }
+      expect(value).to.deep.equal([{
+        Memo: {
+          MemoData: "0000"
         }
-      ])
+      }])
       expect(so.pointer).to.equal(7)
     })
   })
