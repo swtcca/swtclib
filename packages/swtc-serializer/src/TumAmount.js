@@ -15,7 +15,7 @@ var CURRENCY_NAME_LEN2 = 6 // 货币长度
 //
 
 function Factory(Wallet = WalletFactory()) {
-  const isTumCode = isTumCodeFactory(Wallet).isTumCode
+  const { isTumCode, isCurrency, isCustomTum, isAmount } = isTumCodeFactory(Wallet)
 
   function Amount() {
     // Json format:
@@ -70,8 +70,14 @@ function Factory(Wallet = WalletFactory()) {
   // Only check the value of the Amount
   //
   Amount.prototype.is_valid = function() {
-    // console.log("TODO: decide if the input is a valid amount obj");
-    return true
+    if (this.is_native()) {
+      return typeof this._value === "number" && isFinite(this._value)
+    }
+    return isAmount({
+      value: this._value.toString(),
+      currency: this._currency,
+      issuer: this._issuer
+    })
   }
 
   Amount.prototype.currency = function() {
@@ -97,6 +103,10 @@ function Factory(Wallet = WalletFactory()) {
 
   Amount.prototype.issuer = function() {
     return this._issuer
+  }
+
+  Amount.prototype.offset = function() {
+    return this._offset
   }
 
   /*
@@ -259,23 +269,21 @@ function Factory(Wallet = WalletFactory()) {
    * Convert the internal obj to JSON
    */
   Amount.prototype.to_json = function() {
-    var result
-
+    let result
     if (this._is_native) {
-      // Bug: to_text is undefined
-      result = this.to_text()
+      result = new Bignumber(this._value.toString(10))
+        .dividedBy(1e6)
+        .toString(10)
     } else {
-      var amount_json = {
-        value: this._value,
-        currency: this._currency
-      }
-
+      result = {}
+      result.value = new Bignumber(this._value.toString(10))
+        .dividedBy(Math.pow(10, Math.abs(this._offset)))
+        .toString(10)
+      result.currency = this.currency()
       if (this.is_valid()) {
-        amount_json.issuer = this._issuer
+        result.issuer = this._issuer
       }
-      result = amount_json
     }
-
     return result
   }
 
@@ -296,8 +304,7 @@ function Factory(Wallet = WalletFactory()) {
 
     // Only handle the currency with correct symbol
     if (
-      this._currency.length >= CURRENCY_NAME_LEN &&
-      this._currency.length <= CURRENCY_NAME_LEN2
+      isCurrency(this._currency)
     ) {
       var currencyCode = this._currency // 区分大小写
       var end = 14
@@ -305,13 +312,11 @@ function Factory(Wallet = WalletFactory()) {
       for (var j = len; j >= 0; j--) {
         currencyData[end - j] = currencyCode.charCodeAt(len - j) & 0xff
       }
-    } else if (this._currency.length === 40) {
+    } else if (isCustomTum(this._currency)) {
       // for TUM code start with 8
       // should be HEX code
       if (/^[0-9A-F]/i.test(this._currency)) {
         currencyData = new BigInteger(this._currency, 16).toArray(null, 20)
-      } else {
-        throw new Error("Invalid currency code.")
       }
     } else {
       throw new Error("Incorrect currency code length.")

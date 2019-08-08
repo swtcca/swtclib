@@ -13,6 +13,7 @@ var WalletFactory = require("swtc-wallet").Factory
 var BN = require("bn-plus.js")
 var BigInteger = require("jsbn").BigInteger
 var tumFactory = require("./TumAmount").Factory
+var dataCheckFactory = require("./DataCheck").Factory
 var CURRENCY_NAME_LEN = 3 // 货币长度
 var CURRENCY_NAME_LEN2 = 6 // 货币长度
 const EXPORTS = {}
@@ -30,6 +31,7 @@ function arraySet(count, value) {
 function Factory(Wallet = WalletFactory()) {
   const KeyPair = Wallet.KeyPair
   const Amount = tumFactory(Wallet)
+  const DataCheck = dataCheckFactory(Wallet)
   /**
    * Data type map.
    *
@@ -662,7 +664,7 @@ function Factory(Wallet = WalletFactory()) {
       // pessimistic numeric fraek. What doth lief?
       var result = new BigInteger([0].concat(bytes), 256)
       assert(result instanceof BigInteger)
-      return result
+      return result.toString(10)
     }
   }))
 
@@ -779,13 +781,13 @@ function Factory(Wallet = WalletFactory()) {
         case "number":
           // TODO, follow the Tum code rules
           throw new Error("Input tum code not valid!")
-        // if (!isNaN(j)) {
-        //     this.parse_number(j);
-        // }
-        // break;
+          // if (!isNaN(j)) {
+          //     this.parse_number(j);
+          // }
+          // break;
         case "object":
           throw new Error("Input tum code not valid!")
-        // break;
+          // break;
       }
 
       return val
@@ -820,7 +822,11 @@ function Factory(Wallet = WalletFactory()) {
       // if (!currency.is_valid()) {
       //  throw new Error('Invalid currency: '+convertByteArrayToHex(bytes));
       // }
-      return currency
+      let s = currency.toString(16).toUpperCase()
+      if (!DataCheck.isCustomTum(s)) {
+        s = convertHexToString(s).replace(/\u0000/g, "")
+      }
+      return s
     }
   })
 
@@ -1125,8 +1131,7 @@ function Factory(Wallet = WalletFactory()) {
           // console.log('entry.currency');
           entry.currency = STCurrency.parse(so)
           if (
-            entry.currency.to_json() === "SWT" &&
-            !entry.currency.is_native()
+            entry.currency !== "SWT"
           ) {
             entry.non_native = true
           }
@@ -1213,7 +1218,7 @@ function Factory(Wallet = WalletFactory()) {
             value = convertStringToHex(value)
             break
 
-          // MemoData can be a JSON object, otherwise it's a string
+            // MemoData can be a JSON object, otherwise it's a string
           case "MemoData":
             if (typeof value !== "string") {
               if (isJson) {
@@ -1663,9 +1668,9 @@ function Factory(Wallet = WalletFactory()) {
 
     var field_bits = tag_byte & 0x0f
     var field_name =
-      field_bits === 0
-        ? FIELDS_MAP[type_bits][so.read(1)[0]]
-        : FIELDS_MAP[type_bits][field_bits]
+      field_bits === 0 ?
+      FIELDS_MAP[type_bits][so.read(1)[0]] :
+      FIELDS_MAP[type_bits][field_bits]
 
     assert(
       field_name,
@@ -1692,9 +1697,9 @@ function Factory(Wallet = WalletFactory()) {
       var b_field_bits = b_field_coordinates[1]
 
       // Sort by type id first, then by field id
-      return a_type_bits !== b_type_bits
-        ? a_type_bits - b_type_bits
-        : a_field_bits - b_field_bits
+      return a_type_bits !== b_type_bits ?
+        a_type_bits - b_type_bits :
+        a_field_bits - b_field_bits
     }
 
     return keys.sort(sort_field_compare)

@@ -81,8 +81,12 @@ function Factory(Wallet = WalletFactory()) {
       ["AppType", OPTIONAL],
       ["Expiration", OPTIONAL]
     ]),
-    OfferCancel: [8].concat(base, [["OfferSequence", REQUIRED]]),
-    SetRegularKey: [5].concat(base, [["RegularKey", REQUIRED]]),
+    OfferCancel: [8].concat(base, [
+      ["OfferSequence", REQUIRED]
+    ]),
+    SetRegularKey: [5].concat(base, [
+      ["RegularKey", REQUIRED]
+    ]),
     Payment: [0].concat(base, [
       ["Destination", REQUIRED],
       ["Amount", REQUIRED],
@@ -101,8 +105,12 @@ function Factory(Wallet = WalletFactory()) {
       ["RemoveCode", OPTIONAL],
       ["ExpireCode", OPTIONAL]
     ]),
-    RemoveContract: [10].concat(base, [["Target", REQUIRED]]),
-    EnableFeature: [100].concat(base, [["Feature", REQUIRED]]),
+    RemoveContract: [10].concat(base, [
+      ["Target", REQUIRED]
+    ]),
+    EnableFeature: [100].concat(base, [
+      ["Feature", REQUIRED]
+    ]),
     SetFee: [101].concat(base, [
       ["Features", REQUIRED],
       ["BaseFee", REQUIRED],
@@ -186,7 +194,9 @@ function Factory(Wallet = WalletFactory()) {
       ["TakerGetsIssuer", OPTIONAL],
       ["Indexes", REQUIRED]
     ]),
-    EnabledFeatures: [102].concat(sleBase, [["Features", REQUIRED]]),
+    EnabledFeatures: [102].concat(sleBase, [
+      ["Features", REQUIRED]
+    ]),
     FeeSettings: [115].concat(sleBase, [
       ["ReferenceFeeUnits", REQUIRED],
       ["ReserveBase", REQUIRED],
@@ -194,7 +204,9 @@ function Factory(Wallet = WalletFactory()) {
       ["BaseFee", REQUIRED],
       ["LedgerIndex", OPTIONAL]
     ]),
-    GeneratorMap: [103].concat(sleBase, [["Generator", REQUIRED]]),
+    GeneratorMap: [103].concat(sleBase, [
+      ["Generator", REQUIRED]
+    ]),
     LedgerHashes: [104].concat(sleBase, [
       ["LedgerEntryType", REQUIRED],
       ["Flags", REQUIRED],
@@ -296,7 +308,7 @@ function Factory(Wallet = WalletFactory()) {
       } else {
         out.push(
           get_dec_from_hexchar(str.charAt(i)) * 16 +
-            get_dec_from_hexchar(str.charAt(i + 1))
+          get_dec_from_hexchar(str.charAt(i + 1))
         )
       }
     }
@@ -402,10 +414,10 @@ function Factory(Wallet = WalletFactory()) {
     } else {
       throw new Error(
         "Object to be serialized must contain either" +
-          " TransactionType, LedgerEntryType or AffectedNodes."
+        " TransactionType, LedgerEntryType or AffectedNodes."
       )
     }
-    so.serialize(typedef, obj)
+    so.serialize(obj)
 
     return so
   }
@@ -570,7 +582,7 @@ function Factory(Wallet = WalletFactory()) {
   /*
    * Serialize the object
    */
-  Serializer.prototype.serialize = function(typedef, obj) {
+  Serializer.prototype.serialize = function(obj) {
     // Serialize object without end marker
     stypes.Object.serialize(this, obj, true)
   }
@@ -590,10 +602,10 @@ function Factory(Wallet = WalletFactory()) {
     // console.log("\nSign :", this.bytes_to_str(sign_buffer.buffer));
     return this.bytes_to_str(
       hashjs
-        .sha512()
-        .update(sign_buffer.buffer)
-        .digest()
-        .slice(0, 32)
+      .sha512()
+      .update(sign_buffer.buffer)
+      .digest()
+      .slice(0, 32)
     )
   }
 

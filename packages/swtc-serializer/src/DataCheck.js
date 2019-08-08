@@ -54,7 +54,7 @@ function Factory(Wallet = WalletFactory()) {
   // numbers and capital letters.
 
   function isLetterNumer(str) {
-    var numbers = /^[0-9A-Z]+$/
+    var numbers = /^[0-9A-Z]+$/i
     return !!String(str).match(numbers)
   }
 
@@ -166,6 +166,7 @@ function Factory(Wallet = WalletFactory()) {
   }
 
   return {
+    isCurrency,
     isCustomTum,
     allNumeric,
     isRelation,
