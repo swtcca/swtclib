@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/node": "^12.7.1",
     "bignumber.js": "^8.1.1",
     "bn-plus.js": "^1.0.0",
     "extend": "^3.0.2",
@@ -11,15 +12,15 @@
   "description": "swtc-serializer@jcc",
   "devDependencies": {
     "chai": "^4.2.0",
-    "chai-json-schema": "^1.5.0",
-    "coveralls": "^3.0.3",
-    "eslint": "^5.16.0",
-    "install": "^0.12.2",
-    "mocha": "^6.1.4",
+    "chai-json-schema": "^1.5.1",
+    "coveralls": "^3.0.6",
+    "eslint": "^6.1.0",
+    "install": "^0.13.0",
+    "mocha": "^6.2.0",
     "nyc": "^14.1.1",
-    "prettier": "^1.17.1",
-    "pretty-quick": "^1.11.0",
-    "sinon": "^7.2.4"
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
+    "sinon": "^7.4.1"
   },
   "directories": {
     "lib": "lib"
@@ -42,9 +43,9 @@
     "prettier:check": "prettier -c lib/*.js",
     "prettier:tabs": "prettier --use-tabs --write package.json lib/*.js",
     "eslint": "eslint lib/*.js",
-    "test": "mocha test/test_*.js",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+    "test": "tsc && mocha test/test_*.js",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"
   },
   "version": "2.1.6",
   "author": "Lospring Liu",
