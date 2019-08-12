@@ -43,7 +43,7 @@
     "prettier:check": "prettier -c lib/*.js",
     "prettier:tabs": "prettier --use-tabs --write package.json lib/*.js",
     "eslint": "eslint lib/*.js",
-    "test": "tsc && mocha test/test_*.js",
+    "test": "tsc && mocha test/*.spec.js",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"
   },
