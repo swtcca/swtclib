@@ -784,6 +784,18 @@ class Remote extends EventEmitter {
   public invokeContractTx(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
+  public buildContractInitTx(options: IContractInitTxOptions) {
+    return Transaction.initContractTx(options, this)
+  }
+  public buildContractInvokeTx(options: IContractInvokeTxOptions) {
+    return Transaction.invokeContractTx(options, this)
+  }
+  public buildContractDeployTx(options: IContractDeployTxOptions) {
+    return Transaction.deployContractTx(options, this)
+  }
+  public buildContractCallTx(options: IContractCallTxOptions) {
+    return Transaction.callContractTx(options, this)
+  }
   public AlethEvent = function(options) {
     const request = new Request(this, "aleth_eventlog", data => data)
     if (typeof options !== "object") {
