@@ -1,6 +1,6 @@
 {
   "name": "swtc-x-lib",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "swtc-x-lib for jingtum alliance chains",
   "main": "src/index.js",
   "unpkg": "dist/swtc-x-lib.js",
