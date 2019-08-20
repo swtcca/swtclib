@@ -624,7 +624,7 @@ const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
     /*
      * get all accounts at some ledger_index
      */
-    public requestAccounts = function(options: IRequestAccountsOptions) {
+    public requestAccounts(options: IRequestAccountsOptions) {
       const request = new Request(this, "account_count")
       if (options === null || typeof options !== "object") {
         request.message.type = new Error("invalid options type")
