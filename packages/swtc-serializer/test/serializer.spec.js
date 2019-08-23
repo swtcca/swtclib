@@ -3,7 +3,15 @@ const expect = chai.expect
 const Serializer = require("../lib/Serializer").Factory()
 const sinon = require("sinon")
 const TU = require("../lib/TypesUtils").Factory()
+
 describe("test Serializer", function() {
+  describe("test Factory", function() {
+    it("throw error if KeyPair is undefined", function() {
+      const Factory = require("../lib/Serializer").Factory
+      expect(() => Factory({})).to.throw()
+    })
+  })
+
   describe("test constructor", function() {
     it("if the buf is array and token is undefined", function() {
       let inst = new Serializer([])
@@ -104,7 +112,7 @@ describe("test Serializer", function() {
     it("serialize of TypesUtils Object should be called", function() {
       let inst = new Serializer([])
       let spy = sinon.spy(TU.Object, "serialize")
-      inst.serialize([], {})
+      inst.serialize({})
       expect(spy.calledOnce).to.equal(true)
       let args = spy.args[0]
       expect(args[0] instanceof Serializer).to.equal(true)
@@ -252,77 +260,56 @@ describe("test Serializer", function() {
   describe("test from_json", function() {
     it("throw error if the TransactionType is number", function() {
       expect(() =>
-        Serializer.from_json(
-          {
-            TransactionType: 1
-          },
-          "swt"
-        )
+        Serializer.from_json({
+          TransactionType: 1
+        })
       ).to.throw("Transaction type ID is invalid.")
     })
 
     it("throw error if the LedgerEntryType is number", function() {
       expect(() =>
-        Serializer.from_json(
-          {
-            LedgerEntryType: 1
-          },
-          "swt"
-        )
+        Serializer.from_json({
+          LedgerEntryType: 1
+        })
       ).to.throw("LedgerEntryType ID is invalid.")
     })
 
     it("throw error if the TransactionType is invalid", function() {
       expect(() =>
-        Serializer.from_json(
-          {
-            TransactionType: "AccountSets"
-          },
-          "swt"
-        )
+        Serializer.from_json({
+          TransactionType: "AccountSets"
+        })
       ).to.throw("Transaction type is invalid")
     })
 
     it("throw error if the LedgerEntryType is invalid", function() {
       expect(() =>
-        Serializer.from_json(
-          {
-            LedgerEntryType: "AccountRoots"
-          },
-          "swt"
-        )
+        Serializer.from_json({
+          LedgerEntryType: "AccountRoots"
+        })
       ).to.throw("LedgerEntryType is invalid")
     })
 
     it("if the LedgerEntryType is valid", function() {
-      let ser = Serializer.from_json(
-        {
-          LedgerEntryType: "AccountRoot"
-        },
-        "swt"
-      )
+      let ser = Serializer.from_json({
+        LedgerEntryType: "AccountRoot"
+      })
       expect(ser.buffer).to.deep.equal([17, 0, 97])
       expect(ser.pointer).to.equal(3)
     })
 
     it("if the TransactionType is valid", function() {
-      let ser = Serializer.from_json(
-        {
-          TransactionType: "AccountSet"
-        },
-        "swt"
-      )
+      let ser = Serializer.from_json({
+        TransactionType: "AccountSet"
+      })
       expect(ser.buffer).to.deep.equal([18, 0, 3])
       expect(ser.pointer).to.equal(3)
     })
 
     it("if the AffectedNodes is object", function() {
-      let ser = Serializer.from_json(
-        {
-          AffectedNodes: {}
-        },
-        "swt"
-      )
+      let ser = Serializer.from_json({
+        AffectedNodes: {}
+      })
       expect(ser.buffer).to.deep.equal([248, 241])
       expect(ser.pointer).to.equal(2)
     })

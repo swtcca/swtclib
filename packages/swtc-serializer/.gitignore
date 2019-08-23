@@ -64,3 +64,4 @@ dist
 .coveralls.yml
 libre
 package-lock.json
+lib

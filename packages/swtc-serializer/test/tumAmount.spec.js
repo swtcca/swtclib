@@ -1,8 +1,7 @@
 const chai = require("chai")
 const expect = chai.expect
 const Amount = require("../lib/TumAmount").Factory()
-const FactoryAmount = require("../lib/TumAmount").Factory
-const FactoryWallet = require("swtc-wallet").Factory
+const Factory = require("swtc-wallet").Factory
 const BN = require("bn-plus.js")
 const testData = {
   value: "1",
@@ -10,17 +9,6 @@ const testData = {
   issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 }
 describe("test TumAmount", function() {
-  describe("test constructor", function() {
-    it("if the token is undefined , not needed", function() {
-      // let inst = new Amount()
-      expect(Amount.Wallet.token).to.equal("SWT")
-    })
-    it("if the token is bwt, not needed", function() {
-      let AmountBwt = FactoryAmount(FactoryWallet("bizain"))
-      expect(AmountBwt.Wallet.token).to.equal("BWT")
-    })
-  })
-
   describe("test from_json", function() {
     let data = Amount.from_json(testData)
     expect(data.currency()).to.equal("CNY")
@@ -37,6 +25,7 @@ describe("test TumAmount", function() {
       let inst = new Amount()
       inst.parse_issuer(testData.issuer)
       expect(inst.issuer()).to.equal(testData.issuer)
+      expect(inst.offset()).to.equal(0)
     })
 
     it("if the issuer is invalid", function() {
@@ -177,7 +166,7 @@ describe("test TumAmount", function() {
     })
 
     it("if the currency length is 40 and hex code", function() {
-      let inst = new Amount("bwt")
+      let inst = new Amount()
       inst._currency = "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ikjhgfdsert"
       let data = inst.tum_to_bytes()
       expect(data).to.deep.equal([
@@ -205,13 +194,15 @@ describe("test TumAmount", function() {
     })
 
     it("if the currency length is 40 but not hex code", function() {
-      let inst = new Amount("bwt")
+      let inst = new Amount()
       inst._currency = ">1qaz2wsx3edc4rfv5tgb6yhn7ujm8ikjhgfdset"
-      expect(() => inst.tum_to_bytes()).to.throw("Invalid currency code.")
+      expect(() => inst.tum_to_bytes()).to.throw(
+        "Incorrect currency code length."
+      )
     })
 
     it("if the currency length is not 40", function() {
-      let inst = new Amount("bwt")
+      let inst = new Amount()
       inst._currency = "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ikjhgfdst"
       expect(() => inst.tum_to_bytes()).to.throw(
         "Incorrect currency code length."
@@ -265,17 +256,39 @@ describe("test TumAmount", function() {
   })
 
   describe("test to_json", function() {
-    it("if _is_native is false", function() {
+    it("if _is_native is false & issuer is valid", function() {
       let inst = new Amount()
       inst._value = 1
       inst._currency = "SWT"
       inst._is_native = false
-      inst._issuer = testData.issuer
+      inst._issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       expect(inst.to_json()).to.deep.equal({
-        value: 1,
-        currency: "SWT",
-        issuer: testData.issuer
+        value: "1",
+        issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        currency: "SWT"
       })
+    })
+
+    it("if _is_native is false & issuer is invalid", function() {
+      const Amount = require("../lib/TumAmount").Factory(Factory())
+      let inst = new Amount()
+      inst._value = 1
+      inst._currency = "BWT"
+      inst._is_native = false
+      inst._issuer = ""
+      expect(inst.to_json()).to.deep.equal({
+        value: "1",
+        currency: "BWT"
+      })
+    })
+
+    it("if _is_native is true", function() {
+      let inst = new Amount()
+      inst._value = 1
+      inst._currency = "SWT"
+      inst._is_native = true
+      inst._issuer = ""
+      expect(inst.to_json()).to.deep.equal("0.000001")
     })
   })
 })

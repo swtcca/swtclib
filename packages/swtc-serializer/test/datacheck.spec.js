@@ -3,6 +3,11 @@ const expect = chai.expect
 const DataCheck = require("../lib/DataCheck").Factory()
 
 describe("test DataCheck", function() {
+  it("throw error if wallet factory doesn't have property KeyPair", function() {
+    const Factory = require("../lib/DataCheck").Factory
+    expect(() => Factory({})).throw()
+  })
+
   describe("test allNumeric", function() {
     it("return true when the parameter is 2", function() {
       let valid = DataCheck.allNumeric(2)
@@ -102,13 +107,6 @@ describe("test DataCheck", function() {
       expect(valid).to.equal(true)
     })
 
-    it("return false when the parameter is custom code which includes lower case", function() {
-      let valid = DataCheck.isTumCode(
-        "123456789QWERTYUIOJANSNHCsKSZXCVBNMKJHGF"
-      )
-      expect(valid).to.equal(false)
-    })
-
     it('return false when the parameter is ""', function() {
       let valid = DataCheck.isRelation("")
       expect(valid).to.equal(false)
@@ -149,37 +147,28 @@ describe("test DataCheck", function() {
     })
 
     it("return false when the issuer is invalid", function() {
-      let valid = DataCheck.isAmount(
-        {
-          currency: "SWT",
-          issuer: "aaaa",
-          value: "2222"
-        },
-        "swt"
-      )
+      let valid = DataCheck.isAmount({
+        currency: "SWT",
+        issuer: "aaaa",
+        value: "2222"
+      })
       expect(valid).to.equal(false)
     })
 
     it("return false when the issuer is empty but currency is not swt", function() {
-      let valid = DataCheck.isAmount(
-        {
-          currency: "JMOAC",
-          value: "2222"
-        },
-        "swt"
-      )
+      let valid = DataCheck.isAmount({
+        currency: "JMOAC",
+        value: "2222"
+      })
       expect(valid).to.equal(false)
     })
 
     it("return true when the parameter is valid", function() {
-      let valid = DataCheck.isAmount(
-        {
-          currency: "SWT",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
-          value: "2222"
-        },
-        "swt"
-      )
+      let valid = DataCheck.isAmount({
+        currency: "SWT",
+        issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        value: "2222"
+      })
       expect(valid).to.equal(true)
     })
 
@@ -188,9 +177,20 @@ describe("test DataCheck", function() {
         currency: "SWT",
         value: "2222"
       }
-      let valid = DataCheck.isAmount(obj, "swt")
+      let valid = DataCheck.isAmount(obj)
       expect(obj.issuer).to.equal("")
       expect(valid).to.equal(true)
+    })
+
+    it("return true when the chain is bizain and the amount is valid", function() {
+      const WalletFactory = require("swtc-wallet").Factory("bizain")
+      const DataCheck = require("../lib/DataCheck").Factory(WalletFactory)
+      let valid = DataCheck.isAmount({
+        currency: "TS1",
+        issuer: "bf42S78serP2BeSx7HGtwQR2QASYaHVqyb",
+        value: "2222"
+      })
+      expect(valid).to.true
     })
   })
 
