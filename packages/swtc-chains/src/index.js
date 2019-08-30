@@ -78,6 +78,12 @@ const SWTC_CHAINS = [
     ACCOUNT_ZERO: "bbbbbbbbbbbbbbbbbbbbbhoLvTp",
     ACCOUNT_ONE: "bbbbbbbbbbbbbbbbbbbbBZjvri",
     fee: 10
+  },
+  {
+    code: "bvcadt",
+    currency: "BVC",
+    ACCOUNT_ALPHABET:
+      "bpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2rcdeCg65jkm8oFqi1tuvAxyz"
   }
 ]
 
