@@ -6,7 +6,7 @@
     "extend": "^3.0.2",
     "jsbn": "^1.1.0",
     "sha1": "^1.1.1",
-    "swtc-wallet": "^1.1.14"
+    "swtc-wallet": "^1.1.15"
   },
   "deprecated": false,
   "description": "swtc-serializer@jcc",
@@ -48,7 +48,7 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"
   },
-  "version": "2.1.7",
+  "version": "2.1.8",
   "author": "Lospring Liu",
   "bugs": {
     "url": "git+https://github.com/swtcca/swtclib.git"

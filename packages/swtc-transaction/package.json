@@ -1,6 +1,6 @@
 {
   "name": "swtc-transaction",
-  "version": "1.2.17",
+  "version": "1.2.18",
   "description": "swtc transaction package",
   "main": "src/index.js",
   "unpkg": "dist/swtc-transaction.js",
@@ -42,8 +42,8 @@
     "axios": "^0.18.0",
     "bignumber.js": "^8.1.1",
     "lodash": "^4.17.11",
-    "swtc-serializer": "^2.1.6",
-    "swtc-utils": "^1.1.10",
+    "swtc-serializer": "^2.1.8",
+    "swtc-utils": "^1.1.11",
     "url": "^0.11.0",
     "utf8": "^2.1.2"
   },

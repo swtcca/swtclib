@@ -1,12 +1,12 @@
 {
   "name": "swtc-address-codec",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "encode decode base58 SWTC identifiers",
   "main": "src/index.js",
   "license": "ISC",
   "dependencies": {
     "create-hash": "^1.1.2",
-    "swtc-chains": "^1.0.11",
+    "swtc-chains": "^1.0.12",
     "x-address-codec": "^0.7.2"
   },
   "repository": {

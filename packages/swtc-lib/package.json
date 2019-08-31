@@ -1,6 +1,6 @@
 {
   "name": "swtc-lib",
-  "version": "1.6.30",
+  "version": "1.6.31",
   "description": "swtc-lib for jingtum blockchain",
   "main": "src/index.js",
   "unpkg": "dist/swtc-lib.js",
@@ -49,8 +49,8 @@
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
     "swtc-nativescript": "^1.0.1",
-    "swtc-transaction": "^1.2.17",
-    "swtc-utils": "^1.1.10",
+    "swtc-transaction": "^1.2.18",
+    "swtc-utils": "^1.1.11",
     "ws": "^6.2.1"
   },
   "devDependencies": {

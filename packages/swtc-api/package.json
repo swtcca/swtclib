@@ -1,6 +1,6 @@
 {
   "name": "swtc-api",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "swtc lib api",
   "main": "src/index.js",
   "unpkg": "dist/swtc-api.js",
@@ -40,7 +40,7 @@
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
     "axios": "^0.18.0",
-    "swtc-transaction": "^1.2.17"
+    "swtc-transaction": "^1.2.18"
   },
   "devDependencies": {
     "@types/node": "^12.0.2",
