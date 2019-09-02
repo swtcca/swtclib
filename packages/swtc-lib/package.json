@@ -1,6 +1,6 @@
 {
   "name": "swtc-lib",
-  "version": "1.6.32",
+  "version": "1.6.33",
   "description": "swtc-lib for jingtum blockchain",
   "main": "src/index.js",
   "unpkg": "dist/swtc-lib.js",

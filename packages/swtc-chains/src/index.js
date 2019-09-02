@@ -82,7 +82,6 @@ const SWTC_CHAINS = [
   {
     code: "bvcadt",
     currency: "BVC",
-    simple: true,
     ACCOUNT_ALPHABET:
       "bpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2rcdeCg65jkm8oFqi1tuvAxyz"
   }
