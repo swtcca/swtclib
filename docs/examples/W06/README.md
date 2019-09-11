@@ -1,67 +1,87 @@
-# Angular Web应用
+# Angular Web 应用
 
 ## 准备
 
-1. 进入playground目录.
+1. 进入 playground 目录.
+
 ```bash
 $ cd playground
 ```
-2. 由于angular-cli创建纯粹的web应用，没有使用webpack，我们找一个模版
+
+2. 由于 angular-cli 创建纯粹的 web 应用，没有使用 webpack，我们找一个模版
+
 ```bash
 $ git clone git@github.com:muweigg/ng7.git
 ```
-3. 进入目录，该模版使用webpack
+
+3. 进入目录，该模版使用 webpack
+
 ```bash
 $ cd ng7
 ```
-4. 安装swtc-lib
+
+4. 安装 swtc-lib
+
 ```bash
 $ npm install swtc-lib
 ```
+
 5. 启动开发服务器
+
 ```bash
 $ npm run serv
 ```
+
 6. 浏览器访问
 7. 默认页面内容文件 `src/app/modules/home/home.component.html` 如下
+
 ```html
 <div class="box">
-    <img src="../../../assets/images/angular.png">
-    <h1>
-        {{ title }}
-        <br>
-        this is a lazy load module.
-    </h1>
+  <img src="../../../assets/images/angular.png" />
+  <h1>
+    {{ title }}
+    <br />
+    this is a lazy load module.
+  </h1>
 </div>
 ```
-  修改为如下示例内容
+
+修改为如下示例内容
+
 ```html
 <div class="box">
-    <img src="../../../assets/images/angular.png">
+  <img src="../../../assets/images/angular.png" />
   <div>
-    <h3>钱包</h3><hr>
+    <h3>钱包</h3>
+    <hr />
     <div><pre>{{ wallet_text }}</pre></div>
-    <h3>帐本</h3><hr>
+    <h3>帐本</h3>
+    <hr />
     <div><pre>{{ ledger_text }}</pre></div>
-    <h3>价格</h3><hr>
+    <h3>价格</h3>
+    <hr />
     <div><pre>{{ price_text }}</pre></div>
   </div>
 </div>
 ```
-8. 对应typescript脚本为 `src/app/modules/home/home.component.ts`, 内容
+
+8. 对应 typescript 脚本为 `src/app/modules/home/home.component.ts`, 内容
+
 ```typescript
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 @Component({
-    selector: 'home',
-    templateUrl: './home.component.html'
+  selector: "home",
+  templateUrl: "./home.component.html"
 })
 export class HomeComponent implements OnInit {
-    title: String = "app works!";
-    constructor() { }
-    ngOnInit() { }
+  title: String = "app works!";
+  constructor() {}
+  ngOnInit() {}
 }
 ```
-  修改为
+
+修改为
+
 ```typescript
 import { Component, OnInit } from '@angular/core';
 
@@ -86,7 +106,7 @@ export class HomeComponent implements OnInit {
     const SwtcLib = require('swtc-lib')
     const Wallet = SwtcLib.Wallet
     const Remote = SwtcLib.Remote
-    const remote = new Remote({server: 'ws://swtclib.daszichan.com:5020'})
+    const remote = new Remote()
     const currency_swt = remote.makeCurrency()
     const currency_cny = remote.makeAmount('CNY')
     const swt_vs_cny = { limit: 5, gets: currency_swt, pays: currency_cny }

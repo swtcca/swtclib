@@ -17,15 +17,13 @@ $ npm init -y
 3. 生成网页文件
 
 ```bash
-# 拷贝风格文件和swtc-lib库
+# 拷贝风格文件
 $ cp ../../styles.css .
-$ cp ../../swtc-lib.js .
 # 目录结构
 $ tree
 .
 ├── index.html
 ├── styles.css
-└── swtc-lib.js
 ```
 
 4. index.html， 简单的内容如下
@@ -42,9 +40,7 @@ $ tree
     />
     <link rel="stylesheet" href="styles.css" />
     <!-- 装扮一下页面 -->
-    <script src="swtc-lib.js"></script>
-    <!-- 导入库 -->
-    <!-- 或者直接使用CDN <script src="https://unpkg.com/swtc-lib"></script> -->
+    <script src="https://unpkg.com/swtc-lib"></script>
   </head>
   <body>
     <main>
@@ -70,7 +66,7 @@ $ tree
 - 浏览器中打开 index.html
 - 打开 Javascript Console, 处于浏览器运行时的交互模式
 - 类似于 node.js 交互式运行，每个命令都有即时反馈
-- 不同于 node.js 运行，导入 swtc-lib 是在 html 文件中制定了
+- 不同于 node.js 运行，导入 swtc-lib 是在 html 文件中指定了
 - [除了导入库不同外其他代码和 node.js 完全不变](../C01)
 
 ```javascript
@@ -99,7 +95,7 @@ undefined
   const dom_wallet = document.querySelector('.js-wallet')
   const dom_ledger = document.querySelector('.js-ledger')
   const dom_price = document.querySelector('.js-price')
-  const remote = new Remote({server: 'ws://swtclib.daszichan.com:5020'})
+  const remote = new Remote()
   const currency_swt = remote.makeCurrency()
   const currency_cny = remote.makeCurrency('CNY')
   const swt_vs_cny = { limit: 5, gets: currency_swt, pays: currency_cny }

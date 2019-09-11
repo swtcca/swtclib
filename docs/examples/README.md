@@ -16,8 +16,7 @@ $ npm install swtc-lib@jcc # jcc_jingtum_lib接口， 版本为1.5.x
   - CDN 直接引用
     - `<script src='https://unpkg.com/swtc-lib'></script>`
     - 或者 `<script src='https://cdn.jsdelivr.net/npm/swtc-lib'></script>`
-  - 或者当前目录下包含一份调试版本 swtc-lib.js
-  - 可以 [自行编译](https://github.com/swtca/swtclib)
+  - 可以 [自行编译](https://github.com/swtcca/swtclib)
   - 不建议使用此方式
   - 建议使用 [webpack 打包](W03) 方式替代
 - 常规导入
@@ -33,35 +32,38 @@ const Remote = require("swtc-lib").Remote;
    > - `const Remote = require('swtc-lib').Remote`
    > - `import { Remote } from 'swtc-lib'`
 1. 创建 remote 对象
-   > `const remote = new (require('swtc-lib').Remote)({server: 'ws://ts5.jingtum.com:5020', issuer: 'jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS'})`
-1. 连接服务器
+   > `const remote = new (require('swtc-lib').Remote)()`
+
+> `const remote_test = new (require('swtc-lib').Remote)({server: 'ws://ts5.jingtum.com:5020', issuer: 'jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS'})`
+
+2. 连接服务器
    > `remote.connectPromise().then(console.log).catch(console.error)`
-1. 获取帐本
+3. 获取帐本
    > `remote.requestLedgerClosed().submitPromise().then(console.log)`
-1. 获取交易
+4. 获取交易
    > `remote.requestTx({hash: 'hash'}).submitPromise().then(console.log)`
-1. 获取帐号信息
+5. 获取帐号信息
    > `remote.requestAccountInfo({account: 'address'}).submitPromise().then(console.log)`
-1. 获得账号可接收和发送的货币
+6. 获得账号可接收和发送的货币
    > `remote.requestAccountTums({account: 'address'}).submitPromise().then(console.log)`
-1. 支付
+7. 支付
    > `remote.buildPaymentTx({source: 'address1', to: 'address2', amount: remote.makeAmount(1)}).submitPromise('secret', 'memo').then(console.log)`
-1. 挂单
+8. 挂单
    > `remote.buildOfferCreateTx({type: 'Sell', account: 'address', taker_gets: remote.makeAmount(1), taker_pays: remote.makeAmount(0.01, 'cnt')}).submitPromise('secret', 'memo').then(console.log).catch(console.error)`
-1. 查询挂单
+9. 查询挂单
    > `remote.requestAccountOffers({account: DATA.address}).submitPromise().then(console.log)`
-1. 撤单
-   > `remote.buildOfferCancelTx({ account: 'address', sequence: offerSequence}).submitPromise('secret', 'memo').then(console.log)`
-1. 获取信任
-   > `remote.requestAccountRelations({type: 'trust', account: 'address'}).submitPromise().then(console.log)`
-1. 获取授权
-   > `remote.requestAccountRelations({type: 'authorize', account: 'address'}).submitPromise().then(console.log)`
-1. 设置信任
-   > `remote.buildRelationTx({type: 'trust', account: 'address', target; 'issuer', limit: remote.makeAmount(10000, 'CNY')}).submitPromise('secret', 'memo').then(console.log)`
-1. 设置授权
-   > `remote.buildRelationTx({type: 'authorize', account: 'address', target; 'address2', limit: remote.makeAmunt(1000, 'CNY')}).submitPromise('secret', 'memo').then(console.log)`
-1. 获得市场挂单列表
-   > `remote.requestOrderBook({gets: remote.makeCurrency(), pays: remote.makeCurrency('cnt')}).submitPromise().then(console.log).catch(console.error)`
+10. 撤单
+    > `remote.buildOfferCancelTx({ account: 'address', sequence: offerSequence}).submitPromise('secret', 'memo').then(console.log)`
+11. 获取信任
+    > `remote.requestAccountRelations({type: 'trust', account: 'address'}).submitPromise().then(console.log)`
+12. 获取授权
+    > `remote.requestAccountRelations({type: 'authorize', account: 'address'}).submitPromise().then(console.log)`
+13. 设置信任
+    > `remote.buildRelationTx({type: 'trust', account: 'address', target; 'issuer', limit: remote.makeAmount(10000, 'CNY')}).submitPromise('secret', 'memo').then(console.log)`
+14. 设置授权
+    > `remote.buildRelationTx({type: 'authorize', account: 'address', target; 'address2', limit: remote.makeAmunt(1000, 'CNY')}).submitPromise('secret', 'memo').then(console.log)`
+15. 获得市场挂单列表
+    > `remote.requestOrderBook({gets: remote.makeCurrency(), pays: remote.makeCurrency('cnt')}).submitPromise().then(console.log).catch(console.error)`
 
 ## 示例内容
 
