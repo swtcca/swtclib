@@ -1,3 +1,30 @@
+---
+home: true
+heroText: SWTC公链nodejs库
+tagline: 应用开发者专用
+features:
+  - title: 安全第一
+    details: 本地签名 密钥不出本机
+  - title: 完全兼容
+    details: 井通接口 井畅接口
+  - title: 独享便利
+    details: 零配置webpack支持 零配置browserify支持
+  - title: 多框架支持
+    details: node web mobile   angular vue react
+  - title: 模块化
+    details: 理顺依赖关系 反馈正式版本
+  - title: Typescript Promise
+    details: 原生Promise, typescript编辑器关联提示
+  - title: 扩展性
+    details: 已经增加api, 可加代理版remote
+  - title: 联盟链支持
+    details: 等同支持所有井通联盟链
+  - title: CDN可用
+    details: web版本直接CDN引用
+  - title: 集成生态节点
+    details: 支持中型应用
+---
+
 <h2 align="center"><a href="https://swtcdoc.netlify.com">专为应用开发者打造</a></h2>
 
 <p align="center">
@@ -22,12 +49,12 @@
 
 <h2>文档</h2>
 
-<h3><a href="docs/swtc/">改进提高</a></h3>
-<h3><a href="docs/swtclib/">编程接口(lib)</a></h3>
-<h3><a href="docs/api/">编程接口(api)</a></h3>
-<h3><a href="docs/examples/">应用实例</a></h3>
-<h3><a href="docs/swtcxlib/">联盟链扩展</a></h3>
-<h3><a href="docs/swtcapi/">公链api扩展</a></h3>
+<h3><a href="swtc/">改进提高</a></h3>
+<h3><a href="swtclib/">编程接口(lib)</a></h3>
+<h3><a href="api/">编程接口(api)</a></h3>
+<h3><a href="examples/">应用实例</a></h3>
+<h3><a href="swtcxlib/">联盟链扩展</a></h3>
+<h3><a href="swtcapi/">公链api扩展</a></h3>
 
 <h2>程序包</h2>
 
@@ -44,17 +71,6 @@
 | swtc-keypairs                    |                                                                                                                                      | 公钥私钥                            |
 | swtc-address-codec               |                                                                                                                                      | 编码解码                            |
 | swtc-chains                      |                                                                                                                                      | 基础信息                            |
-
-## 参与
-
-1. fork and clone
-2. 安装依赖 `npm install`
-3. 运行测试 `npm run test`
-4. 编译 web 版本 `npm run build`
-5. 列出管理的程序包 `npm run lerna -- list`
-6. 执行某个包的 npm 脚本 `npm run lerna -- run tslint --scope swtc-api`
-7. 执行某个包的任意命令 `npm run lerna -- exec pwd --scope swtc-wallet`
-8. 编译某个包的 web dev 版本 `npm run lerna -- run build:dev --scope swtc-lib`
 
 <h2 align="center">支持开源SWTCLIB 支持公链生态</h2>
 
@@ -88,6 +104,6 @@
 	用户
 </h3>
 <p align="center">
-	CA节点 | 畅节点 | 至尚节点 | JSKY节点  <br>
+	CA节点 | 畅节点 | 至尚节点 | JSKY节点 <br>
 	<img align="center" src="https://raw.githubusercontent.com/swtcca/swtc-app-examples/master/images/jccdex.png" alt="井畅" height="100" />
 </p>

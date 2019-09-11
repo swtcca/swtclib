@@ -8,6 +8,8 @@
   },
   "scripts": {
     "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && lerna run tsc --stream",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
     "lerna": "lerna",
     "clean": "lerna clean --yes",
     "cleanall": "lerna clean --yes && rm -fr node_modules package-lock.json",
@@ -22,6 +24,7 @@
     "husky": "^2.3.0",
     "lerna": "^3.14.1",
     "prettier": "^1.17.1",
-    "pretty-quick": "^1.11.0"
+    "pretty-quick": "^1.11.0",
+    "vuepress": "^1.0.4"
   }
 }
