@@ -11,6 +11,7 @@ module.exports = {
     editLinks: true,
     editLinkText: "帮助维护文档!",
     nav: [
+      { text: "练习", link: "https://swtclearn.netlify.com" },
       { text: "实例", link: "/examples/" },
       { text: "lib文档", link: "/swtclib/" },
       { text: "api文档", link: "/api/" },
