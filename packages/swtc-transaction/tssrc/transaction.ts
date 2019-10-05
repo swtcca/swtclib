@@ -131,6 +131,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       if ("secret" in options && options.secret) {
         tx.setSecret(options.secret)
       }
+      if ("invoice" in options && options.invoice) {
+        tx.setInvoice(options.invoice)
+      }
       if ("sequence" in options && options.sequence) {
         tx.setSequence(options.sequence)
       }
@@ -931,6 +934,14 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         return
       }
       this._secret = secret
+    }
+
+    /**
+     * set invoice
+     * @param invoice
+     */
+    public setInvoice(invoice: string) {
+      this.tx_json.InvoiceID = invoice
     }
 
     /**
