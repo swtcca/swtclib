@@ -962,6 +962,21 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
     }
 
+    public addHexMemo(memo) {
+      if (typeof memo !== "string") {
+        this.tx_json.memo_type = new TypeError("invalid memo type")
+        return this
+      }
+      if (memo.length > 2048) {
+        this.tx_json.memo_len = new TypeError("memo is too long")
+        return this
+      }
+      const _memo: any = {}
+      _memo.MemoData = memo
+      _memo.MemoFormat = "hex"
+      this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
+    }
+
     public setFee(fee) {
       const _fee = parseInt(fee, 10)
       if (isNaN(_fee)) {
@@ -1290,9 +1305,14 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       if (this.tx_json.Memos) {
         const memos = this.tx_json.Memos
         for (const memo of memos) {
-          memo.Memo.MemoData = utf8.decode(
-            utils.hexToString(memo.Memo.MemoData)
-          )
+          if (
+            memo &&
+            (memo.MemoFormat !== "hex" || memo.MemoFormat !== "json")
+          ) {
+            memo.Memo.MemoData = utf8.decode(
+              utils.hexToString(memo.Memo.MemoData)
+            )
+          }
         }
       }
       if (this.tx_json.SendMax && typeof this.tx_json.SendMax === "string") {
