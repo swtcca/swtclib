@@ -948,7 +948,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * just only memo data
      * @param memo
      */
-    public addMemo(memo) {
+    public addMemo(memo, format = null) {
       if (typeof memo !== "string") {
         this.tx_json.memo_type = new TypeError("invalid memo type")
         return this
@@ -958,22 +958,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         return this
       }
       const _memo: any = {}
-      _memo.MemoData = utils.stringToHex(utf8.encode(memo))
-      this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
-    }
-
-    public addHexMemo(memo) {
-      if (typeof memo !== "string") {
-        this.tx_json.memo_type = new TypeError("invalid memo type")
-        return this
+      if (format === null || format === "text") {
+        _memo.MemoData = utils.stringToHex(utf8.encode(memo))
+      } else {
+        _memo.MemoData = memo
+        _memo.MemoFormat = format
       }
-      if (memo.length > 2048) {
-        this.tx_json.memo_len = new TypeError("memo is too long")
-        return this
-      }
-      const _memo: any = {}
-      _memo.MemoData = memo
-      _memo.MemoFormat = "hex"
       this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
     }
 
@@ -1307,7 +1297,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         for (const memo of memos) {
           if (
             memo &&
-            (memo.MemoFormat !== "hex" || memo.MemoFormat !== "json")
+            (memo.MemoFormat === null || memo.MemoFormat === "text")
           ) {
             memo.Memo.MemoData = utf8.decode(
               utils.hexToString(memo.Memo.MemoData)
