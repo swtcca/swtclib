@@ -19,7 +19,6 @@ const remote = new Remote({
 describe("test transaction additions", function() {
   describe("test build payment transaction", async function() {
     this.timeout(20000)
-    await remote.connectPromise()
     let tx = remote.buildPaymentTx({
       source: DATA.address,
       to: DATA.address2,
@@ -27,6 +26,10 @@ describe("test transaction additions", function() {
       memo: "memo",
       secret: DATA.secret,
       sequence: "100"
+    })
+    it("connected", async function() {
+      await remote.connectPromise()
+      expect(remote.isConnected()).to.be.true
     })
     it("has _token", function() {
       expect(tx._token.toLowerCase()).to.equal("swt")
@@ -302,7 +305,6 @@ describe("test transaction additions", function() {
         amount: { value: 0.99999999, currency: "SWT", issuer: "" }
       })
       let result = await tx.submitPromise(DATA.secret, "", 10)
-      remote.disconnect()
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json.Sequence).to.be.equal(10)
@@ -311,6 +313,10 @@ describe("test transaction additions", function() {
       expect(result.engine_result).to.be.equal("tefPAST_SEQ")
       expect(result).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.tx_blob)
+    })
+    it("disconnect", function() {
+      remote.disconnect()
+      expect(remote.isConnected()).to.be.false
     })
   })
 })

@@ -242,7 +242,7 @@ describe("test server", function() {
       expect(spy1.callCount).to.equal(0)
     })
 
-    it("if the _state is online and timer is 0", function(done) {
+    xit("if the _state is online and timer is 0", function(done) {
       this.timeout(0)
       // this.retries(10);
       let remote = new Remote({
@@ -277,7 +277,7 @@ describe("test server", function() {
   })
 
   describe("test _setState", function() {
-    it("if the _state is equal to state", function() {
+    xit("if the _state is equal to state", function() {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -293,7 +293,7 @@ describe("test server", function() {
 
   describe("test connect", function() {
     this.timeout(5000)
-    it("if had connected", async function(done) {
+    xit("if had connected", async function(done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
