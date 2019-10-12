@@ -21,7 +21,7 @@
     "build:dev": "tsc && webpack --mode development",
     "build": "tsc && webpack",
     "tslint": "tslint tssrc/*.ts",
-    "test": "mocha -r esm \"test/test*.js\""
+    "test": "mocha \"test/test*.js\""
   },
   "repository": {
     "type": "git",
@@ -43,17 +43,16 @@
     "swtc-transaction": "^1.2.18"
   },
   "devDependencies": {
-    "@types/node": "^12.0.2",
+    "@types/node": "^12.7.1",
     "@types/utf8": "^2.1.6",
     "chai": "^4.2.0",
-    "eslint": "^5.16.0",
-    "esm": "^3.2.22",
-    "mocha": "^6.1.4",
+    "eslint": "^6.1.0",
+    "mocha": "^6.2.0",
     "nyc": "^14.1.1",
-    "prettier": "^1.17.1",
-    "pretty-quick": "^1.11.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
     "swtc-tum3": "^0.1.2",
-    "tslint": "^5.16.0",
+    "tslint": "^5.19.0",
     "tum3-eth-abi": "^1.0.2",
     "typescript": "^3.4.5",
     "webpack": "^4.29.3",

@@ -11,6 +11,7 @@ module.exports = {
   //extends: ["prettier"],
   extends: ["eslint:recommended"],
   rules: {
-    "no-empty": 1
+    "no-empty": 1,
+    "no-prototype-builtins": 0
   }
 }
