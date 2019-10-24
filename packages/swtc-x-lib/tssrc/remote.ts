@@ -37,7 +37,7 @@ import {
   IRelationTxOptions
 } from "./types"
 
-const Factory = (wallet_or_chain_or_token: any = "jingtum") => {
+const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
   let Wallet
   if (typeof wallet_or_chain_or_token === "string") {
     Wallet = WalletFactory(wallet_or_chain_or_token)
