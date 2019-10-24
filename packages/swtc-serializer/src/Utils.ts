@@ -524,6 +524,10 @@ const isHexInt64String = val => {
     return isString(val) && /^[0-9A-F]{0,16}$/i.test(val)
 }
 
+const isHexHASH256String = val => {
+    return isString(val) && /^[0-9A-F]{0,64}$/i.test(val)
+}
+
 export {
     convertByteArrayToHex,
     convertHexToByteArray,
@@ -537,6 +541,7 @@ export {
     get_ledger_entry_type,
     hex_str_to_byte_array,
     isHexInt64String,
+    isHexHASH256String,
     isNumber,
     isString,
     readAndSum,

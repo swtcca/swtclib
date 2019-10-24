@@ -131,6 +131,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       if ("secret" in options && options.secret) {
         tx.setSecret(options.secret)
       }
+      if ("invoice" in options && options.invoice) {
+        tx.setInvoice(options.invoice)
+      }
       if ("sequence" in options && options.sequence) {
         tx.setSequence(options.sequence)
       }
@@ -934,10 +937,18 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
 
     /**
+     * set invoice
+     * @param invoice
+     */
+    public setInvoice(invoice: string) {
+      this.tx_json.InvoiceID = invoice
+    }
+
+    /**
      * just only memo data
      * @param memo
      */
-    public addMemo(memo) {
+    public addMemo(memo, format = null) {
       if (typeof memo !== "string") {
         this.tx_json.memo_type = new TypeError("invalid memo type")
         return this
@@ -947,7 +958,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         return this
       }
       const _memo: any = {}
-      _memo.MemoData = utils.stringToHex(utf8.encode(memo))
+      if (format === null || format === "text") {
+        _memo.MemoData = utils.stringToHex(utf8.encode(memo))
+      } else {
+        _memo.MemoData = memo
+        _memo.MemoFormat = format
+      }
       this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
     }
 
@@ -1279,9 +1295,14 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       if (this.tx_json.Memos) {
         const memos = this.tx_json.Memos
         for (const memo of memos) {
-          memo.Memo.MemoData = utf8.decode(
-            utils.hexToString(memo.Memo.MemoData)
-          )
+          if (
+            memo &&
+            (memo.MemoFormat === null || memo.MemoFormat === "text")
+          ) {
+            memo.Memo.MemoData = utf8.decode(
+              utils.hexToString(memo.Memo.MemoData)
+            )
+          }
         }
       }
       if (this.tx_json.SendMax && typeof this.tx_json.SendMax === "string") {

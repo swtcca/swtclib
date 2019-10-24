@@ -29,6 +29,7 @@ export interface IPaymentTxOptions {
   to?: string
   memo?: string
   secret?: string
+  invoice?: string
   sequence?: string | number
 }
 

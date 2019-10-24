@@ -30,6 +30,7 @@ const STMemo = new SerializedType({
 
     // store that we're dealing with json
     const isJson = val.MemoFormat === "json"
+    const isHex = val.MemoFormat === "hex"
 
     // tslint:disable-next-line
     for (let i = 0; i < keys.length; i++) {
@@ -59,7 +60,9 @@ const STMemo = new SerializedType({
               )
             }
           } else if (isString(value)) {
-            value = convertStringToHex(value)
+            if (!isHex) {
+              value = convertStringToHex(value)
+            }
           }
           break
       }
@@ -100,6 +103,8 @@ const STMemo = new SerializedType({
         }
       } else if (output["parsed_memo_format"] === "text") {
         output["parsed_memo_data"] = convertHexToString(output["MemoData"])
+      } else if (output["parsed_memo_format"] === "hex") {
+        output["parsed_memo_data"] = output["MemoData"]
       }
     }
 
