@@ -1,6 +1,6 @@
 {
   "name": "swtc-utils",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "swtc utils",
   "main": "src/utils.js",
   "directories": {
@@ -35,7 +35,7 @@
   "dependencies": {
     "bignumber.js": "^8.1.1",
     "lodash": "^4.17.11",
-    "swtc-wallet": "^1.1.15",
+    "swtc-wallet": "^1.1.16",
     "url": "^0.11.0",
     "utf8": "^2.1.2"
   },

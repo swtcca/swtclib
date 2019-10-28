@@ -1,6 +1,6 @@
 {
   "name": "swtc-factory",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "swtc base lib factory",
   "main": "src/index.js",
   "directories": {
@@ -31,7 +31,7 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "swtc-keypairs": "^0.11.18"
+    "swtc-keypairs": "^0.11.19"
   },
   "devDependencies": {
     "@types/node": "^12.7.1",

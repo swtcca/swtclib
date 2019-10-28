@@ -1,6 +1,6 @@
 {
   "name": "swtc-keypairs",
-  "version": "0.11.18",
+  "version": "0.11.19",
   "description": "swtc keypairs",
   "files": [
     "src/*",
@@ -15,7 +15,7 @@
     "brorand": "^1.0.5",
     "elliptic": "^6.4.0",
     "hash.js": "^1.0.3",
-    "swtc-address-codec": "^2.0.10"
+    "swtc-address-codec": "^2.0.11"
   },
   "devDependencies": {
     "eslint": "^6.1.0",

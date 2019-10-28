@@ -1,6 +1,6 @@
 {
   "name": "swtc-wallet",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "description": "swtc wallet library",
   "main": "src/index.js",
   "unpkg": "dist/swtc-wallet.js",
@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "swtc-keypairs": "^0.11.18"
+    "swtc-keypairs": "^0.11.19"
   },
   "devDependencies": {
     "chai": "^4.2.0",
