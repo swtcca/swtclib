@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const config = require("./config")
+const config = require("../../.conf/config")
 const { testAddress, testCreateHash } = config
 let utils = require("../src/utils").utils
 let Wallet_BWT = require("swtc-wallet").Factory("bwt")

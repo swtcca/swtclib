@@ -20,6 +20,7 @@
     "build": "npm run tsc && webpack",
     "build:dev": "npm run tsc && webpack --mode development",
     "test": "mocha \"test/test*.js\"",
+    "test:api": "mocha \"test/api*.js\"",
     "test:extended": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },

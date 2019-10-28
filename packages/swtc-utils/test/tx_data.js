@@ -1,4 +1,4 @@
-const config = require("./config")
+const config = require("../../.conf/config")
 const { testAddress, testDestinationAddress } = config
 const input1 = {
   meta: {

@@ -1,7 +1,7 @@
 const expect = require("chai").expect
 //import Remote from '../src/index'
 const Remote = require("../").Remote
-const DATA = require("./config")
+const DATA = require("../../.conf/config")
 const remote = new Remote({ server: DATA.server })
 
 let payid = "should be updated during payments query"

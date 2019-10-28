@@ -1,8 +1,8 @@
 const chai = require("chai")
 const expect = chai.expect
 const Remote = require("../").Factory()
-const config = require("./config")
-const DATA = require("./config")
+const config = require("../../.conf/config")
+const DATA = require("../../.conf/config")
 const sinon = require("sinon")
 const utils = require("swtc-utils").utils
 const sleep = time => new Promise(res => setTimeout(() => res(), time))

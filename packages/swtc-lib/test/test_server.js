@@ -1,14 +1,13 @@
 const chai = require("chai")
 const expect = chai.expect
-// const Server = require("../src/server")
 const Server = require("../src/server").Server
 const Remote = require("../").Remote
-const config = require("./config")
+const config = require("../../.conf/config")
 const sinon = require("sinon")
 const url = require("url")
 const WS = require("ws")
 const sleep = time => new Promise(res => setTimeout(() => res(), time))
-let { JT_NODE, TEST_NODE } = config
+let { JT_NODE, TEST_NODE, WSS_NODE } = config
 
 describe("test server", function() {
   describe("test constructor", function() {
@@ -85,7 +84,7 @@ describe("test server", function() {
 
     it("throw error if options is invalid", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
       let server = new Server(remote, null)
@@ -95,11 +94,11 @@ describe("test server", function() {
 
     it("throw error if host is invalid", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
       let server = new Server(remote, {
-        host: JT_NODE + TEST_NODE
+        host: JT_NODE + WSS_NODE
       })
       expect(server.opts_host).to.be.an("error")
       expect(server.opts_host.message).to.equal("server host incorrect")
@@ -107,7 +106,7 @@ describe("test server", function() {
 
     it("throw error if port is not a number", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
       let server = new Server(remote, {
@@ -127,7 +126,7 @@ describe("test server", function() {
 
     it("throw error if port is less than 1", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
       let server = new Server(remote, {
@@ -140,7 +139,7 @@ describe("test server", function() {
 
     it("throw error if port is more than 65535", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
       let server = new Server(remote, {
@@ -153,7 +152,7 @@ describe("test server", function() {
 
     it("secure is false if opts.secure is not boolean", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
       let server = new Server(remote, {
@@ -185,7 +184,7 @@ describe("test server", function() {
       })
     })
 
-    it("send message if the _opened is true", function(done) {
+    xit("send message if the _opened is true", function(done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -213,10 +212,10 @@ describe("test server", function() {
   describe("test _handleClose", function() {
     it("if the _state is offline", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
-      let server = new Server(remote, TEST_NODE)
+      let server = new Server(remote, WSS_NODE)
       let spy = sinon.spy(server, "_setState")
       server._handleClose()
       expect(spy.callCount).to.equal(0)
@@ -224,10 +223,10 @@ describe("test server", function() {
 
     it("if the _state is online but timer is not 0", function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: WSS_NODE,
         local_sign: true
       })
-      let server = new Server(remote, TEST_NODE)
+      let server = new Server(remote, WSS_NODE)
       server._state = "online"
       server._timer = 1
       let spy = sinon.spy(server, "_setState")
