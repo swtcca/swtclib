@@ -18,10 +18,12 @@
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "test": "npm run bootstrap && npm run lint && npm run testonly",
-    "testonly": "lerna run tsc --stream && lerna run test --stream --ignore swtc-api --ignore swtc-lib --ignore swtc-x-lib && lerna run test --stream --scope swtc-api && lerna run test --stream --scope swtc-lib && lerna run test --stream --scope swtc-x-lib"
+    "testonly": "lerna run tsc --stream && lerna run test --stream",
+    "testreal": "lerna run tsc --stream && lerna run test:api --stream"
   },
   "devDependencies": {
     "husky": "^2.3.0",
+    "jshint": "^2.10.2",
     "lerna": "^3.14.1",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",

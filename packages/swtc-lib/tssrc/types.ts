@@ -13,7 +13,8 @@ export {
   IContractCallTxOptions,
   ISignTxOptions,
   IAccountSetTxOptions,
-  IRelationTxOptions
+  IRelationTxOptions,
+  ISignerListTxOptions
 } from "swtc-transaction"
 
 export interface IRemoteOptions {

@@ -46,7 +46,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
 
   function readOrPeek(advance) {
     // tslint:disable-next-line
-    return function (bytes) {
+    return function(bytes) {
       const start = this.pointer
       const end = start + bytes
 
@@ -117,6 +117,17 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         )
       }
       so.serialize(obj)
+      return so
+    }
+
+    /**
+     * Use TRANSACTION_TYPES info to check if the input TX missing any info
+     *
+     * @static
+     * @memberof Serializer
+     */
+    public static adr_json(so, account) {
+      so.append(Wallet.KeyPair.convertAddressToBytes(account))
       return so
     }
 
@@ -306,7 +317,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
      * @memberof Serializer
      */
     // tslint:disable-next-line
-    public append = function (bytes) {
+    public append = function(bytes) {
       if (bytes instanceof Serializer) {
         bytes = bytes.buffer
       }

@@ -1,14 +1,11 @@
-import { convertByteArrayToHex, isString, serializeHex } from "../Utils"
+import { convertByteArrayToHex, serializeHex } from "../Utils"
 import SerializedType from "./SerializedType"
 
 const STVL = new SerializedType({
   id: 7,
   serialize(so, val) {
-    if (isString(val)) {
-      serializeHex(so, val)
-    } else {
-      throw new Error("Unknown datatype.")
-    }
+    const flag = val === "" ? true : false
+    serializeHex(so, val, flag)
   },
   parse(so) {
     const len = this.parse_varint(so)

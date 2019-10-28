@@ -133,3 +133,11 @@ export interface IRelationTxOptions {
   secret?: string
   sequence?: string | number
 }
+
+export interface ISignerListTxOptions {
+  lists: any[]
+  source?: string
+  from?: string
+  account?: string
+  threshold?: string | number
+}

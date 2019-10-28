@@ -373,9 +373,10 @@ function Factory(Wallet = WalletFactory()) {
         case "RelationSet":
         case "SignSet":
         case "Operation":
-        case "ConfigContract": //lua版本合约类
-        case "AlethContract": //solidity版本合约类
-        case "Brokerage": //设置手续费类
+        case "ConfigContract": // lua版本合约类
+        case "AlethContract": // solidity版本合约类
+        case "Brokerage": // 设置手续费类
+        case "SignerListSet": // 签名列表类
           // TODO to sub-class tx type
           return tx.TransactionType.toLowerCase()
         default:
@@ -473,6 +474,7 @@ function Factory(Wallet = WalletFactory()) {
     // if(tx.TransactionType !== 'RelationSet')
     result.result = meta ? meta.TransactionResult : "failed"
     result.memos = []
+    const l = []
     switch (result.type) {
       case "sent":
         result.counterparty = tx.Destination
@@ -553,9 +555,27 @@ function Factory(Wallet = WalletFactory()) {
         result.amount = parseAmount(tx.Amount)
         result.seq = tx.Sequence
         break
+      case "signerlistset":
+        tx.SignerEntries.forEach(function(s) {
+          l.push({
+            account: s.SignerEntry.Account,
+            weight: s.SignerEntry.SignerWeight
+          })
+        })
+        result.threshold = tx.SignerQuorum
+        result.lists = l
+        result.seq = tx.Sequence
+        break
       default:
         // TODO parse other type
         break
+    }
+    if (tx.Signers) {
+      // 添加签名列表
+      result.signers = []
+      tx.Signers.forEach(function(s) {
+        result.signers.push(s.Signer.Account)
+      })
     }
     // add memo
     if (Array.isArray(tx.Memos) && tx.Memos.length > 0) {

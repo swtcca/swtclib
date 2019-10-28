@@ -101,6 +101,11 @@ const Factory = token_or_chain => {
       }
     }
 
+    public static checkTx(message, signature, publicKey) {
+      return KeyPair.verifyTx(message, signature, publicKey)
+      // return ec.verify(message, signature, hexToBytes(publicKey))
+    }
+
     public _keypairs
     public _secret
     constructor(secret) {

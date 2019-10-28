@@ -17,7 +17,8 @@ import {
   IRequestAccountRelationsOptions,
   IRequestAccountOffersOptions,
   IRequestAccountTxOptions,
-  IRequestOrderBookOptions
+  IRequestOrderBookOptions,
+  ISignerListTxOptions
 } from "./types"
 import {
   // IMarker,
@@ -700,6 +701,27 @@ class Remote extends EventEmitter {
     request.message.ledger_index = "validated"
     return request
   }
+
+  /*
+   * request signerlist,
+   * @param options
+   * @returns {Request}
+   * */
+  public requestSignerList(options) {
+    const request = new Request(this, "account_objects")
+    if (options === null || typeof options !== "object") {
+      request.message.type = new Error("invalid options type")
+      return request
+    }
+    const account = options.account
+    if (!utils.isValidAddress(account)) {
+      request.message.account = new Error("account parameter is invalid")
+      return request
+    }
+    request.message.account = account
+    return request
+  }
+
   // ---------------------- path find request --------------------
   /**
    * @param options
@@ -910,6 +932,38 @@ class Remote extends EventEmitter {
    */
   public buildOfferCancelTx(options: IOfferCancelTxOptions) {
     return Transaction.buildOfferCancelTx(options, this)
+  }
+
+  /**
+   * build multisign tx
+   * @param options
+   *    source|from|account source account, required
+   *    threshold, required
+   *    lists, required
+   * @returns {Transaction}
+   */
+  public buildSignerListTx(options: ISignerListTxOptions) {
+    return Transaction.buildSignerListTx(options, this)
+  }
+
+  public buildSignFirstTx(options) {
+    // 首签账号添加SigningPubKey字段
+    return Transaction.buildSignFirstTx(options)
+  }
+
+  public buildSignOtherTx(options) {
+    // 其他账号签名只需把返回结果提交回去即可
+    return Transaction.buildSignOtherTx(options, this)
+  }
+
+  public buildMultisignedTx(tx_json) {
+    // 提交多重签名
+    return Transaction.buildMultisignedTx(tx_json, this)
+  }
+
+  public buildTx(tx_json) {
+    // 通过tx_json创建Transaction对象
+    return Transaction.buildTx(tx_json, this)
   }
 
   // ---------------------- subscribe --------------------

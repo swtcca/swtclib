@@ -18,5 +18,6 @@ export {
   IContractCallTxOptions,
   ISignTxOptions,
   IAccountSetTxOptions,
-  IRelationTxOptions
+  IRelationTxOptions,
+  ISignerListTxOptions
 } from "./types"

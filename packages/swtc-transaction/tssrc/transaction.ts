@@ -18,8 +18,12 @@ import {
   ISignTxOptions,
   IAccountSetTxOptions,
   IRelationTxOptions,
-  IAmount
+  IAmount,
+  ISignerListTxOptions
 } from "./types"
+
+const MUTIPREFIX = 0x534d5400 // 多重签名前缀
+const PREFIX = 0x53545800 // 事物签名前缀
 
 function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
@@ -707,6 +711,129 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       return tx
     }
 
+    /**
+     * SignerList 多签名
+     * @param options
+     *    account, required
+     *    threshold, required
+     *    lists, required
+     * @returns {Transaction}
+     */
+    public static buildSignerListTx(
+      options: ISignerListTxOptions,
+      remote: any = {}
+    ) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const account = options.account
+      const threshold = Number(options.threshold) // 阈值
+      const lists = options.lists // 签字人列表
+      if (!utils.isValidAddress(account)) {
+        tx.tx_json.src = new Error("invalid address")
+        return tx
+      }
+      if (isNaN(threshold) || threshold < 0) {
+        tx.tx_json.threshold = new Error(
+          "invalid threshold, it must be a number and greater than zero"
+        )
+        return tx
+      }
+      if (lists && !Array.isArray(lists)) {
+        tx.tx_json.lists = new Error(
+          "invalid options type, it must be an array"
+        )
+        return tx
+      }
+      if (threshold === 0 && lists && lists.length >= 0) {
+        tx.tx_json.lists = new Error(
+          "please delete lists when threshold is zero"
+        )
+        return tx
+      }
+      let sum = 0
+      if (threshold !== 0 && lists && lists.length > 0) {
+        const newList = []
+        for (const list of lists) {
+          if (
+            list.account &&
+            utils.isValidAddress(list.account) &&
+            list.weight &&
+            !isNaN(list.weight) &&
+            Number(list.weight) > 0
+          ) {
+            sum += Number(list.weight)
+            newList.push({
+              SignerEntry: {
+                Account: list.account,
+                SignerWeight: list.weight
+              }
+            })
+          } else {
+            tx.tx_json.lists = new Error("invalid lists")
+            return tx
+          }
+        }
+        tx.tx_json.SignerEntries = newList
+      }
+      if (sum < threshold) {
+        tx.tx_json.threshold = new Error(
+          "The total signer weight is less than threshold"
+        )
+        return tx
+      }
+      tx.tx_json.TransactionType = "SignerListSet"
+      tx.tx_json.Account = account
+      tx.tx_json.SignerQuorum = threshold
+      return tx
+    }
+
+    public static buildSignFirstTx(options) {
+      // 首签账号添加SigningPubKey字段
+      const tx = options.tx
+      delete options.tx
+      tx.setCommand("sign_for")
+      return tx.multiSigning(options)
+    }
+
+    public static buildSignOtherTx(options, remote: any = {}) {
+      // 其他账号签名只需把返回结果提交回去即可
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.options = new Error("invalid options type")
+        return tx
+      }
+      tx.setCommand("sign_for")
+      tx.tx_json = options.tx_json
+      delete options.tx_json
+      return tx.multiSigning(options)
+    }
+
+    public static buildMultisignedTx(tx_json, remote: any = {}) {
+      //  创建多重签名
+      const tx = new Transaction(remote)
+      if (tx_json === null || typeof tx_json !== "object") {
+        tx.tx_json.tx_json = new Error("invalid tx_json type")
+        return tx
+      }
+      tx.setCommand("submit_multisigned")
+      tx.tx_json = tx_json
+      return tx
+    }
+
+    public static buildTx(tx_json, remote: any = {}) {
+      // 通过tx_json创建Transaction对象
+      const tx = new Transaction(remote)
+      if (tx_json === null || typeof tx_json !== "object") {
+        tx.tx_json.tx_json = new Error("invalid tx_json type")
+        return tx
+      }
+      tx.tx_json = tx_json
+      return tx
+    }
+
     public static __buildTrustSet(options, tx) {
       const src = options.source || options.from || options.account
       const limit = options.limit
@@ -891,11 +1018,15 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     public abi: any[] | undefined
     public _remote: any
     public _filter
+    public command: string
+    public sign_account: string | undefined
+    public sign_secret: string | undefined
     constructor(remote, filter = v => v) {
       this._remote = remote
       this._token = remote._token || Wallet.token
       this.tx_json = { Flags: 0, Fee: utils.getFee() }
       this._filter = filter
+      this.command = "submit"
     }
 
     /**
@@ -942,6 +1073,14 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      */
     public setInvoice(invoice: string) {
       this.tx_json.InvoiceID = invoice
+    }
+
+    /**
+     * set command
+     * @param command
+     */
+    public setCommand(command: string) {
+      this.command = command
     }
 
     /**
@@ -1078,42 +1217,99 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         this.tx_json.Sequence = new TypeError("invalid sequence")
         return this
       }
-
       this.tx_json.Sequence = Number(sequence)
     }
 
+    /*
+     * options: {
+     *   address: '',
+     *   secret: ''
+     * }
+     */
+    public multiSigning(options) {
+      if (!this.tx_json.Sequence) {
+        this.tx_json.Sequence = new Error("please set sequence first")
+        return this
+      }
+
+      const signers = this.tx_json.Signers || []
+      if (signers && signers.length > 0) {
+        // 验签
+        if (!verifyTx(this.tx_json)) {
+          this.tx_json.verifyTx = new Error("verify failed")
+          return this
+        }
+      }
+
+      const Account = options.account || options.address
+      this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
+      const tx_json = JSON.parse(JSON.stringify(this.tx_json))
+      tx_json_filter(tx_json)
+      delete tx_json.Signers
+      let fromJson = jser.from_json(tx_json)
+      const signer: any = { Account }
+      fromJson = jser.adr_json(fromJson, Account)
+      const hash = fromJson.hash(MUTIPREFIX)
+      const wt = new baselib(options.secret)
+      signer.SigningPubKey = wt.getPublicKey()
+      signer.TxnSignature = wt.signTx(hash)
+
+      this.tx_json.Signers = this.tx_json.Signers || []
+      this.tx_json.Signers.push({
+        Signer: signer
+      })
+      return this
+    }
+
+    public multiSigned() {
+      // 多重签名完毕
+      this.command = "submit_multisigned"
+      const signers = this.tx_json.Signers || []
+      if (signers && signers.length > 0) {
+        // 验签
+        if (!verifyTx(this.tx_json)) {
+          this.tx_json.verifyTx = new Error("verify failed")
+          return this
+        }
+      }
+      if (Number(signers.length * Wallet.getFee()) > Number(this.tx_json.Fee)) {
+        // 验证燃料费是否够用
+        this.tx_json.Fee = new Error("low fee")
+      }
+      return this
+    }
+
     public sign(callback) {
-      const self = this
-      if (self.tx_json.Sequence) {
-        signing(self, callback)
+      if (this.tx_json.Sequence) {
+        signing(this, callback)
         // callback(null, signing(self));
       } else if ("requestAccountInfo" in this._remote) {
         const req = this._remote.requestAccountInfo({
-          account: self.tx_json.Account,
+          account: this.tx_json.Account,
           type: "trust"
         })
         req.submit((err, data) => {
           if (err) return callback(err)
-          self.tx_json.Sequence = data.account_data.Sequence
-          signing(self, callback)
+          this.tx_json.Sequence = data.account_data.Sequence
+          signing(this, callback)
           // callback(null, signing(self));
         })
       } else if ("getAccountBalances" in this._remote) {
         this._remote
-          .getAccountBalances(self.tx_json.Account)
+          .getAccountBalances(this.tx_json.Account)
           .then(data => {
-            self.tx_json.Sequence = data.sequence
-            signing(self, callback)
+            this.tx_json.Sequence = data.sequence
+            signing(this, callback)
           })
           .catch(error => {
             throw error
           })
       } else if ("_axios" in this._remote) {
         this._remote._axios
-          .get(`accounts/${self.tx_json.Account}/balances`)
+          .get(`accounts/${this.tx_json.Account}/balances`)
           .then(response => {
-            self.tx_json.Sequence = response.data.sequence
-            signing(self, callback)
+            this.tx_json.Sequence = response.data.sequence
+            signing(this, callback)
           })
           .catch(error => {
             throw error
@@ -1122,11 +1318,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         // use api.jingtum.com to get sequence
         axios
           .get(
-            `https://api.jingtum.com/v2/accounts/${self.tx_json.Account}/balances`
+            `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
           )
           .then(response => {
-            self.tx_json.Sequence = response.data.sequence
-            signing(self, callback)
+            this.tx_json.Sequence = response.data.sequence
+            signing(this, callback)
           })
           .catch(error => {
             throw error
@@ -1141,6 +1337,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     ): Promise<any> {
       if (!this.tx_json) {
         return Promise.reject("a valid transaction is expected")
+        // } else if (this.command !== "submit") {
+        //   // 多重签名， 密钥泄漏
+        //   return Promise.resolve(MULTISIGN)
       } else if ("blob" in this.tx_json) {
         return Promise.resolve(this.tx_json.blob)
       } else {
@@ -1191,39 +1390,45 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * @param callback
      */
     public submit(callback) {
-      const self = this
-      for (const key in self.tx_json) {
-        if (self.tx_json[key] instanceof Error) {
-          return callback(self.tx_json[key].message)
+      for (const key in this.tx_json) {
+        if (this.tx_json[key] instanceof Error) {
+          return callback(this.tx_json[key].message)
         }
       }
 
-      let data = {}
-      if ("blob" in self.tx_json) {
+      let data: any = {}
+      if (this.command === "submit_multisigned") {
+        // 多重签名 =====密钥泄漏======
+        data = { tx_json: this.tx_json }
+        if (this.abi) {
+          data.abi = this.abi
+        }
+        this._remote._submit(this.command, data, this._filter, callback)
+      } else if ("blob" in this.tx_json) {
         // 直接将blob传给底层
-        if (!self.abi) {
+        if (!this.abi) {
           data = {
-            tx_blob: self.tx_json.blob
+            tx_blob: this.tx_json.blob
           }
         } else {
           data = {
-            tx_blob: self.tx_json.blob,
-            abi: self.abi
+            tx_blob: this.tx_json.blob,
+            abi: this.abi
           }
         }
-        self._remote._submit("submit", data, self._filter, callback)
+        this._remote._submit(this.command, data, this._filter, callback)
       } else {
         // 签名之后传给底层
-        self.sign((err, blob) => {
+        this.sign((err, blob) => {
           if (err) {
             return callback("sign error: " + err)
           } else {
-            if (!self.abi) {
+            if (!this.abi) {
               data = { tx_blob: blob }
             } else {
-              data = { tx_blob: blob, abi: self.abi }
+              data = { tx_blob: blob, abi: this.abi }
             }
-            self._remote._submit("submit", data, self._filter, callback)
+            this._remote._submit(this.command, data, this._filter, callback)
           }
         })
       }
@@ -1239,14 +1444,25 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           return Promise.reject(this.tx_json[key].message)
         }
       }
+      let data: any = {}
+      let blob = ""
       try {
-        const blob = await this.signPromise(secret, memo, sequence)
-        let data: any = { blob }
+        if (this.command === "submit_multisigned") {
+          // 多重签名
+          data = { tx_json: this.tx_json }
+        } else {
+          blob = await this.signPromise(secret, memo, sequence)
+          data = { blob }
+        }
         if (this.abi) {
-          data = { blob, abi: this.abi }
+          data.abi = this.abi
         }
         if ("_submit" in this._remote) {
           // lib remote
+          if (blob) {
+            delete data.blob
+            data.tx_blob = blob
+          }
           return new Promise((resolve, reject) => {
             const callback = (error, result) => {
               if (error) {
@@ -1255,12 +1471,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
                 resolve(result)
               }
             }
-            this._remote._submit(
-              "submit",
-              { tx_blob: blob },
-              this._filter,
-              callback
-            )
+            this._remote._submit(this.command, data, this._filter, callback)
           })
         } else if ("txSubmitPromise" in this._remote) {
           // api remote
@@ -1283,52 +1494,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     // private and protected methods
     public async _signPromise(): Promise<any> {
-      this.tx_json.Fee = this.tx_json.Fee / 1000000
-      // payment
-      if (
-        this.tx_json.Amount &&
-        JSON.stringify(this.tx_json.Amount).indexOf("{") < 0
-      ) {
-        // 基础货币
-        this.tx_json.Amount = Number(this.tx_json.Amount) / 1000000
-      }
-      if (this.tx_json.Memos) {
-        const memos = this.tx_json.Memos
-        for (const memo of memos) {
-          if (
-            memo &&
-            (memo.MemoFormat === null || memo.MemoFormat === "text")
-          ) {
-            memo.Memo.MemoData = utf8.decode(
-              utils.hexToString(memo.Memo.MemoData)
-            )
-          }
-        }
-      }
-      if (this.tx_json.SendMax && typeof this.tx_json.SendMax === "string") {
-        this.tx_json.SendMax = Number(this.tx_json.SendMax) / 1000000
-      }
-      // order
-      if (
-        this.tx_json.TakerPays &&
-        JSON.stringify(this.tx_json.TakerPays).indexOf("{") < 0
-      ) {
-        // 基础货币
-        this.tx_json.TakerPays = Number(this.tx_json.TakerPays) / 1000000
-      }
-      if (
-        this.tx_json.TakerGets &&
-        JSON.stringify(this.tx_json.TakerGets).indexOf("{") < 0
-      ) {
-        // 基础货币
-        this.tx_json.TakerGets = Number(this.tx_json.TakerGets) / 1000000
-      }
+      tx_json_filter(this.tx_json)
       return new Promise((resolve, reject) => {
         try {
           const wt = new baselib(this._secret)
           this.tx_json.SigningPubKey = wt.getPublicKey()
-          const prefix = 0x53545800
-          const hash = jser.from_json(this.tx_json).hash(prefix)
+          const hash = jser.from_json(this.tx_json).hash(PREFIX)
           this.tx_json.TxnSignature = wt.signTx(hash)
           this.tx_json.blob = jser.from_json(this.tx_json).to_hex()
           resolve(this)
@@ -1375,55 +1546,75 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
   }
 
-  function signing(self, callback) {
-    self.tx_json.Fee = self.tx_json.Fee / 1000000
+  function tx_json_filter(tx_json) {
+    // 签名时，序列化之前的字段处理
+    tx_json.Fee = tx_json.Fee / 1000000
 
     // payment
-    if (
-      self.tx_json.Amount &&
-      JSON.stringify(self.tx_json.Amount).indexOf("{") < 0
-    ) {
+    if (tx_json.Amount && !isNaN(tx_json.Amount)) {
       // 基础货币
-      self.tx_json.Amount = Number(self.tx_json.Amount) / 1000000
+      tx_json.Amount = tx_json.Amount / 1000000
     }
-    if (self.tx_json.Memos) {
-      const memos = self.tx_json.Memos
+    if (tx_json.Memos) {
+      const memos = tx_json.Memos
       for (const memo of memos) {
         memo.Memo.MemoData = utf8.decode(utils.hexToString(memo.Memo.MemoData))
       }
     }
-    if (self.tx_json.SendMax && typeof self.tx_json.SendMax === "string") {
-      self.tx_json.SendMax = Number(self.tx_json.SendMax) / 1000000
+    if (tx_json.SendMax && !isNaN(tx_json.SendMax)) {
+      tx_json.SendMax = Number(tx_json.SendMax) / 1000000
     }
 
     // order
-    if (
-      self.tx_json.TakerPays &&
-      JSON.stringify(self.tx_json.TakerPays).indexOf("{") < 0
-    ) {
+    if (tx_json.TakerPays && !isNaN(tx_json.TakerPays)) {
       // 基础货币
-      self.tx_json.TakerPays = Number(self.tx_json.TakerPays) / 1000000
+      tx_json.TakerPays = Number(tx_json.TakerPays) / 1000000
     }
-    if (
-      self.tx_json.TakerGets &&
-      JSON.stringify(self.tx_json.TakerGets).indexOf("{") < 0
-    ) {
+    if (tx_json.TakerGets && !isNaN(tx_json.TakerGets)) {
       // 基础货币
-      self.tx_json.TakerGets = Number(self.tx_json.TakerGets) / 1000000
+      tx_json.TakerGets = Number(tx_json.TakerGets) / 1000000
     }
+  }
+
+  function signing(tx, callback) {
     try {
-      const wt = new baselib(self._secret)
-      self.tx_json.SigningPubKey = wt.getPublicKey()
-      const prefix = 0x53545800
-      const hash = jser.from_json(self.tx_json).hash(prefix)
-      self.tx_json.TxnSignature = wt.signTx(hash)
-      self.tx_json.blob = jser.from_json(self.tx_json).to_hex()
-      self._local_sign = true
-      callback(null, self.tx_json.blob)
+      tx_json_filter(tx.tx_json)
+      const wt = new baselib(tx._secret)
+      tx.tx_json.SigningPubKey = wt.getPublicKey()
+      const hash = jser.from_json(tx.tx_json).hash(PREFIX)
+      tx.tx_json.TxnSignature = wt.signTx(hash)
+      tx.tx_json.blob = jser.from_json(tx.tx_json).to_hex()
+      tx._local_sign = true
+      callback(null, tx.tx_json.blob)
     } catch (e) {
       callback(e)
     }
   }
-}
 
+  function verifyTx(tx_json) {
+    // 验签
+    const tx_json_new = JSON.parse(JSON.stringify(tx_json))
+    tx_json_filter(tx_json_new)
+    const signers = tx_json_new.Signers
+    delete tx_json_new.Signers
+    if (signers && signers.length > 0) {
+      for (const signer of signers) {
+        const s = signer.Signer
+        let fromJson = jser.from_json(tx_json_new)
+        fromJson = jser.adr_json(fromJson, s.Account)
+        if (
+          // todo: check format of pubkey is needed
+          !baselib.checkTx(
+            fromJson.hash(MUTIPREFIX),
+            s.TxnSignature,
+            s.SigningPubKey
+          )
+        ) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+}
 export { Factory }
