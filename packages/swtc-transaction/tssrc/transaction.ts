@@ -19,7 +19,10 @@ import {
   IAccountSetTxOptions,
   IRelationTxOptions,
   IAmount,
-  ISignerListTxOptions
+  ISignerListTxOptions,
+  ISignFirstTxOptions,
+  ISignOtherTxOptions,
+  IMultiSigningOptions
 } from "./types"
 
 const MUTIPREFIX = 0x534d5400 // 多重签名前缀
@@ -790,7 +793,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       return tx
     }
 
-    public static buildSignFirstTx(options) {
+    public static buildSignFirstTx(options: ISignFirstTxOptions) {
       // 首签账号添加SigningPubKey字段
       const tx = options.tx
       delete options.tx
@@ -798,7 +801,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       return tx.multiSigning(options)
     }
 
-    public static buildSignOtherTx(options, remote: any = {}) {
+    public static buildSignOtherTx(
+      options: ISignOtherTxOptions,
+      remote: any = {}
+    ) {
       // 其他账号签名只需把返回结果提交回去即可
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
@@ -1226,7 +1232,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *   secret: ''
      * }
      */
-    public multiSigning(options) {
+    public multiSigning(options: IMultiSigningOptions) {
       if (!this.tx_json.Sequence) {
         this.tx_json.Sequence = new Error("please set sequence first")
         return this

@@ -18,7 +18,9 @@ import {
   IRequestAccountOffersOptions,
   IRequestAccountTxOptions,
   IRequestOrderBookOptions,
-  ISignerListTxOptions
+  ISignerListTxOptions,
+  ISignFirstTxOptions,
+  ISignOtherTxOptions
 } from "./types"
 import {
   // IMarker,
@@ -946,12 +948,12 @@ class Remote extends EventEmitter {
     return Transaction.buildSignerListTx(options, this)
   }
 
-  public buildSignFirstTx(options) {
+  public buildSignFirstTx(options: ISignFirstTxOptions) {
     // 首签账号添加SigningPubKey字段
     return Transaction.buildSignFirstTx(options)
   }
 
-  public buildSignOtherTx(options) {
+  public buildSignOtherTx(options: ISignOtherTxOptions) {
     // 其他账号签名只需把返回结果提交回去即可
     return Transaction.buildSignOtherTx(options, this)
   }

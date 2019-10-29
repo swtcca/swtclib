@@ -136,8 +136,27 @@ export interface IRelationTxOptions {
 
 export interface ISignerListTxOptions {
   lists: any[]
-  source?: string
-  from?: string
   account?: string
-  threshold?: string | number
+  address?: string
+  threshold: string | number
+}
+
+export interface ISignFirstTxOptions {
+  tx: any
+  account?: string
+  address?: string
+  secret: string
+}
+
+export interface ISignOtherTxOptions {
+  tx_json: any
+  account?: string
+  address?: string
+  secret: string
+}
+
+export interface IMultiSigningOptions {
+  account?: string
+  address?: string
+  secret: string
 }
