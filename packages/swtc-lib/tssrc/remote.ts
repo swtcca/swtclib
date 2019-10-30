@@ -18,9 +18,8 @@ import {
   IRequestAccountOffersOptions,
   IRequestAccountTxOptions,
   IRequestOrderBookOptions,
-  ISignerListTxOptions,
-  ISignFirstTxOptions,
-  ISignOtherTxOptions
+  IRequestBrokerageOptions,
+  IRequestSignerListOptions
 } from "./types"
 import {
   // IMarker,
@@ -35,7 +34,10 @@ import {
   IContractCallTxOptions,
   ISignTxOptions,
   IAccountSetTxOptions,
-  IRelationTxOptions
+  IRelationTxOptions,
+  ISignerListTxOptions,
+  ISignFirstTxOptions,
+  ISignOtherTxOptions
 } from "./types"
 
 const Wallet = Transaction.Wallet
@@ -688,7 +690,7 @@ class Remote extends EventEmitter {
    * @param options
    * @returns {Request}
    * */
-  public requestBrokerage(options) {
+  public requestBrokerage(options: IRequestBrokerageOptions) {
     const request = new Request(this, "Fee_Info")
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")
@@ -709,7 +711,7 @@ class Remote extends EventEmitter {
    * @param options
    * @returns {Request}
    * */
-  public requestSignerList(options) {
+  public requestSignerList(options: IRequestSignerListOptions) {
     const request = new Request(this, "account_objects")
     if (options === null || typeof options !== "object") {
       request.message.type = new Error("invalid options type")

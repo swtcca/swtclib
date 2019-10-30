@@ -119,3 +119,11 @@ export interface IRequestOrderBookOptions {
   limit?: string | number
   marker?: IMarker
 }
+
+export interface IRequestSignerListOptions {
+  account: string
+}
+
+export interface IRequestBrokerageOptions {
+  account: string
+}
