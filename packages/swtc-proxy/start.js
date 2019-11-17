@@ -1,3 +1,5 @@
-const Proxy = require("./src/index")
+const PROXY = require("./src/index")
 
-Proxy.web.listen(3000)
+PROXY.state.funcConfig()
+
+PROXY.web.listen(3000)
