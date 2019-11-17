@@ -1,5 +1,5 @@
-import { Remote } from "swtc-lib"
+import { state } from "./store/index"
 
-const Proxy = Remote
+import { web } from "./web/index"
 
-export { Proxy }
+export { state, web }
