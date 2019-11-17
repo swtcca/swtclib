@@ -1,9 +1,11 @@
-import * as rest from "./rest"
+import { APIError, restify } from "./rest"
 import Koa from "koa"
 import bodyParser from "koa-bodyparser"
 // const bodyParser = bodyParser_
 import { controller } from "./controller"
 import Logger from "koa2-request-log"
+import RobotsTxt from "koa-robots.txt"
+import { state } from "../store/index"
 
 const web = new Koa()
 
@@ -20,22 +22,27 @@ web.use(logger)
 web.use(loggerWithOpts)
 
 // static file support:
-import { staticFiles } from "./static-files"
-import path from "path"
-web.use(staticFiles("/static/", path.join(__dirname, "static")))
+import { staticRouter } from "./static-files"
+web.use(staticRouter().routes())
+web.use(RobotsTxt([]))
 
+// middleware check backend store.remote.value.isConnected()
 web.use(async (ctx, next) => {
-  if (ctx.request.path === "/robots.txt") {
-    ctx.response.redirect("/static/robots.txt")
-  } else {
+  if (state.remote.value.isConnected()) {
     await next()
+  } else {
+    const e = new APIError("api:backend", "currenly diconnected, wait and try")
+    ctx.response.status = 400
+    ctx.response.type = "application/json"
+    ctx.response.body = { code: e.code, message: e.message }
   }
 })
+
 // parse request body:
 web.use(bodyParser())
 
 // bind .rest() for ctx:
-web.use(rest.restify())
+web.use(restify())
 
 // add controller middleware:
 web.use(controller())

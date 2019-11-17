@@ -1,4 +1,4 @@
-import { Remote } from "swtc-lib"
+import { Remote, Transaction, Wallet } from "swtc-lib"
 import { ref, computed, watch } from "@vue/runtime-core"
 import CONFIG from "../../config"
 import chalk from "chalk"
@@ -22,18 +22,15 @@ function setup() {
   }
   watch(
     () => ledger.value,
-    () => {
-      console.log("triggered ledger update")
-      const { ledger_index, ledger_time } = ledger.value
-      console.log(
-        chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`)
-      )
+    (value, old_value) => {
+      const { ledger_index, ledger_time } = value
+      console.log(chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`))
     },
     { lazy: true }
   )
   watch(
     () => logs.value,
-    () => console.log(chalk.green(logs.value[0])),
+    (value, old_value) => console.log(chalk.green(value[0])),
     { lazy: true }
   )
   watch(
@@ -41,18 +38,16 @@ function setup() {
     (value, old_value) => {
       console.log(chalk.green(value))
       if (!value) {
-        console.log("starting heal of connection")
+        console.log("starting heal of connection, to implement")
       }
     },
     { lazy: true }
   )
   watch(
     () => server.value,
-    async () => {
+    async (value, old_value) => {
       console.log("config change detected")
-      remote.value = server.value
-        ? new Remote({ server: server.value })
-        : new Remote()
+      remote.value = value ? new Remote({ server: value }) : new Remote()
       try {
         await remote.value.connectPromise()
         wsConnected.value = true
@@ -76,7 +71,7 @@ function setup() {
   }, 1000)
   interval_heal.value = setInterval(() => {
     if (!wsConnected.value) {
-      console.log(chalk.red(`cron job to sync backend connection`))
+      console.log(chalk.red(`cron job to sync backend connection, to implement`))
     }
   }, 10000)
 
@@ -92,4 +87,4 @@ function setup() {
   }
 }
 
-export { state }
+export { state, Remote, Wallet, Transaction }

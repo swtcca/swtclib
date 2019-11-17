@@ -1,10 +1,11 @@
 import { APIError } from "../rest"
+import { Wallet, state } from "../../store/index"
 
 module.exports = {
-  "GET /v2/wallet/new": async (ctx, next) => {},
-  "GET /v2/accounts/:address/info": async (ctx, next) => {},
-  "GET /v2/accounts/:address/balances": async (ctx, next) => {},
-  "GET /v2/accounts/:source_address/payments": async (ctx, next) => {},
+  "GET /v2/wallet/new": async (ctx, next) => ctx.rest(Wallet.generate()),
+  "GET /v2/accounts/:address/info": getAccountInfo,
+  "GET /v2/accounts/:address/balances": getAccountBalances,
+  "GET /v2/accounts/:source_address/payments": getAccountPayments,
   "GET /v2/accounts/:address/payments/:id": async (ctx, next) => {},
   "GET /v2/accounts/:address/transactions/:id": async (ctx, next) => {},
   "GET /v2/accounts/:address/transactions": async (ctx, next) => {},
@@ -32,5 +33,30 @@ module.exports = {
   "GET /v2/ledger/index": async (ctx, next) => {},
   "GET /v2/ledger/index/:index": async (ctx, next) => {},
   "GET /v2/ledger/hash/:hash": async (ctx, next) => {},
-  "POST /v2/blob": async (ctx, next) => {}
+  "POST /v2/blob": async (ctx, next) => {},
+  "POST /v2/blob/multisign": async (ctx, next) => {}
+}
+async function getAccountInfo(ctx, next) {
+  try {
+    ctx.rest(await state.remote.value.requestAccountInfo({ account: ctx.params.address }).submitPromise())
+  } catch (e) {
+    throw new APIError("api:operation", e.toString())
+  }
+}
+async function getAccountBalances(ctx, next) {
+  try {
+    const trust = await state.remote.value.requestAccountRelations({ account: ctx.params.address, type: "trust" }).submitPromise()
+    const info = await state.remote.value.requestAccountInfo({ account: ctx.params.address }).submitPromise()
+    // Promise.all([p_trust, p_info]).then( ([trust, info]) => ctx.rest(Object.assign(trust, info.account_data)))
+    ctx.rest(Object.assign(trust, info.account_data))
+  } catch (e) {
+    throw new APIError("api:operation", e.toString())
+  }
+}
+async function getAccountPayments(ctx, next) {
+  try {
+    ctx.rest(await state.remote.value.requestAccountInfo({ account: ctx.params.address }).submitPromise())
+  } catch (e) {
+    throw new APIError("api:operation", e.toString())
+  }
 }

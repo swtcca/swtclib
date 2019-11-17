@@ -1,5 +1,8 @@
 import fs from "fs"
 import path from "path"
+import Router from "koa-router"
+
+const router = Router()
 
 // add url-route in /controllers:
 
@@ -40,7 +43,6 @@ function addControllers(router, dir) {
 }
 
 export function controller(dir = "controllers") {
-  const router = require("koa-router")()
   addControllers(router, dir)
   return router.routes()
 }
