@@ -24,7 +24,9 @@ function setup() {
     () => ledger.value,
     (value, old_value) => {
       const { ledger_index, ledger_time } = value
-      console.log(chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`))
+      console.log(
+        chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`)
+      )
     },
     { lazy: true }
   )
@@ -71,7 +73,9 @@ function setup() {
   }, 1000)
   interval_heal.value = setInterval(() => {
     if (!wsConnected.value) {
-      console.log(chalk.red(`cron job to sync backend connection, to implement`))
+      console.log(
+        chalk.red(`cron job to sync backend connection, to implement`)
+      )
     }
   }, 10000)
 

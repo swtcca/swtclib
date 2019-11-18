@@ -26,7 +26,7 @@
     "prettier:check": "prettier -c tssrc/**/*.ts",
     "prettier:tabs": "prettier --use-tabs --write tssrc/**/*.ts",
     "tsc": "tsc",
-    "tslint": "tslint tssrc/*.ts",
+    "tslint": "tslint tssrc/**/*.ts",
     "build": "tsc",
     "start": "tsc; node -r esm start.js",
     "test": "tsc; mocha \"test/test*.js\"",

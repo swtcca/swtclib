@@ -2,28 +2,28 @@ import fs from "fs"
 import path from "path"
 import Router from "koa-router"
 
-const router = Router()
+const apiRouter = Router()
 
 // add url-route in /controllers:
 
 function addMapping(router, mapping) {
   for (const url in mapping) {
     if (url.startsWith("GET ")) {
-      const path = url.substring(4)
-      router.get(path, mapping[url])
-      console.log(`register URL mapping: GET ${path}`)
+      const lpath = url.substring(4)
+      router.get(lpath, mapping[url])
+      console.log(`register URL mapping: GET ${lpath}`)
     } else if (url.startsWith("POST ")) {
-      const path = url.substring(5)
-      router.post(path, mapping[url])
-      console.log(`register URL mapping: POST ${path}`)
+      const lpath = url.substring(5)
+      router.post(lpath, mapping[url])
+      console.log(`register URL mapping: POST ${lpath}`)
     } else if (url.startsWith("PUT ")) {
-      const path = url.substring(4)
-      router.put(path, mapping[url])
-      console.log(`register URL mapping: PUT ${path}`)
+      const lpath = url.substring(4)
+      router.put(lpath, mapping[url])
+      console.log(`register URL mapping: PUT ${lpath}`)
     } else if (url.startsWith("DELETE ")) {
-      const path = url.substring(7)
-      router.del(path, mapping[url])
-      console.log(`register URL mapping: DELETE ${path}`)
+      const lpath = url.substring(7)
+      router.del(lpath, mapping[url])
+      console.log(`register URL mapping: DELETE ${lpath}`)
     } else {
       console.log(`invalid URL: ${url}`)
     }
@@ -43,6 +43,6 @@ function addControllers(router, dir) {
 }
 
 export function controller(dir = "controllers") {
-  addControllers(router, dir)
-  return router.routes()
+  addControllers(apiRouter, dir)
+  return apiRouter.routes()
 }

@@ -12,7 +12,10 @@ const restify = (pathPrefix = "/api/") => {
     // if (ctx.request.path.startsWith(pathPrefix)) {
     // add ctx.rest anyway
     if (true) {
-      if (!/json/i.test(ctx.request.headers.accept) && /html/i.test(ctx.request.headers.accept)) {
+      if (
+        !/json/i.test(ctx.request.headers.accept) &&
+        /html/i.test(ctx.request.headers.accept)
+      ) {
         ctx.rest = data => {
           // console.log(`Process API ${ctx.request.method} ${ctx.request.url}...`)
           // ctx.render('api.html', {data: data});
