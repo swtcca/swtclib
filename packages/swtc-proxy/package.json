@@ -1,0 +1,63 @@
+{
+  "name": "swtc-proxy",
+  "version": "0.1.0",
+  "description": "rest api to jingtum blockchain",
+  "keywords": [
+    "rest",
+    "api",
+    "proxy",
+    "jingtum"
+  ],
+  "author": "Lospring Liu <lospringliu@gmail.com>",
+  "homepage": "https://github.com/swtcca/swtclib",
+  "license": "BSD-2-Clause",
+  "main": "src/index.js",
+  "directories": {
+    "src": "src",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swtcca/swtclib.git"
+  },
+  "scripts": {
+    "prettier": "prettier",
+    "pretty-quick": "pretty-quick",
+    "prettier:check": "prettier -c tssrc/**/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write tssrc/**/*.ts",
+    "tsc": "tsc",
+    "tslint": "tslint tssrc/**/*.ts",
+    "build": "tsc",
+    "start": "tsc; node -r esm start.js",
+    "test": "tsc; mocha \"test/test*.js\"",
+    "test:api": "tsc; mocha \"test/api*.js\"",
+    "test:extended": "tsc; mocha \"test/*.js\"",
+    "test:nyc": "tsc; nyc --reporter=html --reporter=text mocha test/test*.js"
+  },
+  "bugs": {
+    "url": "https://github.com/swtcca/swtclib/issues"
+  },
+  "dependencies": {
+    "@vue/reactivity": "https://swtchelper.netlify.com/vue-reactivity-3.0.0.tgz",
+    "@vue/runtime-core": "https://swtchelper.netlify.com/vue-runtime-core-3.0.0.tgz",
+    "chalk": "^3.0.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-robots.txt": "^1.0.0",
+    "koa-router": "^7.4.0",
+    "koa2-request-log": "^1.0.1",
+    "koa2-swagger-ui": "^2.15.4",
+    "static-koa-router": "^1.0.3",
+    "swtc-lib": "^1.6.36"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.1",
+    "chai": "^4.2.0",
+    "esm": "^3.2.25",
+    "mocha": "^6.2.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
+    "tslint": "^5.19.0",
+    "typescript": "^3.4.5"
+  }
+}

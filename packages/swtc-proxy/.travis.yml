@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - 10
+script:
+  - npm run tsclint
+  - npm run build
+  - npm run test
