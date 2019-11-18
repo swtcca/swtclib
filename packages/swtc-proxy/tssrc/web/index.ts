@@ -6,10 +6,11 @@ import { controller } from "./controller"
 import Logger from "koa2-request-log"
 import RobotsTxt from "koa-robots.txt"
 import { state } from "../store/index"
+import swagger from "./swagger"
 
 const web = new Koa()
 
-const logger = new Logger().generate() // default setting
+// const logger = new Logger().generate() // default setting
 const loggerWithOpts = new Logger().generate({
   logColor: "#000",
   stream: process.stdout, // log at console or you can write to a file
@@ -18,8 +19,11 @@ const loggerWithOpts = new Logger().generate({
     return res.status >= 400
   }
 }) // log with some options
-web.use(logger)
+// web.use(logger)
 web.use(loggerWithOpts)
+
+// swagger document
+web.use(swagger)
 
 // static file support:
 import { staticRouter } from "./static-files"

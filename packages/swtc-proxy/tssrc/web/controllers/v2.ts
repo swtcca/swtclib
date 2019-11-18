@@ -45,9 +45,9 @@ async function getAccountInfo(ctx, next) {
 }
 async function getAccountBalances(ctx, next) {
   try {
-    const trust = await state.remote.value.requestAccountRelations({ account: ctx.params.address, type: "trust" }).submitPromise()
-    const info = await state.remote.value.requestAccountInfo({ account: ctx.params.address }).submitPromise()
-    // Promise.all([p_trust, p_info]).then( ([trust, info]) => ctx.rest(Object.assign(trust, info.account_data)))
+    const p_trust = state.remote.value.requestAccountRelations({ account: ctx.params.address, type: "trust" }).submitPromise()
+    const p_info = state.remote.value.requestAccountInfo({ account: ctx.params.address }).submitPromise()
+    const [trust, info] = await Promise.all([p_trust, p_info])
     ctx.rest(Object.assign(trust, info.account_data))
   } catch (e) {
     throw new APIError("api:operation", e.toString())
