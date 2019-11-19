@@ -7,6 +7,7 @@ import Logger from "koa2-request-log"
 import RobotsTxt from "koa-robots.txt"
 import { state } from "../store/index"
 import swagger from "./swagger"
+import chalk from "chalk"
 
 const web = new Koa()
 
@@ -48,7 +49,15 @@ web.use(bodyParser())
 // bind .rest() for ctx:
 web.use(restify())
 
+// Debug settings store.DEBUG.value
+web.use(async (ctx, next) => {
+  if (state.DEBUG.value) {
+    console.log(ctx.params)
+  }
+  await next()
+})
+
 // add controller middleware:
 web.use(controller())
 
-export { web }
+export { controller, web }

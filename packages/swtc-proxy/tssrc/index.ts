@@ -1,4 +1,4 @@
 import { state } from "./store/index"
-import { web } from "./web/index"
+import { web, controller as router } from "./web/index"
 
-export { state, web }
+export { state, web, router }
