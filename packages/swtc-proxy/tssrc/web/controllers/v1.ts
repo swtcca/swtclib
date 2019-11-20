@@ -1,22 +1,41 @@
 import { APIError } from "../rest"
+import * as store from "../../store/index"
 
 module.exports = {
-  "GET /v1/ledgers": async (ctx, next) => {
-    ctx.rest({ ledger_hash: "abc", ledger_index: 100 })
+  "GET /v1/wallet/new": async ctx => ctx.rest(store.Wallet.generate()),
+  "GET /v1/accounts/:address/info": store.getAccountInfo,
+  "GET /v1/accounts/:address/authorizes": store.getAccountAuthorizes,
+  "GET /v1/accounts/:address/freezes": store.getAccountFreezes,
+  "GET /v1/accounts/:address/trusts": store.getAccountTrusts,
+  "GET /v1/accounts/:address/balances": store.getAccountBalances,
+  "GET /v1/accounts/:address/payments": store.getAccountPayments,
+  "GET /v1/accounts/:address/payments/:id": store.getAccountPayment,
+  "GET /v1/accounts/:address/transactions": store.getAccountTransactions,
+  "GET /v1/accounts/:address/transactions/:id": store.getAccountTransaction,
+  "GET /v1/accounts/:address/orders": store.getAccountOrders,
+  "GET /v1/accounts/:address/orders/:hash": store.getAccountOrder,
+  "POST /v1/accounts/:address/payments": async (ctx, next) => {
+    throw new APIError("api:disable", "insecure, use post v1/blob")
   },
-  "GET /v1/ledger/index/:index": async (ctx, next) => {
-    ctx.rest({ ledger_hash: "abc", ledger_index: 100 })
+  "POST /v1/accounts/:address/orders": async (ctx, next) => {
+    throw new APIError("api:disable", "insecure, use post v1/blob")
   },
-  "GET /v1/ledger/hash/:hash": async (ctx, next) => {
-    ctx.rest({ ledger_hash: "abc", ledger_index: 100 })
+  "DELETE /v1/accounts/:address/orders": async (ctx, next) => {
+    throw new APIError("api:disable", "insecure, disabled")
   },
-  "GET /v1/accounts/:address/info": async (ctx, next) => {
-    ctx.rest({ address: ctx.params.address, info: "info" })
+  "GET /v1/order_book/:base/:counter": store.getOrderBook,
+  "GET /v1/order_book/bids/:base/:counter": store.getOrderBookBids,
+  "GET /v1/order_book/asks/:base/:counter": store.getOrderBookAsks,
+  "GET /v1/transactions/:id": store.getTransaction,
+  "POST /v1/accounts/:address/contract/deploy": async (ctx, next) => {
+    throw new APIError("api:disable", "insecure, post v1/blob suggested")
   },
-  "GET /v1/accounts/:address/payments": async (ctx, next) => {
-    ctx.rest({ address: ctx.params.address, payments: "payments" })
+  "POST /v1/accounts/:address/contract/call": async (ctx, next) => {
+    throw new APIError("api:disable", "insecure, post v1/blob suggested")
   },
-  "GET /v1/accounts/:address/error": async (ctx, next) => {
-    throw new APIError("abc", "100")
-  }
+  "GET /v1/ledgers/closed": store.getLedgerClosed,
+  "GET /v1/ledgers/index/:index": store.getLedgerIndex,
+  "GET /v1/ledgers/hash/:hash": store.getLedgerHash,
+  "POST /v1/blob": store.postBlob,
+  "POST /v1/blob/multisign": store.postBlobMultisign
 }

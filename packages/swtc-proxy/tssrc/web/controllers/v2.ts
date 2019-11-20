@@ -24,18 +24,18 @@ module.exports = {
     throw new APIError("api:disable", "insecure, disabled")
   },
   "GET /v2/order_book/:base/:counter": store.getOrderBook,
-  "GET /v2/order_book/bids/:base/:counter": store.getOrderBookAsks,
-  "GET /v2/order_book/asks/:base/:counter": store.getOrderBookBids,
-  "GET /v2/transactions/:id": async (ctx, next) => {},
+  "GET /v2/order_book/bids/:base/:counter": store.getOrderBookBids,
+  "GET /v2/order_book/asks/:base/:counter": store.getOrderBookAsks,
+  "GET /v2/transactions/:id": store.getTransaction,
   "POST /v2/accounts/:address/contract/deploy": async (ctx, next) => {
     throw new APIError("api:disable", "insecure, post v2/blob suggested")
   },
   "POST /v2/accounts/:address/contract/call": async (ctx, next) => {
     throw new APIError("api:disable", "insecure, post v2/blob suggested")
   },
-  "GET /v2/ledger/index": async (ctx, next) => ctx.rest(store.ledger.value),
-  "GET /v2/ledger/index/:index": async (ctx, next) => {},
-  "GET /v2/ledger/hash/:hash": async (ctx, next) => {},
-  "POST /v2/blob": async (ctx, next) => {},
-  "POST /v2/blob/multisign": async (ctx, next) => {}
+  "GET /v2/ledgers/closed": store.getLedgerClosed,
+  "GET /v2/ledgers/index/:index": store.getLedgerIndex,
+  "GET /v2/ledgers/hash/:hash": store.getLedgerHash,
+  "POST /v2/blob": store.postBlob,
+  "POST /v2/blob/multisign": store.postBlobMultisign
 }

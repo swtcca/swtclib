@@ -7,7 +7,6 @@ import Logger from "koa2-request-log"
 import RobotsTxt from "koa-robots.txt"
 import { state } from "../store/index"
 import swagger from "./swagger"
-import chalk from "chalk"
 
 const web = new Koa()
 

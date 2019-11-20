@@ -18,6 +18,8 @@ function setup() {
   const ledger = ref({})
   const logs = ref([])
   const status = ref({})
+
+  remote.value = new Remote()
   async function funcConfig(options: any = CONFIG) {
     console.log("... applying configuration")
     config.value = Object.assign({}, config.value, options)
@@ -98,6 +100,15 @@ function setup() {
 
 export { state, Remote, Wallet, Transaction }
 
+function currencyFlatten(options) {
+  return Object.values(options)
+    .filter(e => e)
+    .join("+")
+}
+function currencyUnFlatten(currency) {
+  const pairs = currency.split("+")
+  return { currency: pairs[0], issuer: pairs[1] || "" }
+}
 async function getAccountInfo(ctx) {
   const data = await state.remote.value
     .requestAccountInfo({ account: ctx.params.address })
@@ -220,11 +231,14 @@ async function getAccountOrder(ctx) {
   }
 }
 async function getAccountOrders(ctx) {
+  const account = ctx.params.address
   const base = ctx.params.base
   const counter = ctx.params.counter
   const data = await state.remote.value
     .requestAccountOffers({
       account,
+      base,
+      counter,
       ledger: "closed",
       limit: state.LIMIT.value
     })
@@ -233,38 +247,103 @@ async function getAccountOrders(ctx) {
 }
 
 async function getOrderBook(ctx) {
-  const gets = ctx.params.gets
-  const pays = ctx.params.pays
+  const gets = currencyUnFlatten(ctx.params.base)
+  const pays = currencyUnFlatten(ctx.params.counter)
+  const p_bids = state.remote.value
+    .requestOrderBook({ gets, pays, limit: state.LIMIT.value })
+    .submitPromise()
+  const p_asks = state.remote.value
+    .requestOrderBook({ gets: pays, pays: gets, limit: state.LIMIT.value })
+    .submitPromise()
+  const data = await Promise.all([p_bids, p_asks])
+  ctx.rest({ bids: data[0], asks: data[1] })
+}
+
+async function getOrderBookBids(ctx) {
+  const gets = currencyUnFlatten(ctx.params.base)
+  const pays = currencyUnFlatten(ctx.params.counter)
   const data = await state.remote.value
     .requestOrderBook({ gets, pays, limit: state.LIMIT.value })
     .submitPromise()
   ctx.rest(data)
 }
 
-async function getOrderBookBids(ctx) {
-  const account = ctx.params.address
+async function getOrderBookAsks(ctx) {
+  const gets = currencyUnFlatten(ctx.params.base)
+  const pays = currencyUnFlatten(ctx.params.counter)
   const data = await state.remote.value
-    .requestAccountOffers({
-      account,
-      ledger: "closed",
-      limit: state.LIMIT.value
-    })
+    .requestOrderBook({ gets: pays, pays: gets, limit: state.LIMIT.value })
     .submitPromise()
   ctx.rest(data)
 }
 
-async function getOrderBookAsks(ctx) {
-  const account = ctx.params.address
+async function getTransaction(ctx) {
   const data = await state.remote.value
-    .requestAccountOffers({
-      account,
-      ledger: "closed",
-      limit: state.LIMIT.value
-    })
+    .requestTx({ hash: ctx.params.id })
     .submitPromise()
-  ctx.rest(data)
+  if (data.date) {
+    ctx.rest(data)
+  } else {
+    // ?? what about relations ??
+    throw new APIError(
+      "api:param",
+      `does not exist on server ${JSON.stringify(ctx.params)}`
+    )
+  }
+}
+
+async function getLedgerClosed(ctx) {
+  const { ledger_hash, ledger_index } = state.ledger.value
+  ctx.rest({ ledger_hash, ledger_index })
+}
+
+async function getLedgerHash(ctx) {
+  const hash = ctx.params.hash
+  const transactions = true
+  const data = await state.remote.value
+    .requestLedger({ hash, transactions })
+    .submitPromise()
+  if (data.ledger_index) {
+    ctx.rest(data)
+  } else {
+    // ?? what about relations ??
+    throw new APIError(
+      "api:param",
+      `does not exist on server ${JSON.stringify(ctx.params)}`
+    )
+  }
+}
+
+async function getLedgerIndex(ctx) {
+  const index = ctx.params.index
+  const transactions = true
+  const data = await state.remote.value
+    .requestLedger({ index, transactions })
+    .submitPromise()
+  if (data.ledger_index) {
+    ctx.rest(data)
+  } else {
+    // ?? what about relations ??
+    throw new APIError(
+      "api:param",
+      `does not exist on server ${JSON.stringify(ctx.params)}`
+    )
+  }
+}
+
+async function postBlob(ctx) {
+  const data = ctx.request.body
+  const tx = state.remote.value.buildSignTx(data)
+  console.log(tx.tx_json)
+  ctx.rest(await tx.submitPromise())
+}
+async function postBlobMultisign(ctx) {
+  console.log(ctx.params.blob)
+  ctx.rest({})
 }
 export {
+  currencyFlatten,
+  currencyUnFlatten,
   getAccountInfo,
   getAccountAuthorizes,
   getAccountFreezes,
@@ -278,5 +357,11 @@ export {
   getAccountOrders,
   getOrderBook,
   getOrderBookAsks,
-  getOrderBookBids
+  getOrderBookBids,
+  getTransaction,
+  getLedgerClosed,
+  getLedgerHash,
+  getLedgerIndex,
+  postBlob,
+  postBlobMultisign
 }
