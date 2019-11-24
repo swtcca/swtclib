@@ -134,14 +134,17 @@ async function getAccountFreezes(ctx) {
   ctx.rest(data)
 }
 async function getAccountBalances(ctx) {
-  const p_trust = state.remote.value
-    .requestAccountRelations({ account: ctx.params.address, type: "trust" })
-    .submitPromise()
   const p_info = state.remote.value
+    .requestAccountInfo({ account: ctx.params.address })
+    .submitPromise()
+  const p_trust = state.remote.value
     .requestAccountRelations({ type: "trust", account: ctx.params.address })
     .submitPromise()
-  const data = await Promise.all([p_trust, p_info])
-  ctx.rest(data)
+  const p_freeze = state.remote.value
+    .requestAccountRelations({ type: "freeze", account: ctx.params.address })
+    .submitPromise()
+  const data = await Promise.all([p_info, p_trust, p_freeze])
+  ctx.rest({ info: data[0], trusts: data[1], freezes: data[2] })
 }
 async function getAccountPayment(ctx) {
   const address = ctx.params.address
@@ -249,14 +252,15 @@ async function getAccountOrders(ctx) {
 async function getOrderBook(ctx) {
   const gets = currencyUnFlatten(ctx.params.base)
   const pays = currencyUnFlatten(ctx.params.counter)
-  const p_bids = state.remote.value
+  const data = await state.remote.value
     .requestOrderBook({ gets, pays, limit: state.LIMIT.value })
     .submitPromise()
-  const p_asks = state.remote.value
-    .requestOrderBook({ gets: pays, pays: gets, limit: state.LIMIT.value })
-    .submitPromise()
-  const data = await Promise.all([p_bids, p_asks])
-  ctx.rest({ bids: data[0], asks: data[1] })
+  ctx.rest(data)
+  // const p_asks = state.remote.value
+  //  .requestOrderBook({ gets: pays, pays: gets, limit: state.LIMIT.value })
+  //  .submitPromise()
+  // const data = await Promise.all([p_bids, p_asks])
+  // ctx.rest({ bids: data[0], asks: data[1] })
 }
 
 async function getOrderBookBids(ctx) {
@@ -278,9 +282,8 @@ async function getOrderBookAsks(ctx) {
 }
 
 async function getTransaction(ctx) {
-  const data = await state.remote.value
-    .requestTx({ hash: ctx.params.id })
-    .submitPromise()
+  const hash = ctx.params.hash
+  const data = await state.remote.value.requestTx({ hash }).submitPromise()
   if (data.date) {
     ctx.rest(data)
   } else {
@@ -337,9 +340,13 @@ async function postBlob(ctx) {
   console.log(tx.tx_json)
   ctx.rest(await tx.submitPromise())
 }
-async function postBlobMultisign(ctx) {
-  console.log(ctx.params.blob)
-  ctx.rest({})
+async function postJsonMultisign(ctx) {
+  const data = ctx.request.body
+  console.log(data)
+  const tx = state.remote.value.buildMultisignedTx(data)
+  tx.multiSigned()
+  console.log(tx.tx_json)
+  ctx.rest(await tx.submitPromise())
 }
 export {
   currencyFlatten,
@@ -363,5 +370,5 @@ export {
   getLedgerHash,
   getLedgerIndex,
   postBlob,
-  postBlobMultisign
+  postJsonMultisign
 }

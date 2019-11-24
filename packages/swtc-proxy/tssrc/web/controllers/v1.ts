@@ -9,9 +9,9 @@ module.exports = {
   "GET /v1/accounts/:address/trusts": store.getAccountTrusts,
   "GET /v1/accounts/:address/balances": store.getAccountBalances,
   "GET /v1/accounts/:address/payments": store.getAccountPayments,
-  "GET /v1/accounts/:address/payments/:id": store.getAccountPayment,
+  "GET /v1/accounts/:address/payments/:hash": store.getAccountPayment,
   "GET /v1/accounts/:address/transactions": store.getAccountTransactions,
-  "GET /v1/accounts/:address/transactions/:id": store.getAccountTransaction,
+  "GET /v1/accounts/:address/transactions/:hash": store.getAccountTransaction,
   "GET /v1/accounts/:address/orders": store.getAccountOrders,
   "GET /v1/accounts/:address/orders/:hash": store.getAccountOrder,
   "POST /v1/accounts/:address/payments": async (ctx, next) => {
@@ -26,7 +26,7 @@ module.exports = {
   "GET /v1/order_book/:base/:counter": store.getOrderBook,
   "GET /v1/order_book/bids/:base/:counter": store.getOrderBookBids,
   "GET /v1/order_book/asks/:base/:counter": store.getOrderBookAsks,
-  "GET /v1/transactions/:id": store.getTransaction,
+  "GET /v1/transactions/:hash": store.getTransaction,
   "POST /v1/accounts/:address/contract/deploy": async (ctx, next) => {
     throw new APIError("api:disable", "insecure, post v1/blob suggested")
   },
@@ -37,5 +37,5 @@ module.exports = {
   "GET /v1/ledgers/index/:index": store.getLedgerIndex,
   "GET /v1/ledgers/hash/:hash": store.getLedgerHash,
   "POST /v1/blob": store.postBlob,
-  "POST /v1/blob/multisign": store.postBlobMultisign
+  "POST /v1/multisign": store.postJsonMultisign
 }
