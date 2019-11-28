@@ -17,9 +17,10 @@ const sign = (in_tx, secret) => {
 }
 
 const serializer = signature => {
-  const buf = Array.prototype.slice.call(
-    Buffer.alloc(Buffer.byteLength(signature, "hex"), signature, "hex"),
-    0
+  const buf = Buffer.alloc(
+    Buffer.byteLength(signature, "hex"),
+    signature,
+    "hex"
   )
   return new Serializer(buf).to_json()
 }

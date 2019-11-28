@@ -263,7 +263,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
 
     public read = readOrPeek(true)
     public peek = readOrPeek(false)
-    private buffer: any[] | Buffer
+    private buffer: number[]
     private pointer: number
 
     constructor(buf) {
