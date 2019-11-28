@@ -22,7 +22,11 @@ const serializer = signature => {
     signature,
     "hex"
   )
-  return new Serializer(buf).to_json()
+  const arr = Array.prototype.slice.call(buf, 0)
+  const data = new Serializer(buf).to_json()
+  expect(data).to.deep.equal(new Serializer(signature).to_json())
+  expect(data).to.deep.equal(new Serializer(arr).to_json())
+  return data
 }
 
 describe("test signature", function() {
