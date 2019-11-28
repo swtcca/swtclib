@@ -331,7 +331,31 @@ describe("test signature", function() {
       Destination: "jPwdXkgPghbrdSRrajcJw5edDv1tohKmW7",
       Fee: "0.00001",
       Flags: 0,
-      Memos: [{ Memo: { MemoData: "memo", MemoType: "string" } }],
+      Memos: [
+        {
+          Memo: {
+            MemoData: "memo"
+          }
+        },
+        {
+          Memo: {
+            MemoType: "number"
+          }
+        },
+        {
+          Memo: {
+            MemoData:
+              "E08F9A595F9FCF47B912A08737BD2107E95FE4F1F7714524C7A1E2F3125DE6AC",
+            MemoFormat: "hex"
+          }
+        },
+        {
+          Memo: {
+            MemoData: { data: "test" },
+            MemoFormat: "json"
+          }
+        }
+      ],
       TransactionType: "Payment",
       Sequence: 1
     }
@@ -339,18 +363,31 @@ describe("test signature", function() {
     expect(so.to_json()).to.deep.nested.include(
       Object.assign(data, {
         Memos: [
+          { Memo: { MemoData: "6D656D6F", parsed_memo_data: "memo" } },
+          { Memo: { MemoType: "6E756D626572", parsed_memo_type: "number" } },
           {
             Memo: {
-              MemoType: "737472696E67",
-              MemoData: "6D656D6F",
-              parsed_memo_type: "string"
+              MemoData:
+                "E08F9A595F9FCF47B912A08737BD2107E95FE4F1F7714524C7A1E2F3125DE6AC",
+              MemoFormat: "686578",
+              parsed_memo_format: "hex",
+              parsed_memo_data:
+                "E08F9A595F9FCF47B912A08737BD2107E95FE4F1F7714524C7A1E2F3125DE6AC"
+            }
+          },
+          {
+            Memo: {
+              MemoData: "7B2264617461223A2274657374227D",
+              MemoFormat: "6A736F6E",
+              parsed_memo_format: "json",
+              parsed_memo_data: { data: "test" }
             }
           }
         ]
       })
     )
     expect(signature).to.equal(
-      "1200002200000000240000000161D4838D7EA4C68000820000000F000020170017000000000020000001A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A744730450221008BACA0F6BB568910C68F10A427FDB443DAA8FB6BEAACE09616D4A3CC368623C802201B238C284E7C2FD9C9EB1DA2A4ABA229F62EBDA889A6E910093A1178CD8291E081141270C5BE503A3A22B506457C0FEC97633B44F7DD8314F325013A4E7EEA8BB68D9C58BAFC98D4175F2BC1F9EA7C06737472696E677D046D656D6FE1F1"
+      "1200002200000000240000000161D4838D7EA4C68000820000000F000020170017000000000020000001A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A74463044022058C86A0A6077D8743BA62F674ACCEF54AEF2D6EC90242F0E8811FBF67A355C7E02206C0FF584BB214178272D902D04FCA72D2BC5BD6ACB9EC5A6EC6CC3D39581D1CB81141270C5BE503A3A22B506457C0FEC97633B44F7DD8314F325013A4E7EEA8BB68D9C58BAFC98D4175F2BC1F9EA7D046D656D6FE1EA7C066E756D626572E1EA7D20E08F9A595F9FCF47B912A08737BD2107E95FE4F1F7714524C7A1E2F3125DE6AC7E03686578E1EA7D0F7B2264617461223A2274657374227D7E046A736F6EE1F1"
     )
     data = {
       Account: "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH",

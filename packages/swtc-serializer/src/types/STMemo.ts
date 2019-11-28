@@ -65,6 +65,8 @@ const STMemo = new SerializedType({
             }
           }
           break
+        default:
+          break
       }
 
       this.customSerialize(so, key, value)
@@ -76,35 +78,35 @@ const STMemo = new SerializedType({
     }
   },
   parse(so) {
-    const output = {}
+    const output: any = {}
     while (so.peek(1)[0] !== 0xe1) {
       const keyval = this.customParse(so)
       output[keyval[0]] = keyval[1]
     }
 
+    const { MemoType, MemoFormat, MemoData } = output
     /* tslint:disable */
-    if (output["MemoType"] !== void 0) {
-      output["parsed_memo_type"] = convertHexToString(output["MemoType"])
+    if (MemoType) {
+      output["parsed_memo_type"] = convertHexToString(MemoType)
     }
 
-    if (output["MemoFormat"] !== void 0) {
-      output["parsed_memo_format"] = convertHexToString(output["MemoFormat"])
+    if (MemoFormat) {
+      output["parsed_memo_format"] = convertHexToString(MemoFormat)
     }
 
-    if (output["MemoData"] !== void 0) {
+    if (MemoData) {
       // see if we can parse JSON
-      if (output["parsed_memo_format"] === "json") {
+      const type = output["parsed_memo_format"]
+      if (type === "json") {
         try {
-          output["parsed_memo_data"] = JSON.parse(
-            convertHexToString(output["MemoData"])
-          )
+          output["parsed_memo_data"] = JSON.parse(convertHexToString(MemoData))
         } catch (e) {
           // fail, which is fine, we just won't add the memo_data field
         }
-      } else if (output["parsed_memo_format"] === "text") {
-        output["parsed_memo_data"] = convertHexToString(output["MemoData"])
-      } else if (output["parsed_memo_format"] === "hex") {
-        output["parsed_memo_data"] = output["MemoData"]
+      } else if (type === "hex") {
+        output["parsed_memo_data"] = MemoData
+      } else {
+        output["parsed_memo_data"] = convertHexToString(MemoData)
       }
     }
 

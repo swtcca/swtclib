@@ -96,13 +96,13 @@ describe("test TypesUtils", function() {
       let data = [
         {
           Memo: {
-            MemoData: "\u0000\u0000"
+            MemoData: "0000"
           }
         }
       ]
       tu.Array.serialize(so, data)
-      expect(so.buffer).to.deep.equal([234, 125, 2, 0, 0, 225, 241])
-      expect(so.pointer).to.equal(7)
+      expect(so.buffer).to.deep.equal([234, 125, 4, 48, 48, 48, 48, 225, 241])
+      expect(so.pointer).to.equal(9)
     })
 
     it("throw error if keys's length is not equal to 1 when serialize", function() {
@@ -121,16 +121,17 @@ describe("test TypesUtils", function() {
     })
 
     it("success if parse", function() {
-      let so = new Serializer([234, 125, 2, 0, 0, 225, 241])
+      let so = new Serializer([234, 125, 4, 48, 48, 48, 48, 225, 241])
       let value = tu.Array.parse(so)
       expect(value).to.deep.equal([
         {
           Memo: {
-            MemoData: "0000"
+            MemoData: "30303030",
+            parsed_memo_data: "0000"
           }
         }
       ])
-      expect(so.pointer).to.equal(7)
+      expect(so.pointer).to.equal(9)
     })
   })
 
