@@ -415,11 +415,24 @@ describe("test signature", function() {
     expect(serializer(signature)).to.deep.nested.include(
       Object.assign(data, {
         Memos: [
+          { Memo: { MemoData: "6D656D6F", parsed_memo_data: "memo" } },
+          { Memo: { MemoType: "6E756D626572", parsed_memo_type: "number" } },
           {
             Memo: {
-              MemoType: "737472696E67",
-              MemoData: "6D656D6F",
-              parsed_memo_type: "string"
+              MemoData:
+                "E08F9A595F9FCF47B912A08737BD2107E95FE4F1F7714524C7A1E2F3125DE6AC",
+              MemoFormat: "686578",
+              parsed_memo_format: "hex",
+              parsed_memo_data:
+                "E08F9A595F9FCF47B912A08737BD2107E95FE4F1F7714524C7A1E2F3125DE6AC"
+            }
+          },
+          {
+            Memo: {
+              MemoData: "7B2264617461223A2274657374227D",
+              MemoFormat: "6A736F6E",
+              parsed_memo_format: "json",
+              parsed_memo_data: { data: "test" }
             }
           }
         ]
