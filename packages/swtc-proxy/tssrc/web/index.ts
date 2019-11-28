@@ -48,7 +48,15 @@ web.use(bodyParser())
 // bind .rest() for ctx:
 web.use(restify())
 
+// Debug settings store.DEBUG.value
+web.use(async (ctx, next) => {
+  if (state.DEBUG.value) {
+    console.log(ctx.params)
+  }
+  await next()
+})
+
 // add controller middleware:
 web.use(controller())
 
-export { web }
+export { controller, web }
