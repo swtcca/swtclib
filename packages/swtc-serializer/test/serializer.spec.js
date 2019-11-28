@@ -22,8 +22,7 @@ describe("test Serializer", function() {
 
     it("if the buf is buffer", function() {
       let inst = new Serializer(Buffer.from("test"))
-      expect(inst.buffer).to.deep.equal(Buffer.from("test"))
-      // expect(inst._token).to.equal("swt")
+      expect(inst.buffer).to.deep.equal([116, 101, 115, 116])
       expect(inst.pointer).to.equal(0)
     })
 
