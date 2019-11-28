@@ -96,17 +96,17 @@ const STMemo = new SerializedType({
 
     if (MemoData) {
       // see if we can parse JSON
-      const type = MemoType || MemoFormat || "text"
+      const type = output["parsed_memo_format"]
       if (type === "json") {
         try {
           output["parsed_memo_data"] = JSON.parse(convertHexToString(MemoData))
         } catch (e) {
           // fail, which is fine, we just won't add the memo_data field
         }
-      } else if (type === "text") {
-        output["parsed_memo_data"] = convertHexToString(MemoData)
       } else if (type === "hex") {
         output["parsed_memo_data"] = MemoData
+      } else {
+        output["parsed_memo_data"] = convertHexToString(MemoData)
       }
     }
 

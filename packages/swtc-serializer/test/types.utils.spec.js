@@ -101,7 +101,6 @@ describe("test TypesUtils", function() {
         }
       ]
       tu.Array.serialize(so, data)
-      console.log(so.buffer)
       expect(so.buffer).to.deep.equal([234, 125, 4, 48, 48, 48, 48, 225, 241])
       expect(so.pointer).to.equal(9)
     })
