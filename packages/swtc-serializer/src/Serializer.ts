@@ -271,8 +271,10 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
        * buf is a byte array
        * pointer is an integer index of the buf
        */
-      if (Array.isArray(buf) || (Buffer && Buffer.isBuffer(buf))) {
+      if (Array.isArray(buf)) {
         this.buffer = buf
+      } else if (Buffer && Buffer.isBuffer(buf)) {
+        this.buffer = Array.prototype.slice.call(buf, 0)
       } else if (typeof buf === "string") {
         this.buffer = hex_str_to_byte_array(buf) // sjcl.codec.bytes.fromBits(sjcl.codec.hex.toBits(buf));
       } else if (!buf) {
