@@ -11,8 +11,82 @@ function currencyUnFlatten(currency) {
   const pairs = currency.split("+")
   return { currency: pairs[0], issuer: pairs[1] || "" }
 }
+function validateQueryParams(params) {
+  const peer = params.peer
+  const ledger = params.ledger
+  const ledger_min = params.ledger_min
+  const ledger_max = params.ledger_max
+  const limit = params.limit
+  const offset = params.offset
+  const forward = params.forward
+  const marker = params.marker
+  if (!marker) {
+  } else if (typeof marker === "string") {
+  } else if (typeof marker !== "object") {
+    throw new APIError("api:params", "wrong marker object")
+  } else if (isNaN(Number(marker.ledger)) || isNaN(Number(marker.seq))) {
+    throw new APIError("api:params", "wrong marker attribute number")
+  } else {
+  }
+  if (typeof forward === "string") {
+    params.forward = forward === "true" ? true : false
+  }
+  if (peer && !utils.isValidAddress(peer)) {
+    throw new APIError("api:params", "wrong peer address")
+  }
+  if (limit && isNaN(Number(limit))) {
+    throw new APIError("api:params", "wrong limit quantity")
+  }
+  if (offset && isNaN(Number(offset))) {
+    throw new APIError("api:params", "wrong offset number")
+  }
+  if (ledger && isNaN(Number(ledger))) {
+    throw new APIError("api:params", "wrong ledger index")
+  }
+  if (ledger_min && isNaN(Number(ledger_min))) {
+    throw new APIError("api:params", "wrong ledger_min index")
+  }
+  if (ledger_max && isNaN(Number(ledger_max))) {
+    throw new APIError("api:params", "wrong ledger_max index")
+  }
+}
+function validateCtxParams(params) {
+  const account = params.account
+  const hash = params.hash
+  const index = params.index
+  if (account && !utils.isValidAddress(account)) {
+    throw new APIError("api:params", "wrong wallet address")
+  }
+  if (hash && !utils.isValidHash(hash)) {
+    throw new APIError("api:params", "wrong hash string")
+  }
+  if (index && isNaN(Number(index))) {
+    throw new APIError("api:params", "wrong index number")
+  }
+}
+async function getServerInfo(ctx) {
+  try {
+    ctx.rest(await state.remote.value.requestServerInfo().submitPromise())
+  } catch (e) {
+    throw new APIError("api:getServerInfo", e.toString())
+  }
+}
+async function getAccounts(ctx) {
+  validateQueryParams(ctx.request.body)
+  try {
+    const data = await state.remote.value
+      .requestAccounts(ctx.request.body)
+      .submitPromise()
+    ctx.rest(data)
+  } catch (e) {
+    throw new APIError("api:getAccounts", e.toString())
+  }
+}
 async function getAccountInfo(ctx) {
-  console.log(Object.assign({}, ctx.params, ctx.request.body))
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
+  state.DEBUG.value &&
+    console.log(Object.assign({}, ctx.params, ctx.request.body))
   try {
     const data = await state.remote.value
       .requestAccountInfo(Object.assign({}, ctx.params, ctx.request.body))
@@ -23,6 +97,8 @@ async function getAccountInfo(ctx) {
   }
 }
 async function getAccountTums(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestAccountTums(Object.assign({}, ctx.params, ctx.request.body))
@@ -33,6 +109,8 @@ async function getAccountTums(ctx) {
   }
 }
 async function getAccountTrusts(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestAccountRelations(
@@ -45,6 +123,8 @@ async function getAccountTrusts(ctx) {
   }
 }
 async function getAccountAuthorizes(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestAccountRelations(
@@ -57,6 +137,8 @@ async function getAccountAuthorizes(ctx) {
   }
 }
 async function getAccountFreezes(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestAccountRelations(
@@ -69,6 +151,8 @@ async function getAccountFreezes(ctx) {
   }
 }
 async function getAccountBalances(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   const p_info = state.remote.value
     .requestAccountInfo(ctx.params)
     .submitPromise()
@@ -82,6 +166,8 @@ async function getAccountBalances(ctx) {
   ctx.rest({ info: data[0], trusts: data[1], freezes: data[2] })
 }
 async function getAccountPayment(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   const address = ctx.params.account
   try {
     const data = await state.remote.value.requestTx(ctx.params).submitPromise()
@@ -103,6 +189,8 @@ async function getAccountPayment(ctx) {
   }
 }
 async function getAccountPayments(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestAccountTx(Object.assign({}, ctx.params, ctx.request.body))
@@ -118,6 +206,8 @@ async function getAccountPayments(ctx) {
   }
 }
 async function getAccountTransaction(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   const address = ctx.params.account
   try {
     const data = await state.remote.value.requestTx(ctx.params).submitPromise()
@@ -152,6 +242,8 @@ async function getAccountTransaction(ctx) {
   }
 }
 async function getAccountTransactions(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   state.DEBUG.value &&
     console.log(Object.assign({}, ctx.params, ctx.request.body))
   try {
@@ -165,6 +257,8 @@ async function getAccountTransactions(ctx) {
 }
 
 async function getAccountOrder(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   const address = ctx.params.account
   const hash = ctx.params.hash
   try {
@@ -187,6 +281,8 @@ async function getAccountOrder(ctx) {
   }
 }
 async function getAccountOrders(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestAccountOffers(Object.assign({}, ctx.params, ctx.request.body))
@@ -197,9 +293,37 @@ async function getAccountOrders(ctx) {
   }
 }
 
+async function getAccountSignerList(ctx) {
+  validateCtxParams(ctx.params)
+  try {
+    const data = await state.remote.value
+      .requestSignerList(ctx.params)
+      .submitPromise()
+    ctx.rest(data)
+  } catch (e) {
+    throw new APIError("api:getAccountSignerList", e.toString())
+  }
+}
+
+async function getBrokerage(ctx) {
+  validateCtxParams(ctx.params)
+  try {
+    const data = await state.remote.value
+      .requestBrokerage(ctx.params)
+      .submitPromise()
+    ctx.rest(data)
+  } catch (e) {
+    throw new APIError("api:getBrokerage", e.toString())
+  }
+}
 async function getOrderBook(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   const gets = currencyUnFlatten(ctx.params.gets)
   const pays = currencyUnFlatten(ctx.params.pays)
+  if (!utils.isValidAmount0(gets) || !utils.isValidAmount0(pays)) {
+    throw new APIError("api:params", "wrong gets or pays")
+  }
   // console.log(Object.assign({}, ctx.params, { gets, pays }, ctx.request.body))
   try {
     const data = await state.remote.value
@@ -214,6 +338,8 @@ async function getOrderBook(ctx) {
 }
 
 async function getTransaction(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value.requestTx(ctx.params).submitPromise()
     if (data.date) {
@@ -236,6 +362,8 @@ async function getLedgerClosed(ctx) {
 }
 
 async function getLedgerHash(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestLedger(Object.assign({ transactions: true }, ctx.params))
@@ -255,6 +383,8 @@ async function getLedgerHash(ctx) {
 }
 
 async function getLedgerIndex(ctx) {
+  validateCtxParams(ctx.params)
+  validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
       .requestLedger(Object.assign({ transactions: true }, ctx.params))
@@ -298,6 +428,8 @@ async function postJsonMultisign(ctx) {
   }
 }
 export {
+  getServerInfo,
+  getAccounts,
   currencyFlatten,
   currencyUnFlatten,
   getAccountInfo,
@@ -312,11 +444,13 @@ export {
   getAccountTransactions,
   getAccountOrder,
   getAccountOrders,
+  getAccountSignerList,
   getOrderBook,
   getTransaction,
   getLedgerClosed,
   getLedgerHash,
   getLedgerIndex,
+  getBrokerage,
   postBlob,
   postJsonMultisign
 }
