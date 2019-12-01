@@ -35,8 +35,8 @@ const restify = (pathPrefix = "/api/") => {
         ctx.response.status = 400
         ctx.response.type = "application/json"
         ctx.response.body = {
-          code: e.code || "internal:unknown_error",
-          message: e.message || ""
+          code: e.code || "api:swtclib",
+          message: e.message || "swtclib get an error"
         }
       }
     } else {
