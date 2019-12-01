@@ -675,7 +675,7 @@ class Remote extends EventEmitter {
       return request
     }
     if (isNumber(options.limit)) {
-      options.limit = parseInt(String(options.limit), 10)
+      options.limit = parseInt(String(options.limit), 300)
     }
 
     request.message.taker_gets = taker_gets
