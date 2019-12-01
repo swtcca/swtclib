@@ -65,43 +65,29 @@ export interface IRequestTxOptions {
 export interface IRequestAccountInfoOptions {
   account: string
   ledger?: string
-  ledger_index?: string | number
-  ledger_hash?: string
 }
 
 export interface IRequestAccountTumsOptions {
   account: string
   ledger?: string
-  ledger_index?: string | number
-  ledger_hash?: string
 }
 
 export interface IRequestAccountRelationsOptions {
   type: string
   account: string
   ledger?: string
-  ledger_index?: string | number
-  ledger_hash?: string
-  limit?: string | number
-  marker?: IMarker
+  peer?: string
 }
 
 export interface IRequestAccountOffersOptions {
   type: string
   account: string
   ledger?: string
-  ledger_index?: string | number
-  ledger_hash?: string
-  limit?: string | number
-  marker?: IMarker
 }
 
 export interface IRequestAccountTxOptions {
   type: string
   account: string
-  ledger?: string
-  ledger_index?: string | number
-  ledger_hash?: string
   ledger_min?: number
   ledger_max?: number
   limit?: string | number
