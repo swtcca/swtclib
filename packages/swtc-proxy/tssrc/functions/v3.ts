@@ -108,51 +108,31 @@ async function getAccountTums(ctx) {
     throw new APIError("api:getAccountTums", e.toString())
   }
 }
-async function getAccountTrusts(ctx) {
+async function getAccountRelations(ctx) {
   validateCtxParams(ctx.params)
   validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
-      .requestAccountRelations(
-        Object.assign({}, ctx.params, { type: "trust" }, ctx.request.body)
-      )
+      .requestAccountRelations(Object.assign({}, ctx.params, ctx.request.body))
       .submitPromise()
     ctx.rest(data)
   } catch (e) {
-    throw new APIError("api:getAccountTrusts", e.toString())
-  }
-}
-async function getAccountAuthorizes(ctx) {
-  validateCtxParams(ctx.params)
-  validateQueryParams(ctx.request.body)
-  try {
-    const data = await state.remote.value
-      .requestAccountRelations(
-        Object.assign({}, ctx.params, { type: "authorize" }, ctx.request.body)
-      )
-      .submitPromise()
-    ctx.rest(data)
-  } catch (e) {
-    throw new APIError("api:getAccountAuthorizes", e.toString())
-  }
-}
-async function getAccountFreezes(ctx) {
-  validateCtxParams(ctx.params)
-  validateQueryParams(ctx.request.body)
-  try {
-    const data = await state.remote.value
-      .requestAccountRelations(
-        Object.assign({}, ctx.params, { type: "freeze" }, ctx.request.body)
-      )
-      .submitPromise()
-    ctx.rest(data)
-  } catch (e) {
-    throw new APIError("api:getAccountFreezes", e.toString())
+    throw new APIError("api:getAccountRelations", e.toString())
   }
 }
 async function getAccountBalances(ctx) {
   validateCtxParams(ctx.params)
   validateQueryParams(ctx.request.body)
+  const condition = {
+    currency: ctx.request.body.currency || "",
+    issuer: ctx.request.body.issuer || ""
+  }
+  if (!condition.currency) {
+    delete condition.currency
+  }
+  if (!condition.issuer) {
+    delete condition.issuer
+  }
   const p_info = state.remote.value
     .requestAccountInfo(ctx.params)
     .submitPromise()
@@ -162,8 +142,16 @@ async function getAccountBalances(ctx) {
   const p_freeze = state.remote.value
     .requestAccountRelations(Object.assign({}, ctx.params, { type: "freeze" }))
     .submitPromise()
-  const data = await Promise.all([p_info, p_trust, p_freeze])
-  ctx.rest({ info: data[0], trusts: data[1], freezes: data[2] })
+  const p_offer = state.remote.value
+    .requestAccountOffers(ctx.params)
+    .submitPromise()
+  const data = await Promise.all([p_info, p_trust, p_freeze, p_offer])
+  ctx.rest(
+    processBalance(
+      { native: data[0], lines: data[1], lines2: data[2], orders: data[3] },
+      condition
+    )
+  )
 }
 async function getAccountPayment(ctx) {
   validateCtxParams(ctx.params)
@@ -427,6 +415,75 @@ async function postJsonMultisign(ctx) {
     throw new APIError("api:postMultisign", e.toString())
   }
 }
+export const FREEZE = { reserved: 20.0, each_freezed: 5.0 }
+function processBalance(data: any, condition: any = {}) {
+  const swt_value: any = Number(data.native.account_data.Balance) / 1000000.0
+  const freeze0 =
+    FREEZE.reserved +
+    (data.lines.lines.length + data.orders.offers.length) * FREEZE.each_freezed
+  const swt_data = {
+    value: swt_value,
+    currency: "SWT",
+    issuer: "",
+    freezed: freeze0
+  }
+  const _data = []
+  if (
+    (!condition.currency && !condition.issuer) ||
+    (condition.currency && condition.currency === "SWT")
+  ) {
+    _data.push(swt_data)
+  }
+  for (const item of data.lines.lines) {
+    if (condition.currency && condition.currency === "SWT") {
+      break
+    }
+    const tmpBal = {
+      value: item.balance,
+      currency: item.currency,
+      issuer: item.account,
+      freezed: 0
+    }
+    let freezed = 0
+    data.orders.offers.forEach(off => {
+      const taker_gets = utils.parseAmount(off.taker_gets)
+      if (
+        taker_gets.currency === swt_data.currency &&
+        taker_gets.issuer === swt_data.issuer
+      ) {
+        // swt遍历一次
+        swt_data.freezed =
+          parseFloat(`${swt_data.freezed}`) + parseFloat(taker_gets.value)
+      } else if (
+        taker_gets.currency === tmpBal.currency &&
+        taker_gets.issuer === tmpBal.issuer
+      ) {
+        freezed += parseFloat(taker_gets.value)
+      }
+    })
+    for (const l of data.lines2.lines) {
+      if (l.currency === tmpBal.currency && l.issuer === tmpBal.issuer) {
+        freezed += parseFloat(l.limit)
+      }
+    }
+    tmpBal.freezed = parseFloat(`${tmpBal.freezed}`) + freezed
+    tmpBal.freezed = Number(tmpBal.freezed.toFixed(6))
+    if (condition.currency && condition.currency !== tmpBal.currency) {
+      continue
+    }
+    if (condition.issuer && condition.issuer !== tmpBal.issuer) {
+      continue
+    }
+    _data.push(tmpBal)
+  }
+
+  const _ret = {
+    balances: _data,
+    sequence: data.native.account_data.Sequence
+  }
+  return _ret
+}
+
 export {
   getServerInfo,
   getAccounts,
@@ -434,9 +491,7 @@ export {
   currencyUnFlatten,
   getAccountInfo,
   getAccountTums,
-  getAccountAuthorizes,
-  getAccountFreezes,
-  getAccountTrusts,
+  getAccountRelations,
   getAccountBalances,
   getAccountPayment,
   getAccountPayments,
@@ -452,5 +507,6 @@ export {
   getLedgerIndex,
   getBrokerage,
   postBlob,
-  postJsonMultisign
+  postJsonMultisign,
+  processBalance
 }

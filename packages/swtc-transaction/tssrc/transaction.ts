@@ -1300,6 +1300,16 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           signing(this, callback)
           // callback(null, signing(self));
         })
+      } else if ("getAccountInfo" in this._remote) {
+        this._remote
+          .getAccountInfo(this.tx_json.Account)
+          .then(data => {
+            this.tx_json.Sequence = data.account_data.Sequence
+            signing(this, callback)
+          })
+          .catch(error => {
+            throw error
+          })
       } else if ("getAccountBalances" in this._remote) {
         this._remote
           .getAccountBalances(this.tx_json.Account)
@@ -1312,9 +1322,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           })
       } else if ("_axios" in this._remote) {
         this._remote._axios
-          .get(`accounts/${this.tx_json.Account}/balances`)
+          .get(`accounts/${this.tx_json.Account}/info`)
           .then(response => {
-            this.tx_json.Sequence = response.data.sequence
+            this.tx_json.Sequence = response.data.account_data.Sequence
             signing(this, callback)
           })
           .catch(error => {
@@ -1528,18 +1538,22 @@ function Factory(Wallet = WalletFactory("jingtum")) {
             .submitPromise()
           this.tx_json.Sequence = data.account_data.Sequence
           return Promise.resolve(this)
+        } else if ("getAccountInfo" in this._remote) {
+          data = await this._remote.getAccountInfo(this.tx_json.Account)
+          this.tx_json.Sequence = data.account_data.Sequence
+          return Promise.resolve(this)
         } else if ("getAccountBalances" in this._remote) {
           data = await this._remote.getAccountBalances(this.tx_json.Account)
           this.tx_json.Sequence = data.sequence
           return Promise.resolve(this)
         } else if ("_axios" in this._remote) {
           response = await this._remote._axios.get(
-            `accounts/${this.tx_json.Account}/balances`
+            `accounts/${this.tx_json.Account}/info`
           )
-          this.tx_json.Sequence = response.data.sequence
+          this.tx_json.Sequence = response.data.account_data.Sequence
           return Promise.resolve(this)
         } else {
-          // use api.jingtum.com to get sequence
+          // use api.jingtum.com to get sequence, consider proxy or jcc rpc
           response = await axios.get(
             `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
           )

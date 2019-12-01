@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "http://swtcproxy.swtclib.ca:5080/v3",
+      "url": "http://127.0.0.1:5080/v3",
       "description": "SWTC Proxy to Jintum Nodes"
     }
   ],
@@ -247,12 +247,12 @@
         }
       }
     },
-    "/accounts/{account}/trusts": {
+    "/accounts/{account}/relations/{type}": {
       "get": {
         "tags": ["account"],
-        "summary": "查询账户信任",
-        "description": "查询账户授权\n",
-        "operationId": "requestAccountTrusts",
+        "summary": "查询账户关系",
+        "description": "查询账户关系\n",
+        "operationId": "requestAccountRelations",
         "parameters": [
           {
             "name": "account",
@@ -264,6 +264,18 @@
             "schema": {
               "type": "string",
               "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "description": "关系类型",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "enum": ["trust", "authorize", "freeze"]
             }
           },
           {
@@ -293,147 +305,11 @@
         ],
         "responses": {
           "200": {
-            "description": "账户信任",
+            "description": "账户关系",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountTrusts"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/accounts/{account}/authorizes": {
-      "get": {
-        "tags": ["account"],
-        "summary": "查询账户授权",
-        "description": "查询账户授权\n",
-        "operationId": "requestAccountAurhorizes",
-        "parameters": [
-          {
-            "name": "account",
-            "in": "path",
-            "description": "钱包地址",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
-            }
-          },
-          {
-            "name": "peer",
-            "in": "query",
-            "description": "对等地址",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "jabcdef0987654321ghijkomn"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "账户信息",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountAuthorizes"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/accounts/{account}/freezes": {
-      "get": {
-        "tags": ["account"],
-        "summary": "查询账户冻结",
-        "description": "查询账户冻结\n",
-        "operationId": "requestAccountFreezes",
-        "parameters": [
-          {
-            "name": "account",
-            "in": "path",
-            "description": "钱包地址",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
-            }
-          },
-          {
-            "name": "peer",
-            "in": "query",
-            "description": "对等地址",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "jabcdef0987654321ghijkomn"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "账户冻结",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountFreezes"
+                  "$ref": "#/components/schemas/AccountRelation"
                 }
               }
             }
@@ -1537,14 +1413,8 @@
           }
         }
       },
-      "AccountAuthorizes": {
-        "required": [
-          "account",
-          "ledger_hash",
-          "ledger_index",
-          "lines",
-          "validated"
-        ],
+      "AccountRelation": {
+        "required": ["account", "ledger_hash", "ledger_index", "lines"],
         "type": "object",
         "properties": {
           "ledger_index": {
@@ -1565,118 +1435,13 @@
           "lines": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/FreezeLine"
+              "$ref": "#/components/schemas/RelationLine"
             }
           }
         }
       },
-      "AccountFreezes": {
-        "required": [
-          "account",
-          "ledger_hash",
-          "ledger_index",
-          "lines",
-          "validated"
-        ],
-        "type": "object",
-        "properties": {
-          "ledger_index": {
-            "type": "number",
-            "example": 123456789
-          },
-          "ledger_hash": {
-            "type": "string",
-            "example": "abcdefg1234567890"
-          },
-          "validated": {
-            "type": "boolean"
-          },
-          "account": {
-            "type": "string",
-            "example": "jabcdef1233"
-          },
-          "lines": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FreezeLine"
-            }
-          }
-        }
-      },
-      "FreezeLine": {
-        "required": [
-          "currency",
-          "issuer",
-          "limit",
-          "limit_peer",
-          "relation_type"
-        ],
-        "type": "object",
-        "properties": {
-          "issuer": {
-            "type": "string",
-            "example": "jabcde12345XYZ"
-          },
-          "currency": {
-            "type": "string",
-            "example": "CNY"
-          },
-          "limit": {
-            "type": "number",
-            "example": 10000
-          },
-          "limit_peer": {
-            "type": "string",
-            "example": "jabcde12345xyz"
-          },
-          "relation_type": {
-            "type": "number",
-            "example": 2
-          }
-        }
-      },
-      "AccountTrusts": {
-        "required": [
-          "account",
-          "ledger_hash",
-          "ledger_index",
-          "lines",
-          "validated"
-        ],
-        "type": "object",
-        "properties": {
-          "ledger_index": {
-            "type": "number",
-            "example": 123456789
-          },
-          "ledger_hash": {
-            "type": "string",
-            "example": "abcdefg1234567890"
-          },
-          "validated": {
-            "type": "boolean"
-          },
-          "account": {
-            "type": "string",
-            "example": "jabcdef1233"
-          },
-          "lines": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TrustLine"
-            }
-          }
-        }
-      },
-      "TrustLine": {
-        "required": [
-          "account",
-          "balance",
-          "currency",
-          "limit",
-          "quality_in",
-          "quanlity_out"
-        ],
+      "RelationLine": {
+        "required": ["currency", "limit"],
         "type": "object",
         "properties": {
           "account": {
@@ -1691,9 +1456,21 @@
             "type": "string",
             "example": "CNY"
           },
+          "issuer": {
+            "type": "string",
+            "example": "jabcdefghijklmn0987654321"
+          },
           "limit": {
             "type": "number",
             "example": 10000
+          },
+          "limit_peer": {
+            "type": "string",
+            "example": "jabcdefghijklmn0987654321"
+          },
+          "relation_type": {
+            "type": "integer",
+            "example": 1
           },
           "quality_in": {
             "type": "number",
@@ -2352,6 +2129,18 @@
         "schema": {
           "type": "string",
           "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+        }
+      },
+      "type": {
+        "name": "type",
+        "in": "path",
+        "description": "关系类型",
+        "required": true,
+        "style": "simple",
+        "explode": false,
+        "schema": {
+          "type": "string",
+          "enum": ["trust", "authorize", "freeze"]
         }
       },
       "hash": {
