@@ -45,6 +45,7 @@
     "koa-bodyparser": "^4.2.1",
     "koa-robots.txt": "^1.0.0",
     "koa-router": "^7.4.0",
+    "koa-simple-qs": "^1.0.0",
     "koa2-request-log": "^1.0.1",
     "koa2-swagger-ui": "^2.15.4",
     "static-koa-router": "^1.0.3",

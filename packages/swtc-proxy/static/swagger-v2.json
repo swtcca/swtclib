@@ -10,15 +10,23 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "v3"
+    "version": "v1"
   },
   "servers": [
     {
-      "url": "http://localhost:5080/v3",
+      "url": "https://virtserver.swaggerhub.com/lospringliu/swtc-proxy/v1",
       "description": "SWTC Proxy to Jintum Nodes"
     }
   ],
   "tags": [
+    {
+      "name": "swtcapi",
+      "description": "井通公链公共访问"
+    },
+    {
+      "name": "wallet",
+      "description": "钱包"
+    },
     {
       "name": "account",
       "description": "账户"
@@ -33,15 +41,38 @@
     },
     {
       "name": "blob",
-      "description": "提交单签事务"
+      "description": "提交事务"
     },
     {
-      "name": "multisign",
-      "description": "提交多签事务"
+      "name": "deprecated",
+      "description": "已废除"
     }
   ],
   "paths": {
-    "/accounts/{account}/info": {
+    "/wallet/new": {
+      "get": {
+        "tags": ["wallet"],
+        "summary": "生成钱包",
+        "description": "生成新钱包\n",
+        "operationId": "newWallet",
+        "responses": {
+          "200": {
+            "description": "search results matching criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wallet"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "出错了"
+          }
+        }
+      }
+    },
+    "/accounts/{address}/info": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户信息",
@@ -49,27 +80,15 @@
         "operationId": "requestAccountInfo",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -85,75 +104,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/tums": {
-      "get": {
-        "tags": ["account"],
-        "summary": "查询账户可发送/接收的通证",
-        "description": "查询账户信息\n",
-        "operationId": "requestAccountTums",
-        "parameters": [
-          {
-            "name": "account",
-            "in": "path",
-            "description": "钱包地址",
-            "required": true,
-            "style": "simple",
-            "explode": false,
-            "schema": {
-              "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "账户可发送/接收的通证",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccountTums"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/accounts/{account}/trusts": {
+    "/accounts/{address}/trusts": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户信任",
@@ -161,39 +117,15 @@
         "operationId": "requestAccountTrusts",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
-            }
-          },
-          {
-            "name": "peer",
-            "in": "query",
-            "description": "对等地址",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "jabcdef0987654321ghijkomn"
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -209,19 +141,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/authorizes": {
+    "/accounts/{address}/authorizes": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户授权",
@@ -229,39 +154,15 @@
         "operationId": "requestAccountAurhorizes",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
-            }
-          },
-          {
-            "name": "peer",
-            "in": "query",
-            "description": "对等地址",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "jabcdef0987654321ghijkomn"
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -277,19 +178,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/freezes": {
+    "/accounts/{address}/freezes": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户冻结",
@@ -297,39 +191,15 @@
         "operationId": "requestAccountFreezes",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
-            }
-          },
-          {
-            "name": "peer",
-            "in": "query",
-            "description": "对等地址",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "example": "jabcdef0987654321ghijkomn"
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -345,19 +215,49 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/payments": {
+    "/accounts/{address}/balances": {
+      "get": {
+        "tags": ["account"],
+        "summary": "查询账户余额",
+        "description": "查询账户冻结\n",
+        "operationId": "requestAccountBalances",
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "description": "wallet address",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "default": "jabcdef0123456789"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "账户余额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalances"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "出错了"
+          }
+        }
+      }
+    },
+    "/accounts/{address}/payments": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户支付记录",
@@ -365,62 +265,15 @@
         "operationId": "requestAccountPayments",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger_min",
-            "in": "query",
-            "description": "最小索引数",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "example": 266955
-            }
-          },
-          {
-            "name": "ledger_max",
-            "in": "query",
-            "description": "最大索引数",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "example": 12345678
-            }
-          },
-          {
-            "name": "marker",
-            "in": "query",
-            "description": "位置标记",
-            "required": false,
-            "style": "deepObject",
-            "explode": false,
-            "schema": {
-              "$ref": "#/components/schemas/Marker"
-            }
-          },
-          {
-            "name": "forward",
-            "in": "query",
-            "description": "向前查",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "boolean",
-              "default": false
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -436,19 +289,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/payments/{hash}": {
+    "/accounts/{address}/payments/{hash}": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户某个支付",
@@ -456,27 +302,27 @@
         "operationId": "requestAccountPayment",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+              "default": "jabcdef0123456789"
             }
           },
           {
             "name": "hash",
             "in": "path",
-            "description": "哈希字符串",
+            "description": "hash string",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+              "default": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
             }
           }
         ],
@@ -492,19 +338,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/transactions": {
+    "/accounts/{address}/transactions": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户事务记录",
@@ -512,86 +351,15 @@
         "operationId": "requestAccountTransactions",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "数量限制",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "default": 100
-            }
-          },
-          {
-            "name": "ledger_min",
-            "in": "query",
-            "description": "最小索引数",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "example": 266955
-            }
-          },
-          {
-            "name": "ledger_max",
-            "in": "query",
-            "description": "最大索引数",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "example": 12345678
-            }
-          },
-          {
-            "name": "marker",
-            "in": "query",
-            "description": "位置标记",
-            "required": false,
-            "style": "deepObject",
-            "explode": false,
-            "schema": {
-              "$ref": "#/components/schemas/Marker"
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "位移",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "default": 0
-            }
-          },
-          {
-            "name": "forward",
-            "in": "query",
-            "description": "向前查",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "boolean",
-              "default": false
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -607,19 +375,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/transactions/{hash}": {
+    "/accounts/{address}/transactions/{hash}": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户某个事务",
@@ -627,27 +388,27 @@
         "operationId": "requestAccountTransaction",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+              "default": "jabcdef0123456789"
             }
           },
           {
             "name": "hash",
             "in": "path",
-            "description": "哈希字符串",
+            "description": "hash string",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+              "default": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
             }
           }
         ],
@@ -663,19 +424,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/orders": {
+    "/accounts/{address}/orders": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户挂单列表",
@@ -683,27 +437,15 @@
         "operationId": "requestAccountOrders",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
-            }
-          },
-          {
-            "name": "ledger",
-            "in": "query",
-            "description": "帐本",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string",
-              "default": "validated"
+              "default": "jabcdef0123456789"
             }
           }
         ],
@@ -719,19 +461,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/accounts/{account}/orders/{hash}": {
+    "/accounts/{address}/orders/{hash}": {
       "get": {
         "tags": ["account"],
         "summary": "查询账户某个挂单",
@@ -739,27 +474,27 @@
         "operationId": "requestAccountOrder",
         "parameters": [
           {
-            "name": "account",
+            "name": "address",
             "in": "path",
-            "description": "钱包地址",
+            "description": "wallet address",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+              "default": "jabcdef0123456789"
             }
           },
           {
             "name": "hash",
             "in": "path",
-            "description": "哈希字符串",
+            "description": "hash string",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+              "default": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
             }
           }
         ],
@@ -775,19 +510,12 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
     },
-    "/order_book/{gets}/{pays}": {
+    "/order_book/{base}/{counter}": {
       "get": {
         "tags": ["orderbook"],
         "summary": "查询挂单列表",
@@ -795,39 +523,27 @@
         "operationId": "requestOrderBook",
         "parameters": [
           {
-            "name": "gets",
+            "name": "base",
             "in": "path",
-            "description": "获得的通证",
+            "description": "base currency",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "SWT"
+              "default": "SWT"
             }
           },
           {
-            "name": "pays",
+            "name": "counter",
             "in": "path",
-            "description": "支付的通证",
+            "description": "counter currency",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "CNY+jabcdef0987654321"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "数量限制",
-            "required": false,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "integer",
-              "default": 100
+              "default": "CNY+jabcdef0987654321"
             }
           }
         ],
@@ -843,14 +559,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -865,13 +574,13 @@
           {
             "name": "hash",
             "in": "path",
-            "description": "哈希字符串",
+            "description": "hash string",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+              "default": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
             }
           }
         ],
@@ -887,14 +596,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -917,14 +619,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -939,13 +634,13 @@
           {
             "name": "index",
             "in": "path",
-            "description": "索引数",
+            "description": "index number",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
-              "type": "integer",
-              "example": 12345678
+              "type": "number",
+              "default": 12345678
             }
           }
         ],
@@ -961,14 +656,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -983,13 +671,13 @@
           {
             "name": "hash",
             "in": "path",
-            "description": "哈希字符串",
+            "description": "hash string",
             "required": true,
             "style": "simple",
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+              "default": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
             }
           }
         ],
@@ -1005,14 +693,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -1045,14 +726,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -1085,14 +759,7 @@
             }
           },
           "400": {
-            "description": "API出问题了",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiError"
-                }
-              }
-            }
+            "description": "出错了"
           }
         }
       }
@@ -1100,31 +767,32 @@
   },
   "components": {
     "schemas": {
-      "ApiError": {
-        "required": ["code", "description"],
+      "Wallet": {
+        "required": ["address", "secret"],
         "type": "object",
         "properties": {
-          "code": {
+          "address": {
             "type": "string",
-            "example": "api:backend"
+            "example": "jabcde12345XYZ"
           },
-          "message": {
+          "secret": {
             "type": "string",
-            "example": "后端有问题"
+            "example": "sabcde12345XYZ"
           }
         }
       },
-      "RateLimitError": {
-        "required": ["code", "description"],
+      "AccountBalances": {
+        "required": ["freezes", "info", "trusts"],
         "type": "object",
         "properties": {
-          "code": {
-            "type": "string",
-            "example": "api:ratelimit"
+          "info": {
+            "$ref": "#/components/schemas/AccountInfo"
           },
-          "message": {
-            "type": "string",
-            "example": "已达到访问限制次数"
+          "trusts": {
+            "$ref": "#/components/schemas/AccountTrusts"
+          },
+          "freezes": {
+            "$ref": "#/components/schemas/AccountFreezes"
           }
         }
       },
@@ -1145,42 +813,6 @@
           },
           "account_data": {
             "$ref": "#/components/schemas/AccountData"
-          }
-        }
-      },
-      "AccountTums": {
-        "required": [
-          "ledger_hash",
-          "ledger_index",
-          "receive_currencies",
-          "send_currencies"
-        ],
-        "type": "object",
-        "properties": {
-          "ledger_index": {
-            "type": "number",
-            "example": 123456789
-          },
-          "ledger_hash": {
-            "type": "string",
-            "example": "abcdefg1234567890"
-          },
-          "validated": {
-            "type": "boolean"
-          },
-          "receive_currencies": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "example": "VCC"
-            }
-          },
-          "send_currencies": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "example": "CNY"
-            }
           }
         }
       },
@@ -1953,182 +1585,77 @@
         }
       }
     },
-    "responses": {
-      "ApiError": {
-        "description": "API出问题了",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ApiError"
-            }
-          }
-        }
-      },
-      "RateLimitError": {
-        "description": "访问限制错误",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/RateLimitError"
-            }
-          }
-        }
-      }
-    },
     "parameters": {
-      "account": {
-        "name": "account",
+      "address": {
+        "name": "address",
         "in": "path",
-        "description": "钱包地址",
+        "description": "wallet address",
         "required": true,
         "style": "simple",
         "explode": false,
         "schema": {
           "type": "string",
-          "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+          "default": "jabcdef0123456789"
+        }
+      },
+      "id": {
+        "name": "id",
+        "in": "path",
+        "description": "index or hash string",
+        "required": true,
+        "style": "simple",
+        "explode": false,
+        "schema": {
+          "type": "string",
+          "default": "1234567890abcdef"
         }
       },
       "hash": {
         "name": "hash",
         "in": "path",
-        "description": "哈希字符串",
+        "description": "hash string",
         "required": true,
         "style": "simple",
         "explode": false,
         "schema": {
           "type": "string",
-          "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+          "default": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
         }
       },
       "index": {
         "name": "index",
         "in": "path",
-        "description": "索引数",
+        "description": "index number",
         "required": true,
         "style": "simple",
         "explode": false,
         "schema": {
-          "type": "integer",
-          "example": 12345678
+          "type": "number",
+          "default": 12345678
         }
       },
-      "gets": {
-        "name": "gets",
+      "base": {
+        "name": "base",
         "in": "path",
-        "description": "获得的通证",
+        "description": "base currency",
         "required": true,
         "style": "simple",
         "explode": false,
         "schema": {
           "type": "string",
-          "example": "SWT"
+          "default": "SWT"
         }
       },
-      "pays": {
-        "name": "pays",
+      "counter": {
+        "name": "counter",
         "in": "path",
-        "description": "支付的通证",
+        "description": "counter currency",
         "required": true,
         "style": "simple",
         "explode": false,
         "schema": {
           "type": "string",
-          "example": "CNY+jabcdef0987654321"
-        }
-      },
-      "ledger": {
-        "name": "ledger",
-        "in": "query",
-        "description": "帐本",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "string",
-          "default": "validated"
-        }
-      },
-      "ledger_min": {
-        "name": "ledger_min",
-        "in": "query",
-        "description": "最小索引数",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "integer",
-          "example": 266955
-        }
-      },
-      "ledger_max": {
-        "name": "ledger_max",
-        "in": "query",
-        "description": "最大索引数",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "integer",
-          "example": 12345678
-        }
-      },
-      "limit": {
-        "name": "limit",
-        "in": "query",
-        "description": "数量限制",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "integer",
-          "default": 100
-        }
-      },
-      "forward": {
-        "name": "forward",
-        "in": "query",
-        "description": "向前查",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "boolean",
-          "default": false
-        }
-      },
-      "offset": {
-        "name": "offset",
-        "in": "query",
-        "description": "位移",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "integer",
-          "default": 0
-        }
-      },
-      "peer": {
-        "name": "peer",
-        "in": "query",
-        "description": "对等地址",
-        "required": false,
-        "style": "form",
-        "explode": true,
-        "schema": {
-          "type": "string",
-          "example": "jabcdef0987654321ghijkomn"
-        }
-      },
-      "marker": {
-        "name": "marker",
-        "in": "query",
-        "description": "位置标记",
-        "required": false,
-        "style": "deepObject",
-        "explode": false,
-        "schema": {
-          "$ref": "#/components/schemas/Marker"
+          "default": "CNY+jabcdef0987654321"
         }
       }
     }

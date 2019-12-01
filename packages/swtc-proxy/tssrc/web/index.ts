@@ -1,10 +1,11 @@
 import { APIError, restify } from "./rest"
 import Koa from "koa"
 import bodyParser from "koa-bodyparser"
-// const bodyParser = bodyParser_
-import { controller } from "./controller"
 import Logger from "koa2-request-log"
 import RobotsTxt from "koa-robots.txt"
+import koaSimpleQs from "koa-simple-qs"
+import { staticRouter } from "./static-files"
+import { controller } from "./controller"
 import { state } from "../store/index"
 import swagger from "./swagger"
 
@@ -18,7 +19,7 @@ const loggerWithOpts = new Logger().generate({
   skip(req, res) {
     return res.status >= 400
   }
-}) // log with some options
+})
 // web.use(logger)
 web.use(loggerWithOpts)
 
@@ -26,7 +27,6 @@ web.use(loggerWithOpts)
 web.use(swagger)
 
 // static file support:
-import { staticRouter } from "./static-files"
 web.use(staticRouter().routes())
 web.use(RobotsTxt([]))
 
@@ -42,6 +42,9 @@ web.use(async (ctx, next) => {
   }
 })
 
+// middleware use qs to parse query
+web.use(koaSimpleQs({ depth: 1, parameterLimit: 10, allowDots: true }))
+
 // parse request body:
 web.use(bodyParser())
 
@@ -51,12 +54,20 @@ web.use(restify())
 // Debug settings store.DEBUG.value
 web.use(async (ctx, next) => {
   if (state.DEBUG.value) {
-    console.log(ctx.params)
+    console.log(`debug: url = ${ctx.request.url}`)
   }
   await next()
 })
 
 // add controller middleware:
 web.use(controller())
+
+// return apiError if no endpoint found
+web.use(async (ctx: any) => {
+  const e = new APIError("api:endpoint", "api endpoint not found")
+  ctx.response.status = 400
+  ctx.response.type = "application/json"
+  ctx.response.body = { code: e.code, message: e.message }
+})
 
 export { controller, web }
