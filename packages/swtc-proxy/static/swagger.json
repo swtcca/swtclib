@@ -14,14 +14,22 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5080/v3",
+      "url": "http://swtcproxy.swtclib.ca:5080/v3",
       "description": "SWTC Proxy to Jintum Nodes"
     }
   ],
   "tags": [
     {
+      "name": "server",
+      "description": "后端井通节点"
+    },
+    {
       "name": "account",
       "description": "账户"
+    },
+    {
+      "name": "brokerage",
+      "description": "代理"
     },
     {
       "name": "ledger",
@@ -41,6 +49,92 @@
     }
   ],
   "paths": {
+    "/server/info": {
+      "get": {
+        "tags": ["server"],
+        "summary": "查询节点信息",
+        "description": "查询节点信息\n",
+        "operationId": "getServerInfo",
+        "responses": {
+          "200": {
+            "description": "节点信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Server"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API出问题了",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "tags": ["account"],
+        "summary": "查询开户账户",
+        "description": "查询开户账户\n",
+        "operationId": "requestAccounts",
+        "parameters": [
+          {
+            "name": "ledger_index",
+            "in": "query",
+            "description": "帐本索引",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "example": 12345678
+            }
+          },
+          {
+            "name": "ledger_hash",
+            "in": "query",
+            "description": "帐本哈希",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "example": "abcdefg0987654321"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "账户信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API出问题了",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/accounts/{account}/info": {
       "get": {
         "tags": ["account"],
@@ -787,6 +881,94 @@
         }
       }
     },
+    "/accounts/{account}/signerlist": {
+      "get": {
+        "tags": ["account"],
+        "summary": "查询账户多重签名列表",
+        "description": "查询账户多重签名列表\n",
+        "operationId": "getAccountSignerList",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "description": "钱包地址",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "账户多签列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignerList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API出问题了",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brokers/{account}": {
+      "get": {
+        "tags": ["brokerage"],
+        "summary": "查询代理收费",
+        "description": "查询代理佣金\n",
+        "operationId": "getBrokerage",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "description": "钱包地址",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "代理佣金",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Brokerages"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API出问题了",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/order_book/{gets}/{pays}": {
       "get": {
         "tags": ["orderbook"],
@@ -1125,6 +1307,177 @@
           "message": {
             "type": "string",
             "example": "已达到访问限制次数"
+          }
+        }
+      },
+      "Server": {
+        "required": [
+          "complete_ledgers",
+          "ledger",
+          "peers",
+          "public_key",
+          "state",
+          "version"
+        ],
+        "type": "object",
+        "properties": {
+          "complete_ledgers": {
+            "type": "string",
+            "example": "266955-14533147"
+          },
+          "public_key": {
+            "type": "string",
+            "example": "n9J1qmabAVgRfQ2DPXRzt58odeGsb5FiGCeg2iUCbZ5nRnWuMncc"
+          },
+          "peers": {
+            "type": "integer",
+            "example": 13
+          },
+          "state": {
+            "type": "string",
+            "example": "full 05:87:44"
+          },
+          "version": {
+            "type": "string",
+            "example": "skywelld-0.28.1"
+          },
+          "ledger": {
+            "type": "string",
+            "example": "AACBAD7B6CC7FAF944D1A889CA384670CEED4048E41957E94AAB0D09B447CD4F"
+          }
+        }
+      },
+      "Accounts": {
+        "required": ["info", "ledger_hash", "ledger_index"],
+        "type": "object",
+        "properties": {
+          "ledger_index": {
+            "type": "number",
+            "example": 123456789
+          },
+          "ledger_hash": {
+            "type": "string",
+            "example": "abcdefg1234567890"
+          },
+          "marker": {
+            "type": "string"
+          },
+          "info": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Accounts_info"
+            }
+          }
+        }
+      },
+      "Brokerages": {
+        "required": ["account", "brokerages", "ledger_hash", "ledger_index"],
+        "type": "object",
+        "properties": {
+          "ledger_index": {
+            "type": "number",
+            "example": 123456789
+          },
+          "account": {
+            "type": "string",
+            "example": "jabcdefg1234567890"
+          },
+          "ledger_hash": {
+            "type": "string",
+            "example": "POIUYTR1234567890"
+          },
+          "brokerages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Brokerage"
+            }
+          }
+        }
+      },
+      "Brokerage": {
+        "required": [
+          "FeeCurrency",
+          "FeeCurrencyIssuer",
+          "OfferFeeRateDen",
+          "OfferFeeRateNum",
+          "Platform",
+          "fee_account"
+        ],
+        "type": "object",
+        "properties": {
+          "FeeCurrency": {
+            "type": "string"
+          },
+          "FeeCurrencyIssuer": {
+            "type": "string",
+            "example": "jabcdefghi67890"
+          },
+          "OfferFeeRateDen": {
+            "type": "integer",
+            "example": 1000
+          },
+          "OfferFeeRateNum": {
+            "type": "integer",
+            "example": 2
+          },
+          "Platform": {
+            "type": "string",
+            "example": "jqwerrtyy7654289"
+          },
+          "fee_account": {
+            "type": "string",
+            "example": "jqwerrtyy7654289"
+          }
+        }
+      },
+      "SignerList": {
+        "required": ["account", "account_objects", "ledger_current_index"],
+        "type": "object",
+        "properties": {
+          "ledger_current_index": {
+            "type": "number",
+            "example": 123456789
+          },
+          "account": {
+            "type": "string",
+            "example": "abcdefg1234567890"
+          },
+          "account_objects": {
+            "$ref": "#/components/schemas/AccountObjects"
+          }
+        }
+      },
+      "AccountObjects": {
+        "required": ["LedgerEntryType", "SignerEntries", "SignerQuorum"],
+        "type": "object",
+        "properties": {
+          "LedgerEntryType": {
+            "type": "string",
+            "example": "SignerList"
+          },
+          "SignerQuorum": {
+            "type": "number",
+            "example": 3
+          },
+          "SignerEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SignerEntry"
+            }
+          }
+        }
+      },
+      "SignerEntry": {
+        "required": ["Account", "SignerWeight"],
+        "type": "object",
+        "properties": {
+          "Account": {
+            "type": "string",
+            "example": "jabcdefghijklmn0987654321"
+          },
+          "SignerWeight": {
+            "type": "number",
+            "example": 4
           }
         }
       },
@@ -1951,6 +2304,19 @@
             "example": 12345678
           }
         }
+      },
+      "Accounts_info": {
+        "type": "object",
+        "properties": {
+          "Amount": {
+            "type": "string",
+            "example": "35000000"
+          },
+          "account": {
+            "type": "string",
+            "example": "j1234567890poiuytr"
+          }
+        }
       }
     },
     "responses": {
@@ -2070,6 +2436,30 @@
         "schema": {
           "type": "integer",
           "example": 12345678
+        }
+      },
+      "ledger_index": {
+        "name": "ledger_index",
+        "in": "query",
+        "description": "帐本索引",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "integer",
+          "example": 12345678
+        }
+      },
+      "ledger_hash": {
+        "name": "ledger_hash",
+        "in": "query",
+        "description": "帐本哈希",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string",
+          "example": "abcdefg0987654321"
         }
       },
       "limit": {
