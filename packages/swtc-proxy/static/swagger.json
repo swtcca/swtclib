@@ -14,7 +14,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5080/v3",
+      "url": "http://swtcproxy.swtclib.ca:5080/v3",
       "description": "SWTC Proxy to Jintum Nodes"
     }
   ],
@@ -502,7 +502,7 @@
             "explode": true,
             "schema": {
               "type": "integer",
-              "default": 100
+              "enum": [300, 500]
             }
           },
           {
@@ -593,7 +593,7 @@
       "get": {
         "tags": ["account"],
         "summary": "查询账户某个事务",
-        "description": "查询账户某个支付\n",
+        "description": "查询账户某个事务\n",
         "operationId": "requestAccountTransaction",
         "parameters": [
           {
@@ -873,7 +873,7 @@
             "explode": false,
             "schema": {
               "type": "string",
-              "example": "CNY+jabcdef0987654321"
+              "example": "CNY+jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
             }
           },
           {
@@ -885,7 +885,7 @@
             "explode": true,
             "schema": {
               "type": "integer",
-              "default": 100
+              "enum": [300, 500]
             }
           }
         ],
@@ -2167,6 +2167,30 @@
           "example": 12345678
         }
       },
+      "ledgerhash": {
+        "name": "ledger_hash",
+        "in": "path",
+        "description": "哈希字符串",
+        "required": true,
+        "style": "simple",
+        "explode": false,
+        "schema": {
+          "type": "string",
+          "example": "C734E07774A0BFD30387AE83C18B63E350EAD1051871B7DF8A74D89A9822"
+        }
+      },
+      "ledgerindex": {
+        "name": "ledger_index",
+        "in": "path",
+        "description": "索引数",
+        "required": true,
+        "style": "simple",
+        "explode": false,
+        "schema": {
+          "type": "integer",
+          "example": 12345678
+        }
+      },
       "gets": {
         "name": "gets",
         "in": "path",
@@ -2188,7 +2212,7 @@
         "explode": false,
         "schema": {
           "type": "string",
-          "example": "CNY+jabcdef0987654321"
+          "example": "CNY+jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
         }
       },
       "ledger": {
@@ -2260,7 +2284,7 @@
         "explode": true,
         "schema": {
           "type": "integer",
-          "default": 100
+          "enum": [300, 500]
         }
       },
       "forward": {
