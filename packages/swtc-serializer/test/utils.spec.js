@@ -57,6 +57,10 @@ describe("test utils", function() {
       let out = utils.get_transaction_type(101)
       expect(out).to.equal("SetFee")
     })
+    it("return Brokerage if the structure is 205", function() {
+      let out = utils.get_transaction_type(205)
+      expect(out).to.equal("Brokerage")
+    })
     it("throw error if the structure is number but invalid", function() {
       expect(() => utils.get_transaction_type(102)).to.throw(
         "Invalid transaction type!"
@@ -116,6 +120,10 @@ describe("test utils", function() {
     it("return 101 if the structure is SetFee", function() {
       let out = utils.get_transaction_type("SetFee")
       expect(out).to.equal(101)
+    })
+    it("return 205 if the structure is Brokerage", function() {
+      let out = utils.get_transaction_type("Brokerage")
+      expect(out).to.equal(205)
     })
     it("throw error if the structure is string but invalid", function() {
       expect(() => utils.get_transaction_type("SetFees")).to.throw(

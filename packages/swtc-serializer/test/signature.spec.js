@@ -563,6 +563,15 @@ describe("test signature", function() {
     expect(signature).to.equal(
       "1200CD240000000120250000000139000000000000000A3A00000000000000146140000000000F4240732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A74463044022048CF9CAD4B5D2AA59E0290AB4A2AE246DA5CAF42697A9BC0B1F7ECCE346C3295022043C05C0D181138F9AE270CD7B119E95711850B6A6653CBB1F6ADF42F16CF6EBB81141270C5BE503A3A22B506457C0FEC97633B44F7DD"
     )
+    expect(serializer(signature)).to.deep.nested.include({
+      TransactionType: "Brokerage",
+      Sequence: 1,
+      AppType: 1,
+      OfferFeeRateNum: "10",
+      OfferFeeRateDen: "20",
+      Amount: "1",
+      Account: "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH"
+    })
   })
 
   it("when TransactionType is AccountSet", function() {
