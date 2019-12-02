@@ -21,6 +21,7 @@ export interface IRemoteOptions {
   issuer?: string
   token?: string
   solidity?: boolean
+  backend?: string
 }
 
 export interface IParams {
@@ -29,4 +30,14 @@ export interface IParams {
   marker?: IMarker
   currency?: string
   issuer?: string
+  ledger?: string
+  ledger_min?: number
+  ledger_max?: number
+  ledger_index?: number
+  ledger_hash?: string
+  hash?: string
+  index?: number
+  forward?: boolean
+  offset?: number
+  limit?: number
 }

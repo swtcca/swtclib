@@ -30,12 +30,16 @@ class Remote {
   private _server: string
   private _token: string
   private _issuer: string
+  private _backend: string = "proxy"
   private _axios: any
   private _solidity: boolean = false
   constructor(options: IRemoteOptions = {}) {
     this._server =
       options.server || Wallet.config.apiserver || "https://api.jingtum.com"
     this._token = options.token || Wallet.token || "SWT"
+    if (/api.jingtum.com/i.test(this._server)) {
+      this._backend = "api"
+    }
     this._solidity = options.solidity ? true : false
     if (this._solidity) {
       try {
@@ -84,11 +88,15 @@ class Remote {
     if ("issuer" in options) {
       this._issuer = options.issuer
     }
+    if ("backend" in options) {
+      this._backend = options.backend
+    }
     return {
       server: this._server,
       token: this._token,
       solidity: this._solidity,
-      issuer: this._issuer
+      issuer: this._issuer,
+      backend: this._backend
     }
   }
 
@@ -144,20 +152,43 @@ class Remote {
     return this.postRequest(url, data, {}, true)
   }
 
+  public postMultisign(data: object = {}) {
+    const url = `multisign`
+    return this.postRequest(url, data, {}, true)
+  }
+
   public getLedger(param: string | number = "") {
-    let url = `ledger`
-    if (!param) {
-      url = `${url}/index`
-    } else if (typeof param === "number") {
-      url = `${url}/index/${param}`
-    } else if (typeof param === "string") {
-      if (/^[0-9]{1,20}$/.test(param)) {
+    let url
+    if (this._backend === "api") {
+      url = `ledger`
+      if (!param) {
+        url = `${url}/index`
+      } else if (typeof param === "number") {
         url = `${url}/index/${param}`
+      } else if (typeof param === "string") {
+        if (/^[0-9]{1,20}$/.test(param)) {
+          url = `${url}/index/${param}`
+        } else {
+          url = `${url}/hash/${param}`
+        }
       } else {
-        url = `${url}/hash/${param}`
+        url = `${url}/index`
       }
     } else {
-      url = `${url}/index`
+      url = `ledgers`
+      if (!param) {
+        url = `${url}/closed`
+      } else if (typeof param === "number") {
+        url = `${url}/index/${param}`
+      } else if (typeof param === "string") {
+        if (/^[0-9]{1,20}$/.test(param)) {
+          url = `${url}/index/${param}`
+        } else {
+          url = `${url}/hash/${param}`
+        }
+      } else {
+        url = `${url}/index`
+      }
     }
     return this.getRequest(url)
   }
@@ -188,6 +219,9 @@ class Remote {
     return this.getRequest(url, { params })
   }
   public postAccountPayments(address: string, data: object = {}) {
+    if (this._backend === "proxy") {
+      return Promise.reject("no endpoint for proxy")
+    }
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -196,6 +230,9 @@ class Remote {
     return this.postRequest(url, data)
   }
   public deleteAccountPayments(address: string, data: object = {}) {
+    if (this._backend === "proxy") {
+      return Promise.reject("no endpoint for proxy")
+    }
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -222,6 +259,9 @@ class Remote {
     return this.getRequest(url, { params })
   }
   public postAccountOrders(address: string, data: object = {}) {
+    if (this._backend === "proxy") {
+      return Promise.reject("no endpoint for proxy")
+    }
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -230,6 +270,9 @@ class Remote {
     return this.postRequest(url, data)
   }
   public deleteAccountOrders(address: string, data: object = {}) {
+    if (this._backend === "proxy") {
+      return Promise.reject("no endpoint for proxy")
+    }
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
@@ -251,7 +294,12 @@ class Remote {
   ) {
     base = base.trim()
     counter = counter.trim()
-    const url = `order_book/bids/${base}/${counter}`
+    let url
+    if (this._backend === "proxy") {
+      url = `order_book/${base}/${counter}`
+    } else {
+      url = `order_book/bids/${base}/${counter}`
+    }
     return this.getRequest(url, { params })
   }
   public getOrderBooksAsks(
@@ -261,7 +309,12 @@ class Remote {
   ) {
     base = base.trim()
     counter = counter.trim()
-    const url = `order_book/asks/${base}/${counter}`
+    let url
+    if (this._backend === "proxy") {
+      url = `order_book/${counter}/${base}`
+    } else {
+      url = `order_book/asks/${base}/${counter}`
+    }
     return this.getRequest(url, { params })
   }
 
@@ -273,18 +326,18 @@ class Remote {
     const url = `/accounts/${address}/transactions`
     return this.getRequest(url, { params })
   }
-  public getAccountTransaction(address: string, id_or_hash: number | string) {
+  public getAccountTransaction(address: string, hash: string) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
       return Promise.reject("invalid address provided")
     }
     let url = `/accounts/${address}/transactions`
-    url = `${url}/${id_or_hash}`
+    url = `${url}/${hash}`
     return this.getRequest(url)
   }
-  public getTransaction(id_or_hash: number | string) {
+  public getTransaction(hash: string) {
     let url = `transactions`
-    url = `${url}/${id_or_hash}`
+    url = `${url}/${hash}`
     return this.getRequest(url)
   }
 

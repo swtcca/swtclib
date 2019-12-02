@@ -366,7 +366,9 @@ async function getLedgerHash(ctx) {
   validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
-      .requestLedger(Object.assign({ transactions: true }, ctx.params))
+      .requestLedger(
+        Object.assign({ transactions: true }, { ledger_hash: ctx.params.hash })
+      )
       .submitPromise()
     if (data.ledger_index) {
       ctx.rest(data)
@@ -387,7 +389,12 @@ async function getLedgerIndex(ctx) {
   validateQueryParams(ctx.request.body)
   try {
     const data = await state.remote.value
-      .requestLedger(Object.assign({ transactions: true }, ctx.params))
+      .requestLedger(
+        Object.assign(
+          { transactions: true },
+          { ledger_index: ctx.params.index }
+        )
+      )
       .submitPromise()
     if (data.ledger_index) {
       ctx.rest(data)
