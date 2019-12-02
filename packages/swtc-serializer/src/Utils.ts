@@ -50,6 +50,9 @@ const get_transaction_type = (structure: number | string): number | string => {
         case 101:
           output = "SetFee"
           break
+        case 205:
+          output = "Brokerage"
+          break
         default:
           throw new Error("Invalid transaction type!")
       }
@@ -94,6 +97,9 @@ const get_transaction_type = (structure: number | string): number | string => {
           break
         case "SetFee":
           output = 101
+          break
+        case "Brokerage":
+          output = 205
           break
         default:
           throw new Error("Invalid transaction type!")
