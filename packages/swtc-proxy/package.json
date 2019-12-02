@@ -1,6 +1,6 @@
 {
   "name": "swtc-proxy",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "rest api to jingtum blockchain",
   "keywords": [
     "rest",
@@ -49,7 +49,7 @@
     "koa2-request-log": "^1.0.1",
     "koa2-swagger-ui": "^2.15.4",
     "static-koa-router": "^1.0.3",
-    "swtc-lib": "^1.6.38",
+    "swtc-lib": "^1.6.39",
     "swtc-utils": "^1.1.12"
   },
   "devDependencies": {
