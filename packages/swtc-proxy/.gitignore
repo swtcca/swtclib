@@ -70,5 +70,6 @@ typings/
 **/package-lock.json
 distrib
 .vscode
+**/.swagger*
 src
 **/*local.js

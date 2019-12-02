@@ -16,6 +16,8 @@ function validateQueryParams(params) {
   const ledger = params.ledger
   const ledger_min = params.ledger_min
   const ledger_max = params.ledger_max
+  const ledger_index = params.ledger_index
+  const ledger_hash = params.ledger_hash
   const limit = params.limit
   const offset = params.offset
   const forward = params.forward
@@ -40,14 +42,24 @@ function validateQueryParams(params) {
   if (offset && isNaN(Number(offset))) {
     throw new APIError("api:params", "wrong offset number")
   }
-  if (ledger && isNaN(Number(ledger))) {
-    throw new APIError("api:params", "wrong ledger index")
+  if (
+    ledger &&
+    isNaN(Number(ledger)) &&
+    !(ledger in ["closed", "validated", "current"])
+  ) {
+    throw new APIError("api:params", "wrong ledger specified")
   }
   if (ledger_min && isNaN(Number(ledger_min))) {
     throw new APIError("api:params", "wrong ledger_min index")
   }
   if (ledger_max && isNaN(Number(ledger_max))) {
     throw new APIError("api:params", "wrong ledger_max index")
+  }
+  if (ledger_index && isNaN(Number(ledger_index))) {
+    throw new APIError("api:params", "wrong ledger_index specified")
+  }
+  if (ledger_hash && !utils.isValidHash(ledger_hash)) {
+    throw new APIError("api:params", "wrong ledger_hash specified")
   }
 }
 function validateCtxParams(params) {

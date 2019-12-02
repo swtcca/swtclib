@@ -12,7 +12,7 @@
 2. `cd swtclib/packages/swtc-proxy`
 3. `npm install`
 4. `npm run start`
-5. 本地文档： http://ip.address:5080/swagger
+5. 本地文档： http://localhost:5080/swagger
 
 ## 定制
 
