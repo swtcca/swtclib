@@ -3,8 +3,8 @@
 | 程序包名称         | CDN                                                                                                                                  | 功能描述                            |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
 | swtc-x-lib         | name: swtc_x_lib<br>[unpkg](https://unpkg.com/swtc-x-lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-x-lib)                   | 等同支持井通联盟链, 基于 websocket  |
-| swtc-lib]          | name: swtc_lib<br>[unpkg](https://unpkg.com/swtc-lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-lib)                         | SWTC 公链库, 基于 websocket         |
-| swtc-api]          | name: swtc_api<br>[unpkg](https://unpkg.com/swtc-api)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-api)                         | SWTC 公链库, 基于 restapi           |
+| swtc-lib           | name: swtc_lib<br>[unpkg](https://unpkg.com/swtc-lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-lib)                         | SWTC 公链库, 基于 websocket         |
+| swtc-api           | name: swtc_api<br>[unpkg](https://unpkg.com/swtc-api)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-api)                         | SWTC 公链库, 基于 restapi           |
 | swtc-transaction   | name: swtc_transaction<br>[unpkg](https://unpkg.com/swtc-transaction)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-transaction) | 井通公链交易库, 支付/挂单/关系/合约 |
 | swtc-serializer    |                                                                                                                                      | 井通公链交易序列化库, 基于钱包      |
 | swtc-utils         |                                                                                                                                      | 井通公链 utility 库，基于钱包       |
