@@ -30,6 +30,20 @@ web.use(swagger)
 web.use(staticRouter().routes())
 web.use(RobotsTxt([]))
 
+// middleware for ip based rate limit
+web.use(async (ctx, next) => {
+  if (state.funcLogIp(ctx.request.ip) < state.RATE.value) {
+    await next()
+  } else {
+    const e = new APIError(
+      "api:ratelimit",
+      `rate limit ${state.RATE.value} per 5 minutes, try later`
+    )
+    ctx.response.status = 400
+    ctx.response.type = "application/json"
+    ctx.response.body = { code: e.code, message: e.message }
+  }
+})
 // middleware check backend store.remote.value.isConnected()
 web.use(async (ctx, next) => {
   if (state.remote.value.isConnected()) {

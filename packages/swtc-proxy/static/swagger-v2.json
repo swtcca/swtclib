@@ -191,6 +191,62 @@
         }
       }
     },
+    "/accounts/{account}/balances": {
+      "get": {
+        "tags": ["account"],
+        "summary": "查询账户余额",
+        "description": "查询账户余额\n",
+        "operationId": "requestAccountBalances",
+        "parameters": [
+          {
+            "name": "account",
+            "in": "path",
+            "description": "钱包地址",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "example": "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
+            }
+          },
+          {
+            "name": "ledger",
+            "in": "query",
+            "description": "帐本",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": ["validated", "closed", "current", "14530000"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "账户余额",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountBalances"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "API出问题了",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/accounts/{account}/tums": {
       "get": {
         "tags": ["account"],
@@ -1246,6 +1302,22 @@
           }
         }
       },
+      "AccountBalances": {
+        "required": ["balances", "sequence"],
+        "type": "object",
+        "properties": {
+          "sequence": {
+            "type": "integer",
+            "example": 100
+          },
+          "balances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountBalances_balances"
+            }
+          }
+        }
+      },
       "Brokerages": {
         "required": ["account", "brokerages", "ledger_hash", "ledger_index"],
         "type": "object",
@@ -2092,6 +2164,24 @@
           "account": {
             "type": "string",
             "example": "j1234567890poiuytr"
+          }
+        }
+      },
+      "AccountBalances_balances": {
+        "required": ["currency", "issuer", "value"],
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "issuer": {
+            "type": "string"
+          },
+          "freezed": {
+            "type": "number"
           }
         }
       }

@@ -146,16 +146,20 @@ async function getAccountBalances(ctx) {
     delete condition.issuer
   }
   const p_info = state.remote.value
-    .requestAccountInfo(ctx.params)
+    .requestAccountInfo(Object.assign({}, ctx.params, ctx.request.body))
     .submitPromise()
   const p_trust = state.remote.value
-    .requestAccountRelations(Object.assign({}, ctx.params, { type: "trust" }))
+    .requestAccountRelations(
+      Object.assign({}, ctx.params, { type: "trust" }, ctx.request.body)
+    )
     .submitPromise()
   const p_freeze = state.remote.value
-    .requestAccountRelations(Object.assign({}, ctx.params, { type: "freeze" }))
+    .requestAccountRelations(
+      Object.assign({}, ctx.params, { type: "freeze" }, ctx.request.body)
+    )
     .submitPromise()
   const p_offer = state.remote.value
-    .requestAccountOffers(ctx.params)
+    .requestAccountOffers(Object.assign({}, ctx.params, ctx.request.body))
     .submitPromise()
   const data = await Promise.all([p_info, p_trust, p_freeze, p_offer])
   ctx.rest(
@@ -357,8 +361,8 @@ async function getTransaction(ctx) {
 }
 
 async function getLedgerClosed(ctx) {
-  const { ledger_hash, ledger_index } = state.ledger.value
-  ctx.rest({ ledger_hash, ledger_index })
+  const { ledger_hash, ledger_index, ledger_time } = state.ledger.value
+  ctx.rest({ ledger_hash, ledger_index, ledger_time })
 }
 
 async function getLedgerHash(ctx) {
