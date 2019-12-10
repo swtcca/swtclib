@@ -1,6 +1,6 @@
 {
   "name": "swtc-proxy",
-  "version": "0.3.4",
+  "version": "0.4.2",
   "description": "rest api to jingtum blockchain",
   "keywords": [
     "rest",
@@ -28,7 +28,7 @@
     "tsc": "tsc",
     "tslint": "tslint tssrc/**/*.ts",
     "build": "tsc",
-    "start": "tsc; node -r esm start.js",
+    "start": "tsc; node start.js",
     "test": "tsc; mocha \"test/test*.js\"",
     "test:api": "tsc; mocha \"test/api*.js\"",
     "test:extended": "tsc; mocha \"test/*.js\"",

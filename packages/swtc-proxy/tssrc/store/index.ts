@@ -16,12 +16,32 @@ function setup() {
   const ledger = ref({})
   const logs = ref([])
   const status = ref({})
+  const rateMap = ref(new Map())
+  const RATE = ref(1000)
 
   remote.value = new Remote()
   async function funcConfig(options: any = CONFIG) {
     console.log("... applying configuration")
     config.value = Object.assign({}, config.value, options)
+    DEBUG.value = config.value.debug
+    if (config.value.rate) {
+      RATE.value = config.value.rate
+    }
     console.log(config.value)
+  }
+  function funcLogIp(ipaddress: string) {
+    if (DEBUG) {
+      console.log(ipaddress)
+    }
+    if (!(ipaddress in rateMap.value)) {
+      rateMap.value[ipaddress] = [new Date().getTime()]
+    } else {
+      rateMap.value[ipaddress] = rateMap.value[ipaddress].filter(
+        e => e > new Date().getTime() - 5 * 60 * 1000
+      )
+      rateMap.value[ipaddress].push(new Date().getTime())
+    }
+    return state.rateMap.value[ipaddress].length
   }
   watch(
     () => ledger.value,
@@ -43,7 +63,7 @@ function setup() {
     (value, old_value) => {
       console.log(chalk.green(value))
       if (!value) {
-        console.log("starting heal of connection, to implement")
+        console.log("starting heal of connection, as scheduled")
       }
     },
     { lazy: true }
@@ -61,8 +81,10 @@ function setup() {
         })
         console.log("... remote connected")
       } catch (e) {
-        console.log("... remote connection failure")
-        console.error(e)
+        console.log(
+          chalk.red(`... remote connection failed to ${server.value}`)
+        )
+        // console.error(e)
       }
     },
     { lazy: true }
@@ -72,15 +94,35 @@ function setup() {
   interval_detect.value = setInterval(() => {
     try {
       wsConnected.value = remote.value._server._connected
+      if (
+        ledger.value &&
+        new Date().getTime() / 1000 -
+          946684800 -
+          Number(ledger.value.ledger_time) >
+          30
+      ) {
+        // did not get ledgers for up to 30 seconds
+        console.log(chalk.red(`did not get new ledgers for 30 seconds`))
+        console.log(chalk.red(`check the upstream: ${server.value}`))
+        wsConnected.value = false
+      }
     } catch (e) {}
-  }, 1000)
-  interval_heal.value = setInterval(() => {
+  }, 10000)
+  interval_heal.value = setInterval(async () => {
     if (!wsConnected.value) {
       console.log(
-        chalk.red(`cron job to sync backend connection, to implement`)
+        chalk.red(`cron job to monitor backend connection, once a minute`)
       )
+      try {
+        await remote.value.connectPromise()
+        wsConnected.value = true
+      } catch (error) {
+        console.log(
+          chalk.red(`unable to connect ${server.value}, try another one?`)
+        )
+      }
     }
-  }, 10000)
+  }, 60000)
 
   return {
     DEBUG,
@@ -92,7 +134,10 @@ function setup() {
     logs,
     status,
     wsConnected,
-    funcConfig
+    funcConfig,
+    funcLogIp,
+    rateMap,
+    RATE
   }
 }
 

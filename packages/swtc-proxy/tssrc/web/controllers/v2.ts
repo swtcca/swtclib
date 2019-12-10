@@ -1,4 +1,4 @@
-import * as V2 from "../../functions/v2"
+import * as V2 from "../../functions/v3"
 
 module.exports = {
   "GET /v2/accounts": V2.getAccounts,
