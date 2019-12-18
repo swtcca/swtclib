@@ -16,8 +16,9 @@ function setup() {
   const ledger = ref({})
   const logs = ref([])
   const status = ref({})
-  const rateMap = ref(new Map())
+  const rateMap = new Map() // regular map for performance
   const RATE = ref(1000)
+  const interval_rate = ref(0)
 
   remote.value = new Remote()
   async function funcConfig(options: any = CONFIG) {
@@ -30,18 +31,18 @@ function setup() {
     console.log(config.value)
   }
   function funcLogIp(ipaddress: string) {
-    if (DEBUG) {
-      console.log(ipaddress)
-    }
-    if (!(ipaddress in rateMap.value)) {
-      rateMap.value[ipaddress] = [new Date().getTime()]
+    if (!rateMap.has(ipaddress)) {
+      rateMap.set(ipaddress, [new Date().getTime()])
     } else {
-      rateMap.value[ipaddress] = rateMap.value[ipaddress].filter(
-        e => e > new Date().getTime() - 5 * 60 * 1000
+      rateMap.set(
+        ipaddress,
+        rateMap
+          .get(ipaddress)
+          .filter(e => e > new Date().getTime() - 5 * 60 * 1000)
       )
-      rateMap.value[ipaddress].push(new Date().getTime())
+      rateMap.get(ipaddress).push(new Date().getTime())
     }
-    return state.rateMap.value[ipaddress].length
+    return rateMap.get(ipaddress).length
   }
   watch(
     () => ledger.value,
@@ -91,6 +92,24 @@ function setup() {
   )
 
   // funcConfig(CONFIG)
+  interval_rate.value = setInterval(() => {
+    try {
+      for (const [ipaddress, counts] of rateMap) {
+        const valids = counts.filter(
+          e => e > new Date().getTime() - 5 * 60 * 1000
+        )
+        if (valids.length) {
+          rateMap.set(ipaddress, valids)
+        } else {
+          rateMap.delete(ipaddress)
+          if (DEBUG) console.log(chalk.red(`rate cleaned ${ipaddress}`))
+        }
+      }
+      if (DEBUG) {
+        console.log(chalk.red(`rate routine, ${rateMap.size} ips`))
+      }
+    } catch (e) {}
+  }, 53000)
   interval_detect.value = setInterval(() => {
     try {
       wsConnected.value = remote.value._server._connected

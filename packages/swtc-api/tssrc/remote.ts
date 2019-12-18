@@ -18,7 +18,11 @@ import {
   IContractCallTxOptions,
   ISignTxOptions,
   IAccountSetTxOptions,
-  IRelationTxOptions
+  IRelationTxOptions,
+  ISignerListTxOptions,
+  ISignFirstTxOptions,
+  ISignOtherTxOptions
+  // IMultiSigningOptions
 } from "./types"
 
 class Remote {
@@ -191,6 +195,29 @@ class Remote {
       }
     }
     return this.getRequest(url)
+  }
+
+  public getServerInfo(params: IParams = {}) {
+    const url = `server/info`
+    return this.getRequest(url, { params })
+  }
+
+  public getAccountSignerList(address: string, params: IParams = {}) {
+    address = address.trim()
+    if (!Wallet.isValidAddress(address)) {
+      return Promise.reject("invalid address provided")
+    }
+    const url = `accounts/${address}/signerlist`
+    return this.getRequest(url, { params })
+  }
+
+  public getAccountBrokerage(address: string, params: IParams = {}) {
+    address = address.trim()
+    if (!Wallet.isValidAddress(address)) {
+      return Promise.reject("invalid address provided")
+    }
+    const url = `brokers/${address}`
+    return this.getRequest(url, { params })
   }
 
   public getAccountBalances(address: string, params: IParams = {}) {
@@ -409,8 +436,29 @@ class Remote {
     return Transaction.invokeContractTx(options, this)
   }
   public buildBrokerageTx(options) {
-    return Transaction.callContractTx(options, this)
+    return Transaction.buildBrokerageTx(options, this)
   }
+  public buildSignerListTx(options: ISignerListTxOptions) {
+    return Transaction.buildSignerListTx(options, this)
+  }
+  public buildSignFirstTx(options: ISignFirstTxOptions) {
+    // 首签账号添加SigningPubKey字段
+    // no this as remote ?
+    return Transaction.buildSignFirstTx(options)
+  }
+  public buildSignOtherTx(options: ISignOtherTxOptions) {
+    // 其他账号签名只需把返回结果提交回去即可
+    return Transaction.buildSignOtherTx(options, this)
+  }
+  public buildMultisignedTx(tx_json) {
+    // 提交多重签名
+    return Transaction.buildMultisignedTx(tx_json, this)
+  }
+  public buildTx(tx_json) {
+    // 通过tx_json创建Transaction对象
+    return Transaction.buildTx(tx_json, this)
+  }
+
   // makeCurrency and makeAmount
   public makeCurrency(currency = this._token, issuer = this._issuer) {
     return Wallet.makeCurrency(currency, issuer)
@@ -489,13 +537,18 @@ class Remote {
     sequence = 0
   ): Promise<any> {
     try {
-      tx = await this.txSignPromise(tx, secret, memo, sequence)
-      for (const key in tx.tx_json) {
-        if (tx.tx_json[key] instanceof Error) {
-          return Promise.reject(tx.tx_json[key].message)
+      if (tx.tx_json.hasOwnProperty("Signers")) {
+        // multisigned, post directly
+        return this.postMultisign(tx.tx_json)
+      } else {
+        tx = await this.txSignPromise(tx, secret, memo, sequence)
+        for (const key in tx.tx_json) {
+          if (tx.tx_json[key] instanceof Error) {
+            return Promise.reject(tx.tx_json[key].message)
+          }
         }
+        return this.postBlob({ blob: tx.tx_json.blob })
       }
-      return this.postBlob({ blob: tx.tx_json.blob })
     } catch (error) {
       return Promise.reject(error)
     }
