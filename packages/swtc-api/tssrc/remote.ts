@@ -221,7 +221,6 @@ class Remote {
         return Promise.resolve({ sequence: response.account_data.Sequence })
       }
     } catch (error) {
-      console.log(error)
       return Promise.reject(error)
     }
   }

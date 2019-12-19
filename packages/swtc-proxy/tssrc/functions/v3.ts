@@ -36,11 +36,19 @@ function validateQueryParams(params) {
   if (peer && !utils.isValidAddress(peer)) {
     throw new APIError("api:params", "wrong peer address")
   }
-  if (limit && isNaN(Number(limit))) {
-    throw new APIError("api:params", "wrong limit quantity")
+  if (limit) {
+    if (isNaN(Number(limit))) {
+      throw new APIError("api:params", "wrong limit quantity")
+    } else {
+      params.limit = Number(limit)
+    }
   }
-  if (offset && isNaN(Number(offset))) {
-    throw new APIError("api:params", "wrong offset number")
+  if (offset) {
+    if (isNaN(Number(offset))) {
+      throw new APIError("api:params", "wrong offset number")
+    } else {
+      params.offset = Number(offset)
+    }
   }
   if (
     ledger &&
@@ -49,14 +57,26 @@ function validateQueryParams(params) {
   ) {
     throw new APIError("api:params", "wrong ledger specified")
   }
-  if (ledger_min && isNaN(Number(ledger_min))) {
-    throw new APIError("api:params", "wrong ledger_min index")
+  if (ledger_min) {
+    if (isNaN(Number(ledger_min))) {
+      throw new APIError("api:params", "wrong ledger_min index")
+    } else {
+      params.ledger_min = Number(ledger_min)
+    }
   }
-  if (ledger_max && isNaN(Number(ledger_max))) {
-    throw new APIError("api:params", "wrong ledger_max index")
+  if (ledger_max) {
+    if (isNaN(Number(ledger_max))) {
+      throw new APIError("api:params", "wrong ledger_max index")
+    } else {
+      params.ledger_max = Number(ledger_max)
+    }
   }
-  if (ledger_index && isNaN(Number(ledger_index))) {
-    throw new APIError("api:params", "wrong ledger_index specified")
+  if (ledger_index) {
+    if (isNaN(Number(ledger_index))) {
+      throw new APIError("api:params", "wrong ledger_index index")
+    } else {
+      params.ledger_index = Number(ledger_index)
+    }
   }
   if (ledger_hash && !utils.isValidHash(ledger_hash)) {
     throw new APIError("api:params", "wrong ledger_hash specified")
@@ -531,5 +551,6 @@ export {
   getBrokerage,
   postBlob,
   postJsonMultisign,
-  processBalance
+  processBalance,
+  state
 }
