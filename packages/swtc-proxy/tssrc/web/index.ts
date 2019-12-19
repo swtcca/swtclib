@@ -74,7 +74,7 @@ web.use(async (ctx, next) => {
 })
 
 // add controller middleware:
-web.use(controller())
+web.use(controller("controllers", state.DEBUG.value))
 
 // return apiError if no endpoint found
 web.use(async (ctx: any) => {

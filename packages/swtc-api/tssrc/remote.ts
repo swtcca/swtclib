@@ -202,6 +202,37 @@ class Remote {
     return this.getRequest(url, { params })
   }
 
+  public async getAccountSequence(address: string) {
+    address = address.trim()
+    if (!Wallet.isValidAddress(address)) {
+      return Promise.reject("invalid address provided")
+    }
+    let url
+    try {
+      if (this._backend === "api") {
+        url = `accounts/${address}/balances`
+        const response: any = await this.getRequest(url, {
+          params: { currency: "SWT" }
+        })
+        return Promise.resolve({ sequence: response.sequence })
+      } else {
+        url = `accounts/${address}/info`
+        const response: any = await this.getRequest(url)
+        return Promise.resolve({ sequence: response.account_data.Sequence })
+      }
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+  public getAccountInfo(address: string) {
+    address = address.trim()
+    if (!Wallet.isValidAddress(address)) {
+      return Promise.reject("invalid address provided")
+    }
+    const url = `accounts/${address}/info`
+    return this.getRequest(url)
+  }
+
   public getAccountSignerList(address: string, params: IParams = {}) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {

@@ -5,7 +5,7 @@ import chalk from "chalk"
 
 const state = setup()
 function setup() {
-  const DEBUG = ref(true)
+  const DEBUG = ref(false)
   const LIMIT = ref(20)
   const config = ref({})
   const server = computed(() => config.value.server || "")
@@ -21,6 +21,11 @@ function setup() {
   const interval_rate = ref(0)
 
   remote.value = new Remote()
+  function funcCleanup() {
+    clearInterval(interval_detect.value)
+    clearInterval(interval_heal.value)
+    clearInterval(interval_rate.value)
+  }
   async function funcConfig(options: any = CONFIG) {
     console.log("... applying configuration")
     config.value = Object.assign({}, config.value, options)
@@ -48,9 +53,10 @@ function setup() {
     () => ledger.value,
     (value, old_value) => {
       const { ledger_index, ledger_time } = value
-      console.log(
-        chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`)
-      )
+      DEBUG.value &&
+        console.log(
+          chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`)
+        )
     },
     { lazy: true }
   )
@@ -102,10 +108,10 @@ function setup() {
           rateMap.set(ipaddress, valids)
         } else {
           rateMap.delete(ipaddress)
-          if (DEBUG) console.log(chalk.red(`rate cleaned ${ipaddress}`))
+          if (DEBUG.value) console.log(chalk.red(`rate cleaned ${ipaddress}`))
         }
       }
-      if (DEBUG) {
+      if (DEBUG.value) {
         console.log(chalk.red(`rate routine, ${rateMap.size} ips`))
       }
     } catch (e) {}
@@ -155,6 +161,7 @@ function setup() {
     wsConnected,
     funcConfig,
     funcLogIp,
+    funcCleanup,
     rateMap,
     RATE
   }

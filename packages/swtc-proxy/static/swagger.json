@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "井通API服务",
-    "description": "井通API服务",
+    "title": "安全井通API服务",
+    "description": "安全井通API服务",
     "contact": {
       "email": "lospringliu@gmail.com"
     },
@@ -15,7 +15,23 @@
   "servers": [
     {
       "url": "http://swtcproxy.swtclib.ca:5080/v3",
-      "description": "SWTC Proxy to Jintum Nodes"
+      "description": "Proxy to SWTCCA"
+    },
+    {
+      "url": "http://swtcproxy.swtclib.ca:5081/v3",
+      "description": "Proxy to SWTCCA testchain"
+    },
+    {
+      "url": "http://swtcproxy.swtclib.ca:5082/v3",
+      "description": "Proxy to SWTCCA multisign"
+    },
+    {
+      "url": "http://swtc-api.swtc.top:5080/v3",
+      "description": "Proxy to SWTC基金会"
+    },
+    {
+      "url": "http://localhost:5080/v3",
+      "description": "Test on Localhost"
     }
   ],
   "tags": [
