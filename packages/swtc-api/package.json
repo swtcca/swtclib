@@ -1,6 +1,6 @@
 {
   "name": "swtc-api",
-  "version": "1.1.25",
+  "version": "1.1.26",
   "description": "swtc lib api",
   "main": "src/index.js",
   "unpkg": "dist/swtc-api.js",

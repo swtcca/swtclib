@@ -1538,9 +1538,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
             .submitPromise()
           this.tx_json.Sequence = data.account_data.Sequence
           return Promise.resolve(this)
-        } else if ("getAccountInfo" in this._remote) {
-          data = await this._remote.getAccountInfo(this.tx_json.Account)
-          this.tx_json.Sequence = data.account_data.Sequence
+        } else if ("getAccountSequence" in this._remote) {
+          data = await this._remote.getAccountSequence(this.tx_json.Account)
+          this.tx_json.Sequence = data.sequence
           return Promise.resolve(this)
         } else if ("getAccountBalances" in this._remote) {
           data = await this._remote.getAccountBalances(this.tx_json.Account)
