@@ -1,11 +1,12 @@
-const functions = require("../src/functions/v3")
+import * as functions from "../src/functions/v3"
+const sleep = time => new Promise(res => setTimeout(() => res(), time || 1))
 
 afterAll(() => {
   functions.state.funcCleanup()
   return Promise.resolve(true)
 })
 
-funcs = [
+const funcs = [
   "getServerInfo",
   "getAccounts",
   "getAccountInfo",
@@ -28,7 +29,7 @@ funcs = [
   "postBlob",
   "postJsonMultisign"
 ]
-functions_keys = Object.keys(functions)
+const functions_keys = Object.keys(functions)
 
 describe("Functions Test", function() {
   funcs.forEach(func => {
