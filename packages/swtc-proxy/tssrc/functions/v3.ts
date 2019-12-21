@@ -444,7 +444,6 @@ async function postBlob(ctx) {
   }
 }
 async function postJsonMultisign(ctx) {
-  console.log(`body: ${ctx.request.body}`)
   const data = ctx.request.body
   try {
     const tx = state.remote.value.buildMultisignedTx(data)

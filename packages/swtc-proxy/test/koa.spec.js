@@ -10,11 +10,6 @@ const blob =
 
 let transaction
 
-afterAll(() => {
-  state.funcCleanup()
-  return Promise.resolve(true)
-})
-
 describe("Web Test", function() {
   let server = web.listen(50080)
   test("router() has router", function() {
@@ -232,5 +227,12 @@ describe("Web Test", function() {
     expect(result_json).toHaveProperty("engine_result")
     expect(result_json).toHaveProperty("tx_blob")
     expect(result_json).toHaveProperty("tx_json")
+  })
+  test(`clear intervals`, async function() {
+    state.funcCleanup()
+    state.remote.value.disconnect()
+    server.close()
+    await sleep(4000)
+    expect("cleared").toBe("cleared")
   })
 })

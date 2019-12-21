@@ -37,4 +37,9 @@ describe("Functions Test", function() {
       expect(functions_keys).toContain(func)
     })
   })
+  test(`clear intervals`, async function() {
+    functions.state.funcCleanup()
+    await sleep(2000)
+    expect("cleared").toBe("cleared")
+  })
 })
