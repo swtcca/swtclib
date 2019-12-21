@@ -5,7 +5,6 @@ import { Request } from "./request"
 import { Server } from "./server"
 import { Transaction } from "swtc-transaction"
 import LRU from "lru-cache"
-import isNumber from "lodash/isNumber"
 import sha1 from "sha1"
 import {
   IRemoteOptions,
@@ -674,8 +673,9 @@ class Remote extends EventEmitter {
       request.message.taker_pays = new Error("invalid taker pays amount")
       return request
     }
-    if (isNumber(options.limit)) {
-      options.limit = parseInt(String(options.limit), 300)
+    options.limit = Number(options.limit)
+    if (!options.limit) {
+      options.limit = 300
     }
 
     request.message.taker_gets = taker_gets
