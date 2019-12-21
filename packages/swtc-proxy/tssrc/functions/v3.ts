@@ -435,11 +435,9 @@ async function getLedgerIndex(ctx) {
 }
 
 async function postBlob(ctx) {
-  console.log(ctx.request.body)
   const data = ctx.request.body
   try {
     const tx = state.remote.value.buildSignTx(data)
-    console.log(tx.tx_json)
     ctx.rest(await tx.submitPromise())
   } catch (e) {
     throw new APIError("api:postBlob", e.toString())
@@ -448,11 +446,9 @@ async function postBlob(ctx) {
 async function postJsonMultisign(ctx) {
   console.log(`body: ${ctx.request.body}`)
   const data = ctx.request.body
-  console.log(data)
   try {
     const tx = state.remote.value.buildMultisignedTx(data)
     tx.multiSigned()
-    console.log(tx.tx_json)
     ctx.rest(await tx.submitPromise())
   } catch (e) {
     throw new APIError("api:postMultisign", e.toString())
