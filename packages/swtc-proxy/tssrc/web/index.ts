@@ -8,7 +8,9 @@ import { staticRouter } from "./static-files"
 import { controller } from "./controller"
 import { state } from "../store/index"
 import swagger from "./swagger"
+import { name, version, description, doc } from "../pkg"
 
+const regex_pkg = new RegExp("^\\/(v[23])*$")
 const web = new Koa()
 
 // const logger = new Logger().generate() // default setting
@@ -46,7 +48,11 @@ web.use(async (ctx, next) => {
 })
 // middleware check backend store.remote.value.isConnected()
 web.use(async (ctx, next) => {
-  if (state.remote.value.isConnected()) {
+  if (regex_pkg.test(ctx.request.path)) {
+    ctx.response.status = 200
+    ctx.response.type = "application/json"
+    ctx.response.body = { name, version, description, doc }
+  } else if (state.remote.value.isConnected()) {
     await next()
   } else {
     const e = new APIError("api:backend", "currenly diconnected, wait and try")

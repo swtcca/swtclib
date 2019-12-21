@@ -72,4 +72,9 @@ describe("Store Manipulates", function() {
     store.state.ledger.value = LEDGER
     expect(store.state.ledger.value).toEqual(LEDGER)
   })
+  test(`clear intervals`, async function() {
+    store.state.funcCleanup()
+    await sleep(2000)
+    expect("cleared").toBe("cleared")
+  })
 })
