@@ -1019,6 +1019,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     // end of static transaction builds
 
     public tx_json
+    public flag_tx_json: boolean
     public readonly _token: string
     public _secret: string | undefined
     public abi: any[] | undefined
@@ -1033,6 +1034,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.tx_json = { Flags: 0, Fee: utils.getFee() }
       this._filter = filter
       this.command = "submit"
+      this.flag_tx_json = false
     }
 
     /**
@@ -1510,12 +1512,19 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     // private and protected methods
     public async _signPromise(): Promise<any> {
-      tx_json_filter(this.tx_json)
+      tx_tx_json_filter(this)
       return new Promise((resolve, reject) => {
         try {
           const wt = new baselib(this._secret)
           this.tx_json.SigningPubKey = wt.getPublicKey()
-          const hash = jser.from_json(this.tx_json).hash(PREFIX)
+          const ed25519 = this._secret.slice(1, 3) === "Ed" ? true : false
+          const blob = jser.from_json(this.tx_json)
+          let hash
+          if (ed25519) {
+            hash = `53545800${blob.to_hex()}`
+          } else {
+            hash = blob.hash(PREFIX)
+          }
           this.tx_json.TxnSignature = wt.signTx(hash)
           this.tx_json.blob = jser.from_json(this.tx_json).to_hex()
           resolve(this)
@@ -1566,6 +1575,41 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
   }
 
+  function tx_tx_json_filter(tx) {
+    if (!tx.flag_tx_json) {
+      // run only once
+      // 签名时，序列化之前的字段处理
+      tx.tx_json.Fee = tx.tx_json.Fee / 1000000
+
+      // payment
+      if (tx.tx_json.Amount && !isNaN(tx.tx_json.Amount)) {
+        // 基础货币
+        tx.tx_json.Amount = tx.tx_json.Amount / 1000000
+      }
+      if (tx.tx_json.Memos) {
+        const memos = tx.tx_json.Memos
+        for (const memo of memos) {
+          memo.Memo.MemoData = utf8.decode(
+            utils.hexToString(memo.Memo.MemoData)
+          )
+        }
+      }
+      if (tx.tx_json.SendMax && !isNaN(tx.tx_json.SendMax)) {
+        tx.tx_json.SendMax = Number(tx.tx_json.SendMax) / 1000000
+      }
+
+      // order
+      if (tx.tx_json.TakerPays && !isNaN(tx.tx_json.TakerPays)) {
+        // 基础货币
+        tx.tx_json.TakerPays = Number(tx.tx_json.TakerPays) / 1000000
+      }
+      if (tx.tx_json.TakerGets && !isNaN(tx.tx_json.TakerGets)) {
+        // 基础货币
+        tx.tx_json.TakerGets = Number(tx.tx_json.TakerGets) / 1000000
+      }
+      tx.flag_tx_json = true
+    }
+  }
   function tx_json_filter(tx_json) {
     // 签名时，序列化之前的字段处理
     tx_json.Fee = tx_json.Fee / 1000000
@@ -1598,10 +1642,17 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
   function signing(tx, callback) {
     try {
-      tx_json_filter(tx.tx_json)
+      tx_tx_json_filter(tx)
       const wt = new baselib(tx._secret)
       tx.tx_json.SigningPubKey = wt.getPublicKey()
-      const hash = jser.from_json(tx.tx_json).hash(PREFIX)
+      const ed25519 = tx._secret.slice(1, 3) === "Ed" ? true : false
+      const blob = jser.from_json(tx.tx_json)
+      let hash
+      if (ed25519) {
+        hash = `53545800${blob.to_hex()}`
+      } else {
+        hash = blob.hash(PREFIX)
+      }
       tx.tx_json.TxnSignature = wt.signTx(hash)
       tx.tx_json.blob = jser.from_json(tx.tx_json).to_hex()
       tx._local_sign = true

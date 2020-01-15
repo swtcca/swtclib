@@ -111,11 +111,7 @@ const ed25519 = {
   signTx: function(message, privateKey) {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
-    assert(Array.isArray(message), "message must be array of octets")
-    //message = bytesToHex(message)
-    return bytesToHex(
-      Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toBytes()
-    )
+    return Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toHex()
   },
   verifyTx: function(message, signature, publicKey) {
     //message = bytesToHex(message)
