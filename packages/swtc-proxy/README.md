@@ -25,6 +25,10 @@
 
 ## 使用
 
+### kubernetes (通过环境变量设置上游/调试/基于 IP 的访问限制)
+
+0. `kubectl create -f https://raw.githubusercontent.com/swtcca/swtcproxy/master/kubernetes.yaml`
+
 ### docker (通过环境变量设置上游/调试/基于 IP 的访问限制)
 
 1. `docker run --rm -e UPSTREAM=wss://s.jingtum.com:5020 -e DEBUG=true -e RATE=100 -d -p 5080:5080 lospringliu/swtcproxy`
