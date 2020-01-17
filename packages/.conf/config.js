@@ -1,6 +1,6 @@
 module.exports = {
   WSS_NODE: "wss://s.jingtum.com:5020",
-  JT_NODE: "ws://testnode.swtclib.ca:5030",
+  JT_NODE: "ws://testnode.swtclib.ca:5020",
   TEST_NODE: "ws://testnode.swtclib.ca:5030",
   testAddress: "jfdqBEDsbk3eMSXX2t7CGeu2RPkEjHs6ie",
   testSecret: "shVCQFSxkF7DLXkrHY8X2PBKCKxS9",
