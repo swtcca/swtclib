@@ -1250,15 +1250,23 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
 
       const Account = options.account || options.address
+      const signer: any = { Account }
+      const wt = new baselib(options.secret)
       this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
       tx_json_filter(tx_json)
       delete tx_json.Signers
-      let fromJson = jser.from_json(tx_json)
-      const signer: any = { Account }
-      fromJson = jser.adr_json(fromJson, Account)
-      const hash = fromJson.hash(MUTIPREFIX)
-      const wt = new baselib(options.secret)
+      let blob = jser.from_json(tx_json)
+      blob = jser.adr_json(blob, Account)
+
+      const ed25519 = options.secret.slice(1, 3) === "Ed" ? true : false
+      let hash
+      if (ed25519) {
+        hash = `534D5400${blob.to_hex()}`
+      } else {
+        hash = blob.hash(MUTIPREFIX)
+      }
+
       signer.SigningPubKey = wt.getPublicKey()
       signer.TxnSignature = wt.signTx(hash)
 
@@ -1671,15 +1679,18 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     if (signers && signers.length > 0) {
       for (const signer of signers) {
         const s = signer.Signer
-        let fromJson = jser.from_json(tx_json_new)
-        fromJson = jser.adr_json(fromJson, s.Account)
+        let message
+        let blob = jser.from_json(tx_json_new)
+        blob = jser.adr_json(blob, s.Account)
+        if (s.SigningPubKey.slice(0, 2) === "ED") {
+          // ed25519
+          message = `534D5400${blob.to_hex()}`
+        } else {
+          message = blob.hash(MUTIPREFIX)
+        }
         if (
           // todo: check format of pubkey is needed
-          !baselib.checkTx(
-            fromJson.hash(MUTIPREFIX),
-            s.TxnSignature,
-            s.SigningPubKey
-          )
+          !baselib.checkTx(message, s.TxnSignature, s.SigningPubKey)
         ) {
           return false
         }

@@ -1,7 +1,7 @@
 import { web, router, state } from "../src"
 const request = require("supertest")
 const sleep = time => new Promise(res => setTimeout(() => res(), time || 1))
-state.config.value.server = "ws://101.200.230.74:5020"
+state.config.value.server = "ws://swtcproxy.swtclib.ca:5020"
 const tx_json = {
   Account: "j3UbbRX36997CWXqYqLUn28qH55v9Dh37n",
   Amount: 1000000,
