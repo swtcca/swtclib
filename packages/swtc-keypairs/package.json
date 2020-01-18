@@ -1,6 +1,6 @@
 {
   "name": "swtc-keypairs",
-  "version": "0.11.20",
+  "version": "0.11.21",
   "description": "swtc keypairs",
   "files": [
     "src/*",
