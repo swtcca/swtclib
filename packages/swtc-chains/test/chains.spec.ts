@@ -1,9 +1,4 @@
-/* eslint-disable no-unused-expressions/no-unused-expressions */
-
-"use strict"
-
-const CHAINS = require("../").CHAINS
-const funcGetChain = require("../").funcGetChain
+import { CHAINS, funcGetChain } from "../"
 
 describe("SWTC_CHAINS:[]", function() {
   for (const code of CHAINS.map(chain => chain.code)) {

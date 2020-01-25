@@ -1,6 +1,13 @@
-"use strict"
+export function funcGetChain(chain_or_token: string): any {
+  const chains = CHAINS.filter(
+    chain =>
+      chain.code.toLowerCase() === chain_or_token.toLowerCase() ||
+      chain.currency.toUpperCase() === chain_or_token.toUpperCase()
+  )
+  return chains.length === 1 ? chains[0] : undefined
+}
 
-const SWTC_CHAINS = [
+export const CHAINS = [
   {
     code: "bitcoin",
     currency: "BTC",
@@ -86,5 +93,3 @@ const SWTC_CHAINS = [
       "bpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2rcdeCg65jkm8oFqi1tuvAxyz"
   }
 ]
-
-module.exports = SWTC_CHAINS
