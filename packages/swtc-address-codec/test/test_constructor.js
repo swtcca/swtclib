@@ -2,36 +2,28 @@
 
 "use strict"
 
-const assert = require("assert")
-const api = require("../")
+const api = require("../").Factory
 
 describe("constructor", function() {
   it("constructor with incorrect param got error", function() {
-    const excercise = () => api("someerrorchainortoken")
-    assert.throws(excercise, Error)
+    expect(() => api("someerrorchainortoken")).toThrow()
   })
 
   it("constructor with token or chain the same", function() {
-    let by_chain = api()
+    let by_chain = api("jingtum")
     let by_token = api("swt")
-    assert.deepEqual(Object.keys(by_chain.codecs), Object.keys(by_token.codecs))
+    expect(Object.keys(by_chain)).toEqual(Object.keys(by_token))
   })
 
   it("constructor with different token", function() {
     let bwt_chain = api("bwt")
     let swt_chain = api("swt")
-    assert.notDeepEqual(
-      Object.keys(bwt_chain.codecs),
-      Object.keys(swt_chain.codecs)
-    )
+    expect(Object.keys(bwt_chain)).toEqual(Object.keys(swt_chain))
   })
 
   it("constructor with different chain", function() {
     let bwt_chain = api("bizain")
     let swt_chain = api("jingtum")
-    assert.notDeepEqual(
-      Object.keys(bwt_chain.codecs),
-      Object.keys(swt_chain.codecs)
-    )
+    expect(Object.keys(bwt_chain)).toEqual(Object.keys(swt_chain))
   })
 })

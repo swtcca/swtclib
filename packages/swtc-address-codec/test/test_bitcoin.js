@@ -2,8 +2,7 @@
 
 "use strict"
 
-const assert = require("assert")
-const api = require("../")("bitcoin")
+const api = require("../").Factory("bitcoin")
 
 function toHex(bytes) {
   return Buffer.from(bytes)
@@ -17,12 +16,12 @@ function toBytes(hex) {
 
 describe("bitcoin", function() {
   it("isValidAddress - secp256k1 address valid", function() {
-    assert(api.isValidAddress("1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX"))
+    expect(api.isValidAddress("1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX")).toBe(true)
   })
   it("isValidAddress - invalid", function() {
-    assert(!api.isValidAddress("1U6K7V3Po4snVhBBaU29sesqs2qTQJWDw2"))
+    expect(api.isValidAddress("1U6K7V3Po4snVhBBaU29sesqs2qTQJWDw2")).toBe(false)
   })
   it("isValidAddress - empty", function() {
-    assert(!api.isValidAddress(""))
+    expect(api.isValidAddress("")).toBe(false)
   })
 })

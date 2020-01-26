@@ -3,8 +3,7 @@
 "use strict"
 
 const Buffer = require("buffer").Buffer
-const assert = require("assert")
-const api = require("../")()
+const api = require("../").Factory()
 
 function toHex(bytes) {
   return Buffer.from(bytes)
@@ -20,11 +19,11 @@ describe("jingtum", function() {
   function makeTest(type, base58, hex) {
     it("can translate between " + hex + " and " + base58, function() {
       const actual = api["encode" + type](toBytes(hex))
-      assert.equal(actual, base58)
+      expect(actual).toBe(base58)
     })
     it("can translate between " + base58 + " and " + hex, function() {
       const buf = api["decode" + type](base58)
-      assert.equal(toHex(buf), hex)
+      expect(toHex(buf)).toBe(hex)
     })
   }
 
@@ -65,15 +64,19 @@ describe("jingtum", function() {
   //  })
 
   it("isValidAddress - secp256k1 address valid", function() {
-    assert(api.isValidAddress("jf1emKcuU2FjpivogkxSwLUvuSq9GU7sCm"))
+    expect(
+      api.isValidAddress("jf1emKcuU2FjpivogkxSwLUvuSq9GU7sCm")
+    ).toBeTruthy()
   })
   it("isValidAddress - ed25519 address valid", function() {
-    assert(api.isValidAddress("j4dsZadfBLTFcLyNWTqvAPrP8gaEBijqSo"))
+    expect(
+      api.isValidAddress("j4dsZadfBLTFcLyNWTqvAPrP8gaEBijqSo")
+    ).toBeTruthy()
   })
   it("isValidAddress - invalid", function() {
-    assert(!api.isValidAddress("jU6K7V3Po4snVhBBaU29sesqs2qTQJWDw2"))
+    expect(api.isValidAddress("jU6K7V3Po4snVhBBaU29sesqs2qTQJWDw2")).toBeFalsy()
   })
   it("isValidAddress - empty", function() {
-    assert(!api.isValidAddress(""))
+    expect(api.isValidAddress("")).toBeFalsy()
   })
 })
