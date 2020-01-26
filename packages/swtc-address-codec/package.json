@@ -1,36 +1,43 @@
 {
   "name": "swtc-address-codec",
-  "version": "2.0.11",
+  "version": "3.0.0",
   "description": "encode decode base58 SWTC identifiers",
-  "main": "src/index.js",
+  "main": "index.js",
+  "module": "dist/address-codec.esm.js",
+  "types": "dist/address-codec.d.ts",
   "license": "ISC",
   "dependencies": {
-    "create-hash": "^1.1.2",
-    "swtc-chains": "^1.0.14",
-    "x-address-codec": "^0.7.2"
+    "base-x": "^3.0.7",
+    "create-hash": "^1.2.0",
+    "swtc-chains": "^2.0.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "scripts": {
+    "build": "rollup -c",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c src/*.js",
     "prettier:tabs": "prettier --use-tabs --write package.json src/*.js",
-    "eslint": "eslint src/*.js",
-    "test": "mocha",
-    "test:extended": "mocha \"*.js\"",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+    "tslint": "tslint src/*.ts",
+    "test": "jest"
   },
   "devDependencies": {
-    "buffer": "^5.2.1",
-    "coveralls": "^3.0.6",
-    "eslint": "^6.1.0",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^13.5.0",
+    "jest": "^25.0.0",
     "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1"
+    "pretty-quick": "^1.11.1",
+    "rollup": "^1.29.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "ts-jest": "^25.0.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.4.5"
   },
   "keywords": [
     "codec",
@@ -40,6 +47,6 @@
   ],
   "readmeFilename": "README.md",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   }
 }

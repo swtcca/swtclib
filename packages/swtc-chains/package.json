@@ -1,6 +1,6 @@
 {
   "name": "swtc-chains",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "swtc chain information",
   "main": "index.js",
   "module": "dist/chains.esm.js",
@@ -10,6 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/swtcca/swtclib.git"
   },
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
     "rollup": "rollup",
     "tslint": "tslint src/*.ts",
@@ -39,7 +42,7 @@
   ],
   "readmeFilename": "README.md",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "dependencies": {}
 }
