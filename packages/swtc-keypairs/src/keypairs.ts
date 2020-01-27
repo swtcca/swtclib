@@ -23,7 +23,7 @@ function hash(message) {
 }
 
 const secp256k1 = {
-  deriveKeypair: function(entropy, options) {
+  deriveKeypair: (entropy, options: any = {}) => {
     const prefix = "00"
     const privateKey =
       prefix +
@@ -37,30 +37,30 @@ const secp256k1 = {
     )
     return { privateKey, publicKey }
   },
-  sign: function(message, privateKey) {
+  sign: (message, privateKey) => {
     return bytesToHex(
       Secp256k1.sign(hash(message), hexToBytes(privateKey), {
         canonical: true
       }).toDER()
     )
   },
-  verify: function(message, signature, publicKey) {
+  verify: (message, signature, publicKey) => {
     return Secp256k1.verify(hash(message), signature, hexToBytes(publicKey))
   },
-  signTx: function(message, privateKey) {
+  signTx: (message, privateKey) => {
     return bytesToHex(
       Secp256k1.sign(message, hexToBytes(privateKey), {
         canonical: true
       }).toDER()
     )
   },
-  verifyTx: function(message, signature, publicKey) {
+  verifyTx: (message, signature, publicKey) => {
     return Secp256k1.verify(message, signature, hexToBytes(publicKey))
   }
 }
 
 const ed25519 = {
-  deriveKeypair: function(entropy) {
+  deriveKeypair: entropy => {
     const prefix = "ED"
     const rawPrivateKey = hash(entropy)
     const privateKey = prefix + bytesToHex(rawPrivateKey)
@@ -68,7 +68,7 @@ const ed25519 = {
       prefix + bytesToHex(Ed25519.keyFromSecret(rawPrivateKey).pubBytes())
     return { privateKey, publicKey }
   },
-  sign: function(message, privateKey) {
+  sign: (message, privateKey) => {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
     assert(Array.isArray(message), "message must be array of octets")
@@ -76,19 +76,19 @@ const ed25519 = {
       Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toBytes()
     )
   },
-  verify: function(message, signature, publicKey) {
+  verify: (message, signature, publicKey) => {
     return Ed25519.verify(
       message,
       hexToBytes(signature),
       hexToBytes(publicKey).slice(1)
     )
   },
-  signTx: function(message, privateKey) {
+  signTx: (message, privateKey) => {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
     return Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toHex()
   },
-  verifyTx: function(message, signature, publicKey) {
+  verifyTx: (message, signature, publicKey) => {
     return Ed25519.verify(
       message,
       hexToBytes(signature),
@@ -147,7 +147,7 @@ function Factory(chain_or_token = "jingtum") {
     return addressCodec.encodeSeed(entropy, type)
   }
 
-  function deriveKeypair(seed, options) {
+  function deriveKeypair(seed, options: any = {}) {
     const decoded = addressCodec.decodeSeed(seed)
     const algorithm = decoded.type === "ed25519" ? "ed25519" : "ecdsa-secp256k1"
     const method = select(algorithm)

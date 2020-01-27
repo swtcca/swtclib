@@ -1,6 +1,6 @@
 import BN = require("bn-plus.js")
-import SerializedType from "./types/SerializedType"
 import { INVERSE_FIELDS_MAP } from "./Constant"
+import SerializedType from "./types/SerializedType"
 
 /*
  * return the transaction type in string

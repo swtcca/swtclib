@@ -3,16 +3,16 @@ import BigNum from "bn.js"
 
 export default class Sha512 {
   // TODO: type of `hash`?
-  hash: any
+  private hash: any
 
   constructor() {
     this.hash = hashjs.sha512()
   }
-  add(bytes) {
+  public add(bytes) {
     this.hash.update(bytes)
     return this
   }
-  addU32(i) {
+  public addU32(i) {
     return this.add([
       (i >>> 24) & 0xff,
       (i >>> 16) & 0xff,
@@ -20,13 +20,13 @@ export default class Sha512 {
       i & 0xff
     ])
   }
-  finish() {
+  public finish() {
     return this.hash.digest()
   }
-  first256() {
+  public first256() {
     return this.finish().slice(0, 32)
   }
-  first256BN() {
+  public first256BN() {
     return new BigNum(this.first256())
   }
 }
