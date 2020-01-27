@@ -11,7 +11,7 @@ describe("api-ripple", () => {
     assert.strictEqual(api.generateSeed({ entropy }), fixtures.secp256k1.seed)
   })
 
-  xit("generateSeed - secp256k1, random", () => {
+  it("generateSeed - secp256k1, random", () => {
     const seed = api.generateSeed()
     assert(seed.charAt(0) === "s")
     const { type, bytes } = decodeSeed(seed)
@@ -26,7 +26,7 @@ describe("api-ripple", () => {
     )
   })
 
-  xit("generateSeed - ed25519, random", () => {
+  it("generateSeed - ed25519, random", () => {
     const seed = api.generateSeed({ algorithm: "ed25519" })
     assert(seed.slice(0, 3) === "sEd")
     const { type, bytes } = decodeSeed(seed)
@@ -92,7 +92,7 @@ describe("api-ripple", () => {
     assert.strictEqual(api.deriveNodeAddress(x), y)
   })
 
-  xit("Random Address", () => {
+  it("Random Address", () => {
     const seed = api.generateSeed()
     const keypair = api.deriveKeypair(seed)
     const address = api.deriveAddress(keypair.publicKey)

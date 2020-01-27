@@ -1,6 +1,6 @@
 {
   "name": "swtc-keypairs",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "swtc keypairs",
   "files": [
     "dist/*"
@@ -9,7 +9,6 @@
   "module": "dist/keypairs.js",
   "types": "dist/keypairs.d.ts",
   "dependencies": {
-    "bn.js": "^5.0.0",
     "brorand": "^1.1.0",
     "elliptic": "^6.4.0",
     "hash.js": "^1.0.3",
@@ -22,8 +21,9 @@
     "@rollup/plugin-node-resolve": "^7.0.0",
     "@rollup/plugin-typescript": "^2.1.0",
     "@types/jest": "^24.9.1",
-    "@types/node": "^13.5.0",
+    "@types/node": "^12.7.1",
     "jest": "^25.0.0",
+    "mocha": "^6.2.0",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
     "rollup": "^1.29.1",
@@ -39,7 +39,8 @@
     "prettier:check": "prettier -c src/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json src/*.ts",
     "tslint": "tslint src/*.ts",
-    "test": "jest"
+    "test:jest": "jest",
+    "test": "mocha test/test*js"
   },
   "repository": {
     "type": "git",

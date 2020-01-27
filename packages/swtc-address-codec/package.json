@@ -1,6 +1,6 @@
 {
   "name": "swtc-address-codec",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "encode decode base58 SWTC identifiers",
   "main": "index.js",
   "module": "dist/address-codec.esm.js",
@@ -32,7 +32,7 @@
     "@rollup/plugin-node-resolve": "^7.0.0",
     "@rollup/plugin-typescript": "^2.1.0",
     "@types/jest": "^24.9.1",
-    "@types/node": "^13.5.0",
+    "@types/node": "^12.7.1",
     "jest": "^25.0.0",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",

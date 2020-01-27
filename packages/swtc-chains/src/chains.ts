@@ -148,3 +148,23 @@ export function funcConcatArgs(...args: (number | Sequence)[]): number[] {
   })
   return ret
 }
+
+// Convert a hex string to a byte array
+export function funcHexToBytes(hex) {
+  const bytes = []
+  for (let c = 0; c < hex.length; c += 2) {
+    bytes.push(parseInt(hex.substr(c, 2), 16))
+  }
+  return bytes
+}
+
+// Convert a byte array to a hex string
+export function funcBytesToHex(bytes) {
+  const hex = []
+  for (const byte of bytes) {
+    const current = byte < 0 ? byte + 256 : byte
+    hex.push((current >>> 4).toString(16))
+    hex.push((current & 0xf).toString(16))
+  }
+  return hex.join("").toUpperCase()
+}
