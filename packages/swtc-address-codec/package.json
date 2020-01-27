@@ -1,6 +1,6 @@
 {
   "name": "swtc-address-codec",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "encode decode base58 SWTC identifiers",
   "main": "index.js",
   "module": "dist/address-codec.esm.js",
@@ -15,6 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/swtcca/swtclib.git"
   },
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
     "build": "rollup -c",
     "prettier": "prettier",
@@ -27,6 +30,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-typescript": "^2.1.0",
     "@types/jest": "^24.9.1",
     "@types/node": "^13.5.0",
     "jest": "^25.0.0",
@@ -34,7 +38,6 @@
     "pretty-quick": "^1.11.1",
     "rollup": "^1.29.1",
     "rollup-plugin-terser": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.25.3",
     "ts-jest": "^25.0.0",
     "tslint": "^5.19.0",
     "typescript": "^3.4.5"

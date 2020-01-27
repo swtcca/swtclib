@@ -2,11 +2,12 @@
 import path from "path"
 import ts from "@rollup/plugin-typescript"
 import { terser } from "rollup-plugin-terser"
-// import resolve from '@rollup/plugin-node-resolve'
+import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
+import json from "@rollup/plugin-json"
 
 const path_resolve = (...p) => path.resolve(...p)
-const name = "address-codec"
+const name = "keypairs"
 
 // const knownExternals = fs.readdirSync(resolve(".."))
 // ensure TS checks only once for each build
@@ -14,9 +15,19 @@ let hasTSChecked = false
 
 export default [
   {
-    input: path_resolve("src", "address-codec.ts"),
-    external: ["base-x", "crypto", "swtc-chains"],
-    plugins: [ts(), commonjs()],
+    input: path_resolve("src", `${name}.ts`),
+    external: [
+      "base-x",
+      "crypto",
+      "bn.js",
+      "brorand",
+      "elliptic",
+      "hash.js",
+      "inherits",
+      "swtc-chains",
+      "swtc-address-codec"
+    ],
+    plugins: [ts(), json(), resolve(), commonjs()],
     output: [
       {
         file: path_resolve("dist", `${name}.esm.prod.js`),
@@ -30,10 +41,21 @@ export default [
     ]
   },
   {
-    input: path_resolve("src", "address-codec.ts"),
-    external: ["base-x", "crypto", "swtc-chains"],
+    input: path_resolve("src", `${name}.ts`),
+    external: ["base-x", "crypto", "swtc-address-codec"],
+    external: [
+      "base-x",
+      "crypto",
+      "bn.js",
+      "brorand",
+      "elliptic",
+      "hash.js",
+      "inherits",
+      "swtc-chains",
+      "swtc-address-codec"
+    ],
     // plugins: [ts()],
-    plugins: [ts(), commonjs()],
+    plugins: [ts(), json(), resolve(), commonjs()],
     output: [
       {
         file: path_resolve("dist", `${name}.cjs.prod.js`),

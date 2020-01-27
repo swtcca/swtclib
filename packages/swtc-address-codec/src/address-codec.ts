@@ -249,6 +249,7 @@ export function Factory(chain_or_token = "jingtum") {
   }
 
   return {
+    chain: active_chain.code,
     codec: codecWithAlphabet,
     encode: codecWithAlphabet.encode,
     decode: codecWithAlphabet.decode,

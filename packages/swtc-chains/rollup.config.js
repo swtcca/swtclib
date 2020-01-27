@@ -1,5 +1,5 @@
 import path from "path"
-import ts from "rollup-plugin-typescript2"
+import ts from "@rollup/plugin-typescript"
 import { terser } from "rollup-plugin-terser"
 
 const resolve = (...p) => path.resolve(...p)
