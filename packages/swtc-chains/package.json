@@ -1,6 +1,6 @@
 {
   "name": "swtc-chains",
-  "version": "2.0.2",
+  "version": "2.0.4",
   "description": "swtc chain information",
   "main": "index.js",
   "module": "dist/chains.esm.js",

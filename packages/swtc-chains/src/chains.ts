@@ -150,7 +150,7 @@ export function funcConcatArgs(...args: (number | Sequence)[]): number[] {
 }
 
 // Convert a hex string to a byte array
-export function funcHexToBytes(hex) {
+export function funcHexToBytes(hex): any {
   const bytes = []
   for (let c = 0; c < hex.length; c += 2) {
     bytes.push(parseInt(hex.substr(c, 2), 16))
@@ -159,7 +159,7 @@ export function funcHexToBytes(hex) {
 }
 
 // Convert a byte array to a hex string
-export function funcBytesToHex(bytes) {
+export function funcBytesToHex(bytes): string {
   const hex = []
   for (const byte of bytes) {
     const current = byte < 0 ? byte + 256 : byte

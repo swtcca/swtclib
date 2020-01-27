@@ -1,6 +1,6 @@
 {
   "name": "swtc-address-codec",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "encode decode base58 SWTC identifiers",
   "main": "index.js",
   "module": "dist/address-codec.esm.js",
