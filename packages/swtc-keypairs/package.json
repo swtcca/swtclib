@@ -1,37 +1,45 @@
 {
   "name": "swtc-keypairs",
-  "version": "0.11.21",
+  "version": "1.0.0",
   "description": "swtc keypairs",
   "files": [
-    "src/*",
-    "test/*"
+    "dist/*"
   ],
-  "main": "src/index.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "index.js",
+  "module": "dist/keypairs.js",
+  "types": "dist/keypairs.d.ts",
   "dependencies": {
-    "bn.js": "^4.0.0",
-    "brorand": "^1.0.5",
+    "bn.js": "^5.0.0",
+    "brorand": "^1.1.0",
     "elliptic": "^6.4.0",
     "hash.js": "^1.0.3",
-    "swtc-address-codec": "^2.0.11"
+    "swtc-address-codec": "^3.0.0",
+    "swtc-chains": "^2.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.1.0",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-typescript": "^2.1.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^13.5.0",
+    "jest": "^25.0.0",
     "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1"
+    "pretty-quick": "^1.11.1",
+    "rollup": "^1.29.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "ts-jest": "^25.0.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.4.5"
   },
   "scripts": {
+    "build": "rollup -c",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c src/*.js",
-    "prettier:tabs": "prettier --use-tabs --write package.json src/*.js",
-    "eslint": "eslint src/*.js",
-    "test": "mocha test/test*js",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+    "prettier:check": "prettier -c src/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json src/*.ts",
+    "tslint": "tslint src/*.ts",
+    "test": "jest"
   },
   "repository": {
     "type": "git",

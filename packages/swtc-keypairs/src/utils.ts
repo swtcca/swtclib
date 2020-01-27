@@ -1,8 +1,6 @@
-"use strict" // eslint-disable-line strict
-
-const assert = require("assert")
-const hashjs = require("hash.js")
-const BN = require("bn.js")
+import assert from "assert"
+import hashjs from "hash.js"
+import BN from "bn.js"
 
 function bytesToHex(a) {
   return a
@@ -18,7 +16,7 @@ function hexToBytes(a) {
   return new BN(a, 16).toArray(null, a.length / 2)
 }
 
-function computePublicKeyHash(publicKeyBytes) {
+function computePublicKeyHash(publicKeyBytes: Buffer): number[] {
   const hash256 = hashjs
     .sha256()
     .update(publicKeyBytes)
@@ -38,9 +36,4 @@ function seedFromPhrase(phrase) {
     .slice(0, 16)
 }
 
-module.exports = {
-  bytesToHex,
-  hexToBytes,
-  computePublicKeyHash,
-  seedFromPhrase
-}
+export { bytesToHex, hexToBytes, computePublicKeyHash, seedFromPhrase }
