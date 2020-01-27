@@ -17,17 +17,16 @@ export default [
   {
     input: path_resolve("src", `${name}.ts`),
     external: [
-      "base-x",
-      "crypto",
-      "bn.js",
+      // "base-x",
+      // "crypto",
+      // "hash.js",
       "brorand",
       "elliptic",
-      "hash.js",
       "inherits",
       "swtc-chains",
       "swtc-address-codec"
     ],
-    plugins: [ts(), json(), resolve(), commonjs()],
+    plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
     output: [
       {
         file: path_resolve("dist", `${name}.esm.prod.js`),
@@ -44,18 +43,17 @@ export default [
     input: path_resolve("src", `${name}.ts`),
     external: ["base-x", "crypto", "swtc-address-codec"],
     external: [
-      "base-x",
-      "crypto",
-      "bn.js",
+      // "base-x",
+      // "crypto",
+      // "hash.js",
       "brorand",
       "elliptic",
-      "hash.js",
       "inherits",
       "swtc-chains",
       "swtc-address-codec"
     ],
     // plugins: [ts()],
-    plugins: [ts(), json(), resolve(), commonjs()],
+    plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
     output: [
       {
         file: path_resolve("dist", `${name}.cjs.prod.js`),

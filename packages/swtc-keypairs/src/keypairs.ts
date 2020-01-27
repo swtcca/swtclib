@@ -4,8 +4,12 @@ import hashjs from "hash.js"
 import { eddsa, ec } from "elliptic"
 
 import { Factory as AddressCodecFactory } from "swtc-address-codec"
+import {
+  funcHexToBytes as hexToBytes,
+  funcBytesToHex as bytesToHex
+} from "swtc-chains"
 import { derivePrivateKey, accountPublicFromPublicGenerator } from "./secp256k1"
-import { hexToBytes, bytesToHex, computePublicKeyHash } from "./utils"
+import { computePublicKeyHash } from "./utils"
 
 const Ed25519 = eddsa("ed25519")
 const Secp256k1 = ec("secp256k1")
@@ -67,7 +71,7 @@ const ed25519 = {
   sign: function(message, privateKey) {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
-    // assert(Array.isArray(message), 'message must be array of octets')
+    assert(Array.isArray(message), "message must be array of octets")
     return bytesToHex(
       Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toBytes()
     )
@@ -82,7 +86,6 @@ const ed25519 = {
   signTx: function(message, privateKey) {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
-    // assert(Array.isArray(message), 'message must be array of octets')
     return Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toHex()
   },
   verifyTx: function(message, signature, publicKey) {
@@ -111,31 +114,27 @@ function sign(messageHex, privateKey) {
   return select(algorithm).sign(hexToBytes(messageHex), privateKey)
 }
 
-function signTx(messageHex, privateKey) {
-  const algorithm = getAlgorithmFromKey(privateKey)
-  return select(algorithm).signTx(hexToBytes(messageHex), privateKey)
-}
-
 function verify(messageHex, signature, publicKey) {
   const algorithm = getAlgorithmFromKey(publicKey)
   return select(algorithm).verify(hexToBytes(messageHex), signature, publicKey)
 }
 
-function verifyTx(messageHex, signature, publicKey) {
-  const algorithm = getAlgorithmFromKey(publicKey)
-  return select(algorithm).verifyTx(
-    hexToBytes(messageHex),
-    signature,
-    publicKey
-  )
+function signTx(messageHex, privateKey) {
+  const algorithm = getAlgorithmFromKey(privateKey)
+  return select(algorithm).signTx(messageHex, privateKey)
 }
 
-export function Factory(chain_or_token = "jingtum") {
+function verifyTx(messageHex, signature, publicKey) {
+  const algorithm = getAlgorithmFromKey(publicKey)
+  return select(algorithm).verifyTx(messageHex, signature, publicKey)
+}
+
+function Factory(chain_or_token = "jingtum") {
   const addressCodec = AddressCodecFactory(chain_or_token)
   function generateSeed(
     options: {
-      // entropy?: Uint8Array,
-      entropy?: any
+      entropy?: Uint8Array
+      // entropy?: any,
       algorithm?: "ed25519" | "secp256k1"
     } = {}
   ) {
@@ -177,23 +176,37 @@ export function Factory(chain_or_token = "jingtum") {
     return deriveAddressFromBytes(accountPublicBytes)
   }
 
+  function convertAddressToBytes(address) {
+    return addressCodec.decodeAddress(address).toJSON().data
+  }
+
+  function convertBytesToAddress(bytes) {
+    return addressCodec.encodeAddress(bytes)
+  }
   return {
     // secp256k1,
     // ed25519,
     // decodeSeed: addressCodec.decodeSeed
+    // for swtc libs
+    addressCodec,
     chain: addressCodec.chain,
     deriveKeyPair: deriveKeypair,
     hash,
-    addressCodec,
+    signTx,
+    verifyTx,
+    convertAddressToBytes,
+    convertBytesToAddress,
+    checkAddress: addressCodec.isValidAddress,
+    isValidAddress: addressCodec.isValidAddress,
+    // standards
     deriveKeypair,
     generateSeed,
     sign,
-    signTx,
     verify,
-    verifyTx,
     deriveAddress,
     deriveNodeAddress
   }
 }
 
+export { Factory }
 export const Keypairs = Factory()

@@ -145,7 +145,10 @@ describe("Wallet", function() {
         let secret = data[chain].validSecret
         for (let message of messages) {
           let wallet = new Wallet(secret)
-          expect(wallet.sign(message.msg)).to.be.equal(message.sign)
+          let signed = wallet.sign(message.msg)
+          let verified = wallet.verify(message.msg, signed)
+          expect(verified).to.be.true
+          // expect(wallet.sign(message.msg)).to.be.equal(message.sign)
         }
       }
     })

@@ -54,7 +54,7 @@
     "swtc-utils": "^1.1.13"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.24",
+    "@types/jest": "^24.9.1",
     "@types/node": "^12.7.1",
     "jest": "^25.0.0",
     "jest-esm-transformer": "^1.0.0",

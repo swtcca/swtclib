@@ -1,19 +1,13 @@
-import SwtcChains from "swtc-chains"
-import KeyPairs from "swtc-keypairs"
-const getChain = (chain_name = "jingtum") =>
-  SwtcChains.filter(
-    chain =>
-      chain.code.toLowerCase() === chain_name.toLowerCase() ||
-      chain.currency.toUpperCase() === chain_name.toUpperCase()
-  )[0]
+import { funcGetChain } from "swtc-chains"
+import { Factory as KeypairFactory } from "swtc-keypairs"
 
-const Factory = token_or_chain => {
-  const chain = getChain(token_or_chain)
+const Factory = (token_or_chain = "jingtum") => {
+  const chain = funcGetChain(token_or_chain)
   if (!chain) {
     throw Error("token or chain not supported")
   }
 
-  const KeyPair = KeyPairs(chain.code)
+  const KeyPair = KeypairFactory(chain.code)
 
   return class Wallet {
     public static token = chain.currency.toUpperCase()
@@ -89,16 +83,16 @@ const Factory = token_or_chain => {
     }
 
     public static isValidAddress(address) {
-      return KeyPair.checkAddress(address)
+      return KeyPair.isValidAddress(address)
     }
 
     public static isValidSecret(secret) {
       try {
         KeyPair.deriveKeyPair(secret)
-        return true
       } catch (err) {
         return false
       }
+      return true
     }
 
     public static checkTx(message, signature, publicKey) {
@@ -164,7 +158,7 @@ const Factory = token_or_chain => {
       if (!this._keypairs) return null
       const privateKey = this._keypairs.privateKey
       // Export DER encoded signature in Array
-      return KeyPair.signHash(message, privateKey)
+      return KeyPair.sign(message, privateKey)
     }
 
     /**
@@ -176,7 +170,7 @@ const Factory = token_or_chain => {
     public verify(message, signature) {
       if (!this._keypairs) return null
       const publicKey = this.getPublicKey()
-      return KeyPair.verifyHash(message, signature, publicKey)
+      return KeyPair.verify(message, signature, publicKey)
     }
 
     /**

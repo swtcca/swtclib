@@ -20,12 +20,12 @@ describe("constructor", function() {
   it("constructor with different token", function() {
     let bwt_chain = api("bwt")
     let swt_chain = api("swt")
-    assert.notEqual(bwt_chain.chain, swt_chain.chain)
+    expect(bwt_chain.chain === swt_chain.chain).toBeFalsy()
   })
 
   it("constructor with different chain", function() {
     let bwt_chain = api("bizain")
     let swt_chain = api("jingtum")
-    assert.notEqual(bwt_chain.chain, swt_chain.chain)
+    expect(bwt_chain.chain === swt_chain.chain).toBeFalsy()
   })
 })

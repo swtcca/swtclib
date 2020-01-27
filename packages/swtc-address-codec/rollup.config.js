@@ -32,7 +32,7 @@ export default [
   {
     input: path_resolve("src", "address-codec.ts"),
     external: ["base-x", "crypto", "swtc-chains"],
-    // plugins: [ts()],
+    external: ["base-x", "crypto", "swtc-chains"],
     plugins: [ts(), commonjs()],
     output: [
       {

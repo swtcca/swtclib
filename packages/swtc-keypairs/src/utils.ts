@@ -1,20 +1,4 @@
-import assert from "assert"
 import hashjs from "hash.js"
-import BN from "bn.js"
-
-function bytesToHex(a) {
-  return a
-    .map(function(byteValue) {
-      const hex = byteValue.toString(16).toUpperCase()
-      return hex.length > 1 ? hex : "0" + hex
-    })
-    .join("")
-}
-
-function hexToBytes(a) {
-  assert(a.length % 2 === 0)
-  return new BN(a, 16).toArray(null, a.length / 2)
-}
 
 function computePublicKeyHash(publicKeyBytes: Buffer): number[] {
   const hash256 = hashjs
@@ -36,4 +20,4 @@ function seedFromPhrase(phrase) {
     .slice(0, 16)
 }
 
-export { bytesToHex, hexToBytes, computePublicKeyHash, seedFromPhrase }
+export { computePublicKeyHash, seedFromPhrase }
