@@ -8,7 +8,7 @@ const resolve = (...p) => path.resolve(...p)
 let hasTSChecked = false
 
 export default {
-  input: resolve("src", "chains.ts"),
+  input: resolve("tssrc", "chains.ts"),
   plugins: [ts()],
   output: [
     {

@@ -1,6 +1,6 @@
 {
   "name": "swtc-chains",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "swtc chain information",
   "main": "index.js",
   "module": "dist/chains.esm.js",
@@ -14,9 +14,10 @@
     "dist/*"
   ],
   "scripts": {
+    "tsc": "tsc",
     "rollup": "rollup",
     "tslint": "tslint src/*.ts",
-    "build": "rollup -c",
+    "build": "tsc; rollup -c",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c src/*.ts",

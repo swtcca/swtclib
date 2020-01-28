@@ -55,6 +55,7 @@ npm-debug.log
 dist/
 
 # Ignore flow output directory
+src/
 out/
 
 # Ignore perf test cache
