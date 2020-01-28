@@ -68,10 +68,10 @@ function getRelationType(type) {
  * @constructor
  */
 class Remote extends EventEmitter {
-  public static Wallet = Wallet
+  public static Wallet: any = Wallet
   public static Account = Account
   public static OrderBook = OrderBook
-  public static Transaction = Transaction
+  public static Transaction: any = Transaction
   public static utils = utils
   public static XLIB = Wallet.config.XLIB || {}
   public type
@@ -1115,7 +1115,9 @@ class Remote extends EventEmitter {
               const adr = result.ContractState[i].slice(2)
               const buf = new Buffer(20)
               buf.write(adr, 0, "hex")
-              result.ContractState[i] = Wallet.KeyPair.__encode(buf)
+              result.ContractState[
+                i
+              ] = Wallet.KeyPair.addressCodec.encodeAddress(buf)
             }
           })
         }
@@ -1128,7 +1130,7 @@ class Remote extends EventEmitter {
             const _adr = _log.address.slice(2)
             const buf = new Buffer(20)
             buf.write(_adr, 0, "hex")
-            item.address = Wallet.KeyPair.__encode(buf)
+            item.address = Wallet.KeyPair.addressCodec.encodeAddress(buf)
 
             const abi = new this.AbiCoder()
             data.abi
@@ -1151,7 +1153,9 @@ class Remote extends EventEmitter {
                       const _adr2 = data2[i].slice(2)
                       const buf2 = new Buffer(20)
                       buf2.write(_adr2, 0, "hex")
-                      item.data[i] = Wallet.KeyPair.__encode(buf2)
+                      item.data[i] = Wallet.KeyPair.addressCodec.encodeAddress(
+                        buf2
+                      )
                     } else {
                       item.data[i] = data2[i]
                     }
