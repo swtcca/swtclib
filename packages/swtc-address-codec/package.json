@@ -1,6 +1,6 @@
 {
   "name": "swtc-address-codec",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "encode decode base58 SWTC identifiers",
   "main": "index.js",
   "module": "dist/address-codec.esm.js",
@@ -19,11 +19,12 @@
     "dist/*"
   ],
   "scripts": {
-    "build": "rollup -c",
+    "tsc": "tsc",
+    "build": "tsc; rollup -c",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c src/*.js",
-    "prettier:tabs": "prettier --use-tabs --write package.json src/*.js",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tslint": "tslint src/*.ts",
     "test": "jest"
   },

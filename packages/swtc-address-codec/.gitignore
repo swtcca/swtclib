@@ -63,3 +63,4 @@ scripts/cache
 eslintrc
 .nyc*
 package-lock.json
+src/

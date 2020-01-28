@@ -1,6 +1,6 @@
 {
   "name": "swtc-keypairs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "swtc keypairs",
   "files": [
     "dist/*"
@@ -34,11 +34,13 @@
     "typescript": "^3.4.5"
   },
   "scripts": {
-    "build": "rollup -c",
+    "tsc": "tsc",
+    "rollup": "rollup -c",
+    "build": "tsc; rollup -c",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c src/*.ts",
-    "prettier:tabs": "prettier --use-tabs --write package.json src/*.ts",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tslint": "tslint src/*.ts",
     "test:jest": "jest",
     "test": "mocha test/test*js"

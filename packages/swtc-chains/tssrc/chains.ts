@@ -168,3 +168,45 @@ export function funcBytesToHex(bytes): string {
   }
   return hex.join("").toUpperCase()
 }
+
+// from utils
+export const ZERO =
+  "0000000000000000000000000000000000000000000000000000000000000000"
+export function funcHexToString(h) {
+  const a = []
+  let i = 0
+  if (h.length % 2) {
+    a.push(String.fromCharCode(parseInt(h.substring(0, 1), 16)))
+    i = 1
+  }
+  for (; i < h.length; i += 2) {
+    a.push(String.fromCharCode(parseInt(h.substring(i, i + 2), 16)))
+  }
+  return a.join("")
+}
+
+export function funcStringToHex(s) {
+  let result = ""
+  for (const e of s) {
+    const b = e.charCodeAt(0)
+    result += b < 16 ? "0" + b.toString(16) : b.toString(16)
+  }
+  return result
+}
+
+export function funcString2Hex(s) {
+  let result = funcStringToHex(s)
+  if (result.length < 64) {
+    result += ZERO.substr(result.length)
+  }
+  return result
+}
+
+export function funcNumber2Hex(n) {
+  n = n.toString(16)
+  return ZERO.substr(0, 64 - n.length) + n
+}
+
+export function funcHex2Number(h) {
+  return parseInt(h, 16)
+}
