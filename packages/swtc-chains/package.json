@@ -20,8 +20,8 @@
     "build": "tsc; rollup -c",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c src/*.ts",
-    "prettier:tabs": "prettier --use-tabs --write package.json src/*.ts",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "test": "jest"
   },
   "devDependencies": {

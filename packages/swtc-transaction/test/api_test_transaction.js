@@ -229,8 +229,6 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("data")
-      expect(result.data).to.have.property("success")
-      expect(result.data.success).to.be.true
       expect(result.data).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.data.tx_blob)
     })
@@ -249,8 +247,6 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("data")
-      expect(result.data).to.have.property("success")
-      expect(result.data.success).to.be.true
       expect(result.data).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.data.tx_blob)
     })
@@ -271,8 +267,6 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("data")
-      expect(result.data).to.have.property("success")
-      expect(result.data.success).to.be.true
       expect(result.data).to.have.property("engine_result")
       expect(result.data).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.data.tx_blob)
@@ -293,8 +287,6 @@ describe("test transaction additions", function() {
       expect(tx.tx_json.Sequence).to.be.equal(10)
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("data")
-      expect(result.data).to.have.property("success")
-      expect(result.data.success).to.be.true
       expect(result.data).to.have.property("engine_result")
       expect(result.data.engine_result).to.be.equal("tefPAST_SEQ")
       expect(result.data).to.have.property("tx_blob")

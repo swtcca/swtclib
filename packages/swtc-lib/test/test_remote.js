@@ -81,22 +81,31 @@ describe("test remote", function() {
   })
 
   describe("test requestServerInfo", function() {
-    xit("should request server info successfully", function(done) {
+    it("should request server info successfully", function(done) {
       this.timeout(0)
       let remote = new Remote({
-        server: WSS_NODE,
-        local_sign: true,
-        token: "swt"
+        server: JT_NODE
       })
       remote.connect((err, result) => {
-        let req = remote.requestServerInfo()
-        expect(remote.isConnected()).to.equal(true)
-        expect(req._command).to.equal("server_info")
-        req.submit((err, result) => {
-          expect(result).to.be.jsonSchema(schema.SERVER_INFO_SCHEMA)
-          remote.disconnect()
+        if (err) {
+          console.log(err)
           done()
-        })
+        } else {
+          let req = remote.requestServerInfo()
+          expect(remote.isConnected()).to.equal(true)
+          expect(req._command).to.equal("server_info")
+          req.submit((error, result) => {
+            if (error) {
+              console.log(error)
+              remote.disconnect()
+              done()
+            } else {
+              expect(result).to.be.jsonSchema(schema.SERVER_INFO_SCHEMA)
+              remote.disconnect()
+              done()
+            }
+          })
+        }
       })
     })
   })
@@ -254,8 +263,9 @@ describe("test remote", function() {
         local_sign: true,
         token: "swt"
       })
-      remote.connect((err, result) => {
+      remote.connect((error, result) => {
         if (error) {
+          console.log(error)
           expect(error).to.be.an("error")
           done()
         }
@@ -266,10 +276,16 @@ describe("test remote", function() {
         expect(req.message).to.deep.equal({
           transaction: testCreateHash
         })
-        req.submit((err, result) => {
-          expect(result).to.be.jsonSchema(schema.TX_SCHEMA)
-          remote.disconnect()
-          done()
+        req.submit((err, res) => {
+          if (err) {
+            console.log(err)
+            remote.disconnect()
+            done()
+          } else {
+            expect(res).to.be.jsonSchema(schema.TX_SCHEMA)
+            remote.disconnect()
+            done()
+          }
         })
       })
     })
@@ -758,41 +774,38 @@ describe("test remote", function() {
     it("should request order book successfully", function(done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
-        local_sign: true,
-        token: "swt"
+        server: JT_NODE
       })
-      remote.connect((err, result) => {
-        let req = remote.requestOrderBook({
-          gets: {
-            currency: "CNY",
-            issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
-          },
-          pays: {
-            currency: "SWT",
-            issuer: ""
-          },
-          taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
-          limit: 0
-        })
-        expect(req._command).to.equal("book_offers")
-        expect(req.message).to.deep.equal({
-          taker_gets: {
-            currency: "SWT",
-            issuer: ""
-          },
-          taker_pays: {
-            currency: "CNY",
-            issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
-          },
-          taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
-          limit: 0
-        })
-        req.submit((err, result) => {
-          expect(result).to.be.jsonSchema(schema.ORDER_BOOK_SECHEMA)
-          remote.disconnect()
+      remote.connect((error, result) => {
+        if (error) {
+          console.log(error)
           done()
-        })
+        } else {
+          let req = remote.requestOrderBook({
+            gets: remote.makeCurrency("CNY"),
+            pays: remote.makeCurrency(),
+            taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
+            limit: 10
+          })
+          expect(req._command).to.equal("book_offers")
+          expect(req.message).to.deep.equal({
+            taker_gets: remote.makeCurrency(),
+            taker_pays: remote.makeCurrency("cny"),
+            taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
+            limit: 10
+          })
+          req.submit((err, res) => {
+            if (err) {
+              console.log(err)
+              remote.disconnect()
+              done()
+            } else {
+              expect(res).to.be.jsonSchema(schema.ORDER_BOOK_SECHEMA)
+              remote.disconnect()
+              done()
+            }
+          })
+        }
       })
     })
 
@@ -824,7 +837,7 @@ describe("test remote", function() {
           issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
         },
         taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
-        limit: undefined
+        limit: 300
       })
     })
 
