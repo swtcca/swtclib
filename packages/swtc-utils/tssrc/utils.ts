@@ -20,7 +20,7 @@ import _ from "lodash"
 import utf8 from "utf8"
 import Bignumber from "bignumber.js"
 
-export function Factory(Wallet = WalletFactory()) {
+export function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("utils needs a Wallet class")
   }

@@ -21,6 +21,7 @@
     "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "scripts": {
+    "clean": "rm -fr esm cjs dist src package-lock.json node_modules",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/**/*.ts",
