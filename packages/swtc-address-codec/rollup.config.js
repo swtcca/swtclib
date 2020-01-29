@@ -14,7 +14,7 @@ let hasTSChecked = false
 
 export default [
   {
-    input: path_resolve("tssrc", "address-codec.ts"),
+    input: path_resolve("tssrc", "index.ts"),
     external: ["base-x", "crypto", "swtc-chains"],
     plugins: [ts(), commonjs()],
     output: [
@@ -30,7 +30,7 @@ export default [
     ]
   },
   {
-    input: path_resolve("tssrc", "address-codec.ts"),
+    input: path_resolve("tssrc", "index.ts"),
     external: ["base-x", "crypto", "swtc-chains"],
     external: ["base-x", "crypto", "swtc-chains"],
     plugins: [ts(), commonjs()],
