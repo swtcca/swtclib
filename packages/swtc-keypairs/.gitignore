@@ -53,6 +53,8 @@ npm-debug.log
 
 # Ignore dist folder, build for bower
 dist/
+cjs/
+esm/
 
 # Ignore flow output directory
 out/
