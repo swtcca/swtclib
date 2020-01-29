@@ -8,25 +8,25 @@ const resolve = (...p) => path.resolve(...p)
 let hasTSChecked = false
 
 export default {
-  input: resolve("tssrc", "chains.ts"),
+  input: resolve("tssrc", "index.ts"),
   plugins: [ts()],
   output: [
     {
-      file: resolve("dist", "chains.esm.prod.js"),
+      file: resolve("dist", "index.esm.prod.js"),
       plugins: [terser()],
       format: "es"
     },
     {
-      file: resolve("dist", "chains.esm.js"),
+      file: resolve("dist", "index.esm.js"),
       format: "es"
     },
     {
-      file: resolve("dist", "chains.cjs.prod.js"),
+      file: resolve("dist", "index.cjs.prod.js"),
       plugins: [terser()],
       format: "cjs"
     },
     {
-      file: resolve("dist", "chains.cjs.js"),
+      file: resolve("dist", "index.cjs.js"),
       format: "cjs"
     }
   ]

@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
     "pretty": true,
     "outDir": "src",
     "rootDir": "tssrc",
@@ -17,7 +16,6 @@
     "suppressImplicitAnyIndexErrors": false,
     "declaration": true,
     "declarationMap": true,
-    "declarationDir": "dist",
     "sourceMap": true,
     "strict": false,
     "experimentalDecorators": true,
