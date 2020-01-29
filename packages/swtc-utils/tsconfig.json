@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
     "pretty": true,
     "lib": ["es2015"],
     "outDir": "src",
     "rootDir": "tssrc",
     "target": "es2015",
-    "module": "commonjs",
+    "module": "es2015",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "noUnusedLocals": true,

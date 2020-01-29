@@ -46,7 +46,7 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "bignumber.js": "^8.1.1",
+    "bignumber.js": "^9.0.0",
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
     "swtc-nativescript": "^1.0.2",

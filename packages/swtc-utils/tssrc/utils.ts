@@ -3,20 +3,17 @@
  */
 
 import {
-  funcHexToString,
-  funcStringToHex,
-  funcString2Hex,
-  funcNumber2Hex,
-  funcHex2Number
+  LEDGER_FLAGS,
+  FLAGS as Flags,
+  funcHexToString as hexToString,
+  funcStringToHex as stringToHex,
+  funcString2Hex as string2Hex,
+  funcNumber2Hex as number2Hex,
+  funcHex2Number as hex2Number,
+  funcIsEmpty as isEmpty
 } from "swtc-chains"
-const hexToString = funcHexToString
-const stringToHex = funcStringToHex
-const string2Hex = funcString2Hex
-const number2Hex = funcNumber2Hex
-const hex2Number = funcHex2Number
 import { Factory as WalletFactory } from "swtc-wallet"
 const extend = Object.assign
-import _ from "lodash"
 import utf8 from "utf8"
 import Bignumber from "bignumber.js"
 
@@ -29,50 +26,9 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
 
   const getFee = Wallet.getFee
 
-  const getAccountZero = Wallet.getAccountZero
-
-  const getAccountOne = Wallet.getAccountOne
-
   const makeCurrency = Wallet.makeCurrency
 
   const makeAmount = Wallet.makeAmount
-
-  // Flags for ledger entries
-  const LEDGER_FLAGS = {
-    // Account Root
-    account_root: {
-      PasswordSpent: 0x00010000, // True, if password set fee is spent.
-      RequireDestTag: 0x00020000, // True, to require a DestinationTag for payments.
-      RequireAuth: 0x00040000, // True, to require a authorization to hold IOUs.
-      DisallowSWT: 0x00080000, // True, to disallow sending SWT.
-      DisableMaster: 0x00100000 // True, force regular key.
-    },
-
-    // Offer
-    offer: {
-      Passive: 0x00010000,
-      Sell: 0x00020000 // True, offer was placed as a sell.
-    },
-
-    // Skywell State
-    state: {
-      LowReserve: 0x00010000, // True, if entry counts toward reserve.
-      HighReserve: 0x00020000,
-      LowAuth: 0x00040000,
-      HighAuth: 0x00080000,
-      LowNoSkywell: 0x00100000,
-      HighNoSkywell: 0x00200000
-    }
-  }
-
-  const Flags = {
-    OfferCreate: {
-      Passive: 0x00010000,
-      ImmediateOrCancel: 0x00020000,
-      FillOrKill: 0x00040000,
-      Sell: 0x00080000
-    }
-  }
 
   /**
    * check {value: '', currency:'', issuer: ''}
@@ -689,7 +645,7 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
             }
           }
           effect.seq = node.fields.Sequence
-        } else if (tx.Account === account && !_.isEmpty(node.fieldsPrev)) {
+        } else if (tx.Account === account && !isEmpty(node.fieldsPrev)) {
           // 5. offer_bought
           effect.effect = "offer_bought"
           effect.counterparty = {
@@ -782,7 +738,7 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
         }
       }
       // add effect
-      if (!_.isEmpty(effect)) {
+      if (!isEmpty(effect)) {
         if (
           node.diffType === "DeletedNode" &&
           effect.effect !== "offer_bought"
@@ -877,16 +833,6 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
     return result
   }
 
-  function arraySet(count, value) {
-    const a = new Array(count)
-
-    for (let i = 0; i < count; i++) {
-      a[i] = value
-    }
-
-    return a
-  }
-
   const parseKey = function(key) {
     const parts = key.split(":")
     if (parts.length !== 2) return null
@@ -974,8 +920,6 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
   }
 
   return {
-    hexToString,
-    stringToHex,
     isValidAmount,
     isValidAmount0,
     parseAmount,
@@ -987,20 +931,17 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
     affectedBooks,
     processTx,
     LEDGER_STATES,
-    ACCOUNT_ZERO: Wallet.getAccountZero(),
-    ACCOUNT_ONE: Wallet.getAccountOne(),
-    arraySet,
     // for jcc
     // getChains,
     getCurrency,
     getFee,
-    getAccountZero,
-    getAccountOne,
     parseKey,
     // from remote
     ToAmount,
     // from transaction
     MaxAmount,
+    hexToString,
+    stringToHex,
     // from contract
     string2Hex,
     number2Hex,
