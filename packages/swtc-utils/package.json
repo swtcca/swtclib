@@ -1,6 +1,6 @@
 {
   "name": "swtc-utils",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "swtc utils",
   "main": "src/utils.js",
   "directories": {
@@ -8,13 +8,14 @@
     "test": "test"
   },
   "scripts": {
+    "tsc": "tsc",
+    "tslint": "tslint tssrc/*.ts",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c src/*.js",
-    "prettier:tabs": "prettier --use-tabs --write package.json src/*.js",
-    "eslint": "eslint src/*.js",
+    "prettier:check": "prettier -c tssrc/*.ts",
+    "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "test": "mocha \"test/test_utils.js\"",
-    "test:extended": "mocha \"test/*.js\"",
+    "test:api": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test_utils.js"
   },
   "repository": {
@@ -35,18 +36,28 @@
   "dependencies": {
     "bignumber.js": "^8.1.1",
     "lodash": "^4.17.11",
+    "swtc-chains": "^2.0.0",
     "swtc-wallet": "^2.0.0",
     "url": "^0.11.0",
     "utf8": "^2.1.2"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-typescript": "^2.1.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.7.1",
     "chai": "^4.2.0",
     "chai-json-schema": "^1.5.1",
-    "eslint": "^6.1.0",
-    "extend": "^3.0.2",
+    "jest": "^25.0.0",
     "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
     "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1"
+    "pretty-quick": "^1.11.1",
+    "rollup": "^1.29.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "ts-jest": "^25.0.0",
+    "tslint": "^5.19.0",
+    "typescript": "^3.4.5"
   }
 }

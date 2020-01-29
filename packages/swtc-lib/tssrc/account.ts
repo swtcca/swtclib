@@ -23,14 +23,14 @@ class Account extends EventEmitter {
 
     this.on("newListener", function(account, listener) {
       if (account === "removeListener") return
-      if (!utils.isValidAddress(account, this._token)) {
+      if (!utils.isValidAddress(account)) {
         this.account = new Error("invalid account")
         return this
       }
       this._accounts[account] = listener
     })
     this.on("removeListener", function(account) {
-      if (!utils.isValidAddress(account, this._token)) {
+      if (!utils.isValidAddress(account)) {
         this.account = new Error("invalid account")
         return this
       }
@@ -45,7 +45,7 @@ class Account extends EventEmitter {
     const accounts = utils.affectedAccounts(data)
     for (const account of accounts) {
       const callback = this._accounts[accounts[account]]
-      const _tx = utils.processTx(data, accounts[account], this._token)
+      const _tx = utils.processTx(data, accounts[account])
       if (callback) {
         callback(_tx)
       }

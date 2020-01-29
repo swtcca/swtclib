@@ -2,26 +2,27 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "pretty": true,
-    "lib": ["es2015", "dom"],
-    "target": "es6",
+    "lib": ["es2015"],
     "outDir": "src",
     "rootDir": "tssrc",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
-    "strictNullChecks": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
     "removeComments": false,
     "preserveConstEnums": false,
     "suppressImplicitAnyIndexErrors": false,
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
-    "strict": false,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "skipLibCheck": true
+    "strict": false,
+    "baseUrl": "."
   },
   "include": ["tssrc"]
 }
