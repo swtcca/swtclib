@@ -69,3 +69,5 @@ typings/
 **/dist
 **/package-lock.json
 src/
+cjs/
+esm/

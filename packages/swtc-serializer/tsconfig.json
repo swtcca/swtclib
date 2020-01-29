@@ -3,13 +3,14 @@
     "target": "es2015",
     "lib": ["es2015"],
     "outDir": "lib",
-    "rootDir": "src",
+    "rootDir": "tssrc",
     "module": "commonjs",
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "sourceMap": true,
     "experimentalDecorators": true,
     "sourceMap": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["tssrc"]
 }

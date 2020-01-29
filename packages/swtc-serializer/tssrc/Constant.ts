@@ -149,7 +149,10 @@ const TRANSACTION_TYPES = {
   SignerListSet: [
     207,
     ...BASE,
-    ...[["SignerQuorum", REQUIRED], ["SignerEntries", OPTIONAL]]
+    ...[
+      ["SignerQuorum", REQUIRED],
+      ["SignerEntries", OPTIONAL]
+    ]
   ]
 }
 

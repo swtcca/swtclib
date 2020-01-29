@@ -1,24 +1,27 @@
 {
   "name": "swtc-wallet",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "swtc wallet library",
-  "main": "src/index.js",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
   "unpkg": "dist/swtc-wallet.js",
   "jsdelivr": "dist/swtc-wallet.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "clean": "rm -fr esm cjs dist src package-lock.json node_modules",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tsc": "tsc",
+    "rollup": "rollup -c",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha \"test/*.js\"",
     "build:dev": "tsc && webpack --mode development",
-    "build": "tsc && webpack",
-    "test:extended": "mocha \"test/*.js\"",
+    "build": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json; tsc; webpack",
+    "test:api": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },
   "repository": {
@@ -37,16 +40,25 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "swtc-chains": "^2.0.2",
-    "swtc-keypairs": "^1.0.0"
+    "swtc-chains": "^2.1.0",
+    "swtc-keypairs": "^1.1.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-json": "^4.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-typescript": "^2.1.0",
+    "@types/jest": "^24.9.1",
+    "@types/node": "^12.7.1",
     "chai": "^4.2.0",
-    "eslint": "^6.1.0",
+    "jest": "^25.0.0",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
+    "rollup": "^1.29.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "ts-jest": "^25.0.0",
     "tslint": "^5.19.0",
     "typescript": "^3.4.5",
     "webpack": "^4.29.3",

@@ -18,7 +18,7 @@
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "test": "npm run bootstrap && npm run lint && npm run testonly",
-    "testonly": "lerna run tsc --stream && lerna run test --stream",
+    "testonly": "lerna run tsc --stream && lerna run build --stream && lerna run test --stream",
     "testreal": "lerna run tsc --stream && lerna run test:api --stream"
   },
   "devDependencies": {

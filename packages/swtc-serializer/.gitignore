@@ -65,3 +65,6 @@ dist
 libre
 package-lock.json
 lib
+src
+esm
+cjs

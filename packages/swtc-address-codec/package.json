@@ -20,6 +20,7 @@
     "cjs"
   ],
   "scripts": {
+    "clean": "rm -fr esm cjs dist src package-lock.json node_modules",
     "tsc": "tsc",
     "rollup": "rollup -c",
     "build": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",

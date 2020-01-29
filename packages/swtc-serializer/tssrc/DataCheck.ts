@@ -54,8 +54,8 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       typeof code === "string" &&
       Boolean(
         code &&
-        code.length >= MIN_CURRENCY_LEN &&
-        code.length <= MAX_CURRENCY_LEN
+          code.length >= MIN_CURRENCY_LEN &&
+          code.length <= MAX_CURRENCY_LEN
       )
     )
   }
