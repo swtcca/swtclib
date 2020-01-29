@@ -1,42 +1,44 @@
 /**
- * Created by Administrator on 2016/11/20.
+ * typescriptize on  2020/01/20.
  */
-var extend = require("extend")
-var WalletFactory = require("swtc-wallet").Factory
-var _extend = require("lodash/extend")
-var _ = require("lodash")
-var utf8 = require("utf8")
-const SWTCCHAINS = require("swtc-chains")
-var Bignumber = require("bignumber.js")
 
-function Factory(Wallet = WalletFactory()) {
+import {
+  funcHexToString,
+  funcStringToHex,
+  funcString2Hex,
+  funcNumber2Hex,
+  funcHex2Number
+} from "swtc-chains"
+const hexToString = funcHexToString
+const stringToHex = funcStringToHex
+const string2Hex = funcString2Hex
+const number2Hex = funcNumber2Hex
+const hex2Number = funcHex2Number
+import { Factory as WalletFactory } from "swtc-wallet"
+const extend = Object.assign
+import _ from "lodash"
+import utf8 from "utf8"
+import Bignumber from "bignumber.js"
+
+export function Factory(Wallet = WalletFactory()) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("utils needs a Wallet class")
   }
 
-  // from jcc
-  var getChains = function(chain_or_token = "SWT") {
-    return SWTCCHAINS.filter(
-      chain =>
-        chain.code.toLowerCase === chain_or_token.toLowerCase() ||
-        chain.currency.toLowerCase() === chain_or_token.toLowerCase()
-    )
-  }
+  const getCurrency = Wallet.getCurrency
 
-  var getCurrency = Wallet.getCurrency
+  const getFee = Wallet.getFee
 
-  var getFee = Wallet.getFee
+  const getAccountZero = Wallet.getAccountZero
 
-  var getAccountZero = Wallet.getAccountZero
+  const getAccountOne = Wallet.getAccountOne
 
-  var getAccountOne = Wallet.getAccountOne
+  const makeCurrency = Wallet.makeCurrency
 
-  var makeCurrency = Wallet.makeCurrency
-
-  var makeAmount = Wallet.makeAmount
+  const makeAmount = Wallet.makeAmount
 
   // Flags for ledger entries
-  var LEDGER_FLAGS = {
+  const LEDGER_FLAGS = {
     // Account Root
     account_root: {
       PasswordSpent: 0x00010000, // True, if password set fee is spent.
@@ -63,59 +65,13 @@ function Factory(Wallet = WalletFactory()) {
     }
   }
 
-  var Flags = {
+  const Flags = {
     OfferCreate: {
       Passive: 0x00010000,
       ImmediateOrCancel: 0x00020000,
       FillOrKill: 0x00040000,
       Sell: 0x00080000
     }
-  }
-
-  function hexToString(h) {
-    var a = []
-    var i = 0
-
-    if (h.length % 2) {
-      a.push(String.fromCharCode(parseInt(h.substring(0, 1), 16)))
-      i = 1
-    }
-
-    for (; i < h.length; i += 2) {
-      a.push(String.fromCharCode(parseInt(h.substring(i, i + 2), 16)))
-    }
-
-    return a.join("")
-  }
-
-  function stringToHex(s) {
-    var result = ""
-    for (var i = 0; i < s.length; i++) {
-      var b = s.charCodeAt(i)
-      result += b < 16 ? "0" + b.toString(16) : b.toString(16)
-    }
-    return result
-  }
-
-  function string2Hex(s) {
-    var zero =
-      "0000000000000000000000000000000000000000000000000000000000000000"
-    var result = ""
-    for (var i = 0; i < s.length; i++) {
-      var b = s.charCodeAt(i)
-      result += b < 16 ? "0" + b.toString(16) : b.toString(16)
-    }
-    if (result.length < 64) result += zero.substr(result.length)
-    return result
-  }
-  function number2Hex(n) {
-    n = n.toString(16)
-    var zero =
-      "0000000000000000000000000000000000000000000000000000000000000000"
-    return zero.substr(0, 64 - n.length) + n
-  }
-  function hex2Number(h) {
-    return parseInt(h, 16)
   }
 
   /**
@@ -138,7 +94,7 @@ function Factory(Wallet = WalletFactory()) {
     if (!amount.currency || !isValidCurrency(amount.currency)) {
       return false
     }
-    let currency = getCurrency()
+    const currency = getCurrency()
     // native currency issuer is empty
     if (amount.currency === currency && amount.issuer !== "") {
       return false
@@ -163,7 +119,7 @@ function Factory(Wallet = WalletFactory()) {
     if (!amount.currency || !isValidCurrency(amount.currency)) {
       return false
     }
-    let currency = getCurrency()
+    const currency = getCurrency()
     // native currency issuer is empty
     if (amount.currency === currency && amount.issuer !== "") {
       return false
@@ -183,9 +139,9 @@ function Factory(Wallet = WalletFactory()) {
    */
   function parseAmount(amount) {
     if (typeof amount === "string" && !Number.isNaN(Number(amount))) {
-      var value = String(new Bignumber(amount).dividedBy(1000000.0))
-      let currency = getCurrency()
-      return { value: value, currency: currency, issuer: "" }
+      const value = String(new Bignumber(amount).dividedBy(1000000.0))
+      const currency = getCurrency()
+      return { value, currency, issuer: "" }
     } else if (typeof amount === "object" && isValidAmount(amount)) {
       return amount
     } else {
@@ -193,7 +149,7 @@ function Factory(Wallet = WalletFactory()) {
     }
   }
 
-  var CURRENCY_RE = /^([a-zA-Z0-9]{3,6}|[A-F0-9]{40})$/
+  const CURRENCY_RE = /^([a-zA-Z0-9]{3,6}|[A-F0-9]{40})$/
   function isValidCurrency(currency) {
     if (!currency || typeof currency !== "string" || currency === "") {
       return false
@@ -201,9 +157,9 @@ function Factory(Wallet = WalletFactory()) {
     return CURRENCY_RE.test(currency)
   }
 
-  var LEDGER_STATES = ["current", "closed", "validated"]
+  const LEDGER_STATES = ["current", "closed", "validated"]
 
-  var HASH__RE = /^[A-F0-9]{64}$/
+  const HASH__RE = /^[A-F0-9]{64}$/
   /**
    * hash check for tx and ledger hash
    * @param hash
@@ -222,9 +178,9 @@ function Factory(Wallet = WalletFactory()) {
    * @returns {*}
    */
   function getTypeNode(node) {
-    var NODE_TYPES = ["CreatedNode", "ModifiedNode", "DeletedNode"]
-    for (var index in NODE_TYPES) {
-      var type = NODE_TYPES[index]
+    const NODE_TYPES = ["CreatedNode", "ModifiedNode", "DeletedNode"]
+    for (const index in NODE_TYPES) {
+      const type = NODE_TYPES[index]
       if (node.hasOwnProperty(type)) {
         return node[type]
       }
@@ -233,9 +189,9 @@ function Factory(Wallet = WalletFactory()) {
   }
 
   function processAffectNode(an) {
-    var result = {}
-
-    ;["CreatedNode", "ModifiedNode", "DeletedNode"].forEach(function(x) {
+    const result: any = {}
+    const EFFECTS = ["CreatedNode", "ModifiedNode", "DeletedNode"]
+    EFFECTS.forEach(function(x) {
       if (an[x]) result.diffType = x
     })
 
@@ -246,7 +202,7 @@ function Factory(Wallet = WalletFactory()) {
     result.entryType = an.LedgerEntryType
     result.ledgerIndex = an.LedgerIndex
 
-    result.fields = _extend({}, an.PreviousFields, an.NewFields, an.FinalFields)
+    result.fields = extend({}, an.PreviousFields, an.NewFields, an.FinalFields)
     result.fieldsPrev = an.PreviousFields || {}
     result.fieldsNew = an.NewFields || {}
     result.fieldsFinal = an.FinalFields || {}
@@ -261,7 +217,7 @@ function Factory(Wallet = WalletFactory()) {
    * @returns {Array}
    */
   function affectedAccounts(tx) {
-    var accounts = {}
+    const accounts = {}
     accounts[tx.transaction.Account] = 1
 
     if (tx.transaction.Destination) {
@@ -270,10 +226,10 @@ function Factory(Wallet = WalletFactory()) {
     if (tx.transaction.LimitAmount) {
       accounts[tx.transaction.LimitAmount.issuer] = 1
     }
-    var meta = tx.meta
+    const meta = tx.meta
     if (meta && meta.TransactionResult === "tesSUCCESS") {
       meta.AffectedNodes.forEach(function(n) {
-        var node = processAffectNode(n)
+        const node = processAffectNode(n)
         if (node.entryType === "AccountRoot" && node.fields.Account) {
           accounts[node.fields.Account] = 1
         }
@@ -300,34 +256,34 @@ function Factory(Wallet = WalletFactory()) {
    * @returns {Array}
    */
   function affectedBooks(tx) {
-    var data = tx.meta
+    const data = tx.meta
     if (typeof data !== "object") return []
     if (!Array.isArray(data.AffectedNodes)) return []
 
-    let currency = getCurrency()
-    var books = {}
-    for (var i = 0; i < data.AffectedNodes.length; ++i) {
-      var node = getTypeNode(data.AffectedNodes[i])
+    const currency = getCurrency()
+    const books = {}
+    for (let i = 0; i < data.AffectedNodes.length; ++i) {
+      const node = getTypeNode(data.AffectedNodes[i])
       if (!node || node.LedgerEntryType !== "Offer") {
         continue
       }
-      var fields = extend(
+      const fields = extend(
         {},
         node.PreviousFields,
         node.NewFields,
         node.FinalFields
       )
-      var gets = parseAmount(fields.TakerGets)
-      var pays = parseAmount(fields.TakerPays)
-      var getsKey =
+      const gets = parseAmount(fields.TakerGets)
+      const pays = parseAmount(fields.TakerPays)
+      const getsKey =
         gets.currency === currency
           ? gets.currency
           : gets.currency + "/" + gets.issuer
-      var paysKey =
+      const paysKey =
         pays.currency === currency
           ? pays.currency
           : pays.currency + "/" + pays.issuer
-      var key = getsKey + ":" + paysKey
+      let key = getsKey + ":" + paysKey
 
       if (tx.transaction.Flags & LEDGER_FLAGS.offer.Sell) {
         // sell
@@ -438,8 +394,8 @@ function Factory(Wallet = WalletFactory()) {
   }
 
   function getPrice(effect, funded) {
-    var g = effect.got ? effect.got : effect.pays
-    var p = effect.paid ? effect.paid : effect.gets
+    const g = effect.got ? effect.got : effect.pays
+    const p = effect.paid ? effect.paid : effect.gets
     if (!funded) {
       return AmountRatio(g, p)
     } else {
@@ -447,9 +403,9 @@ function Factory(Wallet = WalletFactory()) {
     }
   }
   function formatArgs(args) {
-    var newArgs = []
+    const newArgs = []
     if (args)
-      for (var i = 0; i < args.length; i++) {
+      for (let i = 0; i < args.length; i++) {
         newArgs.push(hexToString(args[i].Arg.Parameter))
       }
     return newArgs
@@ -463,10 +419,10 @@ function Factory(Wallet = WalletFactory()) {
    * @param account
    */
   function processTx(txn, account) {
-    var tx = txn.tx || txn.transaction || txn,
-      meta = txn.meta
+    const tx = txn.tx || txn.transaction || txn
+    const meta = txn.meta
     // basic information
-    var result = {}
+    const result: any = {}
     result.date = (tx.date || tx.Timestamp) + 0x386d4380 // unix time
     result.hash = tx.hash
     result.type = txnType(tx, account)
@@ -537,7 +493,7 @@ function Factory(Wallet = WalletFactory()) {
           result.seq = tx.Sequence
           result.destination = tx.Destination
           result.amount = Number(tx.Amount)
-          var method = hexToString(tx.MethodSignature)
+          const method = hexToString(tx.MethodSignature)
           result.func = method.substring(0, method.indexOf("(")) // 函数名
           result.func_parms = method
             .substring(method.indexOf("(") + 1, method.indexOf(")"))
@@ -579,9 +535,9 @@ function Factory(Wallet = WalletFactory()) {
     }
     // add memo
     if (Array.isArray(tx.Memos) && tx.Memos.length > 0) {
-      for (var m = 0; m < tx.Memos.length; ++m) {
-        var memo = tx.Memos[m].Memo
-        for (var property in memo) {
+      for (let m = 0; m < tx.Memos.length; ++m) {
+        const memo = tx.Memos[m].Memo
+        for (const property in memo) {
           try {
             memo[property] = utf8.decode(hexToString(memo[property]))
           } catch (e) {
@@ -611,15 +567,15 @@ function Factory(Wallet = WalletFactory()) {
 
     // process effects
     meta.AffectedNodes.forEach(function(n) {
-      var node = processAffectNode(n)
-      var effect = {}
+      const node = processAffectNode(n)
+      const effect: any = {}
       /**
        * TODO now only get offer related effects, need to process other entry type
        */
       if (node && node.entryType === "Offer") {
         // for new and cancelled offers
-        var fieldSet = node.fields
-        var sell = node.fields.Flags & LEDGER_FLAGS.offer.Sell
+        let fieldSet = node.fields
+        const sell = node.fields.Flags & LEDGER_FLAGS.offer.Sell
 
         // current account offer
         if (node.fields.Account === account) {
@@ -733,9 +689,8 @@ function Factory(Wallet = WalletFactory()) {
             }
           }
           effect.seq = node.fields.Sequence
-        }
-        // 5. offer_bought
-        else if (tx.Account === account && !_.isEmpty(node.fieldsPrev)) {
+        } else if (tx.Account === account && !_.isEmpty(node.fieldsPrev)) {
+          // 5. offer_bought
           effect.effect = "offer_bought"
           effect.counterparty = {
             account: node.fields.Account,
@@ -754,15 +709,15 @@ function Factory(Wallet = WalletFactory()) {
         }
         // add price
         if ((effect.gets && effect.pays) || (effect.got && effect.paid)) {
-          var created =
+          const created =
             effect.effect === "offer_created" && effect.type === "buy"
-          var funded =
+          const funded =
             effect.effect === "offer_funded" && effect.type === "bought"
-          var cancelled =
+          const cancelled =
             effect.effect === "offer_cancelled" && effect.type === "buy"
-          var bought =
+          const bought =
             effect.effect === "offer_bought" && effect.type === "bought"
-          var partially_funded =
+          const partially_funded =
             effect.effect === "offer_partially_funded" &&
             effect.type === "bought"
           effect.price = getPrice(
@@ -861,8 +816,8 @@ function Factory(Wallet = WalletFactory()) {
      * TODO check cross gateway when parse more effect, specially trust related effects, now ignore it
      *
      */
-    for (var i = 0; i < result.effects.length; i++) {
-      var e = result.effects[i]
+    for (let i = 0; i < result.effects.length; i++) {
+      const e = result.effects[i]
       if (result.rate && e.effect === "offer_bought") {
         if (e.got && result.pays && e.got.currency === result.pays.currency)
           // 涉及多路径
@@ -923,43 +878,43 @@ function Factory(Wallet = WalletFactory()) {
   }
 
   function arraySet(count, value) {
-    var a = new Array(count)
+    const a = new Array(count)
 
-    for (var i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       a[i] = value
     }
 
     return a
   }
 
-  var parseKey = function(key) {
-    var parts = key.split(":")
+  const parseKey = function(key) {
+    const parts = key.split(":")
     if (parts.length !== 2) return null
-    var currency = getCurrency()
+    const currency = getCurrency()
 
     function parsePart(part) {
       if (part === currency) {
         return {
-          currency: currency,
+          currency,
           issuer: ""
         }
       }
-      var _parts = part.split("/")
+      const _parts = part.split("/")
       if (_parts.length !== 2) return null
       if (!isValidCurrency(_parts[0])) return null
-      if (!Wallet.isValidAddress(_parts[1], currency)) return null
+      if (!Wallet.isValidAddress(_parts[1])) return null
       return {
         currency: _parts[0],
         issuer: _parts[1]
       }
     }
 
-    var gets = parsePart(parts[0])
-    var pays = parsePart(parts[1])
+    const gets = parsePart(parts[0])
+    const pays = parsePart(parts[1])
     if (!gets || !pays) return null
     return {
-      gets: gets,
-      pays: pays
+      gets,
+      pays
     }
   }
 
@@ -1000,7 +955,7 @@ function Factory(Wallet = WalletFactory()) {
 
   function getTypes(abi, foo) {
     try {
-      let filtered = abi
+      const filtered = abi
         .filter(function(json) {
           return json.name === foo
         })
@@ -1036,7 +991,7 @@ function Factory(Wallet = WalletFactory()) {
     ACCOUNT_ONE: Wallet.getAccountOne(),
     arraySet,
     // for jcc
-    getChains,
+    // getChains,
     getCurrency,
     getFee,
     getAccountZero,
@@ -1056,4 +1011,6 @@ function Factory(Wallet = WalletFactory()) {
     makeAmount
   }
 }
-module.exports = { Factory, utils: Factory() }
+
+const utils = Factory()
+export { utils }

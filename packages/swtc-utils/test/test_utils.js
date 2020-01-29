@@ -2,9 +2,9 @@ const chai = require("chai")
 const expect = chai.expect
 const config = require("../../.conf/config")
 const { testAddress, testCreateHash } = config
-let utils = require("../src/utils").utils
+let utils = require("..").utils
 let Wallet_BWT = require("swtc-wallet").Factory("bwt")
-let utils_bwt = require("../src/utils").Factory(Wallet_BWT)
+let utils_bwt = require("..").Factory(Wallet_BWT)
 let txData = require("./tx_data")
 describe("test utils", function() {
   describe("test hexToString", function() {

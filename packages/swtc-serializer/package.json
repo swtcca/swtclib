@@ -45,6 +45,7 @@
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c src/**/*.ts",
     "tsc": "tsc",
+    "build": "tsc",
     "tslint": "tslint src/**/*.ts",
     "test": "tsc && mocha test/*.spec.js",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
