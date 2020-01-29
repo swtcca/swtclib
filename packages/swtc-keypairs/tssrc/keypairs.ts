@@ -129,7 +129,7 @@ function verifyTx(messageHex, signature, publicKey) {
   return select(algorithm).verifyTx(messageHex, signature, publicKey)
 }
 
-function Factory(chain_or_token = "jingtum") {
+export function Factory(chain_or_token = "jingtum") {
   const addressCodec = AddressCodecFactory(chain_or_token)
   function generateSeed(
     options: {
@@ -207,6 +207,3 @@ function Factory(chain_or_token = "jingtum") {
     deriveNodeAddress
   }
 }
-
-export { Factory }
-export const Keypairs = Factory()
