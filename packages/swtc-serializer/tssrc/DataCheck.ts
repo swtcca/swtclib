@@ -17,70 +17,20 @@
  * Data functions used to check the valid data types.
  */
 
+import {
+  allNumeric,
+  isCurrency,
+  isCustomTum,
+  isFloat,
+  isLetterNumer,
+  isRelation,
+  isTumCode
+} from "swtc-chains"
 import { Factory as WalletFactory } from "swtc-wallet"
-import { MAX_CURRENCY_LEN, MIN_CURRENCY_LEN, TUM_NAME_LEN } from "./Constant"
 
 const Factory = (Wallet = WalletFactory("jingtum")) => {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("Datacheck need a Wallet class")
-  }
-
-  const allNumeric = (text: any): boolean => {
-    // assign a string with numbers (0-9) in the HTML form
-    const numbers = /^[0-9]+$/
-    // Check if the input contains all numbers.
-    return Boolean(String(text).match(numbers))
-  }
-
-  /*
-   * Decide if the input is a valid string
-   * for a float value.
-   */
-  const isFloat = (val: any): boolean => {
-    const floatRegex = /^-?\d+(?:[.,]\d*?)?$/
-    return Boolean(floatRegex.test(val) && !Number.isNaN(parseFloat(val)))
-  }
-
-  // Detect if the string contains only
-  // numbers and capital letters.
-  const isLetterNumer = (str: any): boolean => {
-    const numbers = /^[0-9A-Z]+$/i
-    return Boolean(String(str).match(numbers))
-  }
-
-  // return true if the code is 3 letters/numbers
-  const isCurrency = (code: any): boolean => {
-    return (
-      typeof code === "string" &&
-      Boolean(
-        code &&
-          code.length >= MIN_CURRENCY_LEN &&
-          code.length <= MAX_CURRENCY_LEN
-      )
-    )
-  }
-
-  // return true if the code is 40 letters/numbers
-  const isCustomTum = (code: any): boolean => {
-    return isLetterNumer(code) && String(code).length === TUM_NAME_LEN
-  }
-
-  /*
-   * Return true is the input string
-   * is a valid TUM code
-   */
-  const isTumCode = (code: any): boolean => {
-    // input must be defined and non-null
-    // Make sure if the code meets the coding rule
-    // tum: Custom tum, 40 capital letters or number
-    return typeof code === "string" && (isCurrency(code) || isCustomTum(code))
-  }
-
-  /*
-   * Only valid for freeze and authorize
-   */
-  const isRelation = (str: any): boolean => {
-    return typeof str === "string" && (str === "freeze" || str === "autorize")
   }
 
   /*
@@ -150,9 +100,9 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
     isRelation,
     isTumCode,
     isCurrency,
+    isLetterNumer,
     isAmount,
-    isBalance,
-    isLetterNumer
+    isBalance
   }
 }
 

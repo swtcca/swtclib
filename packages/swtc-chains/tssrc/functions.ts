@@ -1,4 +1,4 @@
-import { Sequence } from "./types"
+export type Sequence = number[] | Buffer | Uint8Array
 import { ZERO, CHAINS } from "./constants"
 
 export function funcGetChain(chain_or_token: string): any {
