@@ -9,8 +9,8 @@
 
 import assert = require("assert")
 import extend = require("extend")
+import { FIELDS_MAP, INVERSE_FIELDS_MAP, TYPES_MAP } from "swtc-chains"
 import { Factory as WalletFactory } from "swtc-wallet"
-import { FIELDS_MAP, INVERSE_FIELDS_MAP, TYPES_MAP } from "./Constant"
 import { Factory as dataCheckFactory } from "./DataCheck"
 import { Factory as tumFactory } from "./TumAmount"
 import STAccount from "./types/STAccount"

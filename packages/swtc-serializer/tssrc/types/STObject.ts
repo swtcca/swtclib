@@ -1,4 +1,4 @@
-import { INVERSE_FIELDS_MAP } from "../Constant"
+import { INVERSE_FIELDS_MAP } from "swtc-chains"
 import { sort_fields } from "../Utils"
 import SerializedType from "./SerializedType"
 

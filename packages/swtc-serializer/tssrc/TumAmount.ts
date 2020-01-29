@@ -6,7 +6,7 @@ import Bignumber from "bignumber.js"
 import BigInteger = require("bn-plus.js")
 import extend = require("extend")
 import { Factory as WalletFactory } from "swtc-wallet"
-import { AMOUNT_CONSTS } from "./Constant"
+import { AMOUNT_CONSTS } from "swtc-chains"
 import { Factory as isTumCodeFactory } from "./DataCheck"
 import { IAmount } from "./model"
 import { isNumber } from "./Utils"

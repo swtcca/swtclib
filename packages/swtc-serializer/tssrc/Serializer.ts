@@ -28,7 +28,7 @@ import {
   METADATA,
   REQUIRED,
   TRANSACTION_TYPES
-} from "./Constant"
+} from "swtc-chains"
 import { Factory as stypesFactory } from "./TypesUtils"
 import {
   get_char_from_num,
