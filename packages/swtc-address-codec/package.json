@@ -1,26 +1,28 @@
 {
   "name": "swtc-address-codec",
-  "version": "3.0.4",
+  "version": "3.1.0",
   "description": "encode decode base58 SWTC identifiers",
-  "main": "index.js",
-  "module": "dist/address-codec.esm.js",
-  "types": "dist/address-codec.d.ts",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
   "license": "ISC",
   "dependencies": {
     "base-x": "^3.0.7",
     "create-hash": "^1.2.0",
-    "swtc-chains": "^2.0.0"
+    "swtc-chains": "^2.1.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/swtcca/swtclib.git"
   },
   "files": [
-    "dist/*"
+    "dist",
+    "esm",
+    "cjs"
   ],
   "scripts": {
     "tsc": "tsc",
-    "build": "tsc; rollup -c",
+    "rollup": "rollup -c",
+    "build": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",

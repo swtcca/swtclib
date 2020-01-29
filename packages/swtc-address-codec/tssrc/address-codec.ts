@@ -268,5 +268,3 @@ export function Factory(chain_or_token = "jingtum") {
     decodeAddress: decodeAccountID
   }
 }
-
-export const addressCodec = Factory()
