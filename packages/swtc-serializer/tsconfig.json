@@ -10,6 +10,7 @@
     "noUnusedParameters": true,
     "sourceMap": true,
     "experimentalDecorators": true,
+    "removeComments": true,
     "sourceMap": true
   },
   "include": ["tssrc"]

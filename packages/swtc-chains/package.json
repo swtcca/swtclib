@@ -16,10 +16,10 @@
   ],
   "scripts": {
     "clean": "rm -fr esm cjs dist src package-lock.json node_modules",
-    "tsc": "tsc",
+    "build": "rollup -c",
     "rollup": "rollup -c",
-    "tslint": "tslint src/*.ts",
-    "build": "tsc -p tsconfig.cjs.json;  tsc -p tsconfig.esm.json",
+    "tslint": "tslint tssrc/*.ts",
+    "tsc": "tsc -p tsconfig.cjs.json;  tsc -p tsconfig.esm.json",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",

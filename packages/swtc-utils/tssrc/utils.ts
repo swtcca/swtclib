@@ -17,7 +17,7 @@ const extend = Object.assign
 import utf8 from "utf8"
 import Bignumber from "bignumber.js"
 
-export function Factory(Wallet = WalletFactory("jingtum")) {
+function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("utils needs a Wallet class")
   }
@@ -954,4 +954,4 @@ export function Factory(Wallet = WalletFactory("jingtum")) {
 }
 
 const utils = Factory()
-export { utils }
+export { Factory, utils }
