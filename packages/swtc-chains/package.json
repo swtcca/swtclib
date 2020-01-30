@@ -1,6 +1,6 @@
 {
   "name": "swtc-chains",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "swtc chain information",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -46,6 +46,5 @@
   "readmeFilename": "README.md",
   "engines": {
     "node": ">=8"
-  },
-  "dependencies": {}
+  }
 }
