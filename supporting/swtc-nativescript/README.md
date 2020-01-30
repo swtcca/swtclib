@@ -6,6 +6,6 @@ npm install swtc-nativescript
 
 ...require('nativescript').aliases,
 
-
 ## replace node_modules/swtc-lib/src/server.js
+
 with src/server.js
