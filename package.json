@@ -14,7 +14,7 @@
     "clean": "lerna clean --yes",
     "cleanall": "lerna clean --yes && rm -fr node_modules package-lock.json",
     "build": "lerna run tslint --stream && lerna run tsc --stream && lerna run build --stream",
-    "lint": "lerna run tslint --stream && lerna run tsc --stream && lerna run eslint --stream && lerna run prettier:check --stream && lerna run build --stream",
+    "lint": "lerna run tslint --stream && lerna run tsc --stream && lerna run prettier:check --stream && lerna run build --stream",
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "test": "npm run bootstrap && npm run lint && npm run testonly",
