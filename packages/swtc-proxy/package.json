@@ -1,6 +1,6 @@
 {
   "name": "swtc-proxy",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "rest api to jingtum blockchain",
   "keywords": [
     "rest",
@@ -40,8 +40,7 @@
     "url": "https://github.com/swtcca/swtclib/issues"
   },
   "dependencies": {
-    "@vue/reactivity": "https://swtchelper.netlify.com/vue-reactivity-3.0.0.tgz",
-    "@vue/runtime-core": "https://swtchelper.netlify.com/vue-runtime-core-3.0.0.tgz",
+    "@vue/runtime-core": "3.0.0-alpha.3",
     "chalk": "^3.0.0",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.2.1",

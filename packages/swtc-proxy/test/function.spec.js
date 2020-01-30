@@ -39,7 +39,7 @@ describe("Functions Test", function() {
   })
   test(`clear intervals`, async function() {
     functions.state.funcCleanup()
-    await sleep(2000)
+    await sleep(3000)
     expect("cleared").toBe("cleared")
   })
 })
