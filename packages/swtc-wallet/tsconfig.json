@@ -21,6 +21,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
+    "removeComments": true,
     "baseUrl": "."
   },
   "include": ["tssrc"]

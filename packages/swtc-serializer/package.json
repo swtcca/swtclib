@@ -7,6 +7,7 @@
     "extend": "^3.0.2",
     "jsbn": "^1.1.0",
     "sha1": "^1.1.1",
+    "swtc-chains": "^2.1.0",
     "swtc-wallet": "^2.1.0"
   },
   "deprecated": false,
@@ -43,10 +44,10 @@
     "clean": "rm -fr esm cjs dist src lib package-lock.json node_modules",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c src/**/*.ts",
+    "prettier:check": "prettier -c tssrc/**/*.ts",
     "tsc": "tsc",
     "build": "tsc; tsc -p tsconfig.cjs.json",
-    "tslint": "tslint src/**/*.ts",
+    "tslint": "tslint tssrc/**/*.ts",
     "test": "tsc && mocha test/*.spec.js",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"

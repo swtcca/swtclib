@@ -862,7 +862,9 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
 
       request.message.taker_gets = taker_gets
       request.message.taker_pays = taker_pays
-      request.message.taker = options.taker ? options.taker : utils.ACCOUNT_ONE
+      request.message.taker = options.taker
+        ? options.taker
+        : Wallet.getAccountOne()
       request.message.limit = options.limit
       return request
     }

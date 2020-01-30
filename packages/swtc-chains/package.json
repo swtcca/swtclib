@@ -18,7 +18,7 @@
     "clean": "rm -fr esm cjs dist src package-lock.json node_modules",
     "tsc": "tsc",
     "rollup": "rollup -c",
-    "tslint": "tslint src/*.ts",
+    "tslint": "tslint tssrc/*.ts",
     "build": "tsc -p tsconfig.cjs.json;  tsc -p tsconfig.esm.json",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",

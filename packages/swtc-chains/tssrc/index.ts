@@ -13,9 +13,7 @@ export {
   MIN_CURRENCY_LEN,
   MAX_CURRENCY_LEN,
   TUM_NAME_LEN,
-  AMOUNT_CONSTS
-} from "./serializer"
-export {
+  AMOUNT_CONSTS,
   // datacheck
   allNumeric,
   isCustomTum,
@@ -23,9 +21,7 @@ export {
   isTumCode,
   isCurrency,
   isFloat,
-  isLetterNumer
-} from "./serializer"
-export {
+  isLetterNumer,
   // utils
   convertByteArrayToHex,
   convertIntegerToByteArray,
