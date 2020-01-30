@@ -21,6 +21,7 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "removeComments": true,
     "skipLibCheck": true
   },
   "include": ["tssrc"]

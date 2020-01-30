@@ -10,6 +10,13 @@
     "quotemark": [true, "double", "avoid-escape", "jsx-double"],
     "semicolon": false,
     "trailing-comma": false,
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "any"
+      }
+    ],
     "variable-name": [false, "check-format", "allow-leading-underscore"]
   },
   "rulesDirectory": []
