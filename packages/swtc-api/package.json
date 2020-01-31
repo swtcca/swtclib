@@ -2,7 +2,8 @@
   "name": "swtc-api",
   "version": "1.1.29",
   "description": "swtc lib api",
-  "main": "src/index.js",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
   "unpkg": "dist/swtc-api.js",
   "jsdelivr": "dist/swtc-api.js",
   "browser": {
@@ -18,11 +19,11 @@
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
-    "tsc": "tsc",
+    "tsc": "tsc; tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build:dev": "tsc && webpack --mode development",
     "build": "tsc && webpack",
     "tslint": "tslint tssrc/*.ts",
-    "test": "echo \"skipping test for no change\"",
+    "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/test*.js\""
   },
   "repository": {

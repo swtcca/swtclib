@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Transaction } from "swtc-transaction"
-import * as utf8 from "utf8"
+import utf8 from "utf8"
 const Wallet = Transaction.Wallet
 const Serializer = Transaction.Serializer
 const utils = Transaction.utils
@@ -64,18 +64,23 @@ class Remote {
     })
     this._axios.interceptors.response.use(
       response => {
-        // Do something with response data
-        if (response.data.success === false) {
-          // console.log(response.data)
-          return Promise.reject(
-            response.data.message || response.data.result || "something wrong"
-          )
-        }
+        // Do something with response data for jingtum-api
+        // if (response.data && response.data.success && response.data.success === false) {
+        //   Promise.reject(`${response.data.message || response.data.result || "something wrong"}`)
+        // }
         return response
       },
       error => {
         // Do something with response error
-        return Promise.reject(error)
+        if (error.response) {
+          // has response, but return code >= 300
+          return error.response
+        } else if (error.request) {
+          return Promise.reject("did not get response from api")
+        }
+        return Promise.reject(
+          error.message ? error.message : "unknow error got"
+        )
       }
     )
   }

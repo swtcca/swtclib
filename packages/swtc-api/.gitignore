@@ -72,3 +72,5 @@ distrib
 .vscode
 src
 **/*local.js
+esm
+cjs

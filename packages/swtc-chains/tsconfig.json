@@ -20,8 +20,7 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "removeComments": true,
-    "skipLibCheck": true
+    "removeComments": true
   },
   "include": ["tssrc"]
 }

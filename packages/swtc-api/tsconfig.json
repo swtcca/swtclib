@@ -1,19 +1,17 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
     "pretty": true,
-    "lib": ["es2015", "dom"],
-    "target": "es6",
+    "lib": ["es2015"],
+    "target": "es2015",
     "outDir": "src",
     "rootDir": "tssrc",
-    "module": "commonjs",
+    "module": "es2015",
     "moduleResolution": "node",
     "strictNullChecks": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "removeComments": false,
     "preserveConstEnums": false,
     "suppressImplicitAnyIndexErrors": false,
     "declaration": true,
@@ -21,6 +19,7 @@
     "strict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "removeComments": true,
     "skipLibCheck": true
   },
   "include": ["tssrc"]
