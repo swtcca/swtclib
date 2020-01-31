@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "clean": "rm -fr esm cjs dist src package-lock.json node_modules",
-    "build": "rollup",
+    "build": "rollup -c",
     "rollup": "rollup -c",
     "tsc": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "prettier": "prettier",

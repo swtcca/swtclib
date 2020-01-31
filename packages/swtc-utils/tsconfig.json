@@ -16,7 +16,6 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "skipLibCheck": true,
     "strictNullChecks": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

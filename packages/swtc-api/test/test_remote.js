@@ -26,17 +26,18 @@ describe("Remote", function() {
     this.timeout(15000)
     it("post invalid blob", async function() {
       try {
-        await remote.postBlob({ blob: "0123456789" })
-        expect(10).to.equal(100)
+        response = await remote.postBlob({ blob: "0123456789" })
+        expect(response).to.have.property("message")
       } catch (error) {
-        expect(error).to.equal("Transaction length invalid")
+        expect(1).to.equal("should not throw")
       }
     })
-    xit("post correct blob", async function() {
+    it("post correct blob", async function() {
       try {
-        let response = await remote.postBlob({ blob: "" })
+        let response = await remote.postBlob({ blob: DATA.blob_sign_ed25519 })
+        expect(response).to.have.property("engine_result")
       } catch (error) {
-        expect(error).to.equal("Missing parameters")
+        expect(1).to.equal("should not throw")
       }
     })
   })
@@ -44,8 +45,6 @@ describe("Remote", function() {
     this.timeout(15000)
     it("get latest ledger without parameter", async function() {
       let data = await remote.getLedger()
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("ledger_hash")
       expect(data).to.have.property("ledger_index")
       ledger_hash = data.ledger_hash
@@ -53,15 +52,11 @@ describe("Remote", function() {
     })
     it("get ledger with hash", async function() {
       let data = await remote.getLedger(ledger_hash)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("ledger_hash")
       expect(data.ledger_hash).to.equal(ledger_hash)
     })
     it("get ledger with index", async function() {
       let data = await remote.getLedger(ledger_index)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("ledger_index")
       expect(parseInt(data.ledger_index)).to.equal(ledger_index)
     })
@@ -77,8 +72,6 @@ describe("Remote", function() {
     })
     it("get account balances with correct address", async function() {
       let data = await remote.getAccountBalances(DATA.address)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("balances")
       expect(data.balances[0]).to.be.an("object")
     })
@@ -94,8 +87,6 @@ describe("Remote", function() {
     })
     it("get account payments with correct address", async function() {
       let data = await remote.getAccountPayments(DATA.address)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("payments")
       expect(data.payments[0]).to.be.an("object")
       payid = data.payments[0].hash
@@ -115,11 +106,11 @@ describe("Remote", function() {
         expect(error).to.equal("Invalid parameter: hash.")
       }
     })
-    it("post account payments with correct address but no secret", async function() {
+    xit("post account payments with correct address but no secret", async function() {
       try {
-        await remote.postAccountPayments(DATA.address, {})
+        let result = await remote.postAccountPayments(DATA.address, {})
       } catch (error) {
-        expect(error).to.equal("unsafe operation disabled")
+        expect(error).to.equal("should not throw")
       }
     })
     xit("post account payments with correct address and secret", async function() {
@@ -143,12 +134,9 @@ describe("Remote", function() {
           params,
           "POST"
         )
-        expect(data).to.have.property("success")
-        expect(data.success).to.be.true
         expect(data).to.have.property("result")
         expect(data.result).to.equal("tesSUCCESS")
       } catch (error) {
-        console.log(error)
         expect(error).to.equal("should not throw")
       }
     })
@@ -164,11 +152,9 @@ describe("Remote", function() {
     })
     it("get account orders with correct address", async function() {
       let data = await remote.getAccountOrders(DATA.address)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
-      expect(data).to.have.property("orders")
+      expect(data).to.have.property("offers")
     })
-    it("post account orders with correct address but no secret", async function() {
+    xit("post account orders with correct address but no secret", async function() {
       try {
         await remote.postAccountOrders(DATA.address, {})
       } catch (error) {
@@ -187,12 +173,9 @@ describe("Remote", function() {
           }
         }
         let data = await remote.postAccountOrders(DATA.address, params, "POST")
-        expect(data).to.have.property("success")
-        expect(data.success).to.be.true
         expect(data).to.have.property("result")
         expect(data.result).to.equal("tesSUCCESS")
       } catch (error) {
-        console.log(error)
         expect(error).to.equal("should not throw")
       }
     })
@@ -208,22 +191,14 @@ describe("Remote", function() {
     })
     it("get orderBooks with correct pairs", async function() {
       let data = await remote.getOrderBooks("SWT", `CNY+${DATA.issuer}`)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
-      expect(data).to.have.property("bids")
-      expect(data).to.have.property("asks")
+      expect(data).to.have.property("offers")
     })
-    it("get orderBooks Asks with correct pairs", async function() {
-      let data = await remote.getOrderBooksAsks("SWT", `CNY+${DATA.issuer}`)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
-      expect(data).to.have.property("asks")
-    })
-    it("get orderBooks Bids with correct pairs", async function() {
-      let data = await remote.getOrderBooksBids("SWT", `CNY+${DATA.issuer}`)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
-      expect(data).to.have.property("bids")
+    it("get orderBooks Asks/Bids with correct pairs", async function() {
+      let asks = await remote.getOrderBooksAsks("SWT", `CNY+${DATA.issuer}`)
+      expect(asks).to.have.property("offers")
+      let bids = await remote.getOrderBooksBids(`CNY+${DATA.issuer}`, "SWT")
+      expect(bids).to.have.property("offers")
+      expect(asks).to.deep.equal(bids)
     })
   })
   describe("Transactions", function() {
@@ -237,44 +212,40 @@ describe("Remote", function() {
     })
     it("get account transactions with correct address", async function() {
       let data = await remote.getAccountTransactions(DATA.address)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("transactions")
       expect(data.transactions[0]).to.be.an("object")
       txid = data.transactions[0].hash
     })
     it("get account transaction with correct address", async function() {
       let data = await remote.getAccountTransaction(DATA.address, txid)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
-      expect(data).to.have.property("transaction")
-      expect(data.transaction.hash).to.equal(txid)
+      expect(data).to.have.property("hash")
+      expect(data.hash).to.equal(txid)
     })
     it("getAccountTransaction with incorrect hash", async function() {
       try {
-        await remote.getAccountTransaction(DATA.address, "wrongtxhash")
-      } catch (error) {
-        expect(error).to.equal("Invalid parameter: hash.")
-      }
+        let result = await remote.getAccountTransaction(
+          DATA.address,
+          "wrongtxhash"
+        )
+        expect(result).to.have.property("message")
+      } catch (error) {}
     })
     it("get transaction", async function() {
       let data = await remote.getTransaction(txid)
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
-      expect(data).to.have.property("transaction")
-      expect(data.transaction.hash).to.equal(txid)
+      expect(data).to.have.property("hash")
+      expect(data.hash).to.equal(txid)
     })
   })
   describe("accountContracts", function() {
     this.timeout(15000)
-    it("post account contract deploy with incorrect address", async function() {
+    xit("post account contract deploy with incorrect address", async function() {
       try {
         await remote.postAccountContractDeploy(DATA.address.slice(1))
       } catch (error) {
         expect(error).to.equal("invalid address provided")
       }
     })
-    it("post account contract deploy with correct address but no secret", async function() {
+    xit("post account contract deploy with correct address but no secret", async function() {
       try {
         await remote.postAccountContractDeploy(DATA.address, {})
       } catch (error) {
@@ -291,23 +262,20 @@ describe("Remote", function() {
           params,
           "POST"
         )
-        expect(data).to.have.property("success")
-        expect(data.success).to.be.true
         expect(data).to.have.property("result")
         expect(data.result).to.equal("tesSUCCESS")
       } catch (error) {
-        console.log(error)
         expect(error).to.equal("should not throw")
       }
     })
-    it("post account contract call with incorrect address", async function() {
+    xit("post account contract call with incorrect address", async function() {
       try {
         await remote.postAccountContractCall(DATA.address.slice(1))
       } catch (error) {
         expect(error).to.equal("invalid address provided")
       }
     })
-    it("post account contract call with correct address but no secret", async function() {
+    xit("post account contract call with correct address but no secret", async function() {
       try {
         await remote.postAccountContractCall(DATA.address, {})
       } catch (error) {
@@ -324,25 +292,20 @@ describe("Remote", function() {
           params,
           "POST"
         )
-        expect(data).to.have.property("success")
-        expect(data.success).to.be.true
         expect(data).to.have.property("result")
         expect(data.result).to.equal("tesSUCCESS")
       } catch (error) {
-        console.log(error)
         expect(error).to.equal("should not throw")
       }
     })
   })
   describe("parameters", function() {
     this.timeout(15000)
-    it("CNY for getAccountBalances", async function() {
+    it("currency for getAccountBalances", async function() {
       try {
         data = await remote.getAccountBalances(DATA.address, {
           currency: "CNY"
         })
-        expect(data).to.have.property("success")
-        expect(data.success).to.be.true
         expect(data).to.have.property("balances")
         expect(data.balances[0]).to.be.an("object")
         expect(data.balances[0].currency).to.equal("CNY")
@@ -350,14 +313,12 @@ describe("Remote", function() {
         expect(error).to.equal("should not throw")
       }
     })
-    it("results_per_page for getAccountTransactions", async function() {
+    it("limits for getAccountTransactions", async function() {
       let data = await remote.getAccountTransactions(DATA.address, {
-        results_per_page: 2
+        limit: 4
       })
-      expect(data).to.have.property("success")
-      expect(data.success).to.be.true
       expect(data).to.have.property("transactions")
-      expect(data.transactions.length).to.equal(2)
+      expect(data.transactions.length).to.equal(4)
     })
   })
 })

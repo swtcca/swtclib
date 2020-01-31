@@ -189,8 +189,6 @@ describe("Remote", function() {
         expect(tx.tx_json).to.have.property("Sequence")
         expect(tx.tx_json.Sequence).to.be.a("number")
         expect(tx.tx_json).to.have.property("blob")
-        expect(result).to.have.property("success")
-        expect(result.success).to.be.true
         expect(result).to.have.property("engine_result")
         expect(result).to.have.property("tx_blob")
         expect(result.tx_blob).to.be.equal(tx.tx_json.blob)
@@ -213,8 +211,6 @@ describe("Remote", function() {
         expect(tx.tx_json).to.have.property("Sequence")
         expect(tx.tx_json.Sequence).to.be.a("number")
         expect(tx.tx_json).to.have.property("blob")
-        expect(result).to.have.property("success")
-        expect(result.success).to.be.true
         expect(result).to.have.property("engine_result")
         expect(result.engine_result).to.be.equal("tefPAST_SEQ")
         expect(result).to.have.property("tx_blob")
@@ -238,8 +234,6 @@ describe("Remote", function() {
         expect(tx.tx_json).to.have.property("Sequence")
         expect(tx.tx_json.Sequence).to.be.a("number")
         expect(tx.tx_json).to.have.property("blob")
-        expect(result).to.have.property("success")
-        expect(result.success).to.be.true
         expect(result).to.have.property("tx_blob")
         expect(result.tx_blob).to.be.equal(tx.tx_json.blob)
       } catch (error) {
@@ -251,7 +245,7 @@ describe("Remote", function() {
         source: DATA.address,
         to: DATA.address2,
         amount: {
-          value: 1,
+          value: 0.1,
           currency: "SWT",
           issuer: ""
         }
@@ -262,11 +256,10 @@ describe("Remote", function() {
         expect(tx.tx_json).to.have.property("Sequence")
         expect(tx.tx_json.Sequence).to.be.a("number")
         expect(tx.tx_json).to.have.property("blob")
-        expect(result).to.have.property("success")
-        expect(result.success).to.be.true
         expect(result).to.have.property("tx_blob")
         expect(result.tx_blob).to.be.equal(tx.tx_json.blob)
       } catch (error) {
+        console.log(error)
         expect(error).to.equal("should not throw")
       }
     })

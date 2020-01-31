@@ -1,4 +1,4 @@
-import axios from "axios"
+// import axios from "axios"
 import { Factory as SerializerFactory } from "swtc-serializer"
 import { Factory as UtilsFactory } from "swtc-utils"
 import { Factory as WalletFactory } from "swtc-wallet"
@@ -1341,18 +1341,19 @@ function Factory(Wallet = WalletFactory("jingtum")) {
             throw error
           })
       } else {
+        throw new Error("unable to fill in sequence")
         // use api.jingtum.com to get sequence
-        axios
-          .get(
-            `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
-          )
-          .then(response => {
-            this.tx_json.Sequence = response.data.sequence
-            signing(this, callback)
-          })
-          .catch(error => {
-            throw error
-          })
+        // axios
+        //   .get(
+        //     `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
+        //   )
+        //   .then(response => {
+        //     this.tx_json.Sequence = response.data.sequence
+        //     signing(this, callback)
+        //   })
+        //   .catch(error => {
+        //     throw error
+        //   })
       }
     }
 
@@ -1506,8 +1507,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           // api remote
           return this._remote._axios.post(`blob`, data)
         } else {
+          return Promise.reject("unable to get sequence for signing")
           // use api.jingtum.com directly
-          return axios.post(`https://api.jingtum.com/v2/blob`, data)
+          // return axios.post(`https://api.jingtum.com/v2/blob`, data)
         }
       } catch (error) {
         return Promise.reject(error)
@@ -1571,11 +1573,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           return Promise.resolve(this)
         } else {
           // use api.jingtum.com to get sequence, consider proxy or jcc rpc
-          response = await axios.get(
-            `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
-          )
-          this.tx_json.Sequence = response.data.sequence
-          return Promise.resolve(this)
+          // response = await axios.get(
+          //   `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
+          // )
+          // this.tx_json.Sequence = response.data.sequence
+          // return Promise.resolve(this)
+          return Promise.reject("unable to get sequence for sign")
         }
       } catch (error) {
         return Promise.reject(error)
