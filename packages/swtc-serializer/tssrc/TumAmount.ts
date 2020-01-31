@@ -4,7 +4,7 @@
 
 import Bignumber from "bignumber.js"
 import BN from "bn.js"
-import extend = require("extend")
+import extend from "extend"
 import { Factory as WalletFactory } from "swtc-wallet"
 import { AMOUNT_CONSTS } from "swtc-chains"
 import { Factory as isTumCodeFactory } from "./DataCheck"
