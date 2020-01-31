@@ -1,13 +1,13 @@
 const chai = require("chai")
 const expect = chai.expect
-const Serializer = require("../lib/Serializer").Factory()
+const Serializer = require("../cjs/Serializer").Factory()
 const sinon = require("sinon")
-const TU = require("../lib/TypesUtils").Factory()
+const TU = require("../cjs/TypesUtils").Factory()
 
 describe("test Serializer", function() {
   describe("test Factory", function() {
     it("throw error if KeyPair is undefined", function() {
-      const Factory = require("../lib/Serializer").Factory
+      const Factory = require("../cjs/Serializer").Factory
       expect(() => Factory({})).to.throw()
     })
   })

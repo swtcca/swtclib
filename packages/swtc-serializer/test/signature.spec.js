@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const Serializer = require("../lib/Serializer").Factory()
+const Serializer = require("../cjs/Serializer").Factory()
 const Wallet = require("swtc-wallet").Factory("jingtum")
 const sign = (in_tx, secret) => {
   var wt = new Wallet(secret)

@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const utils = require("../lib/Utils")
+const utils = require("../cjs/Utils")
 describe("test utils", function() {
   describe("test get_transaction_type api", function() {
     it("return Payment if the structure is 0", function() {
