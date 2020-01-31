@@ -1,7 +1,7 @@
 const chai = require("chai")
 const expect = chai.expect
-const tu = require("../lib/TypesUtils").Factory()
-const Serializer = require("../lib/Serializer").Factory()
+const tu = require("../cjs/TypesUtils").Factory()
+const Serializer = require("../cjs/Serializer").Factory()
 describe("test TypesUtils", function() {
   describe("test methods", function() {
     it("should be a fuction", function() {

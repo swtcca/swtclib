@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const Amount = require("../lib/TumAmount").Factory()
+const Amount = require("../cjs/TumAmount").Factory()
 const Factory = require("swtc-wallet").Factory
 const BN = require("bn.js")
 const testData = {
@@ -270,7 +270,7 @@ describe("test TumAmount", function() {
     })
 
     it("if _is_native is false & issuer is invalid", function() {
-      const Amount = require("../lib/TumAmount").Factory(Factory())
+      const Amount = require("../cjs/TumAmount").Factory(Factory())
       let inst = new Amount()
       inst._value = 1
       inst._currency = "BWT"

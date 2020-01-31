@@ -1,10 +1,10 @@
 const chai = require("chai")
 const expect = chai.expect
-const DataCheck = require("../lib/DataCheck").Factory()
+const DataCheck = require("../cjs/DataCheck").Factory()
 
 describe("test DataCheck", function() {
   it("throw error if wallet factory doesn't have property KeyPair", function() {
-    const Factory = require("../lib/DataCheck").Factory
+    const Factory = require("../cjs/DataCheck").Factory
     expect(() => Factory({})).throw()
   })
 
@@ -184,7 +184,7 @@ describe("test DataCheck", function() {
 
     it("return true when the chain is bizain and the amount is valid", function() {
       const WalletFactory = require("swtc-wallet").Factory("bizain")
-      const DataCheck = require("../lib/DataCheck").Factory(WalletFactory)
+      const DataCheck = require("../cjs/DataCheck").Factory(WalletFactory)
       let valid = DataCheck.isAmount({
         currency: "TS1",
         issuer: "bf42S78serP2BeSx7HGtwQR2QASYaHVqyb",
