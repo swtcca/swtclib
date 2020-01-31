@@ -21,7 +21,7 @@
  */
 import assert = require("assert")
 import extend = require("extend")
-import hashjs = require("hash.js")
+import hashjs from "hash.js"
 import { Factory as WalletFactory } from "swtc-wallet"
 import {
   LEDGER_ENTRY_TYPES,

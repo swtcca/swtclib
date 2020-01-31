@@ -3,7 +3,7 @@
 // - Numbers in hex are big-endian.
 
 import Bignumber from "bignumber.js"
-import BigInteger = require("bn-plus.js")
+import BN from "bn.js"
 import extend = require("extend")
 import { Factory as WalletFactory } from "swtc-wallet"
 import { AMOUNT_CONSTS } from "swtc-chains"
@@ -36,7 +36,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       // Json format:
       //  integer : SWT
       //  { 'value' : ..., 'currency' : ..., 'issuer' : ...}
-      this._value = new BigInteger() // NaN for bad value. Always positive.
+      this._value = new BN(0) // NaN for bad value. Always positive.
       this._offset = 0 // Always 0 for SWT.
       this._is_native = true // Default to SWT. Only valid if value is not NaN.
       this._is_negative = false
@@ -149,7 +149,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       switch (typeof j) {
         case "number":
           this._is_negative = j < 0
-          this._value = new BigInteger(Math.abs(j))
+          this._value = new BN(Math.abs(j))
           this._offset = 0
           break
         case "string":
@@ -230,7 +230,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       } else if (isCustomTum(this._currency)) {
         // for TUM code start with 8
         // should be HEX code
-        currencyData = new BigInteger(this._currency, 16).toArray(null, 20)
+        currencyData = new BN(this._currency, 16).toArray(null, 20)
       } else {
         throw new Error("Incorrect currency code length.")
       }
@@ -277,7 +277,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
             const newvalue = new Bignumber(in_json.value)
               .multipliedBy(factor)
               .toString()
-            this._value = new BigInteger(newvalue, 10)
+            this._value = new BN(newvalue, 10)
             this._offset = -1 * offset
           } else {
             throw new Error(

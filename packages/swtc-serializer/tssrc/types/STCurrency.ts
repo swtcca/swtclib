@@ -1,4 +1,4 @@
-import BigInteger = require("bn-plus.js")
+import BN from "bn.js"
 import { convertHexToByteArray, convertHexToString } from "../Utils"
 import SerializedType from "./SerializedType"
 
@@ -53,7 +53,7 @@ const STCurrency = new SerializedType({
     if (!Array.isArray(j) || j.length !== 20) {
       return NaN
     }
-    return new BigInteger([0].concat(j), 256)
+    return new BN([0].concat(j), 256)
   },
   parse(so) {
     const bytes = so.read(20)

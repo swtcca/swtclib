@@ -1,4 +1,4 @@
-import BN = require("bn-plus.js")
+import BN from "bn.js"
 import SerializedType from "./types/SerializedType"
 
 /*
