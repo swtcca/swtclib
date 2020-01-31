@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "pretty": true,
     "lib": ["es2015", "dom"],
-    "target": "es6",
+    "target": "es2015",
     "outDir": "src",
     "rootDir": "tssrc",
     "module": "commonjs",
@@ -13,7 +13,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "removeComments": false,
     "preserveConstEnums": false,
     "suppressImplicitAnyIndexErrors": false,
     "declaration": true,
@@ -21,6 +20,7 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "removeComments": true,
     "skipLibCheck": true
   },
   "include": ["tssrc"]
