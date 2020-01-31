@@ -19,8 +19,8 @@
  * Convert the input JSON format commands to
  * Hex value for local sign operation.
  */
-import assert = require("assert")
-import extend = require("extend")
+import assert from "assert"
+import extend from "extend"
 import hashjs from "hash.js"
 import { Factory as WalletFactory } from "swtc-wallet"
 import {

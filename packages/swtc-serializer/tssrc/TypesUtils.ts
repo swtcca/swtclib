@@ -7,8 +7,8 @@
  * SerializedObject.parse() or SerializedObject.serialize().
  */
 
-import assert = require("assert")
-import extend = require("extend")
+import assert from "assert"
+import extend from "extend"
 import { FIELDS_MAP, INVERSE_FIELDS_MAP, TYPES_MAP } from "swtc-chains"
 import { Factory as WalletFactory } from "swtc-wallet"
 import { Factory as dataCheckFactory } from "./DataCheck"

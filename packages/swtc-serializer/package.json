@@ -1,5 +1,5 @@
 {
-  "version": "2.2.3",
+  "version": "2.2.5",
   "author": "Lospring Liu",
   "dependencies": {
     "bignumber.js": "^9.0.0",

@@ -1,4 +1,4 @@
-import extend = require("extend")
+import extend from "extend"
 
 class SerializedType {
   public static serialize_varint(so, val) {

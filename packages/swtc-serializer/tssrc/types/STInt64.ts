@@ -1,4 +1,4 @@
-import assert = require("assert")
+import assert from "assert"
 import BN from "bn.js"
 import { BigInteger } from "jsbn"
 import { isHexInt64String, isNumber, isString, serializeHex } from "../Utils"
