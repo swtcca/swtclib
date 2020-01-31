@@ -1,4 +1,4 @@
-import { IMarker, IAmount } from "swtc-transaction"
+import { IMarker, IAmount } from "@swtc/transaction"
 export {
   IMarker,
   ICurrency,
@@ -18,7 +18,7 @@ export {
   ISignFirstTxOptions,
   ISignOtherTxOptions,
   IMultiSigningOptions
-} from "swtc-transaction"
+} from "@swtc/transaction"
 
 export interface IRemoteOptions {
   server?: string

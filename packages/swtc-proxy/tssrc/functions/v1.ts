@@ -1,4 +1,4 @@
-import { utils } from "swtc-utils"
+import { utils } from "@swtc/utils"
 import { state, Wallet } from "../store/index"
 import { APIError } from "../web/rest"
 

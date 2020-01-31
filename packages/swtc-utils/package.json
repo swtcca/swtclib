@@ -1,6 +1,6 @@
 {
-  "name": "swtc-utils",
-  "version": "1.3.2",
+  "name": "@swtc/utils",
+  "version": "1.0.0",
   "description": "swtc utils",
   "main": "cjs/utils.js",
   "module": "esm/utils.js",
@@ -39,9 +39,9 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
+    "@swtc/common": "^1.0.0",
+    "@swtc/wallet": "^1.0.0",
     "bignumber.js": "^9.0.0",
-    "swtc-chains": "^2.1.2",
-    "swtc-wallet": "^2.1.1",
     "url": "^0.11.0",
     "utf8": "^3.0.0"
   },

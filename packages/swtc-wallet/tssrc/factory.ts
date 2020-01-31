@@ -1,5 +1,5 @@
-import { funcGetChain } from "swtc-chains"
-import { Factory as KeypairFactory } from "swtc-keypairs"
+import { funcGetChain } from "@swtc/common"
+import { Factory as KeypairFactory } from "@swtc/keypairs"
 
 const Factory = (token_or_chain = "jingtum") => {
   const chain = funcGetChain(token_or_chain)

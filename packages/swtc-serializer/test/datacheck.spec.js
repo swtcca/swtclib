@@ -183,7 +183,7 @@ describe("test DataCheck", function() {
     })
 
     it("return true when the chain is bizain and the amount is valid", function() {
-      const WalletFactory = require("swtc-wallet").Factory("bizain")
+      const WalletFactory = require("@swtc/wallet").Factory("bizain")
       const DataCheck = require("../cjs/DataCheck").Factory(WalletFactory)
       let valid = DataCheck.isAmount({
         currency: "TS1",

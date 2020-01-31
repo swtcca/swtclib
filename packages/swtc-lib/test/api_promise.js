@@ -6,7 +6,7 @@ const expect = chai.expect
 const Request = require("../").Request
 const config = require("../../.conf/config")
 const sinon = require("sinon")
-const OrderBook = require("swtc-transaction").OrderBook
+const OrderBook = require("@swtc/transaction").OrderBook
 let {
   JT_NODE,
   TEST_NODE,

@@ -24,10 +24,10 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec",
-      "swtc-keypairs",
-      "swtc-wallet"
+      "@swtc/common",
+      "@swtc/address-codec",
+      "@swtc/keypairs",
+      "@swtc/wallet"
     ],
     plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
     output: [
@@ -52,10 +52,10 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec",
-      "swtc-keypairs",
-      "swtc-wallet"
+      "@swtc/common",
+      "@swtc/address-codec",
+      "@swtc/keypairs",
+      "@swtc/wallet"
     ],
     // plugins: [ts()],
     plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],

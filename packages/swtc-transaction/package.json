@@ -1,6 +1,6 @@
 {
-  "name": "swtc-transaction",
-  "version": "1.3.2",
+  "name": "@swtc/transaction",
+  "version": "1.0.0",
   "description": "swtc transaction package",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -42,10 +42,10 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
+    "@swtc/serializer": "^1.0.0",
+    "@swtc/utils": "^1.0.0",
+    "@swtc/wallet": "^1.0.0",
     "bignumber.js": "^9.0.0",
-    "swtc-serializer": "^2.2.3",
-    "swtc-utils": "^1.3.2",
-    "swtc-wallet": "^2.1.1",
     "url": "^0.11.0",
     "utf8": "^3.0.0"
   },

@@ -22,13 +22,13 @@
 import assert from "assert"
 import extend from "extend"
 import hashjs from "hash.js"
-import { Factory as WalletFactory } from "swtc-wallet"
+import { Factory as WalletFactory } from "@swtc/wallet"
 import {
   LEDGER_ENTRY_TYPES,
   METADATA,
   REQUIRED,
   TRANSACTION_TYPES
-} from "swtc-chains"
+} from "@swtc/common"
 import { Factory as stypesFactory } from "./TypesUtils"
 import {
   get_char_from_num,

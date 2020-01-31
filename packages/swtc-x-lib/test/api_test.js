@@ -88,7 +88,7 @@ describe("test async actions", function() {
   describe("test Tx actions", function() {
     it("should Tx signPromise() submitPromise()", async function() {
       let remote = new Remote({
-        server: TEST_NODE,
+        server: "ws://ts5.jingtum.com:5030",
         local_sign: true,
         token: "swt"
       })

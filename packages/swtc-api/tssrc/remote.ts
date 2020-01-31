@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Transaction } from "swtc-transaction"
+import { Transaction } from "@swtc/transaction"
 import utf8 from "utf8"
 const Wallet = Transaction.Wallet
 const Serializer = Transaction.Serializer

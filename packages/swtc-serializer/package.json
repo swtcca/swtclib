@@ -1,16 +1,16 @@
 {
-  "version": "2.2.5",
+  "name": "@swtc/serializer",
+  "version": "1.0.0",
   "author": "Lospring Liu",
   "main": "cjs/Serializer.js",
   "module": "esm/Serializer.js",
-  "name": "swtc-serializer",
   "dependencies": {
+    "@swtc/common": "^1.0.0",
+    "@swtc/wallet": "^1.0.0",
     "bignumber.js": "^9.0.0",
     "extend": "^3.0.2",
     "jsbn": "^1.1.0",
-    "sha1": "^1.1.1",
-    "swtc-chains": "^2.1.2",
-    "swtc-wallet": "^2.1.1"
+    "sha1": "^1.1.1"
   },
   "deprecated": false,
   "description": "swtc serializer",

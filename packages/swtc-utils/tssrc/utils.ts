@@ -11,8 +11,8 @@ import {
   funcNumber2Hex as number2Hex,
   funcHex2Number as hex2Number,
   funcIsEmpty as isEmpty
-} from "swtc-chains"
-import { Factory as WalletFactory } from "swtc-wallet"
+} from "@swtc/common"
+import { Factory as WalletFactory } from "@swtc/wallet"
 const extend = Object.assign
 import utf8 from "utf8"
 import Bignumber from "bignumber.js"

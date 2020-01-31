@@ -46,4 +46,4 @@ export {
   isString,
   readAndSum,
   sort_fields
-} from "swtc-chains"
+} from "@swtc/common"

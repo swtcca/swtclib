@@ -5,7 +5,7 @@ const Remote = require("../").Remote
 const config = require("../../.conf/config")
 const txData = require("./tx_data")
 const sinon = require("sinon")
-const utils = require("swtc-utils").utils
+const utils = require("@swtc/utils").utils
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 

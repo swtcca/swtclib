@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const Transaction = require("swtc-transaction").Transaction
+const Transaction = require("@swtc/transaction").Transaction
 const Event = require("events").EventEmitter
 const Remote = require("../").Remote
 const config = require("../../.conf/config")
