@@ -25,12 +25,12 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec",
-      "swtc-keypairs",
-      "swtc-wallet",
-      "swtc-utils",
-      "swtc-serializer"
+      "@swtc/common",
+      "@swtc/address-codec",
+      "@swtc/keypairs",
+      "@swtc/wallet",
+      "@swtc/utils",
+      "@swtc/serializer"
     ],
     plugins: [ts(), json(), resolve({ preferBuiltins: true }), commonjs()],
     output: [
@@ -56,12 +56,12 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec",
-      "swtc-keypairs",
-      "swtc-wallet",
-      "swtc-utils",
-      "swtc-serializer"
+      "@swtc/common",
+      "@swtc/address-codec",
+      "@swtc/keypairs",
+      "@swtc/wallet",
+      "@swtc/utils",
+      "@swtc/serializer"
     ],
     // plugins: [ts()],
     plugins: [ts(), json(), resolve({ preferBuiltins: true }), commonjs()],

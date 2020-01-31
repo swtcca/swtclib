@@ -3,7 +3,7 @@ import { EventEmitter } from "events"
 import { OrderBook } from "./orderbook"
 import { Request } from "./request"
 import { Server } from "./server"
-import { Transaction } from "swtc-transaction"
+import { Transaction } from "@swtc/transaction"
 import LRU from "lru-cache"
 import sha1 from "sha1"
 import {

@@ -3,7 +3,7 @@ const expect = chai.expect
 const config = require("../../.conf/config")
 const { testAddress, testCreateHash } = config
 let utils = require("..").utils
-let Wallet_BWT = require("swtc-wallet").Factory("bwt")
+let Wallet_BWT = require("@swtc/wallet").Factory("bwt")
 let utils_bwt = require("..").Factory(Wallet_BWT)
 let txData = require("./tx_data")
 describe("test utils", function() {

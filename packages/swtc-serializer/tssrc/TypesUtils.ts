@@ -9,8 +9,8 @@
 
 import assert from "assert"
 import extend from "extend"
-import { FIELDS_MAP, INVERSE_FIELDS_MAP, TYPES_MAP } from "swtc-chains"
-import { Factory as WalletFactory } from "swtc-wallet"
+import { FIELDS_MAP, INVERSE_FIELDS_MAP, TYPES_MAP } from "@swtc/common"
+import { Factory as WalletFactory } from "@swtc/wallet"
 import { Factory as dataCheckFactory } from "./DataCheck"
 import { Factory as tumFactory } from "./TumAmount"
 import STAccount from "./types/STAccount"

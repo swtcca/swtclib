@@ -9,7 +9,7 @@ import {
   funcGetChain,
   funcSeqEqual as seqEqual,
   funcConcatArgs as concatArgs
-} from "swtc-chains"
+} from "@swtc/common"
 
 export class Codec {
   public sha256: (bytes: Uint8Array) => Buffer

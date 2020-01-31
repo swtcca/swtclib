@@ -24,9 +24,9 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec",
-      "swtc-keypairs"
+      "@swtc/address-codec",
+      "@swtc/common",
+      "@swtc/keypairs"
     ],
     plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
     output: [
@@ -51,9 +51,9 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec",
-      "swtc-keypairs"
+      "@swtc/address-codec",
+      "@swtc/common",
+      "@swtc/keypairs"
     ],
     // plugins: [ts()],
     plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],

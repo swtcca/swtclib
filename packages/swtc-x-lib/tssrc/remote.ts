@@ -1,13 +1,13 @@
 import { EventEmitter } from "events"
 import { Server } from "./server"
-import { Factory as TransactionFactory } from "swtc-transaction"
+import { Factory as TransactionFactory } from "@swtc/transaction"
 
 import LRU from "lru-cache"
 import isNumber from "lodash/isNumber"
 import sha1 from "sha1"
 
-import { Factory as WalletFactory } from "swtc-wallet"
-import { Factory as UtilsFactory } from "swtc-utils"
+import { Factory as WalletFactory } from "@swtc/wallet"
+import { Factory as UtilsFactory } from "@swtc/utils"
 
 import {
   IRemoteOptions,

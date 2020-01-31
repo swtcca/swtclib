@@ -25,8 +25,8 @@ import {
   isLetterNumer,
   isRelation,
   isTumCode
-} from "swtc-chains"
-import { Factory as WalletFactory } from "swtc-wallet"
+} from "@swtc/common"
+import { Factory as WalletFactory } from "@swtc/wallet"
 
 const Factory = (Wallet = WalletFactory("jingtum")) => {
   if (!Wallet.hasOwnProperty("KeyPair")) {

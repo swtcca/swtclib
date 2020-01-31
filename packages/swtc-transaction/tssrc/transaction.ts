@@ -1,7 +1,7 @@
 // import axios from "axios"
-import { Factory as SerializerFactory } from "swtc-serializer"
-import { Factory as UtilsFactory } from "swtc-utils"
-import { Factory as WalletFactory } from "swtc-wallet"
+import { Factory as SerializerFactory } from "@swtc/serializer"
+import { Factory as UtilsFactory } from "@swtc/utils"
+import { Factory as WalletFactory } from "@swtc/wallet"
 import * as utf8 from "utf8"
 import {
   // IMarker

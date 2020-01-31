@@ -2,7 +2,7 @@
  * Created by Administrator on 2016/11/22.
  */
 import { EventEmitter } from "events"
-import { utils } from "swtc-utils"
+import { utils } from "@swtc/utils"
 
 /**
  * order book stub for all order book

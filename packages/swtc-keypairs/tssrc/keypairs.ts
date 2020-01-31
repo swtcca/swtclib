@@ -3,11 +3,11 @@ import brorand from "brorand"
 import hashjs from "hash.js"
 import { eddsa, ec } from "elliptic"
 
-import { Factory as AddressCodecFactory } from "swtc-address-codec"
+import { Factory as AddressCodecFactory } from "@swtc/address-codec"
 import {
   funcHexToBytes as hexToBytes,
   funcBytesToHex as bytesToHex
-} from "swtc-chains"
+} from "@swtc/common"
 import { derivePrivateKey, accountPublicFromPublicGenerator } from "./secp256k1"
 import { computePublicKeyHash } from "./utils"
 

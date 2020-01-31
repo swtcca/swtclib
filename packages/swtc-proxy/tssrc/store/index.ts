@@ -1,4 +1,4 @@
-import { Remote, Transaction, Wallet } from "swtc-lib"
+import { Remote, Transaction, Wallet } from "@swtc/lib"
 import { ref, computed, watch } from "@vue/runtime-core"
 import CONFIG from "../../config"
 import chalk from "chalk"

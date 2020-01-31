@@ -24,8 +24,8 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec"
+      "@swtc/common",
+      "@swtc/address-codec"
     ],
     plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
     output: [
@@ -42,7 +42,6 @@ export default [
   },
   {
     input: path_resolve("tssrc", "index.ts"),
-    external: ["base-x", "crypto", "swtc-address-codec"],
     external: [
       // "base-x",
       // "crypto",
@@ -51,8 +50,8 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
-      "swtc-chains",
-      "swtc-address-codec"
+      "@swtc/common",
+      "@swtc/address-codec"
     ],
     // plugins: [ts()],
     plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],

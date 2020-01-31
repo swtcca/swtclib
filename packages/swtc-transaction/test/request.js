@@ -2,7 +2,7 @@
 
 var Event = require("events").EventEmitter
 var util = require("util")
-var utils = require("swtc-utils").utils
+var utils = require("@swtc/utils").utils
 
 /**
  * request server and account info without secret
