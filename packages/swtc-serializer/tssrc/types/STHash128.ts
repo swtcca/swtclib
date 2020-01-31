@@ -1,4 +1,4 @@
-import BigInteger = require("bn-plus.js")
+import BN from "bn.js"
 import { isString, serializeHex } from "../Utils"
 import SerializedType from "./SerializedType"
 
@@ -14,7 +14,7 @@ const STHash128 = new SerializedType({
   },
   parse(so) {
     const val = so.read(16)
-    return new BigInteger([0].concat(val), 256).toString(16).toUpperCase()
+    return new BN([0].concat(val), 256).toString(16).toUpperCase()
   }
 })
 

@@ -1,5 +1,5 @@
-import BN = require("bn-plus.js")
-import BigInteger from "jsbn"
+import BN from "bn.js"
+import { BigInteger } from "jsbn"
 import { convertHexToByteArray } from "../Utils"
 import SerializedType from "./SerializedType"
 const STAmount = new SerializedType({
