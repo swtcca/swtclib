@@ -2,11 +2,11 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "pretty": true,
-    "lib": ["es2015", "dom"],
-    "target": "es2015",
+    "lib": ["es2019"],
+    "target": "es2019",
     "outDir": "src",
     "rootDir": "tssrc",
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "strictNullChecks": false,
     "noImplicitAny": false,
@@ -20,8 +20,7 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "removeComments": true,
-    "skipLibCheck": true
+    "removeComments": true
   },
   "include": ["tssrc"]
 }

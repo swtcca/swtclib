@@ -1,6 +1,6 @@
 const chai = require("chai")
 const expect = chai.expect
-const Server = require("../src/server").Server
+const Server = require("../cjs/server").Server
 const Remote = require("../").Remote
 const config = require("../../.conf/config")
 const sinon = require("sinon")

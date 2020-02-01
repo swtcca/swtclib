@@ -4,7 +4,7 @@ const Transaction = require("@swtc/transaction").Transaction
 const Event = require("events").EventEmitter
 const Remote = require("../").Remote
 const config = require("../../.conf/config")
-const Request = require("../src/request").Request
+const Request = require("../cjs/request").Request
 const sinon = require("sinon")
 let { JT_NODE, testSecret, testAddress, testDestinationAddress } = config
 
