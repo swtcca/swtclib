@@ -10,7 +10,7 @@ const STVector256 = new SerializedType({
   },
   parse(so) {
     const length = this.parse_varint(so)
-    const output = []
+    const output: any = []
     // length is number of bytes not number of Hash256
     for (let i = 0; i < length / 32; i++) {
       output.push(STHash256.parse(so))

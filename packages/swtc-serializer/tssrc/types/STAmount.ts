@@ -86,7 +86,7 @@ const STAmount = new SerializedType({
 
       // Setup a new byte array and filled the byte data in
       // Results should not longer than 8 bytes as defined earlier
-      const tmparray = []
+      const tmparray: any = []
 
       for (i = 0; i < bl / 8; i++) {
         if ((i & 3) === 0) {

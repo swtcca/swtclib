@@ -9,7 +9,7 @@ import SerializedType from "./SerializedType"
 
 const STMemo = new SerializedType({
   serialize(so, val, no_marker) {
-    let keys = []
+    let keys: any = []
     Object.keys(val).forEach(key => {
       // Ignore lowercase field names - they're non-serializable fields by
       // convention.

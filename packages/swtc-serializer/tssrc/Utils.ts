@@ -24,7 +24,7 @@ const convertHexToByteArray = in_str => {
   if (in_str.length % 2 !== 0) {
     in_str = in_str + "0"
   }
-  return new BN(in_str, 16).toArray(null, in_str.length / 2)
+  return new BN(in_str, 16).toArray(undefined, in_str.length / 2)
 }
 
 export { convertHexToByteArray, serializeHex }

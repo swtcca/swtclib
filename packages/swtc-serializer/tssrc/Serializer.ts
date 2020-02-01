@@ -44,27 +44,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
   }
   const stypes: any = stypesFactory(Wallet)
 
-  function readOrPeek(advance) {
-    // tslint:disable-next-line
-    return function(bytes) {
-      const start = this.pointer
-      const end = start + bytes
-
-      if (end > this.buffer.length) {
-        throw new Error("Buffer length exceeded")
-      }
-
-      const result = this.buffer.slice(start, end)
-
-      if (advance) {
-        this.pointer = end
-      }
-
-      return result
-    }
-  }
-
-  class Serializer {
+  return class Serializer {
     /**
      * convert the input JSON to a byte array as buffer
      *
@@ -138,7 +118,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
      * @memberof Serializer
      */
     public static check_no_missing_fields(typedef, obj) {
-      const missing_fields = []
+      const missing_fields: any = []
 
       for (let i = typedef.length - 1; i >= 0; i--) {
         const spec = typedef[i]
@@ -261,10 +241,8 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       return LEDGER_ENTRY_TYPES[id]
     }
 
-    public read = readOrPeek(true)
-    public peek = readOrPeek(false)
-    private buffer: number[]
-    private pointer: number
+    public buffer: number[]
+    public pointer: number
 
     constructor(buf) {
       /*
@@ -283,6 +261,38 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         throw new Error("Invalid buffer passed.")
       }
       this.pointer = 0
+    }
+
+    /**
+     * read content and move pointer
+     *
+     * @memberof Serializer
+     */
+    public read(bytes) {
+      const start = this.pointer
+      const end = start + bytes
+      if (end > this.buffer.length) {
+        throw new Error("Buffer length exceeded")
+      }
+      const result = this.buffer.slice(start, end)
+
+      this.pointer = end
+      return result
+    }
+
+    /**
+     * read content but not move pointer
+     *
+     * @memberof Serializer
+     */
+    public peek(bytes) {
+      const start = this.pointer
+      const end = start + bytes
+      if (end > this.buffer.length) {
+        throw new Error("Buffer length exceeded")
+      }
+      const result = this.buffer.slice(start, end)
+      return result
     }
 
     /**
@@ -319,7 +329,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
      * @memberof Serializer
      */
     // tslint:disable-next-line
-    public append = function(bytes) {
+    public append(bytes) {
       if (bytes instanceof Serializer) {
         bytes = bytes.buffer
       }
@@ -397,10 +407,6 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       )
     }
   }
-
-  return Serializer
 }
 
-const Serializer = Factory()
-
-export { Factory, Serializer }
+export { Factory }

@@ -19,18 +19,18 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
   const { isTumCode, isAmount, isCurrency, isCustomTum } = isTumCodeFactory(
     Wallet
   )
-  class Amount {
+  return class Amount {
     public static from_json(j): Amount {
       return new Amount().parse_json(j)
     }
 
-    private _value
-    private _offset
-    private _is_native
-    private _is_negative
-    private _currency
-    private _issuer
-    private bi_xns_max
+    public _value
+    public _offset
+    public _is_native
+    public _is_negative
+    public _currency
+    public _issuer
+    public bi_xns_max
 
     constructor() {
       // Json format:
@@ -230,7 +230,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       } else if (isCustomTum(this._currency)) {
         // for TUM code start with 8
         // should be HEX code
-        currencyData = new BN(this._currency, 16).toArray(null, 20)
+        currencyData = new BN(this._currency, 16).toArray(undefined, 20)
       } else {
         throw new Error("Incorrect currency code length.")
       }
@@ -293,8 +293,6 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       return this
     }
   }
-
-  return Amount
 }
 
 const Amount = Factory()
