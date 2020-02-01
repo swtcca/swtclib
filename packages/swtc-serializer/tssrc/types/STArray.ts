@@ -21,7 +21,7 @@ const STArray = new SerializedType({
     this.STInt8.serialize(so, 0xf1)
   },
   parse(so) {
-    const output = []
+    const output: any = []
 
     while (so.peek(1)[0] !== 0xf1) {
       const keyval = this.customParse(so)

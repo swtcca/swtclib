@@ -64,8 +64,8 @@ const STPathSet = new SerializedType({
                each entry has one or more of the following attributes: amount, currency, issuer.
                */
 
-    const path_list = []
-    let current_path = []
+    const path_list: any = []
+    let current_path: any = []
     let tag_byte
 
     // tslint:disable-next-line

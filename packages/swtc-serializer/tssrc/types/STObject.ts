@@ -5,7 +5,7 @@ import SerializedType from "./SerializedType"
 const STObject = new SerializedType({
   id: 14,
   serialize(so, val, no_marker) {
-    let keys = []
+    let keys: any = []
     Object.keys(val).forEach(key => {
       // Ignore lowercase field names - they're non-serializable fields by
       // convention.

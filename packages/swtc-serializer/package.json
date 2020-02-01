@@ -1,9 +1,9 @@
 {
   "name": "@swtc/serializer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Lospring Liu",
-  "main": "cjs/Serializer.js",
-  "module": "esm/Serializer.js",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
   "dependencies": {
     "@swtc/common": "^1.0.0",
     "@swtc/wallet": "^1.0.0",
@@ -55,9 +55,9 @@
     "prettier:check": "prettier -c tssrc/**/*.ts",
     "build": "rollup -c",
     "rollup": "rollup -c",
-    "tsc": "tsc; tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
+    "tsc": "tsc -p tsconfig.lib.json; tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "tslint": "tslint tssrc/**/*.ts",
-    "test": "tsc && mocha test/*.spec.js",
+    "test": "tsc -p tsconfig.lib.json && mocha test/*.spec.js",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"
   },
