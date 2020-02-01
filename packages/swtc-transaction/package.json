@@ -19,7 +19,7 @@
     "tsc": "tsc; tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "rollup": "rollup -c",
     "tslint": "tslint tssrc/*.ts",
-    "build": "webpack",
+    "build": "webpack; rollup -c",
     "build:dev": "webpack --mode development",
     "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/api*.js\"",

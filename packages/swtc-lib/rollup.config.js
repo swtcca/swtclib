@@ -1,13 +1,12 @@
 // import fs from "fs"
 import path from "path"
-import ts from "@rollup/plugin-typescript"
 import { terser } from "rollup-plugin-terser"
 import resolve from "@rollup/plugin-node-resolve"
 import commonjs from "@rollup/plugin-commonjs"
 import json from "@rollup/plugin-json"
 
 const path_resolve = (...p) => path.resolve(...p)
-const name = "transaction"
+const name = "lib"
 
 // const knownExternals = fs.readdirSync(resolve(".."))
 // ensure TS checks only once for each build
@@ -30,7 +29,20 @@ export default [
       "@swtc/keypairs",
       "@swtc/wallet",
       "@swtc/utils",
-      "@swtc/serializer"
+      "@swtc/serializer",
+      "@swtc/transaction",
+      "events",
+      "url",
+      "util",
+      "http",
+      "crypto",
+      "stream",
+      "https",
+      "net",
+      "tls",
+      "zlib",
+      "utf-8-validate",
+      "bufferutil"
     ],
     // plugins: [ts(), json(), resolve({ preferBuiltins: true }), commonjs()],
     plugins: [json(), resolve({ preferBuiltins: true }), commonjs()],
@@ -62,7 +74,20 @@ export default [
       "@swtc/keypairs",
       "@swtc/wallet",
       "@swtc/utils",
-      "@swtc/serializer"
+      "@swtc/serializer",
+      "@swtc/transaction",
+      "events",
+      "url",
+      "util",
+      "http",
+      "crypto",
+      "stream",
+      "https",
+      "net",
+      "tls",
+      "zlib",
+      "utf-8-validate",
+      "bufferutil"
     ],
     // plugins: [ts()],
     // plugins: [ts(), json(), resolve({ preferBuiltins: true }), commonjs()],

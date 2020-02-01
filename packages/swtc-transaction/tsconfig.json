@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
     "pretty": true,
-    "lib": ["es2015"],
-    "target": "es2015",
+    "lib": ["es2019"],
+    "target": "es2019",
     "outDir": "src",
     "rootDir": "tssrc",
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
     "strictNullChecks": false,
     "noImplicitAny": false,
