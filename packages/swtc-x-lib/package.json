@@ -1,8 +1,9 @@
 {
   "name": "@swtc/x-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "swtc-x-lib for jingtum alliance chains",
-  "main": "src/index.js",
+  "main": "cjs/index.js",
+  "module": "esm/index.js",
   "unpkg": "dist/swtc-x-lib.js",
   "jsdelivr": "dist/swtc-x-lib.js",
   "browser": {
@@ -21,9 +22,10 @@
     "prettier:check": "prettier -c tssrc/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tsc": "tsc",
+    "compile": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
+    "build": "tsc && webpack",
     "tslint": "tslint tssrc/*.ts",
     "build:dev": "tsc && webpack --mode development",
-    "build": "tsc && webpack",
     "test": "echo mocha \"test/test*.js\"",
     "test:api": "mocha \"test/api*.js\"",
     "test:extended": "mocha \"test/*.js\"",

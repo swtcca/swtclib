@@ -70,3 +70,5 @@ typings/
 **/package-lock.json
 **/*local.js
 src
+cjs
+esm

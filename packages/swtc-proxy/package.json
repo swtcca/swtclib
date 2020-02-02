@@ -27,6 +27,7 @@
     "prettier:check": "prettier -c tssrc/**/*.ts",
     "prettier:tabs": "prettier --use-tabs --write tssrc/**/*.ts",
     "tsc": "tsc",
+    "compile": "tsc",
     "tslint": "tslint tssrc/**/*.ts",
     "build": "tsc",
     "start": "tsc; node start.js",

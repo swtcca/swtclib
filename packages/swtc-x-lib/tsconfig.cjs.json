@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "lib": ["es2015"],
+    "target": "es2015",
+    "outDir": "cjs",
+    "module": "commonjs"
+  }
+}
