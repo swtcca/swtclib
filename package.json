@@ -13,13 +13,13 @@
     "lerna": "lerna",
     "clean": "lerna clean --yes",
     "cleanall": "lerna clean --yes && rm -fr node_modules package-lock.json",
-    "build": "lerna run tslint --stream && lerna run tsc --stream && lerna run build --stream",
+    "build": "lerna run tslint --stream && lerna run compile --stream && lerna run build --stream",
     "lint": "lerna run tslint --stream && lerna run tsc --stream && lerna run build --stream",
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "test": "npm run bootstrap && npm run lint && npm run testonly",
-    "testonly": "lerna run tsc --stream && lerna run build --stream && lerna run test --stream",
-    "testreal": "lerna run tsc --stream && lerna run test:api --stream"
+    "testonly": "lerna run compile --stream && lerna run build --stream && lerna run test --stream",
+    "testreal": "lerna run compile --stream && lerna run test:api --stream"
   },
   "devDependencies": {
     "husky": "^2.3.0",

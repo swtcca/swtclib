@@ -2,18 +2,17 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "pretty": true,
-    "lib": ["es2015", "dom"],
-    "target": "es6",
+    "lib": ["es2019"],
+    "target": "es2019",
     "outDir": "src",
     "rootDir": "tssrc",
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "strictNullChecks": false,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "removeComments": false,
     "preserveConstEnums": false,
     "suppressImplicitAnyIndexErrors": false,
     "declaration": true,
@@ -21,7 +20,7 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "skipLibCheck": true
+    "removeComments": true
   },
   "include": ["tssrc"]
 }

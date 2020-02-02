@@ -19,9 +19,10 @@
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
-    "tsc": "tsc; tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
-    "build:dev": "tsc && webpack --mode development",
+    "tsc": "tsc",
+    "compile": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build": "tsc && webpack",
+    "build:dev": "tsc && webpack --mode development",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/test*.js\""
