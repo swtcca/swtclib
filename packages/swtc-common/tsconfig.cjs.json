@@ -2,6 +2,8 @@
   "extends": "./tsconfig",
   "compilerOptions": {
     "esModuleInterop": true,
+    "target": "es2015",
+    "module": "es2015",
     "outDir": "cjs",
     "module": "commonjs"
   }
