@@ -19,7 +19,7 @@
     "build": "rollup -c",
     "rollup": "rollup -c",
     "tslint": "tslint tssrc/*.ts",
-    "tsc": "tsc -p tsconfig.cjs.json;  tsc -p tsconfig.esm.json",
+    "tsc": "tsc; tsc -p tsconfig.cjs.json;  tsc -p tsconfig.esm.json",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",

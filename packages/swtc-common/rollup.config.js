@@ -30,6 +30,11 @@ export default {
     {
       file: resolve("dist", `${name}.cjs.js`),
       format: "cjs"
+    },
+    {
+      file: resolve("dist", `${name}.global.js`),
+      name: "common",
+      format: "iife"
     }
   ]
 }
