@@ -2,7 +2,7 @@ const expect = require("chai").expect
 //import Remote from '../src/index'
 const Remote = require("../").Remote
 const DATA = require("../../.conf/config")
-const remote = new Remote({ server: DATA.server })
+const remote = new Remote({ server: "http://swtcproxy.swtclib.ca:5080" })
 
 let payid = "should be updated during payments query"
 let txid = "should be updated during transactions query"
@@ -88,8 +88,9 @@ describe("Remote", function() {
     it("get account payments with correct address", async function() {
       let data = await remote.getAccountPayments(DATA.address)
       expect(data).to.have.property("payments")
-      expect(data.payments[0]).to.be.an("object")
       payid = data.payments[0].hash
+      console.log(payid)
+      expect(data.payments[0]).to.be.an("object")
     })
     it("get account payment with correct hash", async function() {
       try {
@@ -304,11 +305,11 @@ describe("Remote", function() {
     it("currency for getAccountBalances", async function() {
       try {
         data = await remote.getAccountBalances(DATA.address, {
-          currency: "CNY"
+          currency: "JSLASH"
         })
         expect(data).to.have.property("balances")
         expect(data.balances[0]).to.be.an("object")
-        expect(data.balances[0].currency).to.equal("CNY")
+        expect(data.balances[0].currency).to.equal("JSLASH")
       } catch (error) {
         expect(error).to.equal("should not throw")
       }
