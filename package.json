@@ -7,7 +7,7 @@
     }
   },
   "scripts": {
-    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && lerna run tsc --stream",
+    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile --stream",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "lerna": "lerna",
