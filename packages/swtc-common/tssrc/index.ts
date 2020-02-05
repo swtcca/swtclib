@@ -1,5 +1,6 @@
 export { ZERO, HASHPREFIX, CHAINS, CURRENCY_RE, HASH_RE } from "./constants"
 export { LEDGER_FLAGS, FLAGS, LEDGER_STATES } from "./ledger"
+export { tx_json_filter } from "./tx"
 export {
   getTypes,
   formatArgs,

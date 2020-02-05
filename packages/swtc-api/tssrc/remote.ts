@@ -1,6 +1,5 @@
 import axios from "axios"
 import { Transaction } from "@swtc/transaction"
-import utf8 from "utf8"
 const Wallet = Transaction.Wallet
 const Serializer = Transaction.Serializer
 const utils = Transaction.utils
@@ -503,8 +502,8 @@ class Remote {
     return Wallet.makeAmount(value, currency, issuer)
   }
   // transaction funcs
-  public txAddMemo(tx, memo: string) {
-    tx.addMemo(memo)
+  public txAddMemo(tx, memo: any, format = "text") {
+    tx.addMemo(memo, format)
     return tx
   }
   public txSetSecret(tx, secret: string) {
@@ -600,12 +599,6 @@ class Remote {
     ) {
       // 基础货币
       tx.tx_json.Amount = Number(tx.tx_json.Amount) / 1000000
-    }
-    if (tx.tx_json.Memos) {
-      const memos = tx.tx_json.Memos
-      for (const memo of memos) {
-        memo.Memo.MemoData = utf8.decode(utils.hexToString(memo.Memo.MemoData))
-      }
     }
     if (tx.tx_json.SendMax && typeof tx.tx_json.SendMax === "string") {
       tx.tx_json.SendMax = Number(tx.tx_json.SendMax) / 1000000

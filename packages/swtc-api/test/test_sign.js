@@ -201,7 +201,7 @@ describe("Remote", function() {
         source: DATA.address,
         to: DATA.address2,
         amount: {
-          value: 1,
+          value: 0.01,
           currency: "SWT",
           issuer: ""
         }
@@ -216,7 +216,7 @@ describe("Remote", function() {
         expect(result).to.have.property("tx_blob")
         expect(result.tx_blob).to.be.equal(tx.tx_json.blob)
       } catch (error) {
-        expect(error).to.equal("should not throw")
+        expect(error.engine_result).to.equal("telINSUF_FUND")
       }
     })
     it("remote.txSubmitPromise() with secret", async function() {

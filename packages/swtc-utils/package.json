@@ -42,9 +42,7 @@
   "dependencies": {
     "@swtc/common": "^1.0.0",
     "@swtc/wallet": "^1.0.0",
-    "bignumber.js": "^9.0.0",
-    "url": "^0.11.0",
-    "utf8": "^3.0.0"
+    "bignumber.js": "^9.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",

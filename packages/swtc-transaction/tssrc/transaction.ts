@@ -2,8 +2,7 @@
 import { Factory as SerializerFactory } from "@swtc/serializer"
 import { Factory as UtilsFactory } from "@swtc/utils"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import { funcHexToString as hexToString, HASHPREFIX } from "@swtc/common"
-import utf8 from "utf8"
+import { HASHPREFIX, tx_json_filter } from "@swtc/common"
 import {
   // IMarker
   // ICurrency,
@@ -1093,18 +1092,17 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * just only memo data
      * @param memo
      */
-    public addMemo(memo, format = null) {
-      if (typeof memo !== "string") {
-        this.tx_json.memo_type = new TypeError("invalid memo type")
-        return this
-      }
-      if (memo.length > 2048) {
+    public addMemo(memo, format = "text") {
+      if (memo.length > 1024) {
         this.tx_json.memo_len = new TypeError("memo is too long")
         return this
       }
       const _memo: any = {}
-      if (format === null || format === "text") {
-        _memo.MemoData = utils.stringToHex(utf8.encode(memo))
+      if (format === "text") {
+        if (typeof memo !== "string") {
+          _memo.MemoFormat = "json"
+        }
+        _memo.MemoData = memo
       } else {
         _memo.MemoData = memo
         _memo.MemoFormat = format
@@ -1593,33 +1591,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       // run only once
       tx_json_filter(tx.tx_json)
       tx.flag_tx_json = true
-    }
-  }
-  function tx_json_filter(tx_json) {
-    // 签名时，序列化之前的字段处理
-    tx_json.Fee = tx_json.Fee / 1000000
-    // payment
-    if (tx_json.Amount && !isNaN(tx_json.Amount)) {
-      // 基础货币
-      tx_json.Amount = tx_json.Amount / 1000000
-    }
-    if (tx_json.Memos) {
-      const memos = tx_json.Memos
-      for (const memo of memos) {
-        memo.Memo.MemoData = utf8.decode(hexToString(memo.Memo.MemoData))
-      }
-    }
-    if (tx_json.SendMax && !isNaN(tx_json.SendMax)) {
-      tx_json.SendMax = Number(tx_json.SendMax) / 1000000
-    }
-    // order
-    if (tx_json.TakerPays && !isNaN(tx_json.TakerPays)) {
-      // 基础货币
-      tx_json.TakerPays = Number(tx_json.TakerPays) / 1000000
-    }
-    if (tx_json.TakerGets && !isNaN(tx_json.TakerGets)) {
-      // 基础货币
-      tx_json.TakerGets = Number(tx_json.TakerGets) / 1000000
     }
   }
 

@@ -21,11 +21,11 @@ import {
   funcString2Hex as string2Hex,
   funcNumber2Hex as number2Hex,
   funcHex2Number as hex2Number,
-  funcIsEmpty as isEmpty
+  funcIsEmpty as isEmpty,
+  convertHexToString
 } from "@swtc/common"
 import { Factory as WalletFactory } from "@swtc/wallet"
 const extend = Object.assign
-import utf8 from "utf8"
 import Bignumber from "bignumber.js"
 
 const Factory = (Wallet = WalletFactory("jingtum")) => {
@@ -330,7 +330,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         const memo = m.Memo
         for (const property in memo) {
           try {
-            memo[property] = utf8.decode(hexToString(memo[property]))
+            memo[property] = convertHexToString(memo[property])
           } catch (e) {
             // TODO to unify to utf8
             // memo[property] = memo[property];
