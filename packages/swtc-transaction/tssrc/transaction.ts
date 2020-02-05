@@ -2,7 +2,8 @@
 import { Factory as SerializerFactory } from "@swtc/serializer"
 import { Factory as UtilsFactory } from "@swtc/utils"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import * as utf8 from "utf8"
+import { funcHexToString as hexToString, HASHPREFIX } from "@swtc/common"
+import utf8 from "utf8"
 import {
   // IMarker
   // ICurrency,
@@ -24,9 +25,6 @@ import {
   ISignOtherTxOptions,
   IMultiSigningOptions
 } from "./types"
-
-const MUTIPREFIX = 0x534d5400 // 多重签名前缀
-const PREFIX = 0x53545800 // 事物签名前缀
 
 function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
@@ -1262,9 +1260,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const ed25519 = options.secret.slice(1, 3) === "Ed" ? true : false
       let hash
       if (ed25519) {
-        hash = `534D5400${blob.to_hex()}`
+        hash = `${HASHPREFIX.transactionMultiSig
+          .toString(16)
+          .toUpperCase()}${blob.to_hex()}`
       } else {
-        hash = blob.hash(MUTIPREFIX)
+        hash = blob.hash(HASHPREFIX.transactionMultiSig)
       }
 
       signer.SigningPubKey = wt.getPublicKey()
@@ -1531,9 +1531,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           const blob = jser.from_json(this.tx_json)
           let hash
           if (ed25519) {
-            hash = `53545800${blob.to_hex()}`
+            hash = `${HASHPREFIX.transactionSig
+              .toString(16)
+              .toUpperCase()}${blob.to_hex()}`
           } else {
-            hash = blob.hash(PREFIX)
+            hash = blob.hash(HASHPREFIX.transactionSig)
           }
           this.tx_json.TxnSignature = wt.signTx(hash)
           this.tx_json.blob = jser.from_json(this.tx_json).to_hex()
@@ -1589,42 +1591,13 @@ function Factory(Wallet = WalletFactory("jingtum")) {
   function tx_tx_json_filter(tx) {
     if (!tx.flag_tx_json) {
       // run only once
-      // 签名时，序列化之前的字段处理
-      tx.tx_json.Fee = tx.tx_json.Fee / 1000000
-
-      // payment
-      if (tx.tx_json.Amount && !isNaN(tx.tx_json.Amount)) {
-        // 基础货币
-        tx.tx_json.Amount = tx.tx_json.Amount / 1000000
-      }
-      if (tx.tx_json.Memos) {
-        const memos = tx.tx_json.Memos
-        for (const memo of memos) {
-          memo.Memo.MemoData = utf8.decode(
-            utils.hexToString(memo.Memo.MemoData)
-          )
-        }
-      }
-      if (tx.tx_json.SendMax && !isNaN(tx.tx_json.SendMax)) {
-        tx.tx_json.SendMax = Number(tx.tx_json.SendMax) / 1000000
-      }
-
-      // order
-      if (tx.tx_json.TakerPays && !isNaN(tx.tx_json.TakerPays)) {
-        // 基础货币
-        tx.tx_json.TakerPays = Number(tx.tx_json.TakerPays) / 1000000
-      }
-      if (tx.tx_json.TakerGets && !isNaN(tx.tx_json.TakerGets)) {
-        // 基础货币
-        tx.tx_json.TakerGets = Number(tx.tx_json.TakerGets) / 1000000
-      }
+      tx_json_filter(tx.tx_json)
       tx.flag_tx_json = true
     }
   }
   function tx_json_filter(tx_json) {
     // 签名时，序列化之前的字段处理
     tx_json.Fee = tx_json.Fee / 1000000
-
     // payment
     if (tx_json.Amount && !isNaN(tx_json.Amount)) {
       // 基础货币
@@ -1633,13 +1606,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     if (tx_json.Memos) {
       const memos = tx_json.Memos
       for (const memo of memos) {
-        memo.Memo.MemoData = utf8.decode(utils.hexToString(memo.Memo.MemoData))
+        memo.Memo.MemoData = utf8.decode(hexToString(memo.Memo.MemoData))
       }
     }
     if (tx_json.SendMax && !isNaN(tx_json.SendMax)) {
       tx_json.SendMax = Number(tx_json.SendMax) / 1000000
     }
-
     // order
     if (tx_json.TakerPays && !isNaN(tx_json.TakerPays)) {
       // 基础货币
@@ -1660,9 +1632,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const blob = jser.from_json(tx.tx_json)
       let hash
       if (ed25519) {
-        hash = `53545800${blob.to_hex()}`
+        hash = `${HASHPREFIX.transactionSig
+          .toString(16)
+          .toUpperCase()}${blob.to_hex()}`
       } else {
-        hash = blob.hash(PREFIX)
+        hash = blob.hash(HASHPREFIX.transactionSig)
       }
       tx.tx_json.TxnSignature = wt.signTx(hash)
       tx.tx_json.blob = jser.from_json(tx.tx_json).to_hex()
@@ -1687,9 +1661,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         blob = jser.adr_json(blob, s.Account)
         if (s.SigningPubKey.slice(0, 2) === "ED") {
           // ed25519
-          message = `534D5400${blob.to_hex()}`
+          message = `${HASHPREFIX.transactionMultiSig
+            .toString(16)
+            .toUpperCase()}${blob.to_hex()}`
         } else {
-          message = blob.hash(MUTIPREFIX)
+          message = blob.hash(HASHPREFIX.transactionMultiSig)
         }
         if (
           // todo: check format of pubkey is needed

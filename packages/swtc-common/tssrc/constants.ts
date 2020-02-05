@@ -1,5 +1,31 @@
+export const CURRENCY_RE = /^([a-zA-Z0-9]{3,6}|[A-F0-9]{40})$/
+export const HASH_RE = /^[A-F0-9]{64}$/
+export const NODE_TYPES = ["CreatedNode", "ModifiedNode", "DeletedNode"]
+
 export const ZERO =
   "0000000000000000000000000000000000000000000000000000000000000000"
+
+export const HASHPREFIX = {
+  transactionID: 0x54584e00, // 事务哈希
+  // transaction plus metadata
+  transaction: 0x534e4400,
+  // account state
+  accountStateEntry: 0x4d4c4e00,
+  // inner node in tree
+  innerNode: 0x4d494e00,
+  // ledger master data for signing
+  ledgerHeader: 0x4c575200,
+  // inner transaction to sign
+  transactionSig: 0x53545800, // 单签
+  // inner transaction to sign
+  transactionMultiSig: 0x534d5400, // 多签
+  // validation for signing
+  validation: 0x56414c00,
+  // proposal for signing
+  proposal: 0x50525000,
+  // payment channel claim
+  paymentChannelClaim: 0x434c4d00
+}
 
 export const CHAINS = [
   {
