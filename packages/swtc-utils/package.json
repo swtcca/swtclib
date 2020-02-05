@@ -1,6 +1,6 @@
 {
   "name": "@swtc/utils",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "swtc utils",
   "main": "cjs/utils.js",
   "module": "esm/utils.js",
