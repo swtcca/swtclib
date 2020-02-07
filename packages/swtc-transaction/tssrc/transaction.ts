@@ -7,8 +7,8 @@ import {
   tx_json_filter,
   convertStringToHex,
   // convertHexToString,
-  normalize_memo
-  // isHexMemoString
+  normalize_memo,
+  isHexMemoString
 } from "@swtc/common"
 import {
   // IMarker
@@ -1110,13 +1110,27 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const _memo: any = {}
       if (format === "text") {
         if (typeof memo !== "string") {
-          _memo.MemoData = convertStringToHex(JSON.stringify(memo))
+          _memo.MemoData = memo
+          _memo.MemoFormat = "json"
+        } else if (isHexMemoString(memo)) {
+          _memo.MemoFormat = "hex"
+          _memo.MemoData = memo
         } else {
-          _memo.MemoData = convertStringToHex(memo)
+          _memo.MemoData = memo
         }
       } else {
-        _memo.MemoData = convertStringToHex(memo)
+        _memo.MemoData = memo
+        _memo.MemoFormat = "hex"
       }
+      // if (format === "text") {
+      //   if (typeof memo !== "string") {
+      //     _memo.MemoData = convertStringToHex(JSON.stringify(memo))
+      //   } else {
+      //     _memo.MemoData = convertStringToHex(memo)
+      //   }
+      // } else {
+      //   _memo.MemoData = convertStringToHex(memo)
+      // }
       // if (format === "text") {
       //   if (typeof memo !== "string") {
       //     _memo.MemoFormat = convertStringToHex("json")
@@ -1258,6 +1272,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     public memo_normalize(reverse = false) {
       normalize_memo(this.tx_json, reverse)
+      for (const memo of this.tx_json.Memos) {
+        if (memo.Memo.MemoFormat) {
+          memo.Memo.MemoFormat = convertStringToHex(memo.Memo.MemoFormat)
+        }
+        memo.Memo.MemoData = convertStringToHex(memo.Memo.MemoData)
+      }
       this.flag_tx_memo = true
     }
 
@@ -1331,6 +1351,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         // 验证燃料费是否够用
         this.tx_json.Fee = new Error("low fee")
       }
+      this.memo_normalize() // 编码memo
       return this
     }
 
@@ -1550,7 +1571,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     // private and protected methods
     public async _signPromise(): Promise<any> {
       this.swt_normalize()
-      this.memo_normalize(true)
       return new Promise((resolve, reject) => {
         try {
           const wt = new baselib(this._secret)
@@ -1619,7 +1639,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
   function signing(tx, callback) {
     try {
       tx.swt_normalize()
-      tx.memo_normalize(true)
       const wt = new baselib(tx._secret)
       tx.tx_json.SigningPubKey = wt.getPublicKey()
       const ed25519 = tx._secret.slice(1, 3) === "Ed" ? true : false

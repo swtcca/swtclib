@@ -137,7 +137,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Memos).to.deep.equal([
         {
           Memo: {
-            MemoData: "74657374"
+            MemoData: "test"
           }
         }
       ])
