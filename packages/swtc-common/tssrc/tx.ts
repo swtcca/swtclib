@@ -1,3 +1,9 @@
+import {
+  convertHexToString,
+  convertStringToHex,
+  isHexMemoString
+} from "./serializer"
+
 export function tx_json_filter(tx_json) {
   // 签名时，序列化之前的字段处理
   tx_json.Fee = tx_json.Fee / 1000000
@@ -19,3 +25,79 @@ export function tx_json_filter(tx_json) {
     tx_json.TakerGets = Number(tx_json.TakerGets) / 1000000
   }
 }
+
+export function normalize_memo(tx_json, reverse = false) {
+  if (tx_json.Memos) {
+    for (const memo of tx_json.Memos) {
+      let data = memo.Memo.MemoData
+      if (!isHexMemoString(data)) {
+        data = convertStringToHex(data)
+        memo.Memo.MemoData = data
+      }
+      if (reverse) {
+        memo.Memo.MemoData = convertHexToString(data)
+      }
+    }
+  }
+}
+
+// export function normalize_memo(tx_json, reverse = false) {
+//   if (tx_json.Memos) {
+//     for (const memo of tx_json.Memos) {
+//       let data = memo.Memo.MemoData
+//       let format = memo.Memo.MemoFormat
+//       if (isHexMemoString(format)) {
+//       } else if (format === "hex") {
+//         format = convertStringToHex(format)
+//         if (!isHexMemoString(data)) {
+//           throw new Error(
+//             "MemoData in hex MemoFormat should in hex format"
+//           )
+//         }
+// 	  } else if (format === "json") {
+//         format = convertStringToHex(format)
+//         if (typeof data === "string") {
+//           if (!isHexMemoString(data)) {
+//             throw new Error(
+//               "MemoData in json MemoFormat should have been serialized and encoded"
+//             )
+//           }
+//         } else {
+//           data = convertStringToHex(JSON.stringify(data))
+// 		}
+// 	  } else if (format) { // other literal format
+//         throw new Error(
+//           "MemoFormat only allow json or hex for now"
+//         )
+// 	  } else { // no format, pure default text
+//         if (typeof data !== "string") {
+//           data = convertStringToHex(JSON.stringify(data))
+//           format = convertStringToHex("json")
+//         } else if (isHexMemoString(data)) {
+//         } else {
+//           data = convertStringToHex(data)
+//         }
+//       }
+//       memo.Memo.MemoData = data
+//       if (format) {
+//         memo.Memo.MemoFormat = format
+// 	  }
+//
+//       if (reverse) { // convert hex data and hex format back to data and format
+//         if (format) {
+//           format = convertHexToString(format)
+//           if (format === "json") {
+//             data = JSON.parse(convertHexToString(data))
+// 		  } else if (format === "hex") {
+// 		  } else {
+//             throw new Error(
+//               "MemoFormat only allow json or hex for now"
+//             )
+// 		  }
+// 		} else {
+//           data = convertHexToString(data)
+// 		}
+//       }
+// 	}
+//   }
+// }
