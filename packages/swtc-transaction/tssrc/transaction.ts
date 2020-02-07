@@ -1272,11 +1272,13 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     public memo_normalize(reverse = false) {
       normalize_memo(this.tx_json, reverse)
-      for (const memo of this.tx_json.Memos) {
-        if (memo.Memo.MemoFormat) {
-          memo.Memo.MemoFormat = convertStringToHex(memo.Memo.MemoFormat)
+      if (this.tx_json.Memos) {
+        for (const memo of this.tx_json.Memos) {
+          if (memo.Memo.MemoFormat) {
+            memo.Memo.MemoFormat = convertStringToHex(memo.Memo.MemoFormat)
+          }
+          memo.Memo.MemoData = convertStringToHex(memo.Memo.MemoData)
         }
-        memo.Memo.MemoData = convertStringToHex(memo.Memo.MemoData)
       }
       this.flag_tx_memo = true
     }
