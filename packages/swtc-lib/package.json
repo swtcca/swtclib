@@ -54,7 +54,8 @@
     "bignumber.js": "^9.0.0",
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
-    "ws": "^6.2.1"
+    "ws": "^6.2.1",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",

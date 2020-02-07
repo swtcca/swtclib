@@ -33,8 +33,7 @@ const STMemo = new SerializedType({
     const isHex = val.MemoFormat === "hex"
 
     // tslint:disable-next-line
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
+    for (const key of keys) {
       let value = val[key]
       switch (key) {
         // MemoType and MemoFormat are always ASCII strings

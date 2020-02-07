@@ -2,7 +2,14 @@
 import { Factory as SerializerFactory } from "@swtc/serializer"
 import { Factory as UtilsFactory } from "@swtc/utils"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import * as utf8 from "utf8"
+import {
+  HASHPREFIX,
+  tx_json_filter,
+  convertStringToHex,
+  // convertHexToString,
+  normalize_memo,
+  isHexMemoString
+} from "@swtc/common"
 import {
   // IMarker
   // ICurrency,
@@ -24,9 +31,6 @@ import {
   ISignOtherTxOptions,
   IMultiSigningOptions
 } from "./types"
-
-const MUTIPREFIX = 0x534d5400 // 多重签名前缀
-const PREFIX = 0x53545800 // 事物签名前缀
 
 function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
@@ -1020,6 +1024,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     public tx_json
     public flag_tx_json: boolean
+    public flag_tx_memo: boolean
     public readonly _token: string
     public _secret: string | undefined
     public abi: any[] | undefined
@@ -1035,6 +1040,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this._filter = filter
       this.command = "submit"
       this.flag_tx_json = false
+      this.flag_tx_memo = false
     }
 
     /**
@@ -1094,23 +1100,51 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     /**
      * just only memo data
      * @param memo
+     * EVERYTHING for MemoData so far, not format actually :((((
      */
-    public addMemo(memo, format = null) {
-      if (typeof memo !== "string") {
-        this.tx_json.memo_type = new TypeError("invalid memo type")
-        return this
-      }
-      if (memo.length > 2048) {
+    public addMemo(memo, format = "text") {
+      if (memo.length > 1024) {
         this.tx_json.memo_len = new TypeError("memo is too long")
         return this
       }
       const _memo: any = {}
-      if (format === null || format === "text") {
-        _memo.MemoData = utils.stringToHex(utf8.encode(memo))
+      if (format === "text") {
+        if (typeof memo !== "string") {
+          _memo.MemoData = memo
+          _memo.MemoFormat = "json"
+        } else if (isHexMemoString(memo)) {
+          _memo.MemoFormat = "hex"
+          _memo.MemoData = memo
+        } else {
+          _memo.MemoData = memo
+        }
       } else {
         _memo.MemoData = memo
-        _memo.MemoFormat = format
+        _memo.MemoFormat = "hex"
       }
+      // if (format === "text") {
+      //   if (typeof memo !== "string") {
+      //     _memo.MemoData = convertStringToHex(JSON.stringify(memo))
+      //   } else {
+      //     _memo.MemoData = convertStringToHex(memo)
+      //   }
+      // } else {
+      //   _memo.MemoData = convertStringToHex(memo)
+      // }
+      // if (format === "text") {
+      //   if (typeof memo !== "string") {
+      //     _memo.MemoFormat = convertStringToHex("json")
+      //     _memo.MemoData = convertStringToHex(JSON.stringify(memo))
+      //   } else if (isHexMemoString(memo)) {
+      //     _memo.MemoFormat = convertStringToHex("hex")
+      //     _memo.MemoData = memo
+      //   } else {
+      //     _memo.MemoData = convertStringToHex(memo)
+      //   }
+      // } else {
+      //    _memo.MemoData = convertStringToHex(memo)
+      //    _memo.MemoFormat = convertStringToHex(format)
+      // }
       this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
     }
 
@@ -1228,6 +1262,27 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.tx_json.Sequence = Number(sequence)
     }
 
+    public swt_normalize() {
+      if (!this.flag_tx_json) {
+        // run only once
+        tx_json_filter(this.tx_json)
+        this.flag_tx_json = true
+      }
+    }
+
+    public memo_normalize(reverse = false) {
+      normalize_memo(this.tx_json, reverse)
+      if (this.tx_json.Memos) {
+        for (const memo of this.tx_json.Memos) {
+          if (memo.Memo.MemoFormat) {
+            memo.Memo.MemoFormat = convertStringToHex(memo.Memo.MemoFormat)
+          }
+          memo.Memo.MemoData = convertStringToHex(memo.Memo.MemoData)
+        }
+      }
+      this.flag_tx_memo = true
+    }
+
     /*
      * options: {
      *   address: '',
@@ -1235,13 +1290,15 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * }
      */
     public multiSigning(options: IMultiSigningOptions) {
+      // this.swt_normalize()
+      this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
       if (!this.tx_json.Sequence) {
         this.tx_json.Sequence = new Error("please set sequence first")
         return this
       }
-
+      // const tx_json_verify = JSON.parse(JSON.stringify(this.tx_json))
       const signers = this.tx_json.Signers || []
-      if (signers && signers.length > 0) {
+      if (signers.length > 0) {
         // 验签
         if (!verifyTx(this.tx_json)) {
           this.tx_json.verifyTx = new Error("verify failed")
@@ -1252,19 +1309,23 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const Account = options.account || options.address
       const signer: any = { Account }
       const wt = new baselib(options.secret)
-      this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
+
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
-      tx_json_filter(tx_json)
       delete tx_json.Signers
+      tx_json_filter(tx_json)
+      normalize_memo(tx_json, true)
+
       let blob = jser.from_json(tx_json)
       blob = jser.adr_json(blob, Account)
 
       const ed25519 = options.secret.slice(1, 3) === "Ed" ? true : false
       let hash
       if (ed25519) {
-        hash = `534D5400${blob.to_hex()}`
+        hash = `${HASHPREFIX.transactionMultiSig
+          .toString(16)
+          .toUpperCase()}${blob.to_hex()}`
       } else {
-        hash = blob.hash(MUTIPREFIX)
+        hash = blob.hash(HASHPREFIX.transactionMultiSig)
       }
 
       signer.SigningPubKey = wt.getPublicKey()
@@ -1281,7 +1342,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       // 多重签名完毕
       this.command = "submit_multisigned"
       const signers = this.tx_json.Signers || []
-      if (signers && signers.length > 0) {
+      if (signers.length > 0) {
         // 验签
         if (!verifyTx(this.tx_json)) {
           this.tx_json.verifyTx = new Error("verify failed")
@@ -1292,6 +1353,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         // 验证燃料费是否够用
         this.tx_json.Fee = new Error("low fee")
       }
+      this.memo_normalize() // 编码memo
       return this
     }
 
@@ -1342,18 +1404,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           })
       } else {
         throw new Error("unable to fill in sequence")
-        // use api.jingtum.com to get sequence
-        // axios
-        //   .get(
-        //     `https://api.jingtum.com/v2/accounts/${this.tx_json.Account}/balances`
-        //   )
-        //   .then(response => {
-        //     this.tx_json.Sequence = response.data.sequence
-        //     signing(this, callback)
-        //   })
-        //   .catch(error => {
-        //     throw error
-        //   })
       }
     }
 
@@ -1522,7 +1572,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     // private and protected methods
     public async _signPromise(): Promise<any> {
-      tx_tx_json_filter(this)
+      this.swt_normalize()
       return new Promise((resolve, reject) => {
         try {
           const wt = new baselib(this._secret)
@@ -1531,9 +1581,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           const blob = jser.from_json(this.tx_json)
           let hash
           if (ed25519) {
-            hash = `53545800${blob.to_hex()}`
+            hash = `${HASHPREFIX.transactionSig
+              .toString(16)
+              .toUpperCase()}${blob.to_hex()}`
           } else {
-            hash = blob.hash(PREFIX)
+            hash = blob.hash(HASHPREFIX.transactionSig)
           }
           this.tx_json.TxnSignature = wt.signTx(hash)
           this.tx_json.blob = jser.from_json(this.tx_json).to_hex()
@@ -1586,83 +1638,20 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
   }
 
-  function tx_tx_json_filter(tx) {
-    if (!tx.flag_tx_json) {
-      // run only once
-      // 签名时，序列化之前的字段处理
-      tx.tx_json.Fee = tx.tx_json.Fee / 1000000
-
-      // payment
-      if (tx.tx_json.Amount && !isNaN(tx.tx_json.Amount)) {
-        // 基础货币
-        tx.tx_json.Amount = tx.tx_json.Amount / 1000000
-      }
-      if (tx.tx_json.Memos) {
-        const memos = tx.tx_json.Memos
-        for (const memo of memos) {
-          memo.Memo.MemoData = utf8.decode(
-            utils.hexToString(memo.Memo.MemoData)
-          )
-        }
-      }
-      if (tx.tx_json.SendMax && !isNaN(tx.tx_json.SendMax)) {
-        tx.tx_json.SendMax = Number(tx.tx_json.SendMax) / 1000000
-      }
-
-      // order
-      if (tx.tx_json.TakerPays && !isNaN(tx.tx_json.TakerPays)) {
-        // 基础货币
-        tx.tx_json.TakerPays = Number(tx.tx_json.TakerPays) / 1000000
-      }
-      if (tx.tx_json.TakerGets && !isNaN(tx.tx_json.TakerGets)) {
-        // 基础货币
-        tx.tx_json.TakerGets = Number(tx.tx_json.TakerGets) / 1000000
-      }
-      tx.flag_tx_json = true
-    }
-  }
-  function tx_json_filter(tx_json) {
-    // 签名时，序列化之前的字段处理
-    tx_json.Fee = tx_json.Fee / 1000000
-
-    // payment
-    if (tx_json.Amount && !isNaN(tx_json.Amount)) {
-      // 基础货币
-      tx_json.Amount = tx_json.Amount / 1000000
-    }
-    if (tx_json.Memos) {
-      const memos = tx_json.Memos
-      for (const memo of memos) {
-        memo.Memo.MemoData = utf8.decode(utils.hexToString(memo.Memo.MemoData))
-      }
-    }
-    if (tx_json.SendMax && !isNaN(tx_json.SendMax)) {
-      tx_json.SendMax = Number(tx_json.SendMax) / 1000000
-    }
-
-    // order
-    if (tx_json.TakerPays && !isNaN(tx_json.TakerPays)) {
-      // 基础货币
-      tx_json.TakerPays = Number(tx_json.TakerPays) / 1000000
-    }
-    if (tx_json.TakerGets && !isNaN(tx_json.TakerGets)) {
-      // 基础货币
-      tx_json.TakerGets = Number(tx_json.TakerGets) / 1000000
-    }
-  }
-
   function signing(tx, callback) {
     try {
-      tx_tx_json_filter(tx)
+      tx.swt_normalize()
       const wt = new baselib(tx._secret)
       tx.tx_json.SigningPubKey = wt.getPublicKey()
       const ed25519 = tx._secret.slice(1, 3) === "Ed" ? true : false
       const blob = jser.from_json(tx.tx_json)
       let hash
       if (ed25519) {
-        hash = `53545800${blob.to_hex()}`
+        hash = `${HASHPREFIX.transactionSig
+          .toString(16)
+          .toUpperCase()}${blob.to_hex()}`
       } else {
-        hash = blob.hash(PREFIX)
+        hash = blob.hash(HASHPREFIX.transactionSig)
       }
       tx.tx_json.TxnSignature = wt.signTx(hash)
       tx.tx_json.blob = jser.from_json(tx.tx_json).to_hex()
@@ -1676,10 +1665,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
   function verifyTx(tx_json) {
     // 验签
     const tx_json_new = JSON.parse(JSON.stringify(tx_json))
-    tx_json_filter(tx_json_new)
-    const signers = tx_json_new.Signers
+    const signers = tx_json_new.Signers || []
     delete tx_json_new.Signers
-    if (signers && signers.length > 0) {
+    tx_json_filter(tx_json_new)
+    normalize_memo(tx_json_new, true)
+    if (signers.length > 0) {
       for (const signer of signers) {
         const s = signer.Signer
         let message
@@ -1687,9 +1677,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         blob = jser.adr_json(blob, s.Account)
         if (s.SigningPubKey.slice(0, 2) === "ED") {
           // ed25519
-          message = `534D5400${blob.to_hex()}`
+          message = `${HASHPREFIX.transactionMultiSig
+            .toString(16)
+            .toUpperCase()}${blob.to_hex()}`
         } else {
-          message = blob.hash(MUTIPREFIX)
+          message = blob.hash(HASHPREFIX.transactionMultiSig)
         }
         if (
           // todo: check format of pubkey is needed

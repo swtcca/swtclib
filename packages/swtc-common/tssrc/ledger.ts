@@ -34,3 +34,5 @@ export const FLAGS = {
     Sell: 0x00080000
   }
 }
+
+export const LEDGER_STATES = ["current", "closed", "validated"]

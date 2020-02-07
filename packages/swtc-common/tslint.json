@@ -9,6 +9,7 @@
     "object-literal-sort-keys": false,
     "quotemark": [true, "double", "avoid-escape", "jsx-double"],
     "semicolon": false,
+    "no-empty": false,
     "trailing-comma": false,
     "ordered-imports": [
       true,

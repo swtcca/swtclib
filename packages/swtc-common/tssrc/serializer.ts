@@ -1295,6 +1295,10 @@ const isHexHASH256String = val => {
   return isString(val) && /^[0-9A-F]{0,64}$/i.test(val)
 }
 
+const isHexMemoString = val => {
+  return isString(val) && /^[0-9A-F]{0,2048}$/i.test(val)
+}
+
 export {
   convertByteArrayToHex,
   convertIntegerToByteArray,
@@ -1308,6 +1312,7 @@ export {
   hex_str_to_byte_array,
   isHexInt64String,
   isHexHASH256String,
+  isHexMemoString,
   isNumber,
   isString,
   readAndSum,

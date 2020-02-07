@@ -60,7 +60,8 @@
     "bignumber.js": "^9.0.0",
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
-    "ws": "^6.2.1"
+    "ws": "^6.2.1",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "@types/node": "^12.7.1",

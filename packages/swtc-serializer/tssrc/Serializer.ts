@@ -100,12 +100,6 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
       return so
     }
 
-    /**
-     * Use TRANSACTION_TYPES info to check if the input TX missing any info
-     *
-     * @static
-     * @memberof Serializer
-     */
     public static adr_json(so, account) {
       so.append(Wallet.KeyPair.convertAddressToBytes(account))
       return so

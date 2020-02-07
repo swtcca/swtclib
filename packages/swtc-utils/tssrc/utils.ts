@@ -4,20 +4,31 @@
 
 import {
   LEDGER_FLAGS,
+  LEDGER_STATES,
   FLAGS as Flags,
+  getTypes,
+  formatArgs,
+  isValidCurrency,
+  isValidHash,
+  txnType,
+  reverseAmount,
+  isAmountZero,
+  getTypeNode,
+  processAffectNode,
+  affectedAccounts,
   funcHexToString as hexToString,
   funcStringToHex as stringToHex,
   funcString2Hex as string2Hex,
   funcNumber2Hex as number2Hex,
   funcHex2Number as hex2Number,
-  funcIsEmpty as isEmpty
+  funcIsEmpty as isEmpty,
+  convertHexToString
 } from "@swtc/common"
 import { Factory as WalletFactory } from "@swtc/wallet"
 const extend = Object.assign
-import utf8 from "utf8"
 import Bignumber from "bignumber.js"
 
-function Factory(Wallet = WalletFactory("jingtum")) {
+const Factory = (Wallet = WalletFactory("jingtum")) => {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("utils needs a Wallet class")
   }
@@ -35,7 +46,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
    * @param amount
    * @returns {boolean}
    */
-  function isValidAmount(amount) {
+  const isValidAmount = amount => {
     if (amount === null || typeof amount !== "object") {
       return false
     }
@@ -67,7 +78,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
    * @param amount
    * @returns {boolean}
    */
-  function isValidAmount0(amount) {
+  const isValidAmount0 = amount => {
     if (amount === null || typeof amount !== "object") {
       return false
     }
@@ -93,7 +104,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
    * @param amount
    * @returns {*}
    */
-  function parseAmount(amount) {
+  const parseAmount = amount => {
     if (typeof amount === "string" && !Number.isNaN(Number(amount))) {
       const value = String(new Bignumber(amount).dividedBy(1000000.0))
       const currency = getCurrency()
@@ -105,121 +116,20 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
   }
 
-  const CURRENCY_RE = /^([a-zA-Z0-9]{3,6}|[A-F0-9]{40})$/
-  function isValidCurrency(currency) {
-    if (!currency || typeof currency !== "string" || currency === "") {
-      return false
-    }
-    return CURRENCY_RE.test(currency)
-  }
-
-  const LEDGER_STATES = ["current", "closed", "validated"]
-
-  const HASH__RE = /^[A-F0-9]{64}$/
-  /**
-   * hash check for tx and ledger hash
-   * @param hash
-   * @returns {boolean}
-   */
-  function isValidHash(hash) {
-    if (!hash || typeof hash !== "string" || hash === "") {
-      return false
-    }
-    return HASH__RE.test(hash)
-  }
-
-  /**
-   * get meta node type
-   * @param node
-   * @returns {*}
-   */
-  function getTypeNode(node) {
-    const NODE_TYPES = ["CreatedNode", "ModifiedNode", "DeletedNode"]
-    for (const index in NODE_TYPES) {
-      const type = NODE_TYPES[index]
-      if (node.hasOwnProperty(type)) {
-        return node[type]
-      }
-    }
-    return null
-  }
-
-  function processAffectNode(an) {
-    const result: any = {}
-    const EFFECTS = ["CreatedNode", "ModifiedNode", "DeletedNode"]
-    EFFECTS.forEach(function(x) {
-      if (an[x]) result.diffType = x
-    })
-
-    if (!result.diffType) return {}
-
-    an = an[result.diffType]
-
-    result.entryType = an.LedgerEntryType
-    result.ledgerIndex = an.LedgerIndex
-
-    result.fields = extend({}, an.PreviousFields, an.NewFields, an.FinalFields)
-    result.fieldsPrev = an.PreviousFields || {}
-    result.fieldsNew = an.NewFields || {}
-    result.fieldsFinal = an.FinalFields || {}
-    result.PreviousTxnID = an.PreviousTxnID
-
-    return result
-  }
-
-  /**
-   * get effect accounts
-   * @param data
-   * @returns {Array}
-   */
-  function affectedAccounts(tx) {
-    const accounts = {}
-    accounts[tx.transaction.Account] = 1
-
-    if (tx.transaction.Destination) {
-      accounts[tx.transaction.Destination] = 1
-    }
-    if (tx.transaction.LimitAmount) {
-      accounts[tx.transaction.LimitAmount.issuer] = 1
-    }
-    const meta = tx.meta
-    if (meta && meta.TransactionResult === "tesSUCCESS") {
-      meta.AffectedNodes.forEach(function(n) {
-        const node = processAffectNode(n)
-        if (node.entryType === "AccountRoot" && node.fields.Account) {
-          accounts[node.fields.Account] = 1
-        }
-        if (node.entryType === "SkywellState") {
-          if (node.fields.HighLimit.issuer) {
-            accounts[node.fields.HighLimit.issuer] = 1
-          }
-          if (node.fields.LowLimit.issuer) {
-            accounts[node.fields.LowLimit.issuer] = 1
-          }
-        }
-        if (node.entryType === "Offer" && node.fields.Account) {
-          accounts[node.fields.Account] = 1
-        }
-      })
-    }
-
-    return Object.keys(accounts)
-  }
-
   /**
    * get affect order book
    * @param tx
    * @returns {Array}
    */
-  function affectedBooks(tx) {
+  const affectedBooks = tx => {
     const data = tx.meta
     if (typeof data !== "object") return []
     if (!Array.isArray(data.AffectedNodes)) return []
 
     const currency = getCurrency()
     const books = {}
-    for (let i = 0; i < data.AffectedNodes.length; ++i) {
-      const node = getTypeNode(data.AffectedNodes[i])
+    for (const an of data.AffectedNodes) {
+      const node = getTypeNode(an)
       if (!node || node.LedgerEntryType !== "Offer") {
         continue
       }
@@ -253,73 +163,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     return Object.keys(books)
   }
 
-  /**
-   * parse tx type to specific transaction type
-   * @param tx
-   * @param account
-   * @returns {string}
-   */
-  function txnType(tx, account) {
-    if (
-      tx.Account === account ||
-      tx.Target === account ||
-      (tx.Destination && tx.Destination === account) ||
-      (tx.LimitAmount && tx.LimitAmount.issuer === account)
-    ) {
-      switch (tx.TransactionType) {
-        case "Payment": // 支付类
-          return tx.Account === account
-            ? tx.Destination === account
-              ? "convert"
-              : "sent"
-            : "received"
-        case "OfferCreate": // 创建挂单类
-          return "offernew"
-        case "OfferCancel": // 取消挂单类
-          return "offercancel"
-        case "TrustSet": // 设置信任线
-          return tx.Account === account ? "trusting" : "trusted"
-        case "RelationDel":
-        case "AccountSet":
-        case "SetRegularKey":
-        case "RelationSet":
-        case "SignSet":
-        case "Operation":
-        case "ConfigContract": // lua版本合约类
-        case "AlethContract": // solidity版本合约类
-        case "Brokerage": // 设置手续费类
-        case "SignerListSet": // 签名列表类
-          // TODO to sub-class tx type
-          return tx.TransactionType.toLowerCase()
-        default:
-          // TODO CHECK
-          return "unknown"
-      }
-    } else {
-      return "offereffect"
-    }
-  }
-
-  /**
-   * get counterparty amount
-   * @param amount
-   * @param account
-   * @returns {{value: string, currency: *, issuer: *}}
-   */
-  function reverseAmount(amount, account) {
-    return {
-      value: String(-Number(amount.value)),
-      currency: amount.currency,
-      issuer: account
-    }
-  }
-
-  function isAmountZero(amount) {
-    if (!amount) return false
-    return Number(amount.value) < 1e-12
-  }
-
-  function AmountNegate(amount) {
+  const AmountNegate = amount => {
     if (!amount) return amount
     return {
       value: String(-new Bignumber(amount.value)),
@@ -328,7 +172,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     }
   }
 
-  function AmountAdd(amount1, amount2) {
+  const AmountAdd = (amount1, amount2) => {
     if (!amount1) return amount2
     if (!amount2) return amount1
     if (amount1 && amount2) {
@@ -341,15 +185,15 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     return null
   }
 
-  function AmountSubtract(amount1, amount2) {
+  const AmountSubtract = (amount1, amount2) => {
     return AmountAdd(amount1, AmountNegate(amount2))
   }
 
-  function AmountRatio(amount1, amount2) {
+  const AmountRatio = (amount1, amount2) => {
     return String(new Bignumber(amount1.value).dividedBy(amount2.value))
   }
 
-  function getPrice(effect, funded) {
+  const getPrice = (effect, funded) => {
     const g = effect.got ? effect.got : effect.pays
     const p = effect.paid ? effect.paid : effect.gets
     if (!funded) {
@@ -358,14 +202,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       return AmountRatio(p, g)
     }
   }
-  function formatArgs(args) {
-    const newArgs = []
-    if (args)
-      for (let i = 0; i < args.length; i++) {
-        newArgs.push(hexToString(args[i].Arg.Parameter))
-      }
-    return newArgs
-  }
+
   /**
    * process transaction in view of account
    * get basic transaction information,
@@ -374,7 +211,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
    * @param txn
    * @param account
    */
-  function processTx(txn, account) {
+  const processTx = (txn, account) => {
     const tx = txn.tx || txn.transaction || txn
     const meta = txn.meta
     // basic information
@@ -468,7 +305,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         result.seq = tx.Sequence
         break
       case "signerlistset":
-        tx.SignerEntries.forEach(function(s) {
+        tx.SignerEntries.forEach(s => {
           l.push({
             account: s.SignerEntry.Account,
             weight: s.SignerEntry.SignerWeight
@@ -485,17 +322,15 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     if (tx.Signers) {
       // 添加签名列表
       result.signers = []
-      tx.Signers.forEach(function(s) {
-        result.signers.push(s.Signer.Account)
-      })
+      tx.Signers.forEach(s => result.signers.push(s.Signer.Account))
     }
     // add memo
     if (Array.isArray(tx.Memos) && tx.Memos.length > 0) {
-      for (let m = 0; m < tx.Memos.length; ++m) {
-        const memo = tx.Memos[m].Memo
+      for (const m of tx.Memos) {
+        const memo = m.Memo
         for (const property in memo) {
           try {
-            memo[property] = utf8.decode(hexToString(memo[property]))
+            memo[property] = convertHexToString(memo[property])
           } catch (e) {
             // TODO to unify to utf8
             // memo[property] = memo[property];
@@ -522,7 +357,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     result.balancesPrev = {} // 存放交易前余额
 
     // process effects
-    meta.AffectedNodes.forEach(function(n) {
+    meta.AffectedNodes.forEach(n => {
       const node = processAffectNode(n)
       const effect: any = {}
       /**
@@ -772,8 +607,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * TODO check cross gateway when parse more effect, specially trust related effects, now ignore it
      *
      */
-    for (let i = 0; i < result.effects.length; i++) {
-      const e = result.effects[i]
+    for (const e of result.effects) {
       if (result.rate && e.effect === "offer_bought") {
         if (e.got && result.pays && e.got.currency === result.pays.currency)
           // 涉及多路径
@@ -833,12 +667,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     return result
   }
 
-  const parseKey = function(key) {
+  const parseKey = key => {
     const parts = key.split(":")
     if (parts.length !== 2) return null
     const currency = getCurrency()
 
-    function parsePart(part) {
+    const parsePart = part => {
       if (part === currency) {
         return {
           currency,
@@ -869,7 +703,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
    * @param amount
    * @returns {Amount}
    */
-  function ToAmount(amount) {
+  const ToAmount = amount => {
     if (amount.value && Number(amount.value) > 100000000000) {
       return new Error("invalid amount: amount's maximum value is 100000000000")
     }
@@ -886,7 +720,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     return amount
   }
 
-  function MaxAmount(amount) {
+  const MaxAmount = amount => {
     if (typeof amount === "string" && Number(amount)) {
       const _amount = parseInt(String(Number(amount) * 1.0001), 10)
       return String(_amount)
@@ -897,26 +731,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       return amount
     }
     return new Error("invalid amount to max")
-  }
-
-  function getTypes(abi, foo) {
-    try {
-      const filtered = abi
-        .filter(function(json) {
-          return json.name === foo
-        })
-        .map(function(json) {
-          return json.outputs.map(function(input) {
-            return input.type
-          })
-        })
-        .map(function(types) {
-          return types
-        })
-      return filtered ? filtered[0] : []
-    } catch (error) {
-      return []
-    }
   }
 
   return {
