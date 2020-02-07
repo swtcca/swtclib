@@ -1,18 +1,18 @@
 <h2><a href="https://swtcdoc.netlify.com">文档</a></h2>
 
-| 程序包名称         | CDN                                                                                                                                  | 功能描述                            |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
-| swtc-x-lib         | name: swtc_x_lib<br>[unpkg](https://unpkg.com/swtc-x-lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-x-lib)                   | 等同支持井通联盟链, 基于 websocket  |
-| swtc-lib]          | name: swtc_lib<br>[unpkg](https://unpkg.com/swtc-lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-lib)                         | SWTC 公链库, 基于 websocket         |
-| swtc-api]          | name: swtc_api<br>[unpkg](https://unpkg.com/swtc-api)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-api)                         | SWTC 公链库, 基于 restapi           |
-| swtc-transaction   | name: swtc_transaction<br>[unpkg](https://unpkg.com/swtc-transaction)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-transaction) | 井通公链交易库, 支付/挂单/关系/合约 |
-| swtc-serializer    |                                                                                                                                      | 井通公链交易序列化库, 基于钱包      |
-| swtc-utils         |                                                                                                                                      | 井通公链 utility 库，基于钱包       |
-| swtc-wallet        | name: swtc_wallet<br>[unpkg](https://unpkg.com/swtc-wallet)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/swtc-wallet)                | 井通公链钱包库, 支持所有联盟链      |
-| swtc-factory       |                                                                                                                                      | 井通公链钱包库, 井畅接口            |
-| swtc-keypairs      |                                                                                                                                      | 公钥私钥                            |
-| swtc-address-codec |                                                                                                                                      | 编码解码                            |
-| swtc-chains        |                                                                                                                                      | 基础信息                            |
+| 程序包名称                        | CDN                                                                                                                                    | 功能描述                                              |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| [@swtc/proxy](docs/swtcproxy/)    |                                                                                                                                        | 节点代理, 提供标准 API 接口, 安全， 可以取代 swtc-api |
+| [@swtc/x-lib](docs/swtcxlib/)     | name: swtc_x_lib<br>[unpkg](https://unpkg.com/@swtc/x-lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/@swtc/x-lib)                   | 等同支持井通联盟链, 基于 websocket                    |
+| [@swtc/lib](docs/swtclib/)        | name: swtc_lib<br>[unpkg](https://unpkg.com/@swtc/lib)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/@swtc/lib)                         | SWTC 公链库, 基于 websocket                           |
+| [@swtc/api](docs/swtcapi/)        | name: swtc_api<br>[unpkg](https://unpkg.com/@swtc/api)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/@swtc/api)                         | SWTC 公链库, 基于 restapi                             |
+| [@swtc/transaction](docs/swtctx/) | name: swtc_transaction<br>[unpkg](https://unpkg.com/@swtc/transaction)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/@swtc/transaction) | 井通公链交易库, 支付/挂单/关系/合约                   |
+| @swtc/serializer                  |                                                                                                                                        | 井通公链交易序列化库, 基于钱包                        |
+| @swtc/utils                       |                                                                                                                                        | 井通公链 utility 库，基于钱包                         |
+| [@swtc/wallet](docs/swtcwallet/)  | name: swtc_wallet<br>[unpkg](https://unpkg.com/@swtc/wallet)<br>[jsdelivery](https://cdn.jsdelivr.net/npm/@swtc/wallet)                | 井通公链钱包库, 支持所有联盟链                        |
+| @swtc/keypairs                    |                                                                                                                                        | 公钥私钥                                              |
+| @swtc/address-codec               |                                                                                                                                        | 编码解码                                              |
+| @swtc/common                      |                                                                                                                                        | 基础信息                                              |
 
 ## 参与
 
@@ -36,15 +36,13 @@
 	<img src="https://img.shields.io/badge/browserify-ready-green.svg" alt="browserify" />
 	<img src="https://img.shields.io/badge/webpack-ready-green.svg" alt="webpack" />
 	<br>
-	<a href="https://nodei.co/npm/swtc-lib/"><img src="https://nodei.co/npm/swtc-lib.png?mini=true" /></a>
+	<a href="https://nodei.co/npm/@swtc/lib/"><img src="https://nodei.co/npm/@swtc/lib.png?compact=true" /></a>
 	<br>
-	<a href="https://nodei.co/npm/swtc-x-lib/"><img src="https://nodei.co/npm/swtc-x-lib.png?mini=true" /></a>
+	<a href="https://nodei.co/npm/@swtc/api/"><img src="https://nodei.co/npm/@swtc/api.png?compact=true" /></a>
 	<br>
-	<a href="https://nodei.co/npm/swtc-api/"><img src="https://nodei.co/npm/swtc-api.png?mini=true" /></a>
+	<a href="https://nodei.co/npm/@swtc/transaction/"><img src="https://nodei.co/npm/@swtc/transaction.png?compact=true" /></a>
 	<br>
-	<a href="https://nodei.co/npm/swtc-transaction/"><img src="https://nodei.co/npm/swtc-transaction.png?mini=true" /></a>
-	<br>
-	<a href="https://nodei.co/npm/swtc-wallet/"><img src="https://nodei.co/npm/swtc-wallet.png?mini=true" /></a>
+	<a href="https://nodei.co/npm/@swtc/wallet/"><img src="https://nodei.co/npm/@swtc/wallet.png?compact=true" /></a>
 </p>
 
 <h2 align="center">支持开源SWTCLIB 支持公链生态</h2>

@@ -3,33 +3,15 @@
 ## API
 
 ```js
-> var api = require('swtc-address-codec');
+> var api = require('@swtc/address-codec').addressCodec
 > api.decodeSeed('snwJzMKPjEBodxVU8YqwAH7PpZe4j')
-{ version: 33,
-  bytes:
-   [ 176, 251, 212, 225, 99, 149, 131, 65, 41, 207, 158, 225, 190, 176, 6, 156 ],
-  type: 'secp256k1' }
+{
+  version: [ 33 ],
+  bytes: <Buffer b0 fb d4 e1 63 95 83 41 29 cf 9e e1 be b0 06 9c>,
+  type: 'secp256k1'
+}
 > api.decodeAccountID('jPo32F1gUA4TtPzquhNBEq1L1wXmcghqUi')
-[ 250,
-  12,
-  59,
-  75,
-  102,
-  13,
-  118,
-  27,
-  45,
-  216,
-  138,
-  231,
-  43,
-  56,
-  233,
-  175,
-  217,
-  75,
-  252,
-  20 ]
+<Buffer fa 0c 3b 4b 66 0d 76 1b 2d d8 8a e7 2b 38 e9 af d9 4b fc 14>
 ```
 
 ## And ?? There's more to the wonderful world then swtc
@@ -38,59 +20,32 @@ We give you the kitchen sink.
 
 ```js
 > console.log(api)
-{ Codec: [Function: AddressCodec],
-  codecs:
-   { bitcoin:
-      AddressCodec {
-        alphabet: '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
-        codec: [Object],
-        base: 58 },
-     ripple:
-      AddressCodec {
-        alphabet: 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz',
-        codec: [Object],
-        base: 58 },
-     tipple:
-      AddressCodec {
-        alphabet: 'RPShNAF39wBUDnEGHJKLM4pQrsT7VWXYZ2bcdeCg65jkm8ofqi1tuvaxyz',
-        codec: [Object],
-        base: 58 },
-     jingtum:
-      AddressCodec {
-        alphabet: 'jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz',
-        codec: [Object],
-        base: 58 },
-     bizain:
-      AddressCodec {
-        alphabet: 'bpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2jcdeCg65rkm8oFqi1tuvAxyz',
-        codec: [Object],
-        base: 58 },
-     stellar:
-      AddressCodec {
-        alphabet: 'gsphnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCr65jkm8oFqi1tuvAxyz',
-        codec: [Object],
-        base: 58 } },
-  decode: [Function: decode],
+{
+  chain: 'jingtum',
+  codec: Codec {
+    sha256: [Function: sha256],
+    alphabet: 'jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz',
+    codec: {
+      encode: [Function: encode],
+      decodeUnsafe: [Function: decodeUnsafe],
+      decode: [Function: decode]
+    },
+    base: 58
+  },
   encode: [Function: encode],
-  decodeEdSeed: [Function],
-  encodeEdSeed: [Function],
-  isValidEdSeed: [Function],
-  decodeSeed: [Function],
-  encodeSeed: [Function],
-  isValidSeed: [Function],
-  decodeAccountID: [Function],
-  encodeAccountID: [Function],
-  isValidAccountID: [Function],
-  decodeAddress: [Function],
-  encodeAddress: [Function],
-  isValidAddress: [Function],
-  decodeNodePublic: [Function],
-  encodeNodePublic: [Function],
-  isValidNodePublic: [Function],
-  decodeNodePrivate: [Function],
-  encodeNodePrivate: [Function],
-  isValidNodePrivate: [Function],
-  decodeK256Seed: [Function],
-  encodeK256Seed: [Function],
-  isValidK256Seed: [Function] }
+  decode: [Function: decode],
+  encodeSeed: [Function: encodeSeed],
+  decodeSeed: [Function: decodeSeed],
+  isValidSeed: [Function: isValidSeed],
+  encodeAccountID: [Function: encodeAccountID],
+  decodeAccountID: [Function: decodeAccountID],
+  encodeNodePublic: [Function: encodeNodePublic],
+  decodeNodePublic: [Function: decodeNodePublic],
+  encodeNodePrivate: [Function: encodeNodePrivate],
+  decodeNodePrivate: [Function: decodeNodePrivate],
+  isValidClassicAddress: [Function: isValidClassicAddress],
+  isValidAddress: [Function: isValidClassicAddress],
+  encodeAddress: [Function: encodeAccountID],
+  decodeAddress: [Function: decodeAccountID]
+}
 ```
