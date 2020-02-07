@@ -492,19 +492,23 @@ describe("test Transaction", function() {
       }
       inst.parseJson(testData)
       inst.sign(function(err, hash) {
-        expect(err).to.be.null
-        expect(inst.tx_json.Amount).to.equal(1)
-        expect(inst.tx_json.Fee).to.equal(0.01)
-        expect(inst.tx_json.SendMax).to.equal(0.000001)
-        expect(inst.tx_json.Memos).to.deep.equal([
-          {
-            Memo: {
-              MemoData: "74657374"
+        if (hash) {
+          expect(err).to.be.null
+          expect(inst.tx_json.Amount).to.equal(1)
+          expect(inst.tx_json.Fee).to.equal(0.01)
+          expect(inst.tx_json.SendMax).to.equal(0.000001)
+          expect(inst.tx_json.Memos).to.deep.equal([
+            {
+              Memo: {
+                MemoData: "test"
+              }
             }
-          }
-        ])
-        expect(hash).to.be.a("string")
-        done()
+          ])
+          expect(hash).to.be.a("string")
+          done()
+        } else {
+          console.log(err)
+        }
       })
     })
 

@@ -1248,10 +1248,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.tx_json.Sequence = Number(sequence)
     }
 
-    public swt_normalize(reverse = false) {
+    public swt_normalize() {
       if (!this.flag_tx_json) {
         // run only once
-        reverse === false
         tx_json_filter(this.tx_json)
         this.flag_tx_json = true
       }
@@ -1293,7 +1292,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       delete tx_json.Signers
       tx_json_filter(tx_json)
       normalize_memo(tx_json, true)
-      tx_json.Memos && console.log(tx_json.Memos)
 
       let blob = jser.from_json(tx_json)
       blob = jser.adr_json(blob, Account)
