@@ -1,6 +1,8 @@
 export type Sequence = number[] | Buffer | Uint8Array
 import { ZERO, CHAINS } from "./constants"
 
+// update to include new doc in publish
+
 export function funcGetChain(chain_or_token: string): any {
   const chains = CHAINS.filter(
     chain =>
