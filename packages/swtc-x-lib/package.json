@@ -1,6 +1,6 @@
 {
   "name": "@swtc/x-lib",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "swtc-x-lib for jingtum alliance chains",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -54,9 +54,9 @@
     }
   },
   "dependencies": {
-    "@swtc/transaction": "^1.0.2",
-    "@swtc/utils": "^1.0.2",
-    "@swtc/wallet": "^1.0.1",
+    "@swtc/transaction": "^1.0.3",
+    "@swtc/utils": "^1.0.3",
+    "@swtc/wallet": "^1.0.2",
     "bignumber.js": "^9.0.0",
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
