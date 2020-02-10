@@ -1,0 +1,36 @@
+{
+  "name": "@swtc/brorand",
+  "version": "1.0.0",
+  "description": "Random number generator for swtc",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter=spec test/**/*-test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:swtcca/swtclib.git"
+  },
+  "keywords": [
+    "Random",
+    "RNG",
+    "nativescript",
+    "swtc",
+    "browser",
+    "crypto"
+  ],
+  "author": "Lospring Liu <lospringliu@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/swtcca/swtclib/issues"
+  },
+  "homepage": "https://github.com/swtcca/swtclib",
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  },
+  "browser": {
+    "crypto": false
+  },
+  "dependencies": {
+    "nativescript-randombytes": "^1.0.0"
+  }
+}

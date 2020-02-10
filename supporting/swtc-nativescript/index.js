@@ -12,7 +12,7 @@ try {
 exports.aliases = {
   string_decoder$: "string_decoder/lib/string_decoder.js",
   ws$: "nativescript-websockets",
-  brorand$: "swtc-nativescript-brorand",
+  brorand$: "@swtc/brorand",
   "create-hash$": "create-hash/browser",
   inherits$: "inherits/inherits_browser"
 }

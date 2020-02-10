@@ -1,16 +1,12 @@
 {
-  "name": "swtc-nativescript",
-  "version": "1.0.2",
-  "description": "make swtc lib nativescript easy",
+  "name": "@swtc/nativescript",
+  "version": "1.0.0",
+  "description": "make @swtc/lib nativescript easy",
   "main": "index.js",
   "directories": {
-    "test": "test",
-    "src": "src"
+    "test": "test"
   },
   "scripts": {
-    "prettier": "prettier",
-    "pretty-quick": "pretty-quick",
-    "prettier:check": "prettier -c index.js",
     "test": "mocha \"test/test*.js\""
   },
   "repository": {
@@ -29,13 +25,11 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "nativescript-websockets": "^1.5.3",
-    "swtc-nativescript-brorand": "^1.1.1"
+    "@swtc/brorand": "^1.0.0",
+    "nativescript-websockets": "^1.5.5"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.2.0",
-    "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1"
+    "mocha": "^6.2.0"
   }
 }
