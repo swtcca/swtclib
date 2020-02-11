@@ -173,7 +173,10 @@ export function Factory(chain_or_token = "jingtum") {
 
   // entropy is a Buffer of size 16
   // type is 'ed25519' or 'secp256k1'
-  function encodeSeed(entropy: Buffer, type: "ed25519" | "secp256k1"): string {
+  const encodeSeed = (
+    entropy: Buffer,
+    type: "ed25519" | "secp256k1"
+  ): string => {
     if (entropy.length !== 16) {
       throw new Error("entropy must have length 16")
     }
@@ -186,7 +189,7 @@ export function Factory(chain_or_token = "jingtum") {
     return codecWithAlphabet.encode(entropy, opts)
   }
 
-  function decodeSeed(
+  const decodeSeed = (
     seed: string,
     opts: {
       versionTypes: ["ed25519", "secp256k1"]
@@ -197,11 +200,11 @@ export function Factory(chain_or_token = "jingtum") {
       versions: [ED25519_SEED, FAMILY_SEED],
       expectedLength: 16
     }
-  ) {
+  ) => {
     return codecWithAlphabet.decode(seed, opts)
   }
 
-  function isValidSeed(seed: string): boolean {
+  const isValidSeed = (seed: string): boolean => {
     try {
       decodeSeed(seed)
     } catch (e) {
@@ -210,36 +213,36 @@ export function Factory(chain_or_token = "jingtum") {
     return true
   }
 
-  function encodeAccountID(bytes: Buffer): string {
+  const encodeAccountID = (bytes: Buffer): string => {
     const opts = { versions: [ACCOUNT_ID], expectedLength: 20 }
     return codecWithAlphabet.encode(bytes, opts)
   }
 
-  function decodeAccountID(accountId: string): Buffer {
+  const decodeAccountID = (accountId: string): Buffer => {
     const opts = { versions: [ACCOUNT_ID], expectedLength: 20 }
     return codecWithAlphabet.decode(accountId, opts).bytes
   }
 
-  function decodeNodePublic(base58string: string): Buffer {
+  const decodeNodePublic = (base58string: string): Buffer => {
     const opts = { versions: [NODE_PUBLIC], expectedLength: 33 }
     return codecWithAlphabet.decode(base58string, opts).bytes
   }
 
-  function encodeNodePublic(bytes: Buffer): string {
+  const encodeNodePublic = (bytes: Buffer): string => {
     const opts = { versions: [NODE_PUBLIC], expectedLength: 33 }
     return codecWithAlphabet.encode(bytes, opts)
   }
 
-  function decodeNodePrivate(base58string: string): Buffer {
+  const decodeNodePrivate = (base58string: string): Buffer => {
     const opts = { versions: [NODE_PRIVATE], expectedLength: 32 }
     return codecWithAlphabet.decode(base58string, opts).bytes
   }
 
-  function encodeNodePrivate(bytes: Buffer): string {
+  const encodeNodePrivate = (bytes: Buffer): string => {
     const opts = { versions: [NODE_PRIVATE], expectedLength: 32 }
     return codecWithAlphabet.encode(bytes, opts)
   }
-  function isValidClassicAddress(address: string): boolean {
+  const isValidClassicAddress = (address: string): boolean => {
     try {
       decodeAccountID(address)
     } catch (e) {
