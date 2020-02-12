@@ -151,14 +151,6 @@ const ACCOUNT_ID = 0
 const FAMILY_SEED = 0x21 // 33
 const ED25519_SEED = [0x01, 0xe1, 0x4b] // [1, 225, 75]
 
-const codecOptions = {
-  sha256: (bytes: Uint8Array) =>
-    createHash("sha256")
-      .update(Buffer.from(bytes))
-      .digest(),
-  alphabet: "jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz"
-}
-
 export function Factory(chain_or_token = "jingtum") {
   let alphabet
   const active_chain = funcGetChain(chain_or_token)
@@ -167,7 +159,13 @@ export function Factory(chain_or_token = "jingtum") {
     throw new Error("the chain you specified is not available yet")
   } else {
     alphabet = active_chain.ACCOUNT_ALPHABET
-    codecOptions.alphabet = alphabet || codecOptions.alphabet
+  }
+  const codecOptions = {
+    sha256: (bytes: Uint8Array) =>
+      createHash("sha256")
+        .update(Buffer.from(bytes))
+        .digest(),
+    alphabet
   }
   const codecWithAlphabet = new Codec(codecOptions)
 

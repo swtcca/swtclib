@@ -37,6 +37,16 @@ const secp256k1 = {
     )
     return { privateKey, publicKey }
   },
+  deriveKeypairWithPrivateKey: rawPrivateKey => {
+    const prefix = "00"
+    const privateKey = prefix + rawPrivateKey.toUpperCase()
+    const publicKey = bytesToHex(
+      Secp256k1.keyFromPrivate(privateKey.slice(2))
+        .getPublic()
+        .encodeCompressed()
+    )
+    return { privateKey, publicKey }
+  },
   sign: (message, privateKey) => {
     return bytesToHex(
       Secp256k1.sign(hash(message), hexToBytes(privateKey), {
@@ -66,6 +76,14 @@ const ed25519 = {
     const privateKey = prefix + bytesToHex(rawPrivateKey)
     const publicKey =
       prefix + bytesToHex(Ed25519.keyFromSecret(rawPrivateKey).pubBytes())
+    return { privateKey, publicKey }
+  },
+  deriveKeypairWithPrivateKey: rawPrivateKey => {
+    const prefix = "ED"
+    const privateKey = prefix + rawPrivateKey.toUpperCase()
+    const publicKey =
+      prefix +
+      bytesToHex(Ed25519.keyFromSecret(hexToBytes(rawPrivateKey)).pubBytes())
     return { privateKey, publicKey }
   },
   sign: (message, privateKey) => {
@@ -160,6 +178,23 @@ export function Factory(chain_or_token = "jingtum") {
     return keypair
   }
 
+  function deriveKeypairWithPrivateKey(
+    rawPrivateKey: string,
+    type = "secp256k1"
+  ) {
+    if (!/0-9a-f/i.test(rawPrivateKey)) {
+      throw new Error("rawPrivateKey needs to be in hex string format")
+    }
+    const algorithm = type === "ed25519" ? "ed25519" : "ecdsa-secp256k1"
+    const method = select(algorithm)
+    const keypair = method.deriveKeypairWithPrivateKey(rawPrivateKey)
+    const messageToVerify = hash("This test message should verify.")
+    const signature = method.sign(messageToVerify, keypair.privateKey)
+    if (method.verify(messageToVerify, signature, keypair.publicKey) !== true) {
+      throw new Error("derived keypair did not generate verifiable signature")
+    }
+    return keypair
+  }
   function deriveAddressFromBytes(publicKeyBytes: Buffer) {
     return addressCodec.encodeAccountID(
       Buffer.from(computePublicKeyHash(publicKeyBytes))
@@ -191,6 +226,7 @@ export function Factory(chain_or_token = "jingtum") {
     addressCodec,
     chain: addressCodec.chain,
     deriveKeyPair: deriveKeypair,
+    deriveKeypairWithPrivateKey,
     hash,
     signTx,
     verifyTx,
