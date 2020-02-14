@@ -10,9 +10,12 @@ try {
 } catch (error) {}
 
 exports.aliases = {
+  randombytes$: "nativescript-randombytes",
   string_decoder$: "string_decoder/lib/string_decoder.js",
   ws$: "nativescript-websockets",
   brorand$: "@swtc/brorand",
   "create-hash$": "create-hash/browser",
+  "create-hmac$": "create-hmac/browser",
+  "create-ecdh$": "create-ecdh/browser",
   inherits$: "inherits/inherits_browser"
 }

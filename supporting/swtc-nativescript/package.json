@@ -1,7 +1,7 @@
 {
   "name": "@swtc/nativescript",
-  "version": "1.0.0",
-  "description": "make @swtc/lib nativescript easy",
+  "version": "1.0.2",
+  "description": "make @swtc nativescript easy",
   "main": "index.js",
   "directories": {
     "test": "test"
