@@ -111,5 +111,14 @@ export const CHAINS = [
     currency: "BVC",
     ACCOUNT_ALPHABET:
       "bpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2rcdeCg65jkm8oFqi1tuvAxyz"
+  },
+  {
+    code: "seaaps",
+    currency: "SEAA",
+    ACCOUNT_ALPHABET:
+      "dpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcjeCg65rkm8oFqi1tuvAxyz",
+    SEED_PREFIX: 33,
+    ACCOUNT_PREFIX: 0,
+    fee: 10000
   }
 ]
