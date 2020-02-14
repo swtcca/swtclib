@@ -102,10 +102,14 @@ const Factory = (token_or_chain = "jingtum") => {
 
     public _keypairs
     public _secret
-    constructor(secret) {
+    constructor(secret: any) {
       try {
         this._keypairs = KeyPair.deriveKeyPair(secret)
-        this._secret = secret
+        if (typeof secret === "string") {
+          this._secret = secret
+        } else {
+          this._secret = "nosecret"
+        }
       } catch (err) {
         this._keypairs = null
         this._secret = null
