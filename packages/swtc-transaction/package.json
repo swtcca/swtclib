@@ -1,6 +1,6 @@
 {
   "name": "@swtc/transaction",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "swtc transaction package",
   "main": "cjs/index.js",
   "module": "esm/index.js",

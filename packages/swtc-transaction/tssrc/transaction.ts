@@ -36,7 +36,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("transaction needs a Wallet class")
   }
-  const baselib = Wallet
   const jser = SerializerFactory(Wallet)
   const utils = UtilsFactory(Wallet)
 
@@ -1074,7 +1073,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * @param secret
      */
     public setSecret(secret: string) {
-      if (!baselib.isValidSecret(secret)) {
+      if (!Wallet.isValidSecret(secret)) {
         this.tx_json._secret = new Error("invalid secret")
         return
       }
@@ -1308,7 +1307,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
       const Account = options.account || options.address
       const signer: any = { Account }
-      const wt = new baselib(options.secret)
+      const wt = new Wallet(options.secret)
 
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
       delete tx_json.Signers
@@ -1318,7 +1317,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       let blob = jser.from_json(tx_json)
       blob = jser.adr_json(blob, Account)
 
-      const ed25519 = options.secret.slice(1, 3) === "Ed" ? true : false
+      const ed25519 =
+        wt._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
+          ? true
+          : false
       let hash
       if (ed25519) {
         hash = `${HASHPREFIX.transactionMultiSig
@@ -1575,9 +1577,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.swt_normalize()
       return new Promise((resolve, reject) => {
         try {
-          const wt = new baselib(this._secret)
+          const wt = new Wallet(this._secret)
           this.tx_json.SigningPubKey = wt.getPublicKey()
-          const ed25519 = this._secret.slice(1, 3) === "Ed" ? true : false
+          const ed25519 =
+            wt._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
+              ? true
+              : false
           const blob = jser.from_json(this.tx_json)
           let hash
           if (ed25519) {
@@ -1641,9 +1646,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
   function signing(tx, callback) {
     try {
       tx.swt_normalize()
-      const wt = new baselib(tx._secret)
+      const wt = new Wallet(tx._secret)
       tx.tx_json.SigningPubKey = wt.getPublicKey()
-      const ed25519 = tx._secret.slice(1, 3) === "Ed" ? true : false
+      const ed25519 =
+        wt._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
+          ? true
+          : false
       const blob = jser.from_json(tx.tx_json)
       let hash
       if (ed25519) {
@@ -1685,7 +1693,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         }
         if (
           // todo: check format of pubkey is needed
-          !baselib.checkTx(message, s.TxnSignature, s.SigningPubKey)
+          !Wallet.checkTx(message, s.TxnSignature, s.SigningPubKey)
         ) {
           return false
         }
