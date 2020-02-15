@@ -276,6 +276,23 @@ describe("Wallet", function() {
     })
   })
 
+  describe("isEd25519", function() {
+    it("return true instancing using ed25519", function() {
+      for (let chain of chains) {
+        let Wallet = WalletFactory(chain)
+        let secret = data[chain].validSecret
+        let address = data[chain].validAddress
+        let wallet = new Wallet(secret)
+        expect(wallet.isEd25519()).to.equal(false)
+        let wallet_ed = new Wallet(
+          wallet._keypairs.privateKey.slice(2),
+          "ed25519"
+        )
+        expect(wallet_ed.isEd25519()).to.equal(true)
+      }
+    })
+  })
+
   describe("toJson", function() {
     it("return address and secret successfully", function() {
       for (let chain of chains) {

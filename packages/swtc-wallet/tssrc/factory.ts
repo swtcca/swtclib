@@ -153,6 +153,15 @@ const Factory = (token_or_chain = "jingtum") => {
       return this._secret
     }
 
+    /*
+     * Get the public key from key pair
+     * used for local signing operation.
+     */
+    public isEd25519() {
+      if (!this._keypairs) return false
+      return this._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
+    }
+
     public toJson() {
       if (!this._keypairs) return null
       return {

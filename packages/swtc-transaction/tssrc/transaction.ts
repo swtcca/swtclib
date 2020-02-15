@@ -1317,12 +1317,8 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       let blob = jser.from_json(tx_json)
       blob = jser.adr_json(blob, Account)
 
-      const ed25519 =
-        wt._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
-          ? true
-          : false
       let hash
-      if (ed25519) {
+      if (wt.isEd25519()) {
         hash = `${HASHPREFIX.transactionMultiSig
           .toString(16)
           .toUpperCase()}${blob.to_hex()}`
@@ -1579,13 +1575,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         try {
           const wt = new Wallet(this._secret)
           this.tx_json.SigningPubKey = wt.getPublicKey()
-          const ed25519 =
-            wt._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
-              ? true
-              : false
           const blob = jser.from_json(this.tx_json)
           let hash
-          if (ed25519) {
+          if (wt.isEd25519()) {
             hash = `${HASHPREFIX.transactionSig
               .toString(16)
               .toUpperCase()}${blob.to_hex()}`
@@ -1648,13 +1640,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       tx.swt_normalize()
       const wt = new Wallet(tx._secret)
       tx.tx_json.SigningPubKey = wt.getPublicKey()
-      const ed25519 =
-        wt._keypairs.privateKey.slice(0, 2).toUpperCase() === "ED"
-          ? true
-          : false
       const blob = jser.from_json(tx.tx_json)
       let hash
-      if (ed25519) {
+      if (wt.isEd25519()) {
         hash = `${HASHPREFIX.transactionSig
           .toString(16)
           .toUpperCase()}${blob.to_hex()}`
