@@ -165,20 +165,42 @@ export function Factory(chain_or_token = "jingtum") {
     return addressCodec.encodeSeed(entropy, type)
   }
 
-  function deriveKeypair(secret: any) {
-    const options = secret
+  function deriveKeypair(secret_or_private_key, algorithm = "secp256k1") {
+    const secret = secret_or_private_key
+    let private_key = secret_or_private_key
     let keypair: any
     let method: any
-    if (typeof options !== "string") {
+    if (typeof secret_or_private_key !== "string") {
       // use privateKey to generate keypairs, using algorithm
-      method = select(options.algorithm || "ecdsa-secp256k1")
-      keypair = method.deriveKeypairWithPrivateKey(options.privateKey)
-    } else {
+      throw new Error("deriving keypair requires secret or private key")
+    } else if (/^s/.test(secret_or_private_key)) {
+      // use secret to derive, secret has algorithm information already
       const decoded = addressCodec.decodeSeed(secret)
-      const algorithm =
-        decoded.type === "ed25519" ? "ed25519" : "ecdsa-secp256k1"
+      algorithm = decoded.type === "ed25519" ? "ed25519" : "ecdsa-secp256k1"
       method = select(algorithm)
       keypair = method.deriveKeypair(decoded.bytes)
+    } else {
+      // use private key to derive, could be raw privateKey or prefixed privateKey
+      if (secret_or_private_key.length === 64) {
+        // raw private key, has no information on algorithm
+        algorithm = algorithm === "ed25519" ? "ed25519" : "ecdsa-secp256k1"
+      } else if (secret_or_private_key.length === 66) {
+        // prefixed private key, has information on algorithm
+        if (secret_or_private_key.slice(0, 2) === "00") {
+          algorithm = "ecdsa-secp256k1"
+        } else if (secret_or_private_key.slice(0, 2).toUpperCase() === "ED") {
+          algorithm = "ed25519"
+        } else {
+          throw new Error(
+            "deriving keypair requires correct prefixed private key"
+          )
+        }
+        private_key = secret_or_private_key.slice(2)
+      } else {
+        throw new Error("deriving keypair requires valid private key")
+      }
+      method = select(algorithm)
+      keypair = method.deriveKeypairWithPrivateKey(private_key)
     }
     const messageToVerify = hash("This test message should verify.")
     const signature = method.sign(messageToVerify, keypair.privateKey)

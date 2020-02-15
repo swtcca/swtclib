@@ -59,7 +59,7 @@ const Factory = (token_or_chain = "jingtum") => {
             value: Number(value)
           })
     }
-    public static generate(options = {}) {
+    public static generate(options: any = {}) {
       const secret = KeyPair.generateSeed(options)
       const keypair = KeyPair.deriveKeyPair(secret)
       const address = KeyPair.deriveAddress(keypair.publicKey)
@@ -69,10 +69,20 @@ const Factory = (token_or_chain = "jingtum") => {
       }
     }
 
-    public static fromSecret(secret) {
+    public static fromSecret(secret_or_private_key, algorithm = "sec256k1") {
       try {
-        const keypair = KeyPair.deriveKeyPair(secret)
+        let secret = secret_or_private_key
+        const keypair = KeyPair.deriveKeyPair(secret_or_private_key, algorithm)
         const address = KeyPair.deriveAddress(keypair.publicKey)
+        if (/^s/.test(secret_or_private_key)) {
+          // secret starts with s
+          secret = secret_or_private_key
+        } else if (secret_or_private_key.length >= 64) {
+          // private key for hdwallet
+          secret = "privatekey"
+        } else {
+          throw new Error("use secret or private key to get wallet")
+        }
         return {
           secret,
           address
@@ -102,13 +112,21 @@ const Factory = (token_or_chain = "jingtum") => {
 
     public _keypairs
     public _secret
-    constructor(secret: any) {
+    constructor(secret_or_private_key: any, algorithm = "sec256k1") {
+      // extend for hdwallet, take secret or privatekey, plugs algorithm for raw privateKey
       try {
-        this._keypairs = KeyPair.deriveKeyPair(secret)
-        if (typeof secret === "string") {
-          this._secret = secret
+        this._keypairs = KeyPair.deriveKeyPair(secret_or_private_key, algorithm)
+        if (typeof secret_or_private_key !== "string") {
+          throw new Error("use secret or private key to instantiate wallet")
+        } else if (/^s/.test(secret_or_private_key)) {
+          // secret starts with s
+          this._secret = secret_or_private_key
+        } else if (secret_or_private_key.length >= 64) {
+          // private key for hdwallet
+          // this._secret = secret_or_private_key
+          this._secret = "privatekey"
         } else {
-          this._secret = "nosecret"
+          throw new Error("use secret or private key to instantiate wallet")
         }
       } catch (err) {
         this._keypairs = null
