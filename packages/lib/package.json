@@ -1,6 +1,6 @@
 {
   "name": "@swtc/lib",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "websocket access for jingtum blockchain",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -49,8 +49,8 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "@swtc/transaction": "^1.0.3",
-    "@swtc/utils": "^1.0.3",
+    "@swtc/transaction": "^1.0.6",
+    "@swtc/utils": "^1.0.4",
     "bignumber.js": "^9.0.0",
     "lru-cache": "^4.0.1",
     "sha1": "^1.1.1",
