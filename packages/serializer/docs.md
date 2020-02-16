@@ -12,27 +12,27 @@ Server class connects jingtum with ws lib to keep long connection. It's packaged
 
 Main function class in jcc_jingtum_lib. It creates a handle with jingtum, makes request to jingtum, subscribes event to jingtum, ands gets info from jingtum.
 
-* Remote(options)
-* connect(callback)
-* disconnect()
-* requestServerInfo()
-* requestLedgerClosed()
-* requestLedger(options)
-* requestTx(options)
-* requestAccountInfo(options)
-* requestAccountTums(options)
-* requestAccountRelations(options)
-* requestAccountOffers(options)
-* requestAccountTx(options)
-* requestOrderBook(options)
-* requestPathFind(options)
-* createAccountStub()
-* createOrderBookStub()
-* buildPaymentTx(options)
-* buildRelationTx(options)
-* buildAccountSetTx(options)
-* buildOfferCreateTx(options)
-* buildOfferCancelTx(options)
+- Remote(options)
+- connect(callback)
+- disconnect()
+- requestServerInfo()
+- requestLedgerClosed()
+- requestLedger(options)
+- requestTx(options)
+- requestAccountInfo(options)
+- requestAccountTums(options)
+- requestAccountRelations(options)
+- requestAccountOffers(options)
+- requestAccountTx(options)
+- requestOrderBook(options)
+- requestPathFind(options)
+- createAccountStub()
+- createOrderBookStub()
+- buildPaymentTx(options)
+- buildRelationTx(options)
+- buildAccountSetTx(options)
+- buildOfferCreateTx(options)
+- buildOfferCancelTx(options)
 
 ### Remote(options)
 
@@ -48,7 +48,7 @@ options for setup a remote, options including
 
 `server` is string for jingtum websocket server url, `local_sign` checks if jcc_jingtum_lib sign transaction in local, `token` is string for jingtum or jingtum alliance chains, the value is `swt` or `bwt` that respectively represents [jingtum chain](http://state.jingtum.com/#!/) and [bizain chain](https://bizain.net/bc/explorer/#!/).
 
-bwt是商链的原生币，也是燃料币，商链是井通链的联盟链，如果添加新的联盟链，需要在 [jcc_jingtum_base_lib](https://github.com/JCCDex/jcc_jingtum_base_lib)项目中src/wallet_config.js 添加新的联盟链定义即可，如果需要我们增加请联系我们。
+bwt 是商链的原生币，也是燃料币，商链是井通链的联盟链，如果添加新的联盟链，需要在 [jcc_jingtum_base_lib](https://github.com/JCCDex/jcc_jingtum_base_lib)项目中 src/wallet_config.js 添加新的联盟链定义即可，如果需要我们增加请联系我们。
 
 BWT is the native token and gas token of BIZAIN. BIZAIN is the alliance chain of jingtum. If you add a new alliance chain, you need to add a new definition of the alliance chain in project [jcc_jingtum_base_lib](https://github.com/JCCDex/jcc_jingtum_base_lib) folder src/wallet_config.js.
 
@@ -61,7 +61,7 @@ callback as callback(err, ret), err checks error info, ret is restul result.
 
 ### disconnect
 
- Remote object can be disconnected manual, and no parameters are required.
+Remote object can be disconnected manual, and no parameters are required.
 
 ### requestServerInfo
 
@@ -95,7 +95,7 @@ return data include ledger_index, ledger_hash and so on.
 }
 ```
 
-`fee_base` is current swt fee in each transaction. `ledger_hash` and `ledger_index` are last closed ledger height info. `reserve_base` and `reserve_in`c are reserve swt infomations. `txn_count` is transaction count in last closed ledger. `validated` is  current validated ledgers in last cloed ledger.
+`fee_base` is current swt fee in each transaction. `ledger_hash` and `ledger_index` are last closed ledger height info. `reserve_base` and `reserve_in`c are reserve swt infomations. `txn_count` is transaction count in last closed ledger. `validated` is current validated ledgers in last cloed ledger.
 
 ### requestLedger(options)
 
@@ -147,24 +147,26 @@ Each result is one transaction information. The result is as follow
   "inLedger": 4518365,
   "ledger_index": 4518365,
   "meta": {
-    "AffectedNodes": [{
-      "ModifiedNode": {
-        "FinalFields": {
-          "Account": "j9eM8GiBb4QFRZZsrsde6XTPDenXEFnrkm",
-          "Balance": "13371029608006",
-          "Flags": 0,
-          "OwnerCount": 9,
-          "Sequence": 12
-        },
-        "LedgerEntryType": "AccountRoot",
-        "LedgerIndex": "9A70EC2B21AC5C85498444281EABF08CF63BB8844B407300B385371A0623F0D7",
-        "PreviousFields": {
-          "Balance": "13371028608006"
-        },
-        "PreviousTxnID": "BBE8F8CFB2CA6EFA10C1884EFFD36154B30702D9446D10A6158106D168B65C83",
-          "PreviousTxnLgrSeq" : 4465533
+    "AffectedNodes": [
+      {
+        "ModifiedNode": {
+          "FinalFields": {
+            "Account": "j9eM8GiBb4QFRZZsrsde6XTPDenXEFnrkm",
+            "Balance": "13371029608006",
+            "Flags": 0,
+            "OwnerCount": 9,
+            "Sequence": 12
+          },
+          "LedgerEntryType": "AccountRoot",
+          "LedgerIndex": "9A70EC2B21AC5C85498444281EABF08CF63BB8844B407300B385371A0623F0D7",
+          "PreviousFields": {
+            "Balance": "13371028608006"
+          },
+          "PreviousTxnID": "BBE8F8CFB2CA6EFA10C1884EFFD36154B30702D9446D10A6158106D168B65C83",
+          "PreviousTxnLgrSeq": 4465533
         }
-    }],
+      }
+    ],
     "TransactionIndex": 0,
     "TransactionResult": "tesSUCCESS"
   },
@@ -255,43 +257,48 @@ The result is as follow
   "account": "jLiQ4FfNhezwFzQEgKAKNHBM35S2BnJwxj",
   "ledger_hash": "1565BD1869E0CE4E23B78DE09BA624E39E79E1DDDF22A0979881C1D3D937E391",
   "ledger_index": 14604,
-  "lines": [{
-    "account": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
-    "balance": "0",
-    "currency": "USD",
-    "limit": "1000",
-    "limit_peer": "0",
-    "no_skywell": true,
-    "quality_in": 0,
-    "quality_out": 0
-  }, {
-    "account": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
-    "balance": "29997.5",
-    "currency": "CNY",
-    "limit": "10000000000",
-    "limit_peer": "0",
-    "no_skywell": true,
-    "quality_in": 0,
-    "quality_out": 0
-  }, {
-    "account": "j6wtnp1LB23h4hRQjk2tA3hCzNMnRW1j3",
-    "balance": "0",
-    "currency": "USD",
-    "limit": "1000",
-    "limit_peer": "0",
-    "no_skywell": true,
-    "quality_in": 0,
-    "quality_out": 0
-  }, {
-    "account": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
-    "balance": "0",
-    "currency": "EUR",
-    "limit": "1000",
-    "limit_peer": "0",
-    "no_skywell": true,
-    "quality_in": 0,
-    "quality_out": 0
-  }],
+  "lines": [
+    {
+      "account": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
+      "balance": "0",
+      "currency": "USD",
+      "limit": "1000",
+      "limit_peer": "0",
+      "no_skywell": true,
+      "quality_in": 0,
+      "quality_out": 0
+    },
+    {
+      "account": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
+      "balance": "29997.5",
+      "currency": "CNY",
+      "limit": "10000000000",
+      "limit_peer": "0",
+      "no_skywell": true,
+      "quality_in": 0,
+      "quality_out": 0
+    },
+    {
+      "account": "j6wtnp1LB23h4hRQjk2tA3hCzNMnRW1j3",
+      "balance": "0",
+      "currency": "USD",
+      "limit": "1000",
+      "limit_peer": "0",
+      "no_skywell": true,
+      "quality_in": 0,
+      "quality_out": 0
+    },
+    {
+      "account": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS",
+      "balance": "0",
+      "currency": "EUR",
+      "limit": "1000",
+      "limit_peer": "0",
+      "no_skywell": true,
+      "quality_in": 0,
+      "quality_out": 0
+    }
+  ],
   "validated": true
 }
 ```
@@ -307,16 +314,18 @@ And The request is as follow.
   "account": "jLiQ4FfNhezwFzQEgKAKNHBM35S2BnJwxj",
   "ledger_hash": "CB3F1AE7904E1F4676F8041848C1866280074C3D705D51C2ABC0FCB13C61ED9F",
   "ledger_index": 14630,
-  "offers": [{
-    "flags": 131072,
-    "seq": 3,
-    "taker_gets": "2000000",
-    "taker_pays": {
-      "value": "0.01",
-      "currency": "USD",
-      "issuer": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS"
+  "offers": [
+    {
+      "flags": 131072,
+      "seq": 3,
+      "taker_gets": "2000000",
+      "taker_pays": {
+        "value": "0.01",
+        "currency": "USD",
+        "issuer": "jBciDE8Q3uJjf111VeiUNM775AMKHEbBLS"
+      }
     }
-  }],
+  ],
   "validated": true
 }
 ```
@@ -365,21 +374,24 @@ It is used to query path from one curreny to another. Options is as follow.
 And the result is as follow.
 
 ```json
-[{
-  "choice": {
-    "currency": "BTC",
-    "issuer": "jpidrAsPWDTTHhbBf9BCn5suWHQJqhynVi",
-    "value": "0.001"
+[
+  {
+    "choice": {
+      "currency": "BTC",
+      "issuer": "jpidrAsPWDTTHhbBf9BCn5suWHQJqhynVi",
+      "value": "0.001"
+    },
+    "key": "415aebe163e891e0f5cd63b328dbf0fee2fd51e8"
   },
-  "key": "415aebe163e891e0f5cd63b328dbf0fee2fd51e8"
-}, {
-  "choice": {
-    "currency": "USD",
-    "issuer": "jpidrAsPWDTTHhbBf9BCn5suWHQJqhynVi",
-    "value": "0.001"
-  },
-  "key": "f53b09afcf9e1758a7b647f2f738c86426cabfc1"
-}]
+  {
+    "choice": {
+      "currency": "USD",
+      "issuer": "jpidrAsPWDTTHhbBf9BCn5suWHQJqhynVi",
+      "value": "0.001"
+    },
+    "key": "f53b09afcf9e1758a7b647f2f738c86426cabfc1"
+  }
+]
 ```
 
 In this path find, the user want to send swt to another account. The system provides two choices, one is to use BTC and the other is to use USD.
@@ -495,30 +507,30 @@ One `options` is as follow
 
 #### transactions
 
-* Listening all transactions occur in the system.
+- Listening all transactions occur in the system.
 
 #### ledger_closed
 
-* Listening all last closed ledger event.
+- Listening all last closed ledger event.
 
 #### server_status
 
-* Listening all server status change event.
+- Listening all server status change event.
 
 ## Request
 
 Request is used to get server, account, orderbook and path info. Request is not secret required, and will be public to every one. All request is asynchronized and should provide a callback. Each callback has two parameter, one is error and the other is result.
 
-* selectLedger(ledger)
-* submit(callback)
+- selectLedger(ledger)
+- submit(callback)
 
 ### selectLedger(ledger)
 
 select one ledger for current request, ledger can be follow options,
 
-* ledger index
-* ledger hash
-* current, validated, closed
+- ledger index
+- ledger hash
+- current, validated, closed
 
 After ledger is selected, the result is for the specified ledger.
 
@@ -530,15 +542,15 @@ Callback entry for request. Each callback has two parameter, one is error and th
 
 Transaction is used to make transaction and collect transaction parameter. Each transaction is secret required, and transaction can be signed local or remote. Now remote sign is supported, local sign will be suport soon. All transaction is asynchronized and should provide a callback. Each callback has two parameter, one is error and the other is result.
 
-* getAccount()
-* getTransactionType()
-* setSecret(secret)
-* addMemo(memo)
-* setPath(key)
-* setSendMax(amount)
-* setTransferRate(rate)
-* setFlags(flags)
-* submit(callback)
+- getAccount()
+- getTransactionType()
+- setSecret(secret)
+- addMemo(memo)
+- setPath(key)
+- setSendMax(amount)
+- setTransferRate(rate)
+- setFlags(flags)
+- submit(callback)
 
 ### getAccount()
 
@@ -579,7 +591,7 @@ TO CHECK
 Set transaction flags. It is used to set Offer type mainly. As follows
 
 ```javascript
-setFlags('Sell')
+setFlags("Sell")
 ```
 
 ### submit(callback)

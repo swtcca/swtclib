@@ -32,7 +32,8 @@
     "rollup-plugin-terser": "^5.2.0",
     "sinon": "^7.4.1",
     "ts-jest": "^25.0.0",
-    "tslint": "^5.19.0"
+    "tslint": "^5.19.0",
+    "typescript": "^3.4.5"
   },
   "directories": {
     "lib": "lib"
