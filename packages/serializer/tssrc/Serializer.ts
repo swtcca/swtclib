@@ -45,6 +45,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
   const stypes: any = stypesFactory(Wallet)
 
   return class Serializer {
+    public static TypeUtils = stypes
     /**
      * convert the input JSON to a byte array as buffer
      *

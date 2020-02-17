@@ -111,14 +111,14 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type.message).to.equal("invalid memo type")
     })
 
-    it("throw error if the memo's length is more than 2048", function() {
+    it("throw error if the memo's length is more than 2038 hex char", function() {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let inst = new Transaction(remote)
       let memo = ""
-      for (let index = 0; index < 2049; index++) {
+      for (let index = 0; index < 2039; index++) {
         memo += "a"
       }
       inst.addMemo(memo)
@@ -126,7 +126,36 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type).to.equal(undefined)
       expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
     })
-
+    it("throw error if the memo's length is more than 1019 non hex iso 8819", function() {
+      let remote = new Remote({
+        server: JT_NODE,
+        local_sign: true
+      })
+      let inst = new Transaction(remote)
+      let memo = ""
+      for (let index = 0; index < 1020; index++) {
+        memo += "z"
+      }
+      inst.addMemo(memo)
+      expect(inst.tx_json.memo_len).to.be.an("error")
+      expect(inst.tx_json.memo_type).to.equal(undefined)
+      expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
+    })
+    it("throw error if the memo's length is more than 663 chinese", function() {
+      let remote = new Remote({
+        server: JT_NODE,
+        local_sign: true
+      })
+      let inst = new Transaction(remote)
+      let memo = ""
+      for (let index = 0; index < 664; index++) {
+        memo += "中"
+      }
+      inst.addMemo(memo)
+      expect(inst.tx_json.memo_len).to.be.an("error")
+      expect(inst.tx_json.memo_type).to.equal(undefined)
+      expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
+    })
     it("set Memos successfully if the memo is valid", function() {
       let remote = new Remote({
         server: JT_NODE,

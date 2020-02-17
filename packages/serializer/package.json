@@ -1,6 +1,6 @@
 {
   "name": "@swtc/serializer",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "Lospring Liu",
   "main": "cjs/index.js",
   "module": "esm/index.js",

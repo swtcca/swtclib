@@ -37,6 +37,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     throw Error("transaction needs a Wallet class")
   }
   const jser = SerializerFactory(Wallet)
+  const tu = jser.TypeUtils
   const utils = UtilsFactory(Wallet)
 
   /**
@@ -1102,10 +1103,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * EVERYTHING for MemoData so far, not format actually :((((
      */
     public addMemo(memo, format = "text") {
-      if (memo.length > 1024) {
-        this.tx_json.memo_len = new TypeError("memo is too long")
-        return this
-      }
       const _memo: any = {}
       if (format === "text") {
         if (typeof memo !== "string") {
@@ -1119,32 +1116,16 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         }
       } else {
         _memo.MemoData = memo
-        _memo.MemoFormat = "hex"
+        _memo.MemoFormat = format
       }
-      // if (format === "text") {
-      //   if (typeof memo !== "string") {
-      //     _memo.MemoData = convertStringToHex(JSON.stringify(memo))
-      //   } else {
-      //     _memo.MemoData = convertStringToHex(memo)
-      //   }
-      // } else {
-      //   _memo.MemoData = convertStringToHex(memo)
-      // }
-      // if (format === "text") {
-      //   if (typeof memo !== "string") {
-      //     _memo.MemoFormat = convertStringToHex("json")
-      //     _memo.MemoData = convertStringToHex(JSON.stringify(memo))
-      //   } else if (isHexMemoString(memo)) {
-      //     _memo.MemoFormat = convertStringToHex("hex")
-      //     _memo.MemoData = memo
-      //   } else {
-      //     _memo.MemoData = convertStringToHex(memo)
-      //   }
-      // } else {
-      //    _memo.MemoData = convertStringToHex(memo)
-      //    _memo.MemoFormat = convertStringToHex(format)
-      // }
-      this.tx_json.Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
+      const Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
+      const so = new jser([])
+      tu.Array.serialize(so, Memos)
+      if (so.to_hex().length > 2050) {
+        this.tx_json.memo_len = new TypeError("memo is too long")
+        return this
+      }
+      this.tx_json.Memos = Memos
     }
 
     public setFee(fee) {
