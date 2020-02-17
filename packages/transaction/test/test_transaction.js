@@ -141,14 +141,14 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type).to.equal(undefined)
       expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
     })
-    it("throw error if the memo's length is more than 663 chinese", function() {
+    it("throw error if the memo's length is more than 339 chinese", function() {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let inst = new Transaction(remote)
       let memo = ""
-      for (let index = 0; index < 664; index++) {
+      for (let index = 0; index < 340; index++) {
         memo += "中"
       }
       inst.addMemo(memo)
