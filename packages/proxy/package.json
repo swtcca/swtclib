@@ -1,6 +1,6 @@
 {
   "name": "@swtc/proxy",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "rest api to jingtum blockchain",
   "keywords": [
     "rest",
