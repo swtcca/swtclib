@@ -17,7 +17,7 @@
 ## 参与
 
 1. fork and clone
-2. 安装依赖 `npm install`
+2. 安装依赖 `npm install; npm run bootstrap`
 3. 运行测试 `npm run test`
 4. 编译 web 版本 `npm run build`
 5. 列出管理的程序包 `npm run lerna -- list`

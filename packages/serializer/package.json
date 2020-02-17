@@ -8,7 +8,11 @@
     "@swtc/address-codec": "^1.0.5",
     "@swtc/common": "^1.0.10",
     "@swtc/keypairs": "^1.0.8",
-    "@swtc/wallet": "^1.0.9"
+    "@swtc/wallet": "^1.0.9",
+    "bignumber.js": "^9.0.0",
+    "extend": "^3.0.2",
+    "jsbn": "^1.1.0",
+    "sha1": "^1.1.1"
   },
   "deprecated": false,
   "description": "swtc serializer",

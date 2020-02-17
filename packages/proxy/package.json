@@ -48,7 +48,16 @@
     "@swtc/serializer": "^1.0.5",
     "@swtc/transaction": "^1.0.7",
     "@swtc/utils": "^1.0.5",
-    "@swtc/wallet": "^1.0.9"
+    "@swtc/wallet": "^1.0.9",
+    "chalk": "^3.0.0",
+    "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-robots.txt": "^1.0.0",
+    "koa-router": "^7.4.0",
+    "koa-simple-qs": "^1.0.0",
+    "koa2-request-log": "^1.0.1",
+    "koa2-swagger-ui": "^2.15.4",
+    "static-koa-router": "^1.0.3"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",

@@ -48,7 +48,9 @@
     "@swtc/keypairs": "^1.0.8",
     "@swtc/serializer": "^1.0.5",
     "@swtc/utils": "^1.0.5",
-    "@swtc/wallet": "^1.0.9"
+    "@swtc/wallet": "^1.0.9",
+    "bignumber.js": "^9.0.0",
+    "url": "^0.11.0"
   },
   "devDependencies": {
     "mocha": "^6.2.0",

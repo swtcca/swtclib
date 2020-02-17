@@ -55,7 +55,11 @@
     "@swtc/serializer": "^1.0.5",
     "@swtc/transaction": "^1.0.7",
     "@swtc/utils": "^1.0.5",
-    "@swtc/wallet": "^1.0.9"
+    "@swtc/wallet": "^1.0.9",
+    "lru-cache": "^5.1.1",
+    "sha1": "^1.1.1",
+    "url": "^0.11.0",
+    "ws": "^6.2.1"
   },
   "devDependencies": {
     "mocha": "^6.2.0",
