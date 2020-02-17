@@ -22,7 +22,6 @@
     "testreal": "lerna run compile --stream && lerna run build --stream && lerna run test:api --stream"
   },
   "dependencies": {
-    "chalk": "^3.0.0",
     "lerna": "^3.20.2",
     "husky": "^2.7.0",
     "jshint": "^2.10.2",
