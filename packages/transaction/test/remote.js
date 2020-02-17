@@ -20,11 +20,11 @@ function Remote(options) {
   }
   self._requests = {}
   self._token = _opts.token || "swt"
-  self._cache = LRU({
+  self._cache = new LRU({
     max: 100,
     maxAge: 1000 * 60 * 5
   }) // 100 size, 5 min
-  self._paths = LRU({
+  self._paths = new LRU({
     max: 100,
     maxAge: 1000 * 60 * 5
   }) // 2100 size, 5 min

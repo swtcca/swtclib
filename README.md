@@ -21,9 +21,9 @@
 3. 运行测试 `npm run test`
 4. 编译 web 版本 `npm run build`
 5. 列出管理的程序包 `npm run lerna -- list`
-6. 执行某个包的 npm 脚本 `npm run lerna -- run tslint --scope swtc-api`
-7. 执行某个包的任意命令 `npm run lerna -- exec pwd --scope swtc-wallet`
-8. 编译某个包的 web dev 版本 `npm run lerna -- run build:dev --scope swtc-lib`
+6. 执行某个包的 npm 脚本 `npm run lerna -- run tslint --scope @swtc/api`
+7. 执行某个包的任意命令 `npm run lerna -- exec pwd --scope @swtc/wallet`
+8. 编译某个包的 web dev 版本 `npm run lerna -- run build:dev --scope @swtc/lib`
 
 <h2 align="center"><a href="https://swtcdoc.netlify.com">SWTCLIB 专为应用开发者打造</a></h2>
 

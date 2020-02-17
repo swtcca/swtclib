@@ -140,11 +140,11 @@ class Remote extends EventEmitter {
       options.issuer ||
       Wallet.config.issuer ||
       "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
-    this._cache = LRU({
+    this._cache = new LRU({
       max: 100,
       maxAge: 1000 * 60 * 5
     }) // 100 size, 5 min
-    this._paths = LRU({
+    this._paths = new LRU({
       max: 100,
       maxAge: 1000 * 60 * 5
     }) // 2100 size, 5 min

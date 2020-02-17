@@ -42,27 +42,18 @@
   },
   "dependencies": {
     "@swtc/lib": "^1.0.4",
+    "@swtc/address-codec": "^1.0.4",
+    "@swtc/common": "^1.0.9",
+    "@swtc/keypairs": "^1.0.7",
+    "@swtc/wallet": "^1.0.8",
+    "@swtc/serializer": "^1.0.4",
     "@swtc/utils": "^1.0.4",
-    "@vue/runtime-core": "3.0.0-alpha.3",
-    "chalk": "^3.0.0",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.2.1",
-    "koa-robots.txt": "^1.0.0",
-    "koa-router": "^7.4.0",
-    "koa-simple-qs": "^1.0.0",
-    "koa2-request-log": "^1.0.1",
-    "koa2-swagger-ui": "^2.15.4",
-    "static-koa-router": "^1.0.3"
+    "@swtc/transaction": "^1.0.6"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.7.1",
     "jest": "^25.0.0",
-    "jest-esm-transformer": "^1.0.0",
-    "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1",
-    "supertest": "^4.0.2",
-    "tslint": "^5.19.0",
-    "typescript": "^3.4.5"
+    "prettier": "^1.19.1",
+    "rollup": "^1.29.1"
   }
 }

@@ -6,9 +6,7 @@
   "module": "esm/index.js",
   "license": "ISC",
   "dependencies": {
-    "@swtc/common": "^1.0.9",
-    "base-x": "^3.0.7",
-    "create-hash": "^1.2.0"
+    "@swtc/common": "^1.0.9"
   },
   "repository": {
     "type": "git",
@@ -33,20 +31,10 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-inject": "^4.0.0",
-    "@rollup/plugin-node-resolve": "^7.0.0",
-    "@rollup/plugin-typescript": "^2.1.0",
     "@types/jest": "^24.9.1",
-    "@types/node": "^12.7.1",
     "jest": "^25.0.0",
-    "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1",
-    "rollup": "^1.29.1",
-    "rollup-plugin-terser": "^5.2.0",
-    "ts-jest": "^25.0.0",
-    "tslint": "^5.19.0",
-    "typescript": "^3.4.5"
+    "prettier": "^1.19.1",
+    "rollup": "^1.29.1"
   },
   "keywords": [
     "codec",

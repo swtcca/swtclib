@@ -29,7 +29,7 @@
     "build:dev": "tsc; webpack --mode development",
     "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/*.js\"",
-    "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
+    "test:nyc": "nyc --extension=.ts --reporter=html --reporter=text mocha test/test*.js"
   },
   "repository": {
     "type": "git",
@@ -49,37 +49,18 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "@swtc/transaction": "^1.0.6",
+    "@swtc/address-codec": "^1.0.4",
+    "@swtc/common": "^1.0.9",
+    "@swtc/keypairs": "^1.0.7",
+    "@swtc/wallet": "^1.0.8",
+    "@swtc/serializer": "^1.0.4",
     "@swtc/utils": "^1.0.4",
-    "bignumber.js": "^9.0.0",
-    "lru-cache": "^4.0.1",
-    "sha1": "^1.1.1",
-    "url": "^0.11.0",
-    "ws": "^6.2.1"
+    "@swtc/transaction": "^1.0.6"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-json": "^4.0.1",
-    "@rollup/plugin-node-resolve": "^7.0.0",
-    "@rollup/plugin-typescript": "^2.1.0",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.7.1",
-    "axios": "^0.19.0",
-    "chai": "^4.2.0",
-    "chai-json-schema": "^1.5.1",
-    "jest": "^25.0.0",
     "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
-    "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1",
-    "rollup": "^1.29.1",
-    "rollup-plugin-terser": "^5.2.0",
-    "sinon": "^7.4.1",
-    "swtc-tum3": "^0.1.2",
-    "tslint": "^5.19.0",
-    "tum3-eth-abi": "^1.0.2",
-    "typescript": "^3.4.5",
-    "webpack": "^4.29.3",
-    "webpack-cli": "^3.2.3"
+    "nyc": "^15.0.0",
+    "prettier": "^1.19.1",
+    "rollup": "^1.29.1"
   }
 }
