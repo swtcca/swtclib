@@ -57,13 +57,11 @@ function setup() {
         console.log(
           chalk.bold.green(`${JSON.stringify({ ledger_index, ledger_time })}`)
         )
-    },
-    { lazy: true }
+    }
   )
   watch(
     () => logs.value,
-    (value, old_value) => console.log(chalk.green(value[0])),
-    { lazy: true }
+    (value, old_value) => console.log(chalk.green(value[0]))
   )
   watch(
     () => wsConnected.value,
@@ -72,8 +70,7 @@ function setup() {
       if (!value) {
         console.log("starting heal of connection, as scheduled")
       }
-    },
-    { lazy: true }
+    }
   )
   watch(
     () => server.value,
@@ -93,8 +90,7 @@ function setup() {
         )
         // console.error(e)
       }
-    },
-    { lazy: true }
+    }
   )
 
   // funcConfig(CONFIG)
