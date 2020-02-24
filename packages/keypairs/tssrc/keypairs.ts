@@ -10,6 +10,7 @@ import {
 } from "@swtc/common"
 import { derivePrivateKey, accountPublicFromPublicGenerator } from "./secp256k1"
 import { computePublicKeyHash } from "./utils"
+import { IKeypair, IGenerateOptions, IAlgorithm } from "./types"
 
 const Ed25519 = eddsa("ed25519")
 const Secp256k1 = ec("secp256k1")
@@ -23,7 +24,7 @@ function hash(message) {
 }
 
 const secp256k1 = {
-  deriveKeypair: (entropy, options: any = {}) => {
+  deriveKeypair: (entropy, options: any = {}): IKeypair => {
     const prefix = "00"
     const privateKey =
       prefix +
@@ -37,7 +38,7 @@ const secp256k1 = {
     )
     return { privateKey, publicKey }
   },
-  deriveKeypairWithPrivateKey: rawPrivateKey => {
+  deriveKeypairWithPrivateKey: (rawPrivateKey: string): IKeypair => {
     const prefix = "00"
     const privateKey = prefix + rawPrivateKey.toUpperCase()
     const publicKey = bytesToHex(
@@ -47,30 +48,30 @@ const secp256k1 = {
     )
     return { privateKey, publicKey }
   },
-  sign: (message, privateKey) => {
+  sign: (message, privateKey): string => {
     return bytesToHex(
       Secp256k1.sign(hash(message), hexToBytes(privateKey), {
         canonical: true
       }).toDER()
     )
   },
-  verify: (message, signature, publicKey) => {
+  verify: (message, signature, publicKey): boolean => {
     return Secp256k1.verify(hash(message), signature, hexToBytes(publicKey))
   },
-  signTx: (message, privateKey) => {
+  signTx: (message, privateKey): string => {
     return bytesToHex(
       Secp256k1.sign(message, hexToBytes(privateKey), {
         canonical: true
       }).toDER()
     )
   },
-  verifyTx: (message, signature, publicKey) => {
+  verifyTx: (message, signature, publicKey): boolean => {
     return Secp256k1.verify(message, signature, hexToBytes(publicKey))
   }
 }
 
 const ed25519 = {
-  deriveKeypair: entropy => {
+  deriveKeypair: (entropy): IKeypair => {
     const prefix = "ED"
     const rawPrivateKey = hash(entropy)
     const privateKey = prefix + bytesToHex(rawPrivateKey)
@@ -78,7 +79,7 @@ const ed25519 = {
       prefix + bytesToHex(Ed25519.keyFromSecret(rawPrivateKey).pubBytes())
     return { privateKey, publicKey }
   },
-  deriveKeypairWithPrivateKey: rawPrivateKey => {
+  deriveKeypairWithPrivateKey: (rawPrivateKey): IKeypair => {
     const prefix = "ED"
     const privateKey = prefix + rawPrivateKey.toUpperCase()
     const publicKey =
@@ -86,7 +87,7 @@ const ed25519 = {
       bytesToHex(Ed25519.keyFromSecret(hexToBytes(rawPrivateKey)).pubBytes())
     return { privateKey, publicKey }
   },
-  sign: (message, privateKey) => {
+  sign: (message, privateKey): string => {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
     assert(Array.isArray(message), "message must be array of octets")
@@ -94,19 +95,19 @@ const ed25519 = {
       Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toBytes()
     )
   },
-  verify: (message, signature, publicKey) => {
+  verify: (message, signature, publicKey): boolean => {
     return Ed25519.verify(
       message,
       hexToBytes(signature),
       hexToBytes(publicKey).slice(1)
     )
   },
-  signTx: (message, privateKey) => {
+  signTx: (message, privateKey): string => {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
     return Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toHex()
   },
-  verifyTx: (message, signature, publicKey) => {
+  verifyTx: (message, signature, publicKey): boolean => {
     return Ed25519.verify(
       message,
       hexToBytes(signature),
@@ -120,42 +121,36 @@ function select(algorithm) {
   return methods[algorithm]
 }
 
-function getAlgorithmFromKey(key) {
+function getAlgorithmFromKey(key): IAlgorithm {
   const bytes = hexToBytes(key)
   return bytes.length === 33 && bytes[0] === 0xed
     ? "ed25519"
     : "ecdsa-secp256k1"
 }
 
-function sign(messageHex, privateKey) {
+function sign(messageHex, privateKey): string {
   const algorithm = getAlgorithmFromKey(privateKey)
   return select(algorithm).sign(hexToBytes(messageHex), privateKey)
 }
 
-function verify(messageHex, signature, publicKey) {
+function verify(messageHex, signature, publicKey): boolean {
   const algorithm = getAlgorithmFromKey(publicKey)
   return select(algorithm).verify(hexToBytes(messageHex), signature, publicKey)
 }
 
-function signTx(messageHex, privateKey) {
+function signTx(messageHex, privateKey): string {
   const algorithm = getAlgorithmFromKey(privateKey)
   return select(algorithm).signTx(messageHex, privateKey)
 }
 
-function verifyTx(messageHex, signature, publicKey) {
+function verifyTx(messageHex, signature, publicKey): boolean {
   const algorithm = getAlgorithmFromKey(publicKey)
   return select(algorithm).verifyTx(messageHex, signature, publicKey)
 }
 
 export function Factory(chain_or_token = "jingtum") {
   const addressCodec = AddressCodecFactory(chain_or_token)
-  function generateSeed(
-    options: {
-      entropy?: Uint8Array
-      // entropy?: any,
-      algorithm?: "ed25519" | "secp256k1"
-    } = {}
-  ) {
+  function generateSeed(options: IGenerateOptions = {}): string {
     assert(
       !options.entropy || options.entropy.length >= 16,
       "entropy too short"
@@ -165,7 +160,10 @@ export function Factory(chain_or_token = "jingtum") {
     return addressCodec.encodeSeed(entropy, type)
   }
 
-  function deriveKeypair(secret_or_private_key, algorithm = "secp256k1") {
+  function deriveKeypair(
+    secret_or_private_key: string,
+    algorithm: IAlgorithm = "ecdsa-secp256k1"
+  ): IKeypair {
     const secret = secret_or_private_key
     let private_key = secret_or_private_key
     let keypair: any
@@ -210,27 +208,27 @@ export function Factory(chain_or_token = "jingtum") {
     return keypair
   }
 
-  function deriveAddressFromBytes(publicKeyBytes: Buffer) {
+  function deriveAddressFromBytes(publicKeyBytes: Buffer): string {
     return addressCodec.encodeAccountID(
       Buffer.from(computePublicKeyHash(publicKeyBytes))
     )
   }
 
-  function deriveAddress(publicKey) {
+  function deriveAddress(publicKey): string {
     return deriveAddressFromBytes(hexToBytes(publicKey))
   }
 
-  function deriveNodeAddress(publicKey) {
+  function deriveNodeAddress(publicKey): string {
     const generatorBytes = addressCodec.decodeNodePublic(publicKey)
     const accountPublicBytes = accountPublicFromPublicGenerator(generatorBytes)
     return deriveAddressFromBytes(accountPublicBytes)
   }
 
-  function convertAddressToBytes(address) {
+  function convertAddressToBytes(address): number[] {
     return addressCodec.decodeAddress(address).toJSON().data
   }
 
-  function convertBytesToAddress(bytes) {
+  function convertBytesToAddress(bytes): string {
     return addressCodec.encodeAddress(bytes)
   }
   return {
