@@ -265,7 +265,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         if (in_json.currency !== "SWT") {
           this._currency = in_json.currency
           this._is_native = false
-          if (Wallet.isValidAddress(in_json.issuer)) {
+          if (in_json.issuer && Wallet.isValidAddress(in_json.issuer)) {
             this._issuer = in_json.issuer
             // TODO, need to find a better way for extracting the exponent and digits
             const vpow = Number(in_json.value)
