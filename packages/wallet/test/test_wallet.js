@@ -188,7 +188,7 @@ describe("Wallet", function() {
       }
     })
 
-    it("return null if the secret is invalid when verify", function() {
+    it("return false if the secret is invalid when verify", function() {
       for (let chain of chains) {
         let Wallet = WalletFactory(chain)
         let secrets = data[chain].invalidSecrets
@@ -196,7 +196,7 @@ describe("Wallet", function() {
           let wallet = new Wallet(secret)
           let sign = ""
           let verified = wallet.verify("test", sign)
-          expect(verified).to.equal(null)
+          expect(verified).to.equal(false)
         }
       }
     })
@@ -250,7 +250,7 @@ describe("Wallet", function() {
       }
     })
 
-    it("return null if the secret is invalid when verify", function() {
+    it("return false if the secret is invalid when verify", function() {
       for (let chain of chains) {
         let Wallet = WalletFactory(chain)
         let secrets = data[chain].invalidSecrets
@@ -258,7 +258,7 @@ describe("Wallet", function() {
           let wallet = new Wallet(secret)
           let sign = ""
           let verified = wallet.verifyTx("test", sign)
-          expect(verified).to.equal(null)
+          expect(verified).to.equal(false)
         }
       }
     })
