@@ -59,10 +59,10 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         return false
       }
     } else {
-      if (obj.currency !== "SWT") {
+      if (obj.currency !== Wallet.getCurrency()) {
         return false
       }
-      // if currency === 'SWT',自动补全issuer.
+      // if currency is native,自动补全issuer.
       obj.issuer = ""
     }
     return true
