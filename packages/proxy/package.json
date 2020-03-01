@@ -1,6 +1,6 @@
 {
   "name": "@swtc/proxy",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "rest api to jingtum blockchain",
   "keywords": [
     "rest",
@@ -41,14 +41,14 @@
     "url": "https://github.com/swtcca/swtclib/issues"
   },
   "dependencies": {
-    "@swtc/address-codec": "^1.0.6",
-    "@swtc/common": "^1.0.10",
-    "@swtc/keypairs": "^1.0.9",
-    "@swtc/lib": "^1.0.6",
-    "@swtc/serializer": "^1.0.6",
-    "@swtc/transaction": "^1.0.8",
-    "@swtc/utils": "^1.0.6",
-    "@swtc/wallet": "^1.0.10",
+    "@swtc/address-codec": "^1.0.7",
+    "@swtc/common": "^1.0.11",
+    "@swtc/keypairs": "^1.0.10",
+    "@swtc/lib": "^1.0.7",
+    "@swtc/serializer": "^1.0.8",
+    "@swtc/transaction": "^1.0.10",
+    "@swtc/utils": "^1.0.7",
+    "@swtc/wallet": "^1.0.11",
     "@vue/runtime-core": "^3.0.0-alpha.5",
     "chalk": "^3.0.0",
     "koa": "^2.11.0",
