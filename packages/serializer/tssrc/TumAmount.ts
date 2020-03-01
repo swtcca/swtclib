@@ -262,7 +262,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
           throw new Error("Amount.parse_json: Input JSON has invalid Tum info!")
         }
         // AMOUNT could have a field named either as 'issuer' or as 'counterparty' for SWT, this can be undefined
-        if (in_json.currency !== "SWT") {
+        if (in_json.currency !== Wallet.getCurrency()) {
           this._currency = in_json.currency
           this._is_native = false
           if (Wallet.isValidAddress(in_json.issuer)) {
