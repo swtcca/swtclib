@@ -1,6 +1,6 @@
 {
   "name": "@swtc/serializer",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "Lospring Liu",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -9,8 +9,8 @@
     "@swtc/common": "^1.0.11",
     "@swtc/keypairs": "^1.0.10",
     "@swtc/wallet": "^1.0.11",
-    "bn-plus.js": "^1.0.0",
     "bignumber.js": "^9.0.0",
+    "bn-plus.js": "^1.0.0",
     "extend": "^3.0.2",
     "jsbn": "^1.1.0",
     "sha1": "^1.1.1"

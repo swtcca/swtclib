@@ -1,6 +1,6 @@
 {
   "name": "@swtc/lib",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "websocket access for jingtum blockchain",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -52,8 +52,8 @@
     "@swtc/address-codec": "^1.0.7",
     "@swtc/common": "^1.0.11",
     "@swtc/keypairs": "^1.0.10",
-    "@swtc/serializer": "^1.0.8",
-    "@swtc/transaction": "^1.0.10",
+    "@swtc/serializer": "^1.0.9",
+    "@swtc/transaction": "^1.0.11",
     "@swtc/utils": "^1.0.7",
     "@swtc/wallet": "^1.0.11",
     "lru-cache": "^5.1.1",

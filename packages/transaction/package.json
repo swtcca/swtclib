@@ -1,6 +1,6 @@
 {
   "name": "@swtc/transaction",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "swtc transaction package",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -46,7 +46,7 @@
     "@swtc/address-codec": "^1.0.7",
     "@swtc/common": "^1.0.11",
     "@swtc/keypairs": "^1.0.10",
-    "@swtc/serializer": "^1.0.8",
+    "@swtc/serializer": "^1.0.9",
     "@swtc/utils": "^1.0.7",
     "@swtc/wallet": "^1.0.11",
     "bignumber.js": "^9.0.0",
