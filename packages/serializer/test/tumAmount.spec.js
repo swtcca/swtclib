@@ -2,7 +2,7 @@ const chai = require("chai")
 const expect = chai.expect
 const Amount = require("../cjs/TumAmount").Factory()
 const Factory = require("@swtc/wallet").Factory
-const BN = require("bn.js")
+const BN = require("bn-plus.js")
 const testData = {
   value: "1",
   currency: "CNY",
