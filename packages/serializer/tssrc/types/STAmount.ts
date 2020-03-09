@@ -1,4 +1,4 @@
-import BN from "bn.js"
+import BN from "bn-plus.js"
 import { BigInteger } from "jsbn"
 import { convertHexToByteArray } from "../Utils"
 import SerializedType from "./SerializedType"

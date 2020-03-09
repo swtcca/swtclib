@@ -3,7 +3,7 @@
 // - Numbers in hex are big-endian.
 
 import Bignumber from "bignumber.js"
-import BN from "bn.js"
+import BN from "bn-plus.js"
 import extend from "extend"
 import { Factory as WalletFactory } from "@swtc/wallet"
 import { AMOUNT_CONSTS } from "@swtc/common"
