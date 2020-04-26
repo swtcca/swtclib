@@ -1270,13 +1270,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * }
      */
     public multiSigning(options: IMultiSigningOptions) {
-      // this.swt_normalize()
-      this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
-      if (!this.tx_json.Sequence) {
-        this.tx_json.Sequence = new Error("please set sequence first")
-        return this
-      }
-      // const tx_json_verify = JSON.parse(JSON.stringify(this.tx_json))
       const signers = this.tx_json.Signers || []
       if (signers.length > 0) {
         // 验签
@@ -1284,6 +1277,23 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           this.tx_json.verifyTx = new Error("verify failed")
           return this
         }
+      }
+
+      const signer = this.getMultiSign(options)
+
+      this.tx_json.Signers = this.tx_json.Signers || []
+      this.tx_json.Signers.push({
+        Signer: signer
+      })
+      return this
+    }
+
+    // 只获取签名信息
+    public getMultiSign(options: IMultiSigningOptions) {
+      this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
+      if (!this.tx_json.Sequence) {
+        this.tx_json.Sequence = new Error("please set sequence first")
+        return this
       }
 
       const Account = options.account || options.address
@@ -1309,6 +1319,25 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
       signer.SigningPubKey = wt.getPublicKey()
       signer.TxnSignature = wt.signTx(hash)
+
+      return signer
+    }
+
+    public addMultiSign(signer: any) {
+      this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
+      if (!this.tx_json.Sequence) {
+        this.tx_json.Sequence = new Error("please set sequence first")
+        return this
+      }
+      // const tx_json_verify = JSON.parse(JSON.stringify(this.tx_json))
+      const signers = this.tx_json.Signers || []
+      if (signers.length > 0) {
+        // 验签
+        if (!verifyTx(this.tx_json)) {
+          this.tx_json.verifyTx = new Error("verify failed")
+          return this
+        }
+      }
 
       this.tx_json.Signers = this.tx_json.Signers || []
       this.tx_json.Signers.push({
