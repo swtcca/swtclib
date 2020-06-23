@@ -36,7 +36,7 @@ const restify = (pathPrefix = "/api/") => {
         ctx.response.type = "application/json"
         ctx.response.body = {
           code: e.code || "api:swtclib",
-          message: e.message || "swtclib get an error"
+          message: e.message || e
         }
       }
     } else {
