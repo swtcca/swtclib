@@ -8,7 +8,7 @@ import {
   IWallet
 } from "./types"
 
-const Factory = (token_or_chain = "jingtum") => {
+const Factory: any = (token_or_chain = "jingtum") => {
   const chain = funcGetChain(token_or_chain)
   if (!chain) {
     throw Error("token or chain not supported")

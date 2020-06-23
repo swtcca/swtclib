@@ -61,15 +61,15 @@
     "static-koa-router": "^1.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^24.9.1",
+    "@types/jest": "^26.0.0",
     "@types/node": "^12.7.1",
-    "jest": "^25.0.0",
+    "jest": "^26.0.0",
     "prettier": "^1.19.1",
     "rollup": "^1.29.1",
-    "typescript": "^3.7.5",
+    "typescript": "^3.9.5",
     "jest-esm-transformer": "^1.0.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^25.0.0",
+    "ts-jest": "^26.0.0",
     "tslint": "^5.20.0"
   }
 }

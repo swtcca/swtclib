@@ -25,8 +25,8 @@ import {
 
 class Remote {
   public static Wallet = Wallet
-  public static Transaction = Transaction
-  public static utils = utils
+  public static Transaction: any = Transaction
+  public static utils: any = utils
   public readonly AbiCoder: any = null
   public readonly Tum3: any = null
   private _server: string

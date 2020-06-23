@@ -72,7 +72,7 @@ class Remote extends EventEmitter {
   public static Account = Account
   public static OrderBook = OrderBook
   public static Transaction: any = Transaction
-  public static utils = utils
+  public static utils: any = utils
   public static XLIB = Wallet.config.XLIB || {}
   public type
   public readonly AbiCoder: any = null

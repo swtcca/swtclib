@@ -18,8 +18,8 @@
     "hash.js": "^1.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^24.9.1",
-    "jest": "^25.0.0",
+    "@types/jest": "^26.0.0",
+    "jest": "^26.0.0",
     "mocha": "^6.2.0",
     "prettier": "^1.19.1",
     "rollup": "^1.29.1"
