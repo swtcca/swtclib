@@ -1106,22 +1106,24 @@ class Remote extends EventEmitter {
             // 没有参数，返回空数组
             result.func_parms = []
           }
-          const abi = new this.AbiCoder()
-          const types = utils.getTypes(data.abi, result.func)
-          result.ContractState = abi.decodeParameters(
-            types,
-            result.ContractState
-          )
-          types.forEach((type, i) => {
-            if (type === "address") {
-              const adr = result.ContractState[i].slice(2)
-              const buf = new Buffer(20)
-              buf.write(adr, 0, "hex")
-              result.ContractState[
-                i
-              ] = Wallet.KeyPair.addressCodec.encodeAddress(buf)
-            }
-          })
+          if (result.engine_result === "tesSUCCESS") {
+            const abi = new this.AbiCoder()
+            const types = utils.getTypes(data.abi, result.func)
+            result.ContractState = abi.decodeParameters(
+              types,
+              result.ContractState
+            )
+            types.forEach((type, i) => {
+              if (type === "address") {
+                const adr = result.ContractState[i].slice(2)
+                const buf = new Buffer(20)
+                buf.write(adr, 0, "hex")
+                result.ContractState[
+                  i
+                ] = Wallet.KeyPair.addressCodec.encodeAddress(buf)
+              }
+            })
+          }
         }
         if (result.AlethLog) {
           const logValue = []

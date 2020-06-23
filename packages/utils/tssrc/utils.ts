@@ -223,6 +223,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
     // if(tx.TransactionType !== 'RelationSet')
     result.result = meta ? meta.TransactionResult : "failed"
     result.memos = []
+    result.ledger_index = tx.ledger_index
     const l = []
     switch (result.type) {
       case "sent":
