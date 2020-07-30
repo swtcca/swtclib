@@ -5,8 +5,7 @@ import { Factory as WalletFactory } from "@swtc/wallet"
 import {
   HASHPREFIX,
   tx_json_filter,
-  convertStringToHex,
-  // convertHexToString,
+  convertHexToString,
   normalize_memo,
   isHexMemoString
 } from "@swtc/common"
@@ -1114,6 +1113,13 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         } else {
           _memo.MemoData = memo
         }
+      } else if (format === "json") {
+        if (typeof memo !== "string") {
+          _memo.MemoData = memo
+        } else {
+          _memo.MemoData = JSON.parse(memo)
+        }
+        _memo.MemoFormat = "json"
       } else {
         _memo.MemoData = memo
         _memo.MemoFormat = format
@@ -1250,19 +1256,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
     }
 
-    public memo_normalize(reverse = false) {
-      normalize_memo(this.tx_json, reverse)
-      if (this.tx_json.Memos) {
-        for (const memo of this.tx_json.Memos) {
-          if (memo.Memo.MemoFormat) {
-            memo.Memo.MemoFormat = convertStringToHex(memo.Memo.MemoFormat)
-          }
-          memo.Memo.MemoData = convertStringToHex(memo.Memo.MemoData)
-        }
-      }
-      this.flag_tx_memo = true
-    }
-
     /*
      * options: {
      *   address: '',
@@ -1290,10 +1283,25 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const signer: any = { Account }
       const wt = new Wallet(options.secret)
 
+      if (!this.flag_tx_memo) {
+        normalize_memo(this.tx_json)
+        this.flag_tx_memo = true
+        if (this.tx_json.Memos) {
+          for (const memo of this.tx_json.Memos) {
+            if (memo.Memo.MemoFormat) {
+              delete memo.Memo.MemoFormat
+            }
+          }
+        }
+      }
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
       delete tx_json.Signers
       tx_json_filter(tx_json)
-      normalize_memo(tx_json, true)
+      if (tx_json.Memos) {
+        for (const memo of tx_json.Memos) {
+          memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+        }
+      }
 
       let blob = jser.from_json(tx_json)
       blob = jser.adr_json(blob, Account)
@@ -1332,7 +1340,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         // 验证燃料费是否够用
         this.tx_json.Fee = new Error("low fee")
       }
-      this.memo_normalize() // 编码memo
       return this
     }
 
@@ -1645,7 +1652,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     const signers = tx_json_new.Signers || []
     delete tx_json_new.Signers
     tx_json_filter(tx_json_new)
-    normalize_memo(tx_json_new, true)
+    if (tx_json_new.Memos) {
+      for (const memo of tx_json_new.Memos) {
+        memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+      }
+    }
     if (signers.length > 0) {
       for (const signer of signers) {
         const s = signer.Signer

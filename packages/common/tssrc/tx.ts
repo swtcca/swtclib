@@ -1,7 +1,7 @@
 import {
   convertHexToString,
-  convertStringToHex,
-  isHexMemoString
+  convertStringToHex
+  // isHexMemoString
 } from "./serializer"
 
 export function tx_json_filter(tx_json) {
@@ -46,25 +46,11 @@ export function normalize_memo(tx_json, reverse = false) {
     for (const memo of tx_json.Memos) {
       let data = memo.Memo.MemoData
       let format = memo.Memo.MemoFormat
-      if (isHexMemoString(format)) {
-      } else if (format === "hex") {
+      if (format === "json") {
         format = convertStringToHex(format)
-        if (!isHexMemoString(data)) {
-          throw new Error("MemoData in hex MemoFormat should in hex format")
-        }
-      } else if (format === "json") {
-        format = convertStringToHex(format)
-        if (typeof data === "string") {
-          if (!isHexMemoString(data)) {
-            throw new Error(
-              "MemoData in json MemoFormat should have been serialized and encoded"
-            )
-          }
-        } else {
-          data = convertStringToHex(JSON.stringify(data))
-        }
+        data = convertStringToHex(JSON.stringify(data))
       } else if (format) {
-        // other literal format
+        // hex
         format = convertStringToHex(format)
         data = convertStringToHex(data)
       } else {
@@ -72,29 +58,27 @@ export function normalize_memo(tx_json, reverse = false) {
         if (typeof data !== "string") {
           data = convertStringToHex(JSON.stringify(data))
           format = convertStringToHex("json")
-        } else if (isHexMemoString(data)) {
         } else {
           data = convertStringToHex(data)
         }
       }
       memo.Memo.MemoData = data
-      // memo.Memo.MemoData = convertStringToHex(data)
       if (format) {
         memo.Memo.MemoFormat = format
-        // memo.Memo.MemoFormat = convertStringToHex(format)
       }
 
       if (reverse) {
         // convert hex data and hex format back to data and format
         if (format) {
           format = convertHexToString(format)
-          if (format === "json") {
-            data = JSON.parse(convertHexToString(data))
-          } else if (format === "hex") {
-          } else {
-          }
-        } else {
-          data = convertHexToString(data)
+        }
+        data = convertHexToString(data)
+        if (format === "json") {
+          data = JSON.parse(data)
+        }
+        memo.Memo.MemoData = data
+        if (format) {
+          memo.Memo.MemoFormat = format
         }
       }
     }
