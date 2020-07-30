@@ -6,8 +6,7 @@ import {
   HASHPREFIX,
   tx_json_filter,
   convertHexToString,
-  normalize_memo,
-  isHexMemoString
+  normalize_memo
 } from "@swtc/common"
 import {
   // IMarker
@@ -1107,9 +1106,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         if (typeof memo !== "string") {
           _memo.MemoData = memo
           _memo.MemoFormat = "json"
-        } else if (isHexMemoString(memo)) {
-          _memo.MemoFormat = "hex"
-          _memo.MemoData = memo
         } else {
           _memo.MemoData = memo
         }
@@ -1286,20 +1282,22 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       if (!this.flag_tx_memo) {
         normalize_memo(this.tx_json)
         this.flag_tx_memo = true
-        if (this.tx_json.Memos) {
-          for (const memo of this.tx_json.Memos) {
-            if (memo.Memo.MemoFormat) {
-              delete memo.Memo.MemoFormat
-            }
-          }
-        }
       }
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
       delete tx_json.Signers
       tx_json_filter(tx_json)
       if (tx_json.Memos) {
         for (const memo of tx_json.Memos) {
-          memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+          let format = memo.Memo.MemoFormat
+          if (format) {
+            format = convertHexToString(format)
+            memo.Memo.MemoFormat = format
+            if (format !== "hex") {
+              memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+            }
+          } else {
+            memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+          }
         }
       }
 
@@ -1654,7 +1652,16 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     tx_json_filter(tx_json_new)
     if (tx_json_new.Memos) {
       for (const memo of tx_json_new.Memos) {
-        memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+        let format = memo.Memo.MemoFormat
+        if (format) {
+          format = convertHexToString(format)
+          memo.Memo.MemoFormat = format
+          if (format !== "hex") {
+            memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+          }
+        } else {
+          memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
+        }
       }
     }
     if (signers.length > 0) {

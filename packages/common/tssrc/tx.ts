@@ -41,6 +41,8 @@ export function tx_json_filter(tx_json) {
 //   }
 // }
 
+// for multisigning
+// treat hex as normal string for now, odd even do not pass signature check
 export function normalize_memo(tx_json, reverse = false) {
   if (tx_json.Memos) {
     for (const memo of tx_json.Memos) {
@@ -49,8 +51,12 @@ export function normalize_memo(tx_json, reverse = false) {
       if (format === "json") {
         format = convertStringToHex(format)
         data = convertStringToHex(JSON.stringify(data))
+      } else if (format === "hex") {
+        format = convertStringToHex(format)
+        if (data.length % 2 > 0) {
+          data = `${data}0`
+        }
       } else if (format) {
-        // hex
         format = convertStringToHex(format)
         data = convertStringToHex(data)
       } else {
@@ -69,17 +75,12 @@ export function normalize_memo(tx_json, reverse = false) {
 
       if (reverse) {
         // convert hex data and hex format back to data and format
+        // do not use any more
         if (format) {
           format = convertHexToString(format)
-        }
-        data = convertHexToString(data)
-        if (format === "json") {
-          data = JSON.parse(data)
-        }
-        memo.Memo.MemoData = data
-        if (format) {
           memo.Memo.MemoFormat = format
         }
+        memo.Memo.MemoData = convertHexToString(data)
       }
     }
   }
