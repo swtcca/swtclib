@@ -1,6 +1,6 @@
 {
   "name": "@swtc/keypairs",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "swtc keypairs",
   "files": [
     "dist",
@@ -10,8 +10,8 @@
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "dependencies": {
-    "@swtc/address-codec": "^1.0.8",
-    "@swtc/common": "^1.0.13",
+    "@swtc/address-codec": "^1.0.9",
+    "@swtc/common": "^1.0.14",
     "bn.js": "^4.4.0",
     "brorand": "^1.1.0",
     "elliptic": "^6.4.0",
