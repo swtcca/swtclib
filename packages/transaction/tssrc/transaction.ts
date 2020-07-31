@@ -5,8 +5,8 @@ import { Factory as WalletFactory } from "@swtc/wallet"
 import {
   HASHPREFIX,
   tx_json_filter,
-  convertHexToString,
-  normalize_memo
+  normalize_memo,
+  isHexMemoString
 } from "@swtc/common"
 import {
   // IMarker
@@ -1102,23 +1102,28 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      */
     public addMemo(memo, format = "text") {
       const _memo: any = {}
-      if (format === "text") {
+      if (format === "text" || format === "TEXT") {
         if (typeof memo !== "string") {
           _memo.MemoData = memo
           _memo.MemoFormat = "json"
+        } else if (isHexMemoString(memo)) {
+          _memo.MemoFormat = "hex"
+          _memo.MemoData = memo
         } else {
           _memo.MemoData = memo
         }
-      } else if (format === "json") {
+      } else if (format === "json" || format === "JSON") {
         if (typeof memo !== "string") {
           _memo.MemoData = memo
         } else {
           _memo.MemoData = JSON.parse(memo)
         }
         _memo.MemoFormat = "json"
-      } else {
+      } else if (format === "hex" || format === "HEX") {
         _memo.MemoData = memo
-        _memo.MemoFormat = format
+        _memo.MemoFormat = "hex"
+      } else {
+        throw new Error("only text/json/hex are supported memo format")
       }
       const Memos = (this.tx_json.Memos || []).concat({ Memo: _memo })
       const so = new jser([])
@@ -1286,20 +1291,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
       delete tx_json.Signers
       tx_json_filter(tx_json)
-      if (tx_json.Memos) {
-        for (const memo of tx_json.Memos) {
-          let format = memo.Memo.MemoFormat
-          if (format) {
-            format = convertHexToString(format)
-            memo.Memo.MemoFormat = format
-            if (format !== "hex") {
-              memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
-            }
-          } else {
-            memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
-          }
-        }
-      }
+      normalize_memo(tx_json, true)
 
       let blob = jser.from_json(tx_json)
       blob = jser.adr_json(blob, Account)
@@ -1650,20 +1642,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     const signers = tx_json_new.Signers || []
     delete tx_json_new.Signers
     tx_json_filter(tx_json_new)
-    if (tx_json_new.Memos) {
-      for (const memo of tx_json_new.Memos) {
-        let format = memo.Memo.MemoFormat
-        if (format) {
-          format = convertHexToString(format)
-          memo.Memo.MemoFormat = format
-          if (format !== "hex") {
-            memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
-          }
-        } else {
-          memo.Memo.MemoData = convertHexToString(memo.Memo.MemoData)
-        }
-      }
-    }
+    normalize_memo(tx_json_new, true)
     if (signers.length > 0) {
       for (const signer of signers) {
         const s = signer.Signer

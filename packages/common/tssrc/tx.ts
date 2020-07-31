@@ -1,7 +1,7 @@
 import {
   convertHexToString,
-  convertStringToHex
-  // isHexMemoString
+  convertStringToHex,
+  isHexMemoString
 } from "./serializer"
 
 export function tx_json_filter(tx_json) {
@@ -42,7 +42,6 @@ export function tx_json_filter(tx_json) {
 // }
 
 // for multisigning
-// treat hex as normal string for now, odd even do not pass signature check
 export function normalize_memo(tx_json, reverse = false) {
   if (tx_json.Memos) {
     for (const memo of tx_json.Memos) {
@@ -57,13 +56,14 @@ export function normalize_memo(tx_json, reverse = false) {
           data = `${data}0`
         }
       } else if (format) {
-        format = convertStringToHex(format)
-        data = convertStringToHex(data)
+        // now format and data are in hexdecimal already
       } else {
-        // no format, pure default text
+        // no format specified
         if (typeof data !== "string") {
           data = convertStringToHex(JSON.stringify(data))
           format = convertStringToHex("json")
+        } else if (isHexMemoString(data)) {
+          // has been converted to hex before
         } else {
           data = convertStringToHex(data)
         }
@@ -75,12 +75,15 @@ export function normalize_memo(tx_json, reverse = false) {
 
       if (reverse) {
         // convert hex data and hex format back to data and format
-        // do not use any more
         if (format) {
           format = convertHexToString(format)
           memo.Memo.MemoFormat = format
+          if (format !== "hex") {
+            memo.Memo.MemoData = convertHexToString(data)
+          }
+        } else {
+          memo.Memo.MemoData = convertHexToString(data)
         }
-        memo.Memo.MemoData = convertHexToString(data)
       }
     }
   }
