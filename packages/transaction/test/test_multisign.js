@@ -21,7 +21,7 @@ const TX_PAY = {
   Fee: 10000,
   TransactionType: "Payment",
   Account: address2,
-  Amount: "1000000",
+  Amount: 1000000,
   Destination: testDestinationAddress
 }
 
@@ -104,6 +104,7 @@ describe("test multisign", function() {
         tx_json: inst.tx_json
       })
       inst = Transaction.buildMultisignedTx(inst.tx_json)
+      inst.multiSigned()
       expect(inst.command).to.equal("submit_multisigned")
       expect(inst.tx_json).to.deep.equal({
         ...TX_PAY,

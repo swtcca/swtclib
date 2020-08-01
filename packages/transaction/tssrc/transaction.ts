@@ -2,12 +2,7 @@
 import { Factory as SerializerFactory } from "@swtc/serializer"
 import { Factory as UtilsFactory } from "@swtc/utils"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import {
-  HASHPREFIX,
-  tx_json_filter,
-  normalize_memo,
-  isHexMemoString
-} from "@swtc/common"
+import { HASHPREFIX, normalize_swt, normalize_memo } from "@swtc/common"
 import {
   // IMarker
   // ICurrency,
@@ -1021,8 +1016,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     // end of static transaction builds
 
     public tx_json
-    public flag_tx_json: boolean
-    public flag_tx_memo: boolean
     public readonly _token: string
     public _secret: string | undefined
     public abi: any[] | undefined
@@ -1037,8 +1030,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.tx_json = { Flags: 0, Fee: utils.getFee() }
       this._filter = filter
       this.command = "submit"
-      this.flag_tx_json = false
-      this.flag_tx_memo = false
     }
 
     /**
@@ -1106,18 +1097,11 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         if (typeof memo !== "string") {
           _memo.MemoData = memo
           _memo.MemoFormat = "json"
-        } else if (isHexMemoString(memo)) {
-          _memo.MemoFormat = "hex"
-          _memo.MemoData = memo
         } else {
           _memo.MemoData = memo
         }
       } else if (format === "json" || format === "JSON") {
-        if (typeof memo !== "string") {
-          _memo.MemoData = memo
-        } else {
-          _memo.MemoData = JSON.parse(memo)
-        }
+        _memo.MemoData = memo
         _memo.MemoFormat = "json"
       } else if (format === "hex" || format === "HEX") {
         _memo.MemoData = memo
@@ -1249,14 +1233,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       this.tx_json.Sequence = Number(sequence)
     }
 
-    public swt_normalize() {
-      if (!this.flag_tx_json) {
-        // run only once
-        tx_json_filter(this.tx_json)
-        this.flag_tx_json = true
-      }
-    }
-
     /*
      * options: {
      *   address: '',
@@ -1264,12 +1240,14 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      * }
      */
     public multiSigning(options: IMultiSigningOptions) {
-      // this.swt_normalize()
       this.tx_json.SigningPubKey = "" // 多签中该字段必须有且必须为空字符串
       if (!this.tx_json.Sequence) {
         this.tx_json.Sequence = new Error("please set sequence first")
         return this
       }
+      normalize_memo(this.tx_json)
+      normalize_swt(this.tx_json)
+
       // const tx_json_verify = JSON.parse(JSON.stringify(this.tx_json))
       const signers = this.tx_json.Signers || []
       if (signers.length > 0) {
@@ -1284,13 +1262,8 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       const signer: any = { Account }
       const wt = new Wallet(options.secret)
 
-      if (!this.flag_tx_memo) {
-        normalize_memo(this.tx_json)
-        this.flag_tx_memo = true
-      }
       const tx_json = JSON.parse(JSON.stringify(this.tx_json))
       delete tx_json.Signers
-      tx_json_filter(tx_json)
       normalize_memo(tx_json, true)
 
       let blob = jser.from_json(tx_json)
@@ -1318,6 +1291,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     public multiSigned() {
       // 多重签名完毕
       this.command = "submit_multisigned"
+      normalize_swt(this.tx_json)
       const signers = this.tx_json.Signers || []
       if (signers.length > 0) {
         // 验签
@@ -1326,6 +1300,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
           return this
         }
       }
+      normalize_swt(this.tx_json, true)
       if (Number(signers.length * Wallet.getFee()) > Number(this.tx_json.Fee)) {
         // 验证燃料费是否够用
         this.tx_json.Fee = new Error("low fee")
@@ -1548,7 +1523,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
     // private and protected methods
     public async _signPromise(): Promise<any> {
-      this.swt_normalize()
+      normalize_swt(this.tx_json)
       return new Promise((resolve, reject) => {
         try {
           const wt = new Wallet(this._secret)
@@ -1615,7 +1590,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
 
   function signing(tx, callback) {
     try {
-      tx.swt_normalize()
+      normalize_swt(tx.tx_json)
       const wt = new Wallet(tx._secret)
       tx.tx_json.SigningPubKey = wt.getPublicKey()
       const blob = jser.from_json(tx.tx_json)
@@ -1641,7 +1616,6 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     const tx_json_new = JSON.parse(JSON.stringify(tx_json))
     const signers = tx_json_new.Signers || []
     delete tx_json_new.Signers
-    tx_json_filter(tx_json_new)
     normalize_memo(tx_json_new, true)
     if (signers.length > 0) {
       for (const signer of signers) {
