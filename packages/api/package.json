@@ -1,6 +1,6 @@
 {
   "name": "@swtc/api",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "swtc lib api",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -43,14 +43,14 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "@swtc/address-codec": "^1.0.9",
-    "@swtc/common": "^1.0.14",
-    "@swtc/keypairs": "^1.0.12",
-    "@swtc/lib": "^1.0.11",
-    "@swtc/serializer": "^1.0.11",
-    "@swtc/transaction": "^1.0.14",
-    "@swtc/utils": "^1.0.10",
-    "@swtc/wallet": "^1.0.13",
+    "@swtc/address-codec": "^1.0.10",
+    "@swtc/common": "^1.0.15",
+    "@swtc/keypairs": "^1.0.13",
+    "@swtc/lib": "^1.0.12",
+    "@swtc/serializer": "^1.0.12",
+    "@swtc/transaction": "^1.0.15",
+    "@swtc/utils": "^1.0.11",
+    "@swtc/wallet": "^1.0.14",
     "axios": "^0.19.0"
   },
   "devDependencies": {
