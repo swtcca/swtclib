@@ -21,7 +21,6 @@
     "rollup": "rollup -c",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha \"test/*.js\"",
-    "build:dev": "tsc && webpack --mode development",
     "test:api": "mocha \"test/*.js\"",
     "test:nyc": "nyc --reporter=html --reporter=text mocha test/test*.js"
   },
@@ -46,9 +45,16 @@
     "@swtc/keypairs": "^1.0.13"
   },
   "devDependencies": {
-    "mocha": "^6.2.0",
-    "nyc": "^15.0.0",
-    "prettier": "^1.19.1",
-    "rollup": "^1.29.1"
+    "chai": "^4.2.0",
+    "husky": "^4.2.5",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^1.32.1",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }

@@ -25,7 +25,6 @@
     "compile": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build": "tsc && webpack",
     "tslint": "tslint tssrc/*.ts",
-    "build:dev": "tsc && webpack --mode development",
     "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/api*.js\"",
     "test:extended": "mocha \"test/*.js\"",
@@ -67,9 +66,15 @@
     "ws": "^6.2.1"
   },
   "devDependencies": {
-    "mocha": "^6.2.0",
-    "nyc": "^15.0.0",
-    "prettier": "^1.19.1",
-    "rollup": "^1.29.1"
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^1.32.1",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }

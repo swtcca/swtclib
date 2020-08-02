@@ -22,7 +22,6 @@
     "tsc": "tsc",
     "compile": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build": "tsc && webpack",
-    "build:dev": "tsc && webpack --mode development",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/test*.js\""
@@ -51,11 +50,18 @@
     "@swtc/transaction": "^1.0.15",
     "@swtc/utils": "^1.0.11",
     "@swtc/wallet": "^1.0.14",
-    "axios": "^0.19.0"
+    "axios": "^0.19.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
-    "mocha": "^6.2.0",
-    "prettier": "^1.19.1",
-    "rollup": "^1.29.1"
+    "chai": "^4.2.0",
+    "husky": "^4.2.5",
+    "mocha": "^8.0.1",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^1.32.1",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7"
   }
 }

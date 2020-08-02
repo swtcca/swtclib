@@ -18,10 +18,10 @@
   "deprecated": false,
   "description": "swtc serializer",
   "devDependencies": {
-    "mocha": "^6.2.0",
-    "nyc": "^15.0.0",
-    "prettier": "^1.19.1",
-    "rollup": "^1.29.1"
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "prettier": "^2.0.5",
+    "rollup": "^1.32.1"
   },
   "directories": {
     "lib": "lib"

@@ -43,12 +43,22 @@
     "@swtc/address-codec": "^1.0.10",
     "@swtc/common": "^1.0.15",
     "@swtc/keypairs": "^1.0.13",
-    "@swtc/wallet": "^1.0.14"
+    "@swtc/wallet": "^1.0.14",
+    "bignumber.js": "^9.0.0"
   },
   "devDependencies": {
-    "mocha": "^6.2.0",
-    "nyc": "^15.0.0",
-    "prettier": "^1.19.1",
-    "rollup": "^1.29.1"
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-typescript": "^2.1.0",
+    "chai": "^4.2.0",
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^1.32.1",
+    "rollup-plugin-terser": "^6.1.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7"
   }
 }

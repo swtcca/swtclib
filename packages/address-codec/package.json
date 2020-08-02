@@ -33,10 +33,19 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.0",
-    "jest": "^26.0.0",
-    "prettier": "^1.19.1",
-    "rollup": "^1.29.1"
+    "@rollup/plugin-commonjs": "^14.0.0",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-typescript": "^2.1.0",
+    "@types/jest": "^26.0.8",
+    "husky": "^4.2.5",
+    "jest": "^26.1.0",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^2.0.1",
+    "rollup": "^1.32.1",
+    "rollup-plugin-terser": "^6.1.0",
+    "ts-jest": "^26.1.4",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7"
   },
   "keywords": [
     "codec",

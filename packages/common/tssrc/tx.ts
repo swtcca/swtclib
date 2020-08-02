@@ -66,7 +66,6 @@ export function normalize_memo(tx_json, reverse = false) {
             data = `${data}0`
           }
         } else if (format) {
-          console.log(`normalize memo: current format: ${format}`)
           // now format and data are in hexdecimal already
           if (/g-z/i.test(format)) {
             throw new Error("should be in hexdecial format now")
