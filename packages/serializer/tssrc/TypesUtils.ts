@@ -7,7 +7,6 @@
  * SerializedObject.parse() or SerializedObject.serialize().
  */
 
-import assert from "assert"
 import extend from "extend"
 import { FIELDS_MAP, INVERSE_FIELDS_MAP, TYPES_MAP } from "@swtc/common"
 import { Factory as WalletFactory } from "@swtc/wallet"
@@ -30,6 +29,12 @@ import STPathSet from "./types/STPathSet"
 import STVector256 from "./types/STVector256"
 import STVL from "./types/STVL"
 import { get_ledger_entry_type, get_transaction_type } from "./Utils"
+
+function assert(condition: any, msg?: string): asserts condition {
+  if (!condition) {
+    throw new Error(msg)
+  }
+}
 
 function Factory(Wallet = WalletFactory("jingtum")) {
   const KeyPair = Wallet.KeyPair

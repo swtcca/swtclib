@@ -1,4 +1,3 @@
-// import assert from "assert"
 import brorand from "brorand"
 import hashjs from "hash.js"
 import { eddsa, ec } from "elliptic"
@@ -14,6 +13,12 @@ import { IKeypair, IGenerateOptions, IAlgorithm } from "./types"
 
 const Ed25519 = eddsa("ed25519")
 const Secp256k1 = ec("secp256k1")
+
+function assert(condition: any, msg?: string): asserts condition {
+  if (!condition) {
+    throw new Error(msg)
+  }
+}
 
 function hash(message) {
   return hashjs.sha512().update(message).digest().slice(0, 32)
@@ -83,7 +88,7 @@ const ed25519 = {
   sign: (message, privateKey): string => {
     // caution: Ed25519.sign interprets all strings as hex, stripping
     // any non-hex characters without warning
-    // assert(Array.isArray(message), "message must be array of octets")
+    assert(Array.isArray(message), "message must be array of octets")
     return bytesToHex(
       Ed25519.sign(message, hexToBytes(privateKey).slice(1)).toBytes()
     )
@@ -144,10 +149,10 @@ function verifyTx(messageHex, signature, publicKey): boolean {
 export function Factory(chain_or_token = "jingtum") {
   const addressCodec = AddressCodecFactory(chain_or_token)
   function generateSeed(options: IGenerateOptions = {}): string {
-    // assert(
-    //   !options.entropy || options.entropy.length >= 16,
-    //   "entropy too short"
-    // )
+    assert(
+      !options.entropy || options.entropy.length >= 16,
+      "entropy too short"
+    )
     const entropy = options.entropy ? options.entropy.slice(0, 16) : brorand(16)
     const type = options.algorithm === "ed25519" ? "ed25519" : "secp256k1"
     return addressCodec.encodeSeed(entropy, type)

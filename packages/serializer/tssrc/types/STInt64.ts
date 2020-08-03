@@ -1,8 +1,13 @@
-import assert from "assert"
 import BN from "bn-plus.js"
 import { BigInteger } from "jsbn"
 import { isHexInt64String, isNumber, isString, serializeHex } from "../Utils"
 import SerializedType from "./SerializedType"
+
+function assert(condition: any, msg?: string): asserts condition {
+  if (!condition) {
+    throw new Error(msg)
+  }
+}
 
 /**
  * Convert int64 big number input
