@@ -2,7 +2,12 @@
 import { Factory as SerializerFactory } from "@swtc/serializer"
 import { Factory as UtilsFactory } from "@swtc/utils"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import { HASHPREFIX, normalize_swt, normalize_memo } from "@swtc/common"
+import {
+  HASHPREFIX,
+  convertStringToHex,
+  normalize_swt,
+  normalize_memo
+} from "@swtc/common"
 import {
   // IMarker
   // ICurrency,
@@ -837,6 +842,102 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         return tx
       }
       tx.tx_json = tx_json
+      return tx
+    }
+
+    public static buildTokenIssueTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const account = options.account
+      const publisher = options.publisher
+      const token = options.token
+      const number = options.number
+      if (!utils.isValidAddress(account)) {
+        tx.tx_json.account = new Error("invalid account address")
+        return tx
+      }
+      if (!utils.isValidAddress(publisher)) {
+        tx.tx_json.publisher = new Error("invalid publisher address")
+        return tx
+      }
+      if (isNaN(number) || Number(number) < 0) {
+        tx.tx_json.number = new Error(
+          "invalid number, it must be a number and greater than zero"
+        )
+        return tx
+      }
+      tx.tx_json.TransactionType = "TokenIssue"
+      tx.tx_json.Account = account
+      tx.tx_json.Issuer = publisher
+      tx.tx_json.FundCode = convertStringToHex(token)
+      tx.tx_json.TokenSize = Number(number)
+      return tx
+    }
+
+    public static buildTransferTokenTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const publisher = options.publisher
+      const receiver = options.receiver
+      const token = options.token
+      const tokenId = options.tokenId
+      const memos = options.memos || []
+      if (!utils.isValidAddress(receiver)) {
+        tx.tx_json.receiver = new Error("invalid receiver address")
+        return tx
+      }
+      if (!utils.isValidAddress(publisher)) {
+        tx.tx_json.publisher = new Error("invalid publisher address")
+        return tx
+      }
+      tx.tx_json.TransactionType = "TransferToken"
+      tx.tx_json.Account = publisher
+      tx.tx_json.Destination = receiver
+      if (token) {
+        tx.tx_json.FundCode = convertStringToHex(token)
+      }
+      if (memos.length > 0) {
+        if (typeof memos === "object") {
+          // array
+          for (const memo of memos) {
+            if (typeof memo === "string") {
+              tx.addMemo(memo)
+            } else if ("MemoData" in memo && "MemoFormat" in memo) {
+              tx.addMemo(memo.MemoData, memo.MemoFormat)
+            }
+          }
+        } else if (typeof memos === "string") {
+          // string
+          tx.addMemo(memos)
+        } else {
+          tx.addMemo("specified memo incorrect")
+        }
+      }
+      tx.tx_json.TokenID = tokenId // 64位，不足的补零吗？
+      return tx
+    }
+
+    public static buildTokenDelTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const publisher = options.publisher
+      const tokenId = options.tokenId
+      if (!utils.isValidAddress(publisher)) {
+        tx.tx_json.publisher = new Error("invalid publisher address")
+        return tx
+      }
+      tx.tx_json.TransactionType = "TokenDel"
+      tx.tx_json.Account = publisher
+      tx.tx_json.TokenID = tokenId
       return tx
     }
 

@@ -133,7 +133,7 @@ const output1 = {
   ledger_index: 10580899,
   memos: [
     {
-      test: "\u0000\u0000"
+      test: "test"
     }
   ],
   counterparty: "jhzL5Q2TZATYb3Q4GkWFzquHxjfZLnFkCD",

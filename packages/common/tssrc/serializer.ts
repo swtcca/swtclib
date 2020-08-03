@@ -153,7 +153,28 @@ const TRANSACTION_TYPES = {
       ["SignerQuorum", REQUIRED],
       ["SignerEntries", OPTIONAL]
     ]
-  ]
+  ],
+  TransferToken: [
+    208,
+    ...BASE,
+    ...[
+      ["TokenID", REQUIRED],
+      ["Destination", REQUIRED],
+      ["Domain", OPTIONAL],
+      ["FundCode", OPTIONAL]
+    ]
+  ],
+  TokenIssue: [
+    209,
+    ...BASE,
+    ...[
+      ["TokenSize", REQUIRED],
+      ["FundCode", REQUIRED],
+      ["Issuer", REQUIRED],
+      ["AuthorizedAccount", OPTIONAL]
+    ]
+  ],
+  TokenDel: [210, ...BASE, ...[["TokenID", REQUIRED]]]
 }
 
 const SLE_BASE = [
@@ -397,7 +418,9 @@ const FIELDS_MAP = {
     7: "LowNode",
     8: "HighNode",
     9: "OfferFeeRateNum",
-    10: "OfferFeeRateDen"
+    10: "OfferFeeRateDen",
+    13: "TokenSize",
+    14: "TokenIssued"
   },
   4: {
     // Hash128
@@ -418,7 +441,8 @@ const FIELDS_MAP = {
     17: "InvoiceID",
     18: "Nickname",
     19: "Amendment",
-    20: "TicketID"
+    20: "TicketID",
+    21: "TokenID"
   },
   6: {
     // Amount
@@ -465,7 +489,9 @@ const FIELDS_MAP = {
     7: "Target",
     8: "RegularKey",
     9: "FeeAccountID",
-    13: "Platform"
+    13: "Platform",
+    14: "TokenOwner",
+    15: "AuthorizedAccount"
   },
   14: {
     // Object
@@ -583,6 +609,8 @@ const INVERSE_FIELDS_MAP = {
   HighNode: [3, 8],
   OfferFeeRateNum: [3, 9],
   OfferFeeRateDen: [3, 10],
+  TokenSize: [3, 13],
+  TokenIssued: [3, 14],
   EmailHash: [4, 1],
   LedgerHash: [5, 1],
   ParentHash: [5, 2],
@@ -598,6 +626,7 @@ const INVERSE_FIELDS_MAP = {
   Nickname: [5, 18],
   Amendment: [5, 19],
   TicketID: [5, 20],
+  TokenID: [5, 21],
   Amount: [6, 1],
   Balance: [6, 2],
   LimitAmount: [6, 3],
@@ -636,6 +665,8 @@ const INVERSE_FIELDS_MAP = {
   RegularKey: [8, 8],
   FeeAccountID: [8, 9],
   Platform: [8, 13],
+  TokenOwner: [8, 14],
+  AuthorizedAccount: [8, 15],
   undefined: [15, 1],
   TransactionMetaData: [14, 2],
   CreatedNode: [14, 3],

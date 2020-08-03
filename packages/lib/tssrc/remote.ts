@@ -994,13 +994,68 @@ class Remote extends EventEmitter {
   }
 
   public buildMultisignedTx(tx_json) {
-    // 提交多重签名
+    // 创建多重签名Transaction对象
     return Transaction.buildMultisignedTx(tx_json, this)
   }
 
   public buildTx(tx_json) {
     // 通过tx_json创建Transaction对象
     return Transaction.buildTx(tx_json, this)
+  }
+
+  public requestTokenIssue(options) {
+    const request = new Request(this, "erc_issue")
+    if (options === null || typeof options !== "object") {
+      request.message.type = new Error("invalid options type")
+      return request
+    }
+    const publisher = options.publisher
+    if (!utils.isValidAddress(publisher)) {
+      request.message.account = new Error("publisher is invalid")
+      return request
+    }
+    request.message.account = publisher
+    request.message.ledger_index = "validated"
+    return request
+  }
+
+  public requestAccountToken(options) {
+    const request = new Request(this, "account_erc")
+    if (options === null || typeof options !== "object") {
+      request.message.type = new Error("invalid options type")
+      return request
+    }
+    const account = options.account
+    if (!utils.isValidAddress(account)) {
+      request.message.account = new Error("account is invalid")
+      return request
+    }
+    request.message.account = account
+    request.message.ledger_index = "validated"
+    return request
+  }
+
+  public requestTokenInfo(options) {
+    const request = new Request(this, "erc_info")
+    if (options === null || typeof options !== "object") {
+      request.message.type = new Error("invalid options type")
+      return request
+    }
+    request.message.tokenid = options.tokenId
+    request.message.ledger_index = "validated"
+    return request
+  }
+
+  public buildTokenIssueTx(options) {
+    return Transaction.buildTokenIssueTx(options, this)
+  }
+
+  public buildTransferTokenTx(options) {
+    return Transaction.buildTransferTokenTx(options, this)
+  }
+
+  public buildTokenDelTx(options) {
+    return Transaction.buildTokenDelTx(options, this)
   }
 
   // ---------------------- subscribe --------------------
@@ -1204,7 +1259,10 @@ class Remote extends EventEmitter {
         }
         request && request.callback(null, result)
       } else if (data.status === "error") {
-        request && request.callback(data.error_message || data.error_exception)
+        request &&
+          request.callback(
+            data.error_message || data.error_exception || data.error
+          )
       }
     } else {
       if (data.status === "success") {
@@ -1218,7 +1276,10 @@ class Remote extends EventEmitter {
         }
         request && request.callback(null, result)
       } else if (data.status === "error") {
-        request && request.callback(data.error_message || data.error_exception)
+        request &&
+          request.callback(
+            data.error_message || data.error_exception || data.error
+          )
       }
     }
   }

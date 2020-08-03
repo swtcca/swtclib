@@ -166,7 +166,9 @@ export function txnType(tx, account) {
       case "SignerListSet": // 签名列表类
       case "SetBlackList": // 黑名单
       case "RemoveBlackList": // 解除黑名单
-        // TODO to sub-class tx type
+      case "TokenIssue": // 原生721设置发行权限
+      case "TransferToken": // 原生721token流转
+      case "TokenDel": // 原生721token删除
         return tx.TransactionType.toLowerCase()
       default:
         // TODO CHECK
