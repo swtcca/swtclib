@@ -663,7 +663,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
       const account = options.account
       const feeAccount = options.feeAccount
-      const mol = options.mol || options.molecule
+      const mol =
+        Number(options.mol) === 0 || Number(options.molecule) === 0
+          ? 0
+          : options.mol || options.molecule
       const den = options.den || options.denominator
       const amount = options.amount
       if (!utils.isValidAddress(account)) {

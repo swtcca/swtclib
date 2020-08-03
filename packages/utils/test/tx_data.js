@@ -1434,6 +1434,7 @@ const output17 = {
       type: "sold",
       rate: 0.05859375349245986,
       seq: 14845556,
+      fee: "-0.05859375349245986",
       price: "2.5"
     },
     {
@@ -1702,6 +1703,7 @@ const output22 = {
       platform: undefined,
       type: "sold",
       price: "NaN",
+      fee: "0",
       rate: 0.05859375349245986
     },
     {
@@ -1724,6 +1726,7 @@ const output22 = {
       platform: undefined,
       type: "bought",
       price: "NaN",
+      fee: "0",
       rate: 0.05859375349245986
     }
   ]

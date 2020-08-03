@@ -730,6 +730,35 @@ class Remote extends EventEmitter {
     return request
   }
 
+  /**
+   * @param options
+   * {
+   *   account(option): the query account
+   *   marker(option):  for more black account
+   * }
+   * @returns {Request}
+   */
+  public requestBlacklist(options: any = {}) {
+    const request = new Request(this, "blacklist_info")
+    if (!options) {
+      return request
+    }
+    if (options && typeof options !== "object") {
+      request.message.type = new Error("invalid options type")
+      return request
+    }
+    const account = options.account
+    if (account && !utils.isValidAddress(account)) {
+      request.message.account = new Error("invalid account")
+      return request
+    }
+    if (options.marker) {
+      request.message.marker = options.marker
+    }
+    request.message.account = account
+    return request
+  }
+
   // ---------------------- path find request --------------------
   /**
    * @param options
@@ -1180,6 +1209,13 @@ class Remote extends EventEmitter {
     } else {
       if (data.status === "success") {
         const result = request.filter(data.result)
+        if (
+          result.TransactionType === "SetBlackList" ||
+          result.TransactionType === "RemoveBlackList"
+        ) {
+          // 该类型实际未收燃料费
+          result.Fee = "0"
+        }
         request && request.callback(null, result)
       } else if (data.status === "error") {
         request && request.callback(data.error_message || data.error_exception)

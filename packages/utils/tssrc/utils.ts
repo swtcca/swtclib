@@ -316,6 +316,11 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
         result.lists = l
         result.seq = tx.Sequence
         break
+      case "setblacklist":
+      case "removeblacklist":
+        result.src = tx.Account
+        result.black = tx.BlackListAccountID
+        break
       default:
         // TODO parse other type
         break
@@ -617,10 +622,13 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
             .plus(totalRate)
             .toNumber()
         e.rate = result.rate
-        e.got.value = e.got.value * (1 - e.rate)
         e.platform = result.platform
         e.got.value = new Bignumber(e.got.value)
           .multipliedBy(1 - e.rate)
+          .toString()
+        e.fee = new Bignumber(e.got.value)
+          .div(1 - e.rate)
+          .multipliedBy(e.rate)
           .toString()
       }
       if (
@@ -634,6 +642,10 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
           .toNumber()
         e.got.value = new Bignumber(e.got.value)
           .multipliedBy(1 - e.rate)
+          .toString()
+        e.fee = new Bignumber(e.got.value)
+          .div(1 - e.rate)
+          .multipliedBy(e.rate)
           .toString()
       }
     }
