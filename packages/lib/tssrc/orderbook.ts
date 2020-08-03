@@ -22,7 +22,7 @@ class OrderBook extends EventEmitter {
     this._remote = remote
     this._books = {}
     this._token = remote._token || "swt"
-    this.on("newListener", function(key, listener) {
+    this.on("newListener", function (key, listener) {
       if (key === "removeListener") return
       const pair = utils.parseKey(key)
       if (!pair) {
@@ -31,7 +31,7 @@ class OrderBook extends EventEmitter {
       }
       this._books[key] = listener
     })
-    this.on("removeListener", function(key) {
+    this.on("removeListener", function (key) {
       const pair = utils.parseKey(key)
       if (!pair) {
         this.pair = new Error("invalid key")

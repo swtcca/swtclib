@@ -5,42 +5,32 @@ import { terser } from "rollup-plugin-terser"
 // import resolve from '@rollup/plugin-node-resolve'
 import commonjs from "@rollup/plugin-commonjs"
 
-const path_resolve = (...p) => path.resolve(...p)
+const resolve = (...p) => path.resolve(...p)
 const name = "address-codec"
-
-// const knownExternals = fs.readdirSync(resolve(".."))
-// ensure TS checks only once for each build
-let hasTSChecked = false
 
 export default [
   {
-    input: path_resolve("tssrc", "index.ts"),
+    input: resolve("tssrc", "index.ts"),
     external: ["base-x", "crypto", "@swtc/common"],
-    plugins: [ts(), commonjs()],
+    plugins: [ts({ outDir: resolve("dist/esm") }), commonjs()],
     output: [
       {
-        file: path_resolve("dist", `${name}.esm.prod.js`),
+        dir: resolve("dist", `esm`),
+        sourcemap: true,
         plugins: [terser()],
-        format: "es"
-      },
-      {
-        file: path_resolve("dist", `${name}.esm.js`),
         format: "es"
       }
     ]
   },
   {
-    input: path_resolve("tssrc", "index.ts"),
+    input: resolve("tssrc", "index.ts"),
     external: ["base-x", "crypto", "@swtc/common"],
-    plugins: [ts(), commonjs()],
+    plugins: [ts({ outDir: resolve("dist", "cjs") }), commonjs()],
     output: [
       {
-        file: path_resolve("dist", `${name}.cjs.prod.js`),
+        dir: resolve("dist", `cjs`),
+        sourcemap: true,
         plugins: [terser()],
-        format: "cjs"
-      },
-      {
-        file: path_resolve("dist", `${name}.cjs.js`),
         format: "cjs"
       }
     ]

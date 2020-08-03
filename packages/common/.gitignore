@@ -66,3 +66,6 @@ scripts/cache
 eslintrc
 .nyc*
 package-lock.json
+tssrc/**/*js
+tssrc/**/*d.ts
+tssrc/**/*.map

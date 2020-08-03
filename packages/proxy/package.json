@@ -66,9 +66,10 @@
     "jest": "^26.1.0",
     "jest-esm-transformer": "^1.0.0",
     "prettier": "^2.0.5",
-    "rollup": "^1.32.1",
+    "rollup": "^2.23.0",
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.4",
+    "tslib": "^2.0.0",
     "tslint": "^6.1.2",
     "typescript": "^3.9.7"
   }

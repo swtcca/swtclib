@@ -18,7 +18,7 @@ import {
   IRequestAccountTxOptions,
   IRequestOrderBookOptions,
   IRequestBrokerageOptions,
-  IRequestSignerListOptions,
+  IRequestSignerListOptions
 } from "./types"
 import {
   // IMarker,
@@ -36,7 +36,7 @@ import {
   IRelationTxOptions,
   ISignerListTxOptions,
   ISignFirstTxOptions,
-  ISignOtherTxOptions,
+  ISignOtherTxOptions
 } from "./types"
 
 const Wallet = Transaction.Wallet
@@ -134,7 +134,7 @@ class Remote extends EventEmitter {
     }
     this._server = new Server(this, this._url)
     this._status = {
-      ledger_index: 0,
+      ledger_index: 0
     }
     this._requests = {}
     this._token = options.token || Wallet.token || "swt"
@@ -144,14 +144,14 @@ class Remote extends EventEmitter {
       "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
     this._cache = new LRU({
       max: 100,
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60 * 5
     }) // 100 size, 5 min
     this._paths = new LRU({
       max: 100,
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60 * 5
     }) // 2100 size, 5 min
 
-    this.on("newListener", (type) => {
+    this.on("newListener", type => {
       if (!this._server.isConnected()) return
       if (type === "removeListener") return
       if (type === "transactions") {
@@ -161,7 +161,7 @@ class Remote extends EventEmitter {
         this.subscribe("ledger").submit()
       }
     })
-    this.on("removeListener", (type) => {
+    this.on("removeListener", type => {
       if (!this._server.isConnected()) return
       if (type === "transactions") {
         this.unsubscribe("transactions").submit()
@@ -183,7 +183,7 @@ class Remote extends EventEmitter {
       _token: this._token,
       _issuer: this._issuer,
       _solidity: this._solidity,
-      _timeout: this._timeout,
+      _timeout: this._timeout
     }
   }
 
@@ -211,8 +211,8 @@ class Remote extends EventEmitter {
       if (!this._server) return reject(new Error("server not ready"))
       this._server
         .connectPromise()
-        .then((result) => resolve(result))
-        .catch((error) => {
+        .then(result => resolve(result))
+        .catch(error => {
           if (!this._failover) {
             reject(error)
           } else {
@@ -223,8 +223,8 @@ class Remote extends EventEmitter {
             }
             this._server
               .connectPromise()
-              .then((result_failover) => resolve(result_failover))
-              .catch((error_failover) => reject(error_failover))
+              .then(result_failover => resolve(result_failover))
+              .catch(error_failover => reject(error_failover))
           }
         })
     })
@@ -317,7 +317,7 @@ class Remote extends EventEmitter {
       command,
       data,
       filter,
-      callback,
+      callback
     }
   }
 
@@ -329,14 +329,14 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestServerInfo() {
-    return new Request(this, "server_info", (data) => {
+    return new Request(this, "server_info", data => {
       return {
         complete_ledgers: data.info.complete_ledgers,
         ledger: data.info.validated_ledger.hash,
         public_key: data.info.pubkey_node,
         state: data.info.server_state,
         peers: data.info.peers,
-        version: "skywelld-" + data.info.build_version,
+        version: "skywelld-" + data.info.build_version
       }
     })
   }
@@ -348,7 +348,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestPeers() {
-    return new Request(this, "peers", (data) => {
+    return new Request(this, "peers", data => {
       return data
     })
   }
@@ -357,11 +357,11 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestLedgerClosed() {
-    return new Request(this, "ledger_closed", (data) => {
+    return new Request(this, "ledger_closed", data => {
       return {
         // fee_base: data.fee_base,
         ledger_hash: data.ledger_hash,
-        ledger_index: data.ledger_index,
+        ledger_index: data.ledger_index
         // reserve_base: data.reserve_base,
         // reserve_inc: data.reserve_base,
         // txn_count: data.txn_count,
@@ -386,7 +386,7 @@ class Remote extends EventEmitter {
     // }
     const cmd = "ledger"
     let filter = true
-    const request = new Request(this, cmd, (data) => {
+    const request = new Request(this, cmd, data => {
       const ledger = data.ledger || data.closed.ledger
       if (!filter) {
         return ledger
@@ -397,7 +397,7 @@ class Remote extends EventEmitter {
         ledger_index: ledger.ledger_index,
         parent_hash: ledger.parent_hash,
         close_time: ledger.close_time_human,
-        total_coins: ledger.total_coins,
+        total_coins: ledger.total_coins
       }
     })
     if (options === null || typeof options !== "object") {
@@ -598,7 +598,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestAccountTx(options: IRequestAccountTxOptions) {
-    const request = new Request(this, "account_tx", (data) => {
+    const request = new Request(this, "account_tx", data => {
       const results = []
       for (const data_transaction of data.transactions) {
         results.push(utils.processTx(data_transaction, options.account))
@@ -741,7 +741,7 @@ class Remote extends EventEmitter {
    * @returns {Request}
    */
   public requestPathFind(options) {
-    const request = new Request(this, "path_find", (data) => {
+    const request = new Request(this, "path_find", data => {
       const request2 = new Request(this, "path_find")
       request2.message.subcommand = "close"
       request2.submit()
@@ -750,11 +750,11 @@ class Remote extends EventEmitter {
         const key = sha1(JSON.stringify(item))
         this._paths.set(key, {
           path: JSON.stringify(item.paths_computed),
-          choice: item.source_amount,
+          choice: item.source_amount
         })
         _result.push({
           choice: utils.parseAmount(item.source_amount),
-          key,
+          key
         })
       }
       return _result
@@ -827,7 +827,7 @@ class Remote extends EventEmitter {
     return Transaction.callContractTx(options, this)
   }
   public AlethEvent = function (options) {
-    const request = new Request(this, "aleth_eventlog", (data) => data)
+    const request = new Request(this, "aleth_eventlog", data => data)
     if (typeof options !== "object") {
       request.message.obj = new Error("invalid options type")
       return request
@@ -1131,7 +1131,7 @@ class Remote extends EventEmitter {
           const logValue = []
           const item = { address: "", data: {} }
           const logs = result.AlethLog
-          logs.forEach((log) => {
+          logs.forEach(log => {
             const _log = JSON.parse(log.item)
             const _adr = _log.address.slice(2)
             const buf = Buffer.alloc(20)
@@ -1140,11 +1140,11 @@ class Remote extends EventEmitter {
 
             const abi = new this.AbiCoder()
             data.abi
-              .filter((json) => {
+              .filter(json => {
                 return json.type === "event"
               })
-              .map((json) => {
-                const types = json.inputs.map((input) => {
+              .map(json => {
+                const types = json.inputs.map(input => {
                   return input.type
                 })
                 const foo = json.name + "(" + types.join(",") + ")"

@@ -19,7 +19,7 @@ import {
   IRequestAccountRelationsOptions,
   IRequestAccountOffersOptions,
   IRequestAccountTxOptions,
-  IRequestOrderBookOptions,
+  IRequestOrderBookOptions
 } from "./types"
 import {
   // IMarker,
@@ -34,7 +34,7 @@ import {
   IContractCallTxOptions,
   ISignTxOptions,
   IAccountSetTxOptions,
-  IRelationTxOptions,
+  IRelationTxOptions
 } from "./types"
 
 const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
@@ -61,7 +61,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
     public _remote
     public _command
     public _filter
-    constructor(remote, command = null, filter = (v) => v) {
+    constructor(remote, command = null, filter = v => v) {
       super()
       this._remote = remote
       this._command = command
@@ -92,7 +92,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
       })
     }
 
-    public submit(callback = (m) => m) {
+    public submit(callback = m => m) {
       for (const key in this.message) {
         if (this.message[key] instanceof Error) {
           return callback(this.message[key].message)
@@ -165,7 +165,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
           engine_result_message: data.engine_result_message,
           ledger_hash: data.ledger_hash,
           ledger_index: data.ledger_index,
-          validated: data.validated,
+          validated: data.validated
         }
         const _tx = utils.processTx(_data, data.transaction.Account)
         for (const book of books) {
@@ -313,7 +313,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
       }
       this._server = new Server(this, this._url)
       this._status = {
-        ledger_index: 0,
+        ledger_index: 0
       }
       this._requests = {}
       this._token = options.token || Wallet.token || "swt"
@@ -323,14 +323,14 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
         "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       this._cache = new LRU({
         max: 100,
-        maxAge: 1000 * 60 * 5,
+        maxAge: 1000 * 60 * 5
       }) // 100 size, 5 min
       this._paths = new LRU({
         max: 100,
-        maxAge: 1000 * 60 * 5,
+        maxAge: 1000 * 60 * 5
       }) // 2100 size, 5 min
 
-      this.on("newListener", (type) => {
+      this.on("newListener", type => {
         if (!this._server.isConnected()) return
         if (type === "removeListener") return
         if (type === "transactions") {
@@ -340,7 +340,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
           this.subscribe("ledger").submit()
         }
       })
-      this.on("removeListener", (type) => {
+      this.on("removeListener", type => {
         if (!this._server.isConnected()) return
         if (type === "transactions") {
           this.unsubscribe("transactions").submit()
@@ -362,7 +362,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
         _token: this._token,
         _issuer: this._issuer,
         _solidity: this._solidity,
-        _timeout: this._timeout,
+        _timeout: this._timeout
       }
     }
 
@@ -394,8 +394,8 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
         if (!this._server) return reject(new Error("server not ready"))
         this._server
           .connectPromise()
-          .then((result) => resolve(result))
-          .catch((error) => {
+          .then(result => resolve(result))
+          .catch(error => {
             if (!this._failover) {
               reject(error)
             } else {
@@ -406,8 +406,8 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
               }
               this._server
                 .connectPromise()
-                .then((result_failover) => resolve(result_failover))
-                .catch((error_failover) => reject(error_failover))
+                .then(result_failover => resolve(result_failover))
+                .catch(error_failover => reject(error_failover))
             }
           })
       })
@@ -500,7 +500,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
         command,
         data,
         filter,
-        callback,
+        callback
       }
     }
 
@@ -512,14 +512,14 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
      * @returns {Request}
      */
     public requestServerInfo() {
-      return new Request(this, "server_info", (data) => {
+      return new Request(this, "server_info", data => {
         return {
           complete_ledgers: data.info.complete_ledgers,
           ledger: data.info.validated_ledger.hash,
           public_key: data.info.pubkey_node,
           state: data.info.server_state,
           peers: data.info.peers,
-          version: "skywelld-" + data.info.build_version,
+          version: "skywelld-" + data.info.build_version
         }
       })
     }
@@ -531,7 +531,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
      * @returns {Request}
      */
     public requestPeers() {
-      return new Request(this, "peers", (data) => {
+      return new Request(this, "peers", data => {
         return data
       })
     }
@@ -540,11 +540,11 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
      * @returns {Request}
      */
     public requestLedgerClosed() {
-      return new Request(this, "ledger_closed", (data) => {
+      return new Request(this, "ledger_closed", data => {
         return {
           // fee_base: data.fee_base,
           ledger_hash: data.ledger_hash,
-          ledger_index: data.ledger_index,
+          ledger_index: data.ledger_index
           // reserve_base: data.reserve_base,
           // reserve_inc: data.reserve_base,
           // txn_count: data.txn_count,
@@ -569,7 +569,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
       // }
       const cmd = "ledger"
       let filter = true
-      const request = new Request(this, cmd, (data) => {
+      const request = new Request(this, cmd, data => {
         const ledger = data.ledger || data.closed.ledger
         if (!filter) {
           return ledger
@@ -580,7 +580,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
           ledger_index: ledger.ledger_index,
           parent_hash: ledger.parent_hash,
           close_time: ledger.close_time_human,
-          total_coins: ledger.total_coins,
+          total_coins: ledger.total_coins
         }
       })
       if (options === null || typeof options !== "object") {
@@ -781,7 +781,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
      * @returns {Request}
      */
     public requestAccountTx(options: IRequestAccountTxOptions) {
-      const request = new Request(this, "account_tx", (data) => {
+      const request = new Request(this, "account_tx", data => {
         const results = []
         for (const data_transaction of data.transactions) {
           results.push(utils.processTx(data_transaction, options.account))
@@ -902,7 +902,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
      * @returns {Request}
      */
     public requestPathFind(options) {
-      const request = new Request(this, "path_find", (data) => {
+      const request = new Request(this, "path_find", data => {
         const request2 = new Request(this, "path_find")
         request2.message.subcommand = "close"
         request2.submit()
@@ -911,11 +911,11 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
           const key = sha1(JSON.stringify(item))
           this._paths.set(key, {
             path: JSON.stringify(item.paths_computed),
-            choice: item.source_amount,
+            choice: item.source_amount
           })
           _result.push({
             choice: utils.parseAmount(item.source_amount),
-            key,
+            key
           })
         }
         return _result
@@ -977,7 +977,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
     }
 
     public AlethEvent = function (options) {
-      const request = new Request(this, "aleth_eventlog", (data) => data)
+      const request = new Request(this, "aleth_eventlog", data => data)
       if (typeof options !== "object") {
         request.message.obj = new Error("invalid options type")
         return request
@@ -1249,7 +1249,7 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
             const logValue = []
             const item = { address: "", data: {} }
             const logs = result.AlethLog
-            logs.forEach((log) => {
+            logs.forEach(log => {
               const _log = JSON.parse(log.item)
               const _adr = _log.address.slice(2)
               const buf = Buffer.alloc(20)
@@ -1258,11 +1258,11 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
 
               const abi = new this.AbiCoder()
               data.abi
-                .filter((json) => {
+                .filter(json => {
                   return json.type === "event"
                 })
-                .map((json) => {
-                  const types = json.inputs.map((input) => {
+                .map(json => {
+                  const types = json.inputs.map(input => {
                     return input.type
                   })
                   const foo = json.name + "(" + types.join(",") + ")"

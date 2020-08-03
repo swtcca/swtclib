@@ -1,3 +1,5 @@
 {
-  "semi": false
+  "arrowParens": "avoid",
+  "semi": false,
+  "trailingComma": "none"
 }

@@ -15,7 +15,7 @@ let hasTSChecked = false
 
 export default [
   {
-    input: path_resolve("src", "index.js"),
+    input: path_resolve("tssrc", "index.ts"),
     external: [
       // "base-x",
       // "crypto",
@@ -32,22 +32,24 @@ export default [
       "@swtc/utils",
       "@swtc/serializer"
     ],
-    // plugins: [ts(), json(), resolve({ preferBuiltins: true }), commonjs()],
-    plugins: [json(), resolve({ preferBuiltins: true }), commonjs()],
+    plugins: [
+      ts({ outDir: path_resolve("dist", "esm") }),
+      json(),
+      resolve({ preferBuiltins: true }),
+      commonjs()
+    ],
+    // plugins: [json(), resolve({ preferBuiltins: true }), commonjs()],
     output: [
       {
-        file: path_resolve("dist", `${name}.esm.prod.js`),
+        dir: path_resolve("dist", `esm`),
+        sourcemap: true,
         plugins: [terser()],
-        format: "es"
-      },
-      {
-        file: path_resolve("dist", `${name}.esm.js`),
         format: "es"
       }
     ]
   },
   {
-    input: path_resolve("src", "index.js"),
+    input: path_resolve("tssrc", "index.ts"),
     external: [
       // "base-x",
       // "crypto",
@@ -65,16 +67,18 @@ export default [
       "@swtc/serializer"
     ],
     // plugins: [ts()],
-    // plugins: [ts(), json(), resolve({ preferBuiltins: true }), commonjs()],
-    plugins: [json(), resolve({ preferBuiltins: true }), commonjs()],
+    plugins: [
+      ts({ outDir: path_resolve("dist", "cjs") }),
+      json(),
+      resolve({ preferBuiltins: true }),
+      commonjs()
+    ],
+    // plugins: [json(), resolve({ preferBuiltins: true }), commonjs()],
     output: [
       {
-        file: path_resolve("dist", `${name}.cjs.prod.js`),
+        dir: path_resolve("dist", `cjs`),
+        sourcemap: true,
         plugins: [terser()],
-        format: "cjs"
-      },
-      {
-        file: path_resolve("dist", `${name}.cjs.js`),
         format: "cjs"
       }
     ]

@@ -21,7 +21,7 @@ class Account extends EventEmitter {
     this._accounts = {}
     this._token = remote._token || "swt"
 
-    this.on("newListener", function(account, listener) {
+    this.on("newListener", function (account, listener) {
       if (account === "removeListener") return
       if (!utils.isValidAddress(account)) {
         this.account = new Error("invalid account")
@@ -29,7 +29,7 @@ class Account extends EventEmitter {
       }
       this._accounts[account] = listener
     })
-    this.on("removeListener", function(account) {
+    this.on("removeListener", function (account) {
       if (!utils.isValidAddress(account)) {
         this.account = new Error("invalid account")
         return this

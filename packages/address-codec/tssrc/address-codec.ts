@@ -162,9 +162,7 @@ export function Factory(chain_or_token = "jingtum") {
   }
   const codecOptions = {
     sha256: (bytes: Uint8Array) =>
-      createHash("sha256")
-        .update(Buffer.from(bytes))
-        .digest(),
+      createHash("sha256").update(Buffer.from(bytes)).digest(),
     alphabet
   }
   const codecWithAlphabet = new Codec(codecOptions)

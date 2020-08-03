@@ -22,5 +22,6 @@
     "emitDecoratorMetadata": true,
     "removeComments": true
   },
-  "include": ["tssrc"]
+  "include": ["tssrc/**/*ts"],
+  "exclude": ["tssrc/**/*.d.ts"]
 }

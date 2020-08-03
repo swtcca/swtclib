@@ -29,15 +29,17 @@ export default [
       "@swtc/keypairs",
       "@swtc/wallet"
     ],
-    plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
+    plugins: [
+      ts({ outDir: path_resolve("dist", "esm") }),
+      json(),
+      resolve({ preferBuiltins: false }),
+      commonjs()
+    ],
     output: [
       {
-        file: path_resolve("dist", `${name}.esm.prod.js`),
+        dir: path_resolve("dist", `esm`),
+        sourcemap: true,
         plugins: [terser()],
-        format: "es"
-      },
-      {
-        file: path_resolve("dist", `${name}.esm.js`),
         format: "es"
       }
     ]
@@ -57,16 +59,17 @@ export default [
       "@swtc/keypairs",
       "@swtc/wallet"
     ],
-    // plugins: [ts()],
-    plugins: [ts(), json(), resolve({ preferBuiltins: false }), commonjs()],
+    plugins: [
+      ts({ outDir: path_resolve("dist", "cjs") }),
+      json(),
+      resolve({ preferBuiltins: false }),
+      commonjs()
+    ],
     output: [
       {
-        file: path_resolve("dist", `${name}.cjs.prod.js`),
+        dir: path_resolve("dist", `cjs`),
+        sourcemap: true,
         plugins: [terser()],
-        format: "cjs"
-      },
-      {
-        file: path_resolve("dist", `${name}.cjs.js`),
         format: "cjs"
       }
     ]
