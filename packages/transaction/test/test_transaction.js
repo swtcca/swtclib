@@ -8,9 +8,9 @@ const Request = require("./request")
 const sinon = require("sinon")
 let { JT_NODE, testSecret, testAddress, testDestinationAddress } = config
 
-describe("test Transaction", function() {
-  describe("test constructor", function() {
-    it("constructor: _token is swt", function() {
+describe("test Transaction", function () {
+  describe("test constructor", function () {
+    it("constructor: _token is swt", function () {
       let remote = new Remote({
         server: JT_NODE
       })
@@ -29,8 +29,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test parseJson", function() {
-    it("set tx_json and return itself", function() {
+  describe("test parseJson", function () {
+    it("set tx_json and return itself", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -46,8 +46,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test getAccount", function() {
-    it("return account from tx_json", function() {
+  describe("test getAccount", function () {
+    it("return account from tx_json", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -60,8 +60,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test getTransactionType", function() {
-    it("return TransactionType from tx_json", function() {
+  describe("test getTransactionType", function () {
+    it("return TransactionType from tx_json", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -74,8 +74,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setSecret", function() {
-    it("set _secret successfully if the secret is valid", function() {
+  describe("test setSecret", function () {
+    it("set _secret successfully if the secret is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -85,7 +85,7 @@ describe("test Transaction", function() {
       expect(inst._secret).to.equal(testSecret)
     })
 
-    it("the tx_json._secret is error if the secret is invalid", function() {
+    it("the tx_json._secret is error if the secret is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -98,8 +98,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test addMemo", function() {
-    xit("throw error if the memo is not string", function() {
+  describe("test addMemo", function () {
+    xit("throw error if the memo is not string", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -111,7 +111,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type.message).to.equal("invalid memo type")
     })
 
-    it("throw error if the memo's length is more than 2038 hex char", function() {
+    it("throw error if the memo's length is more than 2038 hex char", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -126,7 +126,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type).to.equal(undefined)
       expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
     })
-    it("throw error if the memo's length is more than 1019 non hex iso 8819", function() {
+    it("throw error if the memo's length is more than 1019 non hex iso 8819", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -141,7 +141,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type).to.equal(undefined)
       expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
     })
-    it("throw error if the memo's length is more than 339 chinese", function() {
+    it("throw error if the memo's length is more than 339 chinese", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -156,7 +156,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.memo_type).to.equal(undefined)
       expect(inst.tx_json.memo_len.message).to.equal("memo is too long")
     })
-    it("set Memos successfully if the memo is valid", function() {
+    it("set Memos successfully if the memo is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -173,8 +173,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setFee", function() {
-    it("throw error if the fee is not number", function() {
+  describe("test setFee", function () {
+    it("throw error if the fee is not number", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -185,7 +185,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Fee.message).to.equal("invalid fee")
     })
 
-    it("throw error if the fee is too low", function() {
+    it("throw error if the fee is too low", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -196,7 +196,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Fee.message).to.equal("fee is too low")
     })
 
-    it("set Fee successfully if the fee is valid", function() {
+    it("set Fee successfully if the fee is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -208,8 +208,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setPath", function() {
-    it("return error if the key is not string", function() {
+  describe("test setPath", function () {
+    it("return error if the key is not string", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -220,7 +220,7 @@ describe("test Transaction", function() {
       expect(res.message).to.equal("invalid path key")
     })
 
-    it("return error if the key length is not 40", function() {
+    it("return error if the key length is not 40", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -233,7 +233,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.SendMax).to.equal(undefined)
     })
 
-    it("return error if the value is not exist from cache with key", function() {
+    it("return error if the value is not exist from cache with key", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -247,7 +247,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.SendMax).to.equal(undefined)
     })
 
-    it("return undedined if the value is empty array from cache with key", function() {
+    it("return undedined if the value is empty array from cache with key", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -269,7 +269,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.SendMax).to.equal(undefined)
     })
 
-    it("set Paths and SendMax successfully if the amount is number", function() {
+    it("set Paths and SendMax successfully if the amount is number", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -287,7 +287,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.SendMax).to.equal("1")
     })
 
-    it("set Paths and SendMax successfully if the amount is object", function() {
+    it("set Paths and SendMax successfully if the amount is object", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -313,7 +313,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("SendMax is error if the amount is not invalid", function() {
+    it("SendMax is error if the amount is not invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -333,8 +333,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setSendMax", function() {
-    it("set successfully if amount is valid", function() {
+  describe("test setSendMax", function () {
+    it("set successfully if amount is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -349,7 +349,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.SendMax).to.deep.equal(amount)
     })
 
-    it("return error if amount is invalid", function() {
+    it("return error if amount is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -363,8 +363,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setTransferRate", function() {
-    it("set successfully if rate is valid", function() {
+  describe("test setTransferRate", function () {
+    it("set successfully if rate is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -375,7 +375,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.TransferRate).to.equal(1010000000)
     })
 
-    it("return error if rate is not number", function() {
+    it("return error if rate is not number", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -388,7 +388,7 @@ describe("test Transaction", function() {
       expect(res.message).to.equal("invalid transfer rate")
     })
 
-    it("return error if rate is less than 0", function() {
+    it("return error if rate is less than 0", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -401,7 +401,7 @@ describe("test Transaction", function() {
       expect(res.message).to.equal("invalid transfer rate")
     })
 
-    it("return error if rate is more than 1", function() {
+    it("return error if rate is more than 1", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -415,8 +415,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setFlags", function() {
-    it("not change flags if the flags is undefined", function() {
+  describe("test setFlags", function () {
+    it("not change flags if the flags is undefined", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -426,7 +426,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Flags).to.equal(0)
     })
 
-    it("if the flags is number", function() {
+    it("if the flags is number", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -436,7 +436,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Flags).to.equal(0x00010000)
     })
 
-    it("if the flags is string", function() {
+    it("if the flags is string", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -447,7 +447,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Flags).to.equal(131072)
     })
 
-    it("if the transaction_flags is empty object", function() {
+    it("if the transaction_flags is empty object", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -458,7 +458,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Flags).to.equal(0)
     })
 
-    it("if the flags is array", function() {
+    it("if the flags is array", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -470,8 +470,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test setSequence", function() {
-    it("set successfully if sequence is valid", function() {
+  describe("test setSequence", function () {
+    it("set successfully if sequence is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -481,7 +481,7 @@ describe("test Transaction", function() {
       expect(inst.tx_json.Sequence).to.equal(1111)
     })
 
-    it("return error if sequence is invalid", function() {
+    it("return error if sequence is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -494,8 +494,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test sign", function() {
-    it("sign payment successfully for case one", function(done) {
+  describe("test sign", function () {
+    it("sign payment successfully for case one", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -520,10 +520,10 @@ describe("test Transaction", function() {
         Sequence: 4737
       }
       inst.parseJson(testData)
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         if (hash) {
           expect(err).to.be.null
-          expect(inst.tx_json.Amount).to.equal(1)
+          expect(inst.tx_json.Amount).to.equal("1")
           expect(inst.tx_json.Fee).to.equal(0.01)
           expect(inst.tx_json.SendMax).to.equal(0.000001)
           expect(inst.tx_json.Memos).to.deep.equal([
@@ -541,7 +541,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("sign payment successfully for case two", function(done) {
+    it("sign payment successfully for case two", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -562,7 +562,7 @@ describe("test Transaction", function() {
         Sequence: 4737
       }
       inst.parseJson(testData)
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         expect(err).to.be.null
         expect(inst.tx_json.Amount).to.deep.equal({
           value: 1,
@@ -576,7 +576,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("sign order successfully for case one", function(done) {
+    it("sign order successfully for case one", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -597,7 +597,7 @@ describe("test Transaction", function() {
         Sequence: 4737
       }
       inst.parseJson(testData)
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         expect(err).to.be.null
         expect(inst.tx_json.TakerPays).to.deep.equal(1)
         expect(inst.tx_json.TakerGets).to.deep.equal({
@@ -611,7 +611,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("sign order successfully for case two", function(done) {
+    it("sign order successfully for case two", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -632,7 +632,7 @@ describe("test Transaction", function() {
         Sequence: 4737
       }
       inst.parseJson(testData)
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         expect(err).to.be.null
         expect(inst.tx_json.TakerGets).to.deep.equal(1)
         expect(inst.tx_json.TakerPays).to.deep.equal({
@@ -646,7 +646,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("sign in error", function(done) {
+    it("sign in error", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -667,14 +667,14 @@ describe("test Transaction", function() {
         Sequence: 4737
       }
       inst.parseJson(testData)
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         expect(err).to.be.an("error")
         expect(hash).to.be.undefined
         done()
       })
     })
 
-    it("callback error if request sequence in error", function(done) {
+    it("callback error if request sequence in error", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -697,7 +697,7 @@ describe("test Transaction", function() {
       inst.parseJson(testData)
       let stub = sinon.stub(Request.prototype, "submit")
       stub.yields(new Error("error"))
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         expect(err).to.be.an("error")
         expect(err.message).to.equal("error")
         expect(hash).to.equal(undefined)
@@ -706,7 +706,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("sign order successfully if request sequence successfully", function(done) {
+    it("sign order successfully if request sequence successfully", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -732,7 +732,7 @@ describe("test Transaction", function() {
           Sequence: 200
         }
       })
-      inst.sign(function(err, hash) {
+      inst.sign(function (err, hash) {
         expect(err).to.be.null
         expect(testData.Sequence).to.equal(200)
         expect(hash).to.be.a("string")
@@ -742,8 +742,8 @@ describe("test Transaction", function() {
     })
   })
 
-  describe("test submit", function() {
-    it("callback error if the tx_json has error message", function() {
+  describe("test submit", function () {
+    it("callback error if the tx_json has error message", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -764,12 +764,12 @@ describe("test Transaction", function() {
       }
       inst.parseJson(testData)
       inst.setSecret(testSecret.substring(1))
-      inst.submit(function(error, res) {
+      inst.submit(function (error, res) {
         expect(error).to.not.be.null
       })
     })
 
-    it("the TransactionType is Singer", function() {
+    it("the TransactionType is Singer", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -791,7 +791,7 @@ describe("test Transaction", function() {
       })
     })
 
-    it("it is local sign but throw error", function(done) {
+    it("it is local sign but throw error", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -813,13 +813,13 @@ describe("test Transaction", function() {
       }
       inst.parseJson(testData)
       inst._secret = testSecret.substring(1)
-      inst.submit(function(error, res) {
+      inst.submit(function (error, res) {
         expect(error).to.not.be.null
         done()
       })
     })
 
-    it("it is local_sign and success", function() {
+    it("it is local_sign and success", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -850,7 +850,7 @@ describe("test Transaction", function() {
       expect(args[1].tx_blob).to.be.a("string")
     })
 
-    xit("if is not local_sign and signer", function() {
+    xit("if is not local_sign and signer", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: false

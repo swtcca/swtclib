@@ -21,7 +21,7 @@ const TX_PAY = {
   Fee: 10000,
   TransactionType: "Payment",
   Account: address2,
-  Amount: 1000000,
+  Amount: "1000000",
   Destination: testDestinationAddress
 }
 
@@ -49,9 +49,9 @@ const MULTISIGN = {
 
 const Sequence = 11
 
-describe("test multisign", function() {
-  describe("test multiSigning", function() {
-    it("should match result", function() {
+describe("test multisign", function () {
+  describe("test multiSigning", function () {
+    it("should match result", function () {
       let remote = new Remote({ server: JT_NODE })
       let inst = Transaction.buildPaymentTx(
         {
@@ -80,8 +80,8 @@ describe("test multisign", function() {
     })
   })
 
-  describe("test buildMultisignedTx", function() {
-    it("should match result", function() {
+  describe("test buildMultisignedTx", function () {
+    it("should match result", function () {
       let remote = new Remote({ server: JT_NODE })
       let inst = Transaction.buildPaymentTx(
         {

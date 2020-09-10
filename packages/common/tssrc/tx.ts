@@ -8,7 +8,7 @@ export function normalize_swt(tx_json, reverse = false) {
     // payment
     if (tx_json.Amount && !isNaN(tx_json.Amount)) {
       // 基础货币
-      tx_json.Amount = tx_json.Amount / 1000000
+      tx_json.Amount = `${tx_json.Amount / 1000000}`
     }
     if (tx_json.SendMax && !isNaN(tx_json.SendMax)) {
       tx_json.SendMax = Number(tx_json.SendMax) / 1000000
@@ -28,7 +28,7 @@ export function normalize_swt(tx_json, reverse = false) {
     // payment
     if (tx_json.Amount && !isNaN(tx_json.Amount)) {
       // 基础货币
-      tx_json.Amount = tx_json.Amount * 1000000
+      tx_json.Amount = `${tx_json.Amount * 1000000}`
     }
     if (tx_json.SendMax && !isNaN(tx_json.SendMax)) {
       tx_json.SendMax = Number(tx_json.SendMax) * 1000000
