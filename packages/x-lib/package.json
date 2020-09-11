@@ -1,6 +1,6 @@
 {
   "name": "@swtc/x-lib",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "swtc-x-lib for jingtum alliance chains",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -53,13 +53,13 @@
     }
   },
   "dependencies": {
-    "@swtc/address-codec": "^1.0.11",
-    "@swtc/common": "^1.0.16",
-    "@swtc/keypairs": "^1.0.14",
-    "@swtc/serializer": "^1.0.13",
-    "@swtc/transaction": "^1.0.16",
-    "@swtc/utils": "^1.0.12",
-    "@swtc/wallet": "^1.0.15",
+    "@swtc/address-codec": "^1.0.12",
+    "@swtc/common": "^1.0.18",
+    "@swtc/keypairs": "^1.0.15",
+    "@swtc/serializer": "^1.0.14",
+    "@swtc/transaction": "^1.0.17",
+    "@swtc/utils": "^1.0.13",
+    "@swtc/wallet": "^1.0.16",
     "lru-cache": "^5.1.1",
     "sha1": "^1.1.1",
     "url": "^0.11.0",

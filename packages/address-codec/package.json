@@ -1,12 +1,12 @@
 {
   "name": "@swtc/address-codec",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "encode decode base58 SWTC identifiers",
   "main": "cjs/index.js",
   "module": "esm/index.js",
   "license": "ISC",
   "dependencies": {
-    "@swtc/common": "^1.0.16",
+    "@swtc/common": "^1.0.18",
     "base-x": "^3.0.7",
     "create-hash": "^1.2.0"
   },
