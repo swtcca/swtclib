@@ -10,9 +10,9 @@ const WS = require("ws")
 const sleep = time => new Promise(res => setTimeout(() => res(), time))
 let { JT_NODE, TEST_NODE } = config
 
-describe("test server", function() {
-  describe("test constructor", function() {
-    it("if this is secure", function() {
+describe("test server", function () {
+  describe("test constructor", function () {
+    it("if this is secure", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -26,16 +26,16 @@ describe("test server", function() {
       expect(server._state).to.equal("offline")
       expect(server._id).to.equal(0)
       expect(server._timer).to.equal(0)
-      expect(server._url).to.equal(JT_NODE)
+      expect(server._url.replace(/\/$/, "")).to.equal(JT_NODE)
       expect(server._opts).to.deep.equal({
         host: parsed.hostname,
         port: Number(parsed.port),
         secure: parsed.protocol === "wss:",
-        path: null
+        path: "/"
       })
     })
 
-    it("if server address has path", function() {
+    it("if server address has path", function () {
       let testAddress = "wss://test.net/bc/ws"
       let remote = new Remote({
         server: testAddress,
@@ -59,7 +59,7 @@ describe("test server", function() {
       })
     })
 
-    it("if this is not secure", function() {
+    it("if this is not secure", function () {
       let testNode = "ws://test.com"
       let remote = new Remote({
         server: testNode,
@@ -74,16 +74,16 @@ describe("test server", function() {
       expect(server._state).to.equal("offline")
       expect(server._id).to.equal(0)
       expect(server._timer).to.equal(0)
-      expect(server._url).to.equal("ws://test.com:80")
+      expect(server._url.replace(/\/$/, "")).to.equal("ws://test.com:80")
       expect(server._opts).to.deep.equal({
         host: parsed.hostname,
         port: 80,
         secure: false,
-        path: null
+        path: "/"
       })
     })
 
-    it("throw error if options is invalid", function() {
+    it("throw error if options is invalid", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -93,7 +93,7 @@ describe("test server", function() {
       expect(server.opts.message).to.equal("server options not supplied")
     })
 
-    it("throw error if host is invalid", function() {
+    it("throw error if host is invalid", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -105,7 +105,7 @@ describe("test server", function() {
       expect(server.opts_host.message).to.equal("server host incorrect")
     })
 
-    it("throw error if port is not a number", function() {
+    it("throw error if port is not a number", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -125,7 +125,7 @@ describe("test server", function() {
       expect(server.port.message).to.equal("server port not a number")
     })
 
-    it("throw error if port is less than 1", function() {
+    it("throw error if port is less than 1", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -138,7 +138,7 @@ describe("test server", function() {
       expect(server.port.message).to.equal("server port out of range")
     })
 
-    it("throw error if port is more than 65535", function() {
+    it("throw error if port is more than 65535", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -151,7 +151,7 @@ describe("test server", function() {
       expect(server.port.message).to.equal("server port out of range")
     })
 
-    it("secure is false if opts.secure is not boolean", function() {
+    it("secure is false if opts.secure is not boolean", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -164,8 +164,8 @@ describe("test server", function() {
     })
   })
 
-  describe("test sendMessage", function() {
-    it("do not have next step if the _opened is false", function(done) {
+  describe("test sendMessage", function () {
+    it("do not have next step if the _opened is false", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -185,7 +185,7 @@ describe("test server", function() {
       })
     })
 
-    it("send message if the _opened is true", function(done) {
+    it("send message if the _opened is true", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -210,8 +210,8 @@ describe("test server", function() {
     })
   })
 
-  describe("test _handleClose", function() {
-    it("if the _state is offline", function() {
+  describe("test _handleClose", function () {
+    it("if the _state is offline", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -222,7 +222,7 @@ describe("test server", function() {
       expect(spy.callCount).to.equal(0)
     })
 
-    it("if the _state is online but timer is not 0", function() {
+    it("if the _state is online but timer is not 0", function () {
       let remote = new Remote({
         server: TEST_NODE,
         local_sign: true
@@ -242,7 +242,7 @@ describe("test server", function() {
       expect(spy1.callCount).to.equal(0)
     })
 
-    xit("if the _state is online and timer is 0", function(done) {
+    xit("if the _state is online and timer is 0", function (done) {
       this.timeout(0)
       // this.retries(10);
       let remote = new Remote({
@@ -276,8 +276,8 @@ describe("test server", function() {
     })
   })
 
-  describe("test _setState", function() {
-    xit("if the _state is equal to state", function() {
+  describe("test _setState", function () {
+    xit("if the _state is equal to state", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -291,9 +291,9 @@ describe("test server", function() {
     })
   })
 
-  describe("test connect", function() {
+  describe("test connect", function () {
     this.timeout(5000)
-    xit("if had connected", async function(done) {
+    xit("if had connected", async function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -312,7 +312,7 @@ describe("test server", function() {
       done()
     })
 
-    it("throw error if create WS instance", function(done) {
+    it("throw error if create WS instance", function (done) {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
