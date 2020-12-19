@@ -25,7 +25,12 @@ import {
   IRequestAccountInfoOptions,
   IRpcLedgerOptions,
   IRpcLedgerDataOptions,
-  IRpcLedgerEntryOptions
+  IRpcLedgerEntryOptions,
+  IRpcTxHistoryOptions,
+  IRpcTxOptions,
+  IRpcTxEntryOptions,
+  IRpcSubmitOptions,
+  IRpcSubmitMultisignedOptions
 } from "./types"
 
 class Remote {
@@ -124,28 +129,6 @@ class Remote {
         .then(response => resolve(response.data.result))
         .catch(error => reject(error))
     })
-  }
-
-  // guard unsafe operation and wrap axios promise to resolve only interested response data instead
-  public deleteRequest(
-    data: object = {},
-    config: object = {},
-  ) {
-    return new Promise((resolve, reject) => {
-      this._axios
-        .delete('', data, config)
-        .then(response => resolve(response.data))
-        .catch(error => reject(error))
-    })
-  }
-
-  // submit locally signed transactions, this is the only permitted post and delete operation
-  public postBlob(data: object = {}) {
-    return this.postRequest(data, {})
-  }
-
-  public postMultisign(data: object = {}) {
-    return this.postRequest(data, {})
   }
 
   public requestAccountInfo(options: IRequestAccountInfoOptions) {
@@ -272,6 +255,25 @@ class Remote {
     return this.postRequest({method: "ledger_entry", params: [params]})
   }
 
+  public rpcTxHistory(params: IRpcTxHistoryOptions = {start: 0}) {
+    return this.postRequest({method: "tx_history", params: [params]})
+  }
+
+  public rpcTx(params: IRpcTxOptions) {
+    return this.postRequest({method: "tx", params: [params]})
+  }
+
+  public rpcTxEntry(params: IRpcTxEntryOptions) {
+    return this.postRequest({method: "transaction_entry", params: [params]})
+  }
+
+  public rpcSubmit(params: IRpcSubmitOptions) {
+    return this.postRequest({method: "submit", params: [params]})
+  }
+
+  public rpcSubmitMultisigned(params: IRpcSubmitMultisignedOptions) {
+    return this.postRequest({method: "submit_multisigned", params: [params]})
+  }
 }
 
 export { Remote }

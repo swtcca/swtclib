@@ -147,3 +147,30 @@ export interface IRequestSignerListOptions {
 export interface IRequestBrokerageOptions {
   account: string
 }
+
+export interface IRpcTxHistoryOptions {
+  start: number
+}
+
+export interface IRpcTxOptions {
+  transaction: string
+  binray?: boolean
+  min_ledger?: number
+  max_ledger?: number
+}
+
+export interface IRpcTxEntryOptions {
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  tx_hash: string
+}
+
+export interface IRpcSubmitOptions {
+  tx_blob: string
+  fail_hard?: boolean
+}
+
+export interface IRpcSubmitMultisignedOptions {
+  tx_json: object
+  fail_hard?: boolean
+}
