@@ -50,6 +50,7 @@ export interface IParams {
 
 export interface IRpcLedgerOptions {
   ledger_index?: "validated" | "closed" | "open" | number
+  ledger_hash?: string
   expand?: boolean
   transactions?: boolean
   accounts?: boolean

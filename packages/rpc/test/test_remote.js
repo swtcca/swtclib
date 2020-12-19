@@ -48,12 +48,12 @@ describe("Remote", function() {
       ledger_hash = data.closed.ledger_hash
       ledger_index = data.closed.ledger_index
     })
-    it("get ledger with hash not supported", async function() {
-      let data = await remote.rpcLedger({ledger_index: "2F911581F1BDF096BFBB17ED69EC6C3EA49C7FC34E3810A4BA134B70BEE4E30E"})
+    it("get ledger with hash", async function() {
+      let data = await remote.rpcLedger({ledger_hash: "2F911581F1BDF096BFBB17ED69EC6C3EA49C7FC34E3810A4BA134B70BEE4E30E"})
       expect(data).to.have.property("status")
-      expect(data.status).to.be.equal("error")
-      expect(data).to.have.property("error_message")
-      expect(data.error_message).to.be.equal("ledgerIndexMalformed")
+      expect(data.status).to.be.equal("success")
+      expect(data.ledger).to.have.property("ledger_index")
+      expect(parseInt(data.ledger.ledger_index)).to.equal(17849521)
     })
     it("get ledger with index", async function() {
       let data = await remote.rpcLedger({ledger_index: 17849521})
