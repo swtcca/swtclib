@@ -38,49 +38,70 @@ describe("Remote", function() {
       ledger_index = data.info.validated_ledger.seq
     })
   })
+  describe("rpcServerState", function() {
+    this.timeout(15000)
+    it("get server state", async function() {
+      let data = await remote.rpcServerState()
+      expect(data).to.have.property("status")
+      expect(data).to.have.property("state")
+      expect(data.state).to.have.property("server_state")
+      expect(data.state).to.have.property("peers")
+      expect(data.state).to.have.property("complete_ledgers")
+      expect(data.state).to.have.property("validated_ledger")
+      expect(data.state.validated_ledger).to.have.property("hash")
+      expect(data.state.validated_ledger).to.have.property("seq")
+      ledger_hash = data.state.validated_ledger.hash
+      ledger_index = data.state.validated_ledger.seq
+    })
+  })
   describe("rpcLedger", function() {
     this.timeout(15000)
+    it("get ledger closed", async function() {
+      let data = await remote.rpcLedgerClosed()
+      expect(data).to.have.property("status")
+      expect(data).to.have.property("ledger_hash")
+      expect(data).to.have.property("ledger_index")
+    })
+    it("get ledger current", async function() {
+      let data = await remote.rpcLedgerCurrent()
+      expect(data).to.have.property("status")
+      expect(data).to.have.property("ledger_current_index")
+    })
     it("get ledger without parameter", async function() {
-      let data = await remote.rpcLedger({})
+      let data = await remote.rpcLedger()
       expect(data).to.have.property("status")
       expect(data).to.have.property("closed")
       expect(data).to.have.property("open")
-      ledger_hash = data.closed.ledger_hash
-      ledger_index = data.closed.ledger_index
+      ledger_hash = data.closed.ledger.ledger_hash
+      ledger_index = +data.closed.ledger.ledger_index
     })
     it("get ledger with hash", async function() {
-      let data = await remote.rpcLedger({ledger_hash: "2F911581F1BDF096BFBB17ED69EC6C3EA49C7FC34E3810A4BA134B70BEE4E30E"})
+      let data = await remote.rpcLedger({ledger_hash})
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data.ledger).to.have.property("ledger_index")
-      expect(parseInt(data.ledger.ledger_index)).to.equal(17849521)
+      expect(parseInt(data.ledger.ledger_index)).to.equal(ledger_index)
     })
     it("get ledger with index", async function() {
-      let data = await remote.rpcLedger({ledger_index: 17849521})
-      expect(data.ledger).to.have.property("ledger_index")
-      expect(parseInt(data.ledger.ledger_index)).to.equal(17849521)
+      let data = await remote.rpcLedger({ledger_index})
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data.ledger).to.have.property("ledger_hash")
+      expect(data.ledger.ledger_hash).to.equal(ledger_hash)
     })
-  })
-  describe("parameters", function() {
-    this.timeout(15000)
-    xit("currency for getAccountBalances", async function() {
-      try {
-        data = await remote.getAccountBalances(DATA.address, {
-          currency: "JSLASH"
-        })
-        expect(data).to.have.property("balances")
-        expect(data.balances[0]).to.be.an("object")
-        expect(data.balances[0].currency).to.equal("JSLASH")
-      } catch (error) {
-        expect(error).to.equal("should not throw")
-      }
+    it("get ledger data", async function() {
+      let data = await remote.rpcLedgerData({limit: 3})
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("state")
+      expect(data.state.length).to.be.equal(3)
     })
-    xit("limits for getAccountTransactions", async function() {
-      let data = await remote.getAccountTransactions(DATA.address, {
-        limit: 4
-      })
-      expect(data).to.have.property("transactions")
-      expect(data.transactions.length).to.equal(4)
+    it("get ledger entry", async function() {
+      let data = await remote.rpcLedgerEntry({type: "account_root", account_root: DATA.address})
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("node")
+      expect(data.node.Account).to.be.equal(DATA.address)
     })
   })
 })

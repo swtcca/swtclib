@@ -2,7 +2,8 @@ import axios from "axios"
 import { Transaction } from "@swtc/transaction"
 const Wallet = Transaction.Wallet
 const utils = Transaction.utils
-import { IRemoteOptions, IParams } from "./types"
+import { IRemoteOptions } from "./types"
+// import { IRemoteOptions, IParams } from "./types"
 import {
   // IMarker,
   // IAmount,
@@ -22,7 +23,9 @@ import {
   ISignOtherTxOptions,
   // IMultiSigningOptions
   IRequestAccountInfoOptions,
-  IRpcLedgerOptions
+  IRpcLedgerOptions,
+  IRpcLedgerDataOptions,
+  IRpcLedgerEntryOptions
 } from "./types"
 
 class Remote {
@@ -145,14 +148,6 @@ class Remote {
     return this.postRequest(data, {})
   }
 
-  public rpcServerInfo(params: IParams = {}) {
-    return this.postRequest({method: "server_info", params: [params]})
-  }
-
-  public rpcLedger(params: IRpcLedgerOptions = {ledger_index: "closed"}) {
-    return this.postRequest({method: "ledger", params: [params]})
-  }
-
   public requestAccountInfo(options: IRequestAccountInfoOptions) {
     if (options === null || typeof options !== "object") {
       return Promise.reject("invalid options type")
@@ -248,6 +243,35 @@ class Remote {
   public makeAmount(value = 1, currency = this._token, issuer = this._issuer) {
     return Wallet.makeAmount(value, currency, issuer)
   }
+
+  public rpcServerInfo() {
+    return this.postRequest({method: "server_info", params: []})
+  }
+
+  public rpcServerState() {
+    return this.postRequest({method: "server_state", params: []})
+  }
+
+  public rpcLedgerClosed() {
+    return this.postRequest({method: "ledger_closed", params: []})
+  }
+
+  public rpcLedgerCurrent() {
+    return this.postRequest({method: "ledger_current", params: []})
+  }
+
+  public rpcLedger(params: IRpcLedgerOptions = {}) {
+    return this.postRequest({method: "ledger", params: [params]})
+  }
+
+  public rpcLedgerData(params: IRpcLedgerDataOptions = {}) {
+    return this.postRequest({method: "ledger_data", params: [params]})
+  }
+
+  public rpcLedgerEntry(params: IRpcLedgerEntryOptions = {}) {
+    return this.postRequest({method: "ledger_entry", params: [params]})
+  }
+
 }
 
 export { Remote }

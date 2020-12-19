@@ -49,12 +49,29 @@ export interface IParams {
 }
 
 export interface IRpcLedgerOptions {
-  ledger_index?: "validated" | "closed" | "open" | number
+  ledger_index?: "validated" | "closed" | "current" | number
   ledger_hash?: string
   expand?: boolean
   transactions?: boolean
   accounts?: boolean
   full?: boolean
+  binray?: boolean
+}
+
+export interface IRpcLedgerDataOptions {
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  binary?: boolean
+  limit?: number
+  marker?: IMarker
+}
+
+export interface IRpcLedgerEntryOptions {
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  type?: string
+  binary?: boolean
+  [key: string]: any
 }
 
 export interface IRequestAccountOptions {

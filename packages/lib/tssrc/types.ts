@@ -32,12 +32,12 @@ export interface IRemoteOptions {
 }
 
 export interface IRequestLedgerOptions {
-  ledger_index?: string | number
+  ledger_index?: "validated" | "closed" | "current" | number
   ledger_hash?: string
-  full?: boolean
   expand?: boolean
   transactions?: boolean
   accounts?: boolean
+  full?: boolean
 }
 
 export interface IRequestAccountOptions {
