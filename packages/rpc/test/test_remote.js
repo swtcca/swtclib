@@ -130,12 +130,15 @@ describe("Remote", function () {
       expect(data).to.have.property("ledger_index")
       expect(data).to.have.property("TransactionType")
     })
-    it("get transaction from latest ledger", async function () {
-      let data = await remote.rpcTxEntry({ tx_hash: txid })
-      expect(data).to.have.property("status")
-      expect(data.status).to.be.equal("error")
+    it("get tx_entry from latest ledger should throw", async function () {
+      try {
+        await remote.rpcTxEntry({ tx_hash: txid })
+        expect().to.be.equal("should throw since it is not in latest ledger")
+      } catch (error) {
+        expect(error.status).to.be.equal("error")
+      }
     })
-    it("get transaction from specific ledger", async function () {
+    it("get tx_entry from specific ledger", async function () {
       let data = await remote.rpcTxEntry({
         ledger_hash:
           "433D4046C84DE4E9619FF17F1BCF4C6D908DF08E5AE762D5170097E104405B70",
@@ -259,7 +262,8 @@ describe("Remote", function () {
       expect(data).to.have.property("offers")
       expect(data.offers).to.be.a("array")
     })
-    it("get path find", async function () {
+    xit("get path find unstable", async function () {
+      this.timeout(45000)
       let data = await remote.rpcSkywellPathFind({
         destination_account: "jGxW97eCqxfAWvmqSgNkwc2apCejiM89bG",
         source_account: "jGxW97eCqxfAWvmqSgNkwc2apCejiM89bG",
@@ -269,7 +273,6 @@ describe("Remote", function () {
           remote.makeCurrency("jcc")
         ]
       })
-      console.log(data)
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("alternatives")

@@ -92,6 +92,9 @@ class Remote {
         return response
       },
       error => {
+        if (error.response) {
+          throw new RpcError(error.response.data.result)
+        }
         throw new RpcError(error)
       }
     )
