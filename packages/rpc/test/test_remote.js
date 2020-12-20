@@ -230,13 +230,26 @@ describe("Remote", function() {
     })
   })
   describe("rpcBook", function() {
-    this.timeout(15000)
+    this.timeout(45000)
     it("get book offers", async function() {
-      let data = await remote.rpcBookOffers({taker_pays: {currency: "SWT", issuer: ""}, taker_gets: {currency: "CNY", issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"}, limit: 2})
+      let data = await remote.rpcBookOffers({taker_pays: remote.makeCurrency(), taker_gets: remote.makeCurrency("CNY"), limit: 2})
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("offers")
       expect(data.offers).to.be.a("array")
+    })
+    it("get path find", async function() {
+      let data = await remote.rpcSkywellPathFind({
+        destination_account: "jGxW97eCqxfAWvmqSgNkwc2apCejiM89bG",
+        source_account: "jGxW97eCqxfAWvmqSgNkwc2apCejiM89bG",
+        destination_amount: remote.makeAmount(1, "cny"),
+        source_currencies: [ remote.makeCurrency("vcc"), remote.makeCurrency("jcc") ]
+      })
+      console.log(data)
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("alternatives")
+      expect(data.alternatives).to.be.a("array")
     })
   })
 })

@@ -38,7 +38,8 @@ import {
   IRpcAccountLinesOptions,
   IRpcAccountOffersOptions,
   IRpcAccountTxOptions,
-  IRpcBookOffersOptions
+  IRpcBookOffersOptions,
+  IRpcSkywellPathFindOptions
 } from "./types"
 
 class Remote {
@@ -91,9 +92,11 @@ class Remote {
         // Do something with response error
         if (error.response) {
           // has response, but return code >= 300
-          return error.response
+          return Promise.reject(error.response)
         } else if (error.request) {
-          return Promise.reject("did not get response from rpc")
+          console.log(error.toJSON())
+          console.log(error.request)
+          return Promise.reject("Error: did not get response from rpc")
         }
         return Promise.reject(
           error.message ? error.message : "unknow error got"
@@ -318,6 +321,10 @@ class Remote {
 
   public rpcBookOffers(params: IRpcBookOffersOptions) {
     return this.postRequest({ method: "book_offers", params: [params] })
+  }
+
+  public rpcSkywellPathFind(params: IRpcSkywellPathFindOptions) {
+    return this.postRequest({ method: "skywell_path_find", params: [params] })
   }
 }
 

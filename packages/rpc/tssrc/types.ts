@@ -1,4 +1,4 @@
-import { IMarker as IObjMarker, IAmount } from "@swtc/transaction"
+import { IMarker as IObjMarker, ICurrency, IAmount } from "@swtc/transaction"
 type IMarker = IObjMarker | string
 export {
   IMarker,
@@ -238,3 +238,12 @@ export interface IRpcBookOffersOptions {
   // marker?: IMarker
 }
 
+export interface IRpcSkywellPathFindOptions {
+  source_account: string
+  destination_account: string
+  destination_amount: string | object
+  source_currencies: ICurrency[]
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  binary?: boolean
+}
