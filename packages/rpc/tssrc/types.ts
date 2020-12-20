@@ -1,4 +1,5 @@
-import { IMarker, IAmount } from "@swtc/transaction"
+import { IMarker as IObjMarker, IAmount } from "@swtc/transaction"
+type IMarker = IObjMarker | string
 export {
   IMarker,
   ICurrency,
@@ -92,15 +93,6 @@ export interface IRequestAccountsOptions {
   marker?: IMarker
 }
 
-export interface IRequestTxOptions {
-  hash: string
-}
-
-export interface IRequestAccountInfoOptions {
-  account: string
-  ledger?: string
-}
-
 export interface IRequestAccountTumsOptions {
   account: string
   ledger?: string
@@ -174,3 +166,75 @@ export interface IRpcSubmitMultisignedOptions {
   tx_json: object
   fail_hard?: boolean
 }
+
+export interface IRpcFeeInfoOptions {
+  account: string
+}
+
+export interface IRpcBlacklistInfoOptions {
+  account?: string
+  marker?: IMarker
+}
+
+export interface IRpcAccountInfoOptions {
+  account: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+}
+
+export interface IRpcAccountObjectsOptions {
+  account: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  type?: "offer" | "ticket" | "state" | "deposit_preauth" | "SignerList"
+  limit?: number
+  marker?: IMarker
+}
+
+export interface IRpcAccountCurrenciesOptions {
+  account: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  strict?: boolean
+}
+
+export interface IRpcAccountLinesOptions {
+  account: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  strict?: boolean
+  peer?: string
+  marker?: IMarker
+}
+
+export interface IRpcAccountOffersOptions {
+  account: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  strict?: boolean
+  limit?: number
+  marker?: IMarker
+}
+
+export interface IRpcAccountTxOptions {
+  account: string
+  ledger_index_min?: number
+  ledger_index_max?: number
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  binary?: boolean
+  forward?: boolean
+  limit?: number
+  marker?: IMarker
+}
+
+export interface IRpcBookOffersOptions {
+  taker_pays: object
+  taker_gets: object
+  // taker?: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  limit?: number
+  // marker?: IMarker
+}
+

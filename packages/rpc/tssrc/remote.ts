@@ -22,7 +22,6 @@ import {
   ISignFirstTxOptions,
   ISignOtherTxOptions,
   // IMultiSigningOptions
-  IRequestAccountInfoOptions,
   IRpcLedgerOptions,
   IRpcLedgerDataOptions,
   IRpcLedgerEntryOptions,
@@ -30,7 +29,16 @@ import {
   IRpcTxOptions,
   IRpcTxEntryOptions,
   IRpcSubmitOptions,
-  IRpcSubmitMultisignedOptions
+  IRpcSubmitMultisignedOptions,
+  IRpcFeeInfoOptions,
+  IRpcBlacklistInfoOptions,
+  IRpcAccountInfoOptions,
+  IRpcAccountObjectsOptions,
+  IRpcAccountCurrenciesOptions,
+  IRpcAccountLinesOptions,
+  IRpcAccountOffersOptions,
+  IRpcAccountTxOptions,
+  IRpcBookOffersOptions,
 } from "./types"
 
 class Remote {
@@ -131,13 +139,6 @@ class Remote {
     })
   }
 
-  public requestAccountInfo(options: IRequestAccountInfoOptions) {
-    if (options === null || typeof options !== "object") {
-      return Promise.reject("invalid options type")
-    }
-    return Promise.resolve({mock: true, sequence:100})
-  }
-
   public async getAccountSequence(address: string) {
     address = address.trim()
     if (!Wallet.isValidAddress(address)) {
@@ -227,6 +228,14 @@ class Remote {
     return Wallet.makeAmount(value, currency, issuer)
   }
 
+  public rpcVersion() {
+    return this.postRequest({method: "version", params: []})
+  }
+
+  public rpcRandom() {
+    return this.postRequest({method: "random", params: []})
+  }
+
   public rpcServerInfo() {
     return this.postRequest({method: "server_info", params: []})
   }
@@ -273,6 +282,42 @@ class Remote {
 
   public rpcSubmitMultisigned(params: IRpcSubmitMultisignedOptions) {
     return this.postRequest({method: "submit_multisigned", params: [params]})
+  }
+
+  public rpcFeeInfo(params: IRpcFeeInfoOptions) {
+    return this.postRequest({method: "Fee_Info", params: [params]})
+  }
+
+  public rpcBlacklistInfo(params: IRpcBlacklistInfoOptions = {}) {
+    return this.postRequest({method: "blacklist_info", params: [params]})
+  }
+
+  public rpcAccountInfo(params: IRpcAccountInfoOptions) {
+    return this.postRequest({method: "account_info", params: [params]})
+  }
+
+  public rpcAccountObjects(params: IRpcAccountObjectsOptions) {
+    return this.postRequest({method: "account_objects", params: [params]})
+  }
+
+  public rpcAccountCurrencies(params: IRpcAccountCurrenciesOptions) {
+    return this.postRequest({method: "account_currencies", params: [params]})
+  }
+
+  public rpcAccountLines(params: IRpcAccountLinesOptions) {
+    return this.postRequest({method: "account_lines", params: [params]})
+  }
+
+  public rpcAccountOffers(params: IRpcAccountOffersOptions) {
+    return this.postRequest({method: "account_offers", params: [params]})
+  }
+
+  public rpcAccountTx(params: IRpcAccountTxOptions) {
+    return this.postRequest({method: "account_tx", params: [{ ledger_index_min: -1, ...params}]})
+  }
+
+  public rpcBookOffers(params: IRpcBookOffersOptions) {
+    return this.postRequest({method: "book_offers", params: [params]})
   }
 }
 
