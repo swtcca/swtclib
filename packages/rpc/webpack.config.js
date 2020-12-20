@@ -5,8 +5,8 @@ module.exports = {
   cache: false,
   entry: "./src/index.js",
   output: {
-    library: "swtc_api",
+    library: "swtc_rpc",
     path: path.resolve(__dirname, "dist"),
-    filename: "swtc-api.js"
+    filename: "swtc-rpc.js"
   }
 }

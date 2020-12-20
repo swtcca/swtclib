@@ -3,6 +3,7 @@ import { Transaction } from "@swtc/transaction"
 const Wallet = Transaction.Wallet
 const utils = Transaction.utils
 import { IRemoteOptions } from "./types"
+import { RpcError } from "./errors"
 // import { IRemoteOptions, IParams } from "./types"
 import {
   // IMarker,
@@ -80,27 +81,18 @@ class Remote {
     })
     this._axios.interceptors.response.use(
       response => {
-        // Do something with response data for jingtum-api
-        // if (response.data && response.data.success && response.data.success === false) {
-        //   Promise.reject(`${response.data.message || response.data.result || "something wrong"}`)
-        // }
+        if (
+          response &&
+          response.data &&
+          response.data.result &&
+          response.data.result.status !== "success"
+        ) {
+          throw new RpcError(response.data.result)
+        }
         return response
       },
       error => {
-        // console.log("!!!!!!!!!!!!!!!!!!axios error happen!!!!!!!!!!!!!!!")
-        // console.log(error.toJSON())
-        // Do something with response error
-        if (error.response) {
-          // has response, but return code >= 300
-          return Promise.reject(error.response)
-        } else if (error.request) {
-          console.log(error.toJSON())
-          console.log(error.request)
-          return Promise.reject("Error: did not get response from rpc")
-        }
-        return Promise.reject(
-          error.message ? error.message : "unknow error got"
-        )
+        throw new RpcError(error)
       }
     )
   }
