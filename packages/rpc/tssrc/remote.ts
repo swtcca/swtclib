@@ -38,7 +38,7 @@ import {
   IRpcAccountLinesOptions,
   IRpcAccountOffersOptions,
   IRpcAccountTxOptions,
-  IRpcBookOffersOptions,
+  IRpcBookOffersOptions
 } from "./types"
 
 class Remote {
@@ -86,8 +86,8 @@ class Remote {
         return response
       },
       error => {
-        console.error("!!!!!!!!!!!!!!!!!!axios error happen!!!!!!!!!!!!!!!")
-        console.error(error.toJSON())
+        // console.log("!!!!!!!!!!!!!!!!!!axios error happen!!!!!!!!!!!!!!!")
+        // console.log(error.toJSON())
         // Do something with response error
         if (error.response) {
           // has response, but return code >= 300
@@ -127,13 +127,10 @@ class Remote {
   }
 
   // rpc uses only POST method and always the same url
-  public postRequest(
-    data: object = {},
-    config: object = {},
-  ) {
+  public postRequest(data: object = {}, config: object = {}) {
     return new Promise((resolve, reject) => {
       this._axios
-        .post('', data, config)
+        .post("", data, config)
         .then(response => resolve(response.data.result))
         .catch(error => reject(error))
     })
@@ -229,95 +226,98 @@ class Remote {
   }
 
   public rpcVersion() {
-    return this.postRequest({method: "version", params: []})
+    return this.postRequest({ method: "version", params: [] })
   }
 
   public rpcRandom() {
-    return this.postRequest({method: "random", params: []})
+    return this.postRequest({ method: "random", params: [] })
   }
 
   public rpcServerInfo() {
-    return this.postRequest({method: "server_info", params: []})
+    return this.postRequest({ method: "server_info", params: [] })
   }
 
   public rpcServerState() {
-    return this.postRequest({method: "server_state", params: []})
+    return this.postRequest({ method: "server_state", params: [] })
   }
 
   public rpcLedgerClosed() {
-    return this.postRequest({method: "ledger_closed", params: []})
+    return this.postRequest({ method: "ledger_closed", params: [] })
   }
 
   public rpcLedgerCurrent() {
-    return this.postRequest({method: "ledger_current", params: []})
+    return this.postRequest({ method: "ledger_current", params: [] })
   }
 
   public rpcLedger(params: IRpcLedgerOptions = {}) {
-    return this.postRequest({method: "ledger", params: [params]})
+    return this.postRequest({ method: "ledger", params: [params] })
   }
 
   public rpcLedgerData(params: IRpcLedgerDataOptions = {}) {
-    return this.postRequest({method: "ledger_data", params: [params]})
+    return this.postRequest({ method: "ledger_data", params: [params] })
   }
 
   public rpcLedgerEntry(params: IRpcLedgerEntryOptions = {}) {
-    return this.postRequest({method: "ledger_entry", params: [params]})
+    return this.postRequest({ method: "ledger_entry", params: [params] })
   }
 
-  public rpcTxHistory(params: IRpcTxHistoryOptions = {start: 0}) {
-    return this.postRequest({method: "tx_history", params: [params]})
+  public rpcTxHistory(params: IRpcTxHistoryOptions = { start: 0 }) {
+    return this.postRequest({ method: "tx_history", params: [params] })
   }
 
   public rpcTx(params: IRpcTxOptions) {
-    return this.postRequest({method: "tx", params: [params]})
+    return this.postRequest({ method: "tx", params: [params] })
   }
 
   public rpcTxEntry(params: IRpcTxEntryOptions) {
-    return this.postRequest({method: "transaction_entry", params: [params]})
+    return this.postRequest({ method: "transaction_entry", params: [params] })
   }
 
   public rpcSubmit(params: IRpcSubmitOptions) {
-    return this.postRequest({method: "submit", params: [params]})
+    return this.postRequest({ method: "submit", params: [params] })
   }
 
   public rpcSubmitMultisigned(params: IRpcSubmitMultisignedOptions) {
-    return this.postRequest({method: "submit_multisigned", params: [params]})
+    return this.postRequest({ method: "submit_multisigned", params: [params] })
   }
 
   public rpcFeeInfo(params: IRpcFeeInfoOptions) {
-    return this.postRequest({method: "Fee_Info", params: [params]})
+    return this.postRequest({ method: "Fee_Info", params: [params] })
   }
 
   public rpcBlacklistInfo(params: IRpcBlacklistInfoOptions = {}) {
-    return this.postRequest({method: "blacklist_info", params: [params]})
+    return this.postRequest({ method: "blacklist_info", params: [params] })
   }
 
   public rpcAccountInfo(params: IRpcAccountInfoOptions) {
-    return this.postRequest({method: "account_info", params: [params]})
+    return this.postRequest({ method: "account_info", params: [params] })
   }
 
   public rpcAccountObjects(params: IRpcAccountObjectsOptions) {
-    return this.postRequest({method: "account_objects", params: [params]})
+    return this.postRequest({ method: "account_objects", params: [params] })
   }
 
   public rpcAccountCurrencies(params: IRpcAccountCurrenciesOptions) {
-    return this.postRequest({method: "account_currencies", params: [params]})
+    return this.postRequest({ method: "account_currencies", params: [params] })
   }
 
   public rpcAccountLines(params: IRpcAccountLinesOptions) {
-    return this.postRequest({method: "account_lines", params: [params]})
+    return this.postRequest({ method: "account_lines", params: [params] })
   }
 
   public rpcAccountOffers(params: IRpcAccountOffersOptions) {
-    return this.postRequest({method: "account_offers", params: [params]})
+    return this.postRequest({ method: "account_offers", params: [params] })
   }
 
   public rpcAccountTx(params: IRpcAccountTxOptions) {
-    return this.postRequest({method: "account_tx", params: [{ ledger_index_min: -1, ...params}]})
+    return this.postRequest({
+      method: "account_tx",
+      params: [{ ledger_index_min: -1, ...params }]
+    })
   }
 
   public rpcBookOffers(params: IRpcBookOffersOptions) {
-    return this.postRequest({method: "book_offers", params: [params]})
+    return this.postRequest({ method: "book_offers", params: [params] })
   }
 }
 
