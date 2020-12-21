@@ -138,7 +138,7 @@ describe("Remote", function () {
         expect(error.status).to.be.equal("error")
       }
     })
-    it("get tx_entry from specific ledger", async function () {
+    xit("get tx_entry from specific ledger", async function () {
       let data = await remote.rpcTxEntry({
         ledger_hash:
           "433D4046C84DE4E9619FF17F1BCF4C6D908DF08E5AE762D5170097E104405B70",

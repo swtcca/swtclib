@@ -268,10 +268,6 @@ class Remote {
     return this.postRequest({ method: "ledger_data", params: [params] })
   }
 
-  public rpcLedgerEntry(params: IRpcLedgerEntryOptions = {}) {
-    return this.postRequest({ method: "ledger_entry", params: [params] })
-  }
-
   public rpcTxHistory(params: IRpcTxHistoryOptions = { start: 0 }) {
     return this.postRequest({ method: "tx_history", params: [params] })
   }
@@ -356,7 +352,16 @@ class Remote {
     return this.rpcSubmitMultisigned({ tx_json })
   }
 
-  protected rpcSkywellPathFind(params: IRpcSkywellPathFindOptions) {
+  protected mockPrivate() {
+    this.rpcLedgerEntry.name
+    this.rpcSkywellPathFind.name
+  }
+
+  private rpcLedgerEntry(params: IRpcLedgerEntryOptions = {}) {
+    return this.postRequest({ method: "ledger_entry", params: [params] })
+  }
+
+  private rpcSkywellPathFind(params: IRpcSkywellPathFindOptions) {
     // seems can easily crash rpc service
     return this.postRequest({ method: "skywell_path_find", params: [params] })
   }
