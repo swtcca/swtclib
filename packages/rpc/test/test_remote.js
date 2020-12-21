@@ -279,4 +279,41 @@ describe("Remote", function () {
       expect(data.alternatives).to.be.a("array")
     })
   })
+  describe("derived methods", function () {
+    this.timeout(45000)
+    it("get account info", async function () {
+      let data = await remote.getAccountInfo(DATA.address)
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("account_data")
+      expect(data.account_data).to.have.property("Sequence")
+      expect(data.account_data).to.have.property("Balance")
+      expect(data.account_data.Sequence).to.be.a("number")
+    })
+    it("get account sequence", async function () {
+      let data = await remote.getAccountSequence(DATA.address)
+      expect(data).to.be.a("number")
+    })
+    it("submit blob", async function () {
+      let data = await remote.submit(
+        "12000022000000002400000EA4614000000002160EC068400000000000000A732103E466DB080F3863F354E9C1B1CA0927175B338C41789ACFC0EFAD50301524C23E7446304402200A1F6E65FD9D7076E4589C5BA13E2433B1C2CA9E7C0E42EFC7D57F22C74B1B780220355A2456589B79FD6D6185FD5A74BDE44CFB10E0F6711E4A3BF86FE531C72E6C81141C3D155BB13D3FE79CBF85E5C1DCB6B508079ABE83140ECD295EA24E99608A9B346838EB991BCF143E62F9EA7C06737472696E677D00E1F1"
+      )
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("engine_result")
+      expect(data.engine_result).to.be.equal("tefPAST_SEQ")
+      expect(data).to.have.property("tx_json")
+      expect(data.tx_json.hash).to.be.equal(txid)
+    })
+    it("submit multisigned tx_json", async function () {
+      let data = await remote.submitMultisigned(DATA.MULTISIGN_JSON)
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("engine_result")
+      expect(data.engine_result).to.be.equal("terPRE_SEQ")
+      expect(data).to.have.property("tx_blob")
+      expect(data).to.have.property("tx_json")
+      expect(data.tx_json.SigningPubKey).to.be.equal("")
+    })
+  })
 })

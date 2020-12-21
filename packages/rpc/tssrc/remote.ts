@@ -108,6 +108,25 @@ class Remote {
         baseURL: this._server.replace(/\/$/, ""),
         timeout: this._timeout
       })
+      this._axios.interceptors.response.use(
+        response => {
+          if (
+            response &&
+            response.data &&
+            response.data.result &&
+            response.data.result.status !== "success"
+          ) {
+            throw new RpcError(response.data.result)
+          }
+          return response
+        },
+        error => {
+          if (error.response) {
+            throw new RpcError(error.response.data.result)
+          }
+          throw new RpcError(error)
+        }
+      )
     }
     if ("token" in options) {
       this._token = options.token
@@ -132,13 +151,6 @@ class Remote {
         .then(response => resolve(response.data.result))
         .catch(error => reject(error))
     })
-  }
-
-  public async getAccountSequence(address: string) {
-    address = address.trim()
-    if (!Wallet.isValidAddress(address)) {
-      return Promise.reject("invalid address provided")
-    }
   }
 
   // here we extend beyond api calls to interact with swtc-transactions
@@ -318,7 +330,29 @@ class Remote {
     return this.postRequest({ method: "book_offers", params: [params] })
   }
 
-  public rpcSkywellPathFind(params: IRpcSkywellPathFindOptions) {
+  public getAccountInfo(address: string): Promise<any> {
+    return this.rpcAccountInfo({ account: address.trim() })
+  }
+
+  public getAccountOffers(address: string): Promise<any> {
+    return this.rpcAccountOffers({ account: address.trim() })
+  }
+
+  public async getAccountSequence(address: string) {
+    const data = await this.getAccountInfo(address)
+    return data.account_data.Sequence
+  }
+
+  public submit(tx_blob: string) {
+    return this.rpcSubmit({ tx_blob })
+  }
+
+  public submitMultisigned(tx_json: object) {
+    return this.rpcSubmitMultisigned({ tx_json })
+  }
+
+  protected rpcSkywellPathFind(params: IRpcSkywellPathFindOptions) {
+    // seems can easily crash rpc service
     return this.postRequest({ method: "skywell_path_find", params: [params] })
   }
 }
