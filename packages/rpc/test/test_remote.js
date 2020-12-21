@@ -130,7 +130,7 @@ describe("Remote", function () {
       expect(data).to.have.property("ledger_index")
       expect(data).to.have.property("TransactionType")
     })
-    it("get tx_entry from latest ledger should throw", async function () {
+    xit("get tx_entry from latest ledger should throw", async function () {
       try {
         await remote.rpcTxEntry({ tx_hash: txid })
         expect().to.be.equal("should throw since it is not in latest ledger")
@@ -203,6 +203,13 @@ describe("Remote", function () {
     })
     it("get AccountLines", async function () {
       let data = await remote.rpcAccountLines({ account: DATA.address })
+      expect(data).to.have.property("status")
+      expect(data.status).to.be.equal("success")
+      expect(data).to.have.property("lines")
+      expect(data.lines).to.be.a("array")
+    })
+    it("get AccountRelataion", async function () {
+      let data = await remote.rpcAccountRelation({ account: DATA.address })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("lines")

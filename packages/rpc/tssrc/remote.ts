@@ -37,6 +37,7 @@ import {
   IRpcAccountObjectsOptions,
   IRpcAccountCurrenciesOptions,
   IRpcAccountLinesOptions,
+  IRpcAccountRelationOptions,
   IRpcAccountOffersOptions,
   IRpcAccountTxOptions,
   IRpcBookOffersOptions,
@@ -313,6 +314,10 @@ class Remote {
 
   public rpcAccountLines(params: IRpcAccountLinesOptions) {
     return this.postRequest({ method: "account_lines", params: [params] })
+  }
+
+  public rpcAccountRelation(params: IRpcAccountRelationOptions) {
+    return this.postRequest({ method: "account_relation", params: [params] })
   }
 
   public rpcAccountOffers(params: IRpcAccountOffersOptions) {

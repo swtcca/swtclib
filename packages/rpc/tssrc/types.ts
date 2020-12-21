@@ -207,6 +207,15 @@ export interface IRpcAccountLinesOptions {
   marker?: IMarker
 }
 
+export interface IRpcAccountRelationOptions {
+  account: string
+  ledger_index?: "validated" | "closed" | "current" | number
+  ledger_hash?: string
+  strict?: boolean
+  peer?: string
+  marker?: IMarker
+}
+
 export interface IRpcAccountOffersOptions {
   account: string
   ledger_index?: "validated" | "closed" | "current" | number
