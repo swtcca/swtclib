@@ -23,6 +23,59 @@ describe("Remote", function () {
       expect(remote._token).to.be.equal("SWT")
     })
   })
+  describe("error handling", function () {
+    it("requests should use post method", async function () {
+      let remote = new Remote()
+      try {
+        await remote._axios.get("")
+      } catch (error) {
+        expect(error.error).to.be.equal("validationError")
+      }
+    })
+    it("requests needs a method property", async function () {
+      let remote = new Remote({})
+      try {
+        await remote._axios.post("",{key: "value"})
+      } catch (error) {
+        expect(error.error).to.be.equal("validationError")
+      }
+    })
+    it("requests needs a valid method property", async function () {
+      let remote = new Remote({})
+      try {
+        await remote._axios.post("",{method: "invalid_method"})
+      } catch (error) {
+        expect(error.error).to.be.equal("unknownCmd")
+      }
+    })
+    it("requests requires valid account property if any", async function () {
+      let remote = new Remote({})
+      try {
+        await remote.getAccountInfo("j_invalid_address")
+      } catch (error) {
+        expect(error.error).to.be.equal("validationError")
+      }
+    })
+    it("axios response error", async function () {
+      let remote = new Remote({})
+      let output = remote.config({server: "http://invalid.server"})
+      try {
+        await remote.rpcVersion()
+      } catch (error) {
+        expect(error.error).to.be.equal("axiosIssue")
+        expect(error.error_message).to.be.equal("getaddrinfo ENOTFOUND invalid.server")
+      }
+    })
+    it("rpc response error", async function () {
+      let remote = new Remote({})
+      try {
+        await remote.rpcAccountInfo({account: Remote.Wallet.generate().address})
+      } catch (error) {
+        expect(error.error).to.be.equal("actNotFound")
+        expect(error.error_message).to.be.equal("Account not found.")
+      }
+    })
+  })
   describe("rpcVersion", function () {
     this.timeout(15000)
     it("get server information", async function () {
