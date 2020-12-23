@@ -14,7 +14,7 @@ describe("Remote", function () {
   describe("constructor", function () {
     it("instantiate a default Remote successfully", function () {
       let remote = new Remote({})
-      expect(remote._server).to.be.equal("https://swtclib.ca:5050")
+      expect(remote._server).to.be.equal("http://swtclib.ca:5050")
       expect(remote._token).to.be.equal("SWT")
     })
     it("instantiate a testnet Remote successfully", function () {

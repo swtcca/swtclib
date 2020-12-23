@@ -9,6 +9,7 @@ import {
   // IMarker,
   // IAmount,
   // ISwtcTxOptions,
+  ICurrency,
   IPaymentTxOptions,
   IOfferCreateTxOptions,
   IOfferCancelTxOptions,
@@ -20,8 +21,6 @@ import {
   IAccountSetTxOptions,
   IRelationTxOptions,
   ISignerListTxOptions,
-  ISignFirstTxOptions,
-  ISignOtherTxOptions,
   // IMultiSigningOptions
   IRpcLedgerOptions,
   IRpcLedgerDataOptions,
@@ -51,7 +50,7 @@ class Remote {
   public readonly AbiCoder: any = null
   public readonly Tum3: any = null
   private _server: string
-  private _timeout: number = 30 * 1000
+  private _timeout: number = 50 * 1000
   private _token: string
   private _issuer: string
   private _backend: string = "rpc"
@@ -59,7 +58,7 @@ class Remote {
   private _solidity: boolean = false
   constructor(options: IRemoteOptions = {}) {
     this._server =
-      options.server || Wallet.config.rpcserver || "https://swtclib.ca:5050"
+      options.server || Wallet.config.rpcserver || "http://swtclib.ca:5050"
     this._token = options.token || Wallet.token || "SWT"
     this._solidity = options.solidity ? true : false
     if (this._solidity) {
@@ -146,6 +145,30 @@ class Remote {
 
   // rpc uses only POST method and always the same url
   public postRequest(data: object = {}, config: object = {}) {
+    // check parameter data
+    if (typeof data !== "object") {
+      throw {
+        error: "paramError",
+        error_code: "-8888",
+        error_message: "parameter should be an object"
+      }
+    } else if (!data.hasOwnProperty("method")) {
+      throw {
+        error: "paramError",
+        error_code: "-8888",
+        error_message: "parameter needs a rpc method"
+      }
+    } else if (
+      data.hasOwnProperty("params") &&
+      typeof data["params"] !== "object"
+    ) {
+      throw {
+        error: "paramError",
+        error_code: "-8888",
+        error_message: "parameter.params should be an object"
+      }
+    } else {
+    }
     return new Promise((resolve, reject) => {
       this._axios
         .post("", data, config)
@@ -210,19 +233,6 @@ class Remote {
   public buildSignerListTx(options: ISignerListTxOptions) {
     return Transaction.buildSignerListTx(options, this)
   }
-  public buildSignFirstTx(options: ISignFirstTxOptions) {
-    // 首签账号添加SigningPubKey字段
-    // no this as remote ?
-    return Transaction.buildSignFirstTx(options)
-  }
-  public buildSignOtherTx(options: ISignOtherTxOptions) {
-    // 其他账号签名只需把返回结果提交回去即可
-    return Transaction.buildSignOtherTx(options, this)
-  }
-  public buildMultisignedTx(tx_json) {
-    // 提交多重签名
-    return Transaction.buildMultisignedTx(tx_json, this)
-  }
   public buildTx(tx_json) {
     // 通过tx_json创建Transaction对象
     return Transaction.buildTx(tx_json, this)
@@ -234,6 +244,161 @@ class Remote {
   }
   public makeAmount(value = 1, currency = this._token, issuer = this._issuer) {
     return Wallet.makeAmount(value, currency, issuer)
+  }
+
+  public getAccountInfo(
+    address: string,
+    params: IRpcAccountInfoOptions = { account: "" }
+  ): Promise<any> {
+    return this.rpcAccountInfo({ ...params, account: address })
+  }
+
+  public getAccountOffers(
+    address: string,
+    params: IRpcAccountOffersOptions = { account: "" }
+  ): Promise<any> {
+    return this.rpcAccountOffers({ ...params, account: address })
+  }
+
+  public async getAccountSequence(
+    address: string,
+    params: IRpcAccountInfoOptions = { account: "" }
+  ) {
+    const data = await this.getAccountInfo(address, params)
+    return data.account_data.Sequence
+  }
+
+  public getAccountTrusts(
+    address: string,
+    params: IRpcAccountLinesOptions = { account: "" }
+  ) {
+    return this.rpcAccountLines({ ...params, account: address })
+  }
+
+  public getAccountRelation(
+    address: string,
+    params: IRpcAccountRelationOptions = { account: "" }
+  ) {
+    return this.rpcAccountRelation({ ...params, account: address })
+  }
+
+  public getAccountObjects(
+    address: string,
+    params: IRpcAccountObjectsOptions = { account: "" }
+  ) {
+    return this.rpcAccountObjects({ ...params, account: address })
+  }
+
+  public getAccountSignerList(
+    address: string,
+    params: IRpcAccountObjectsOptions = { account: "" }
+  ) {
+    return this.getAccountObjects(address, { ...params, type: "SignerList" })
+  }
+
+  public getAccountTx(
+    address: string,
+    params: IRpcAccountTxOptions = { account: "" }
+  ) {
+    return this.rpcAccountTx({ ...params, account: address })
+  }
+
+  public getAccountCurrencies(
+    address: string,
+    params: IRpcAccountCurrenciesOptions = { account: "" }
+  ) {
+    return this.rpcAccountCurrencies({ ...params, account: address })
+  }
+
+  public getBrokerage(
+    address: string,
+    params: IRpcFeeInfoOptions = { account: "" }
+  ) {
+    return this.rpcFeeInfo({ ...params, account: address })
+  }
+
+  public getBookOffers(
+    taker_gets: ICurrency,
+    taker_pays: ICurrency,
+    params: IRpcBookOffersOptions = { taker_gets: {}, taker_pays: {} }
+  ) {
+    return this.rpcBookOffers({ ...params, taker_gets, taker_pays })
+  }
+
+  public getSkywellPathFind(params: IRpcSkywellPathFindOptions) {
+    return this.rpcSkywellPathFind(params)
+  }
+
+  public submit(tx_blob: string, params: IRpcSubmitOptions = { tx_blob: "" }) {
+    return this.rpcSubmit({ ...params, tx_blob })
+  }
+
+  public submitMultisigned(
+    tx_json: object,
+    params: IRpcSubmitMultisignedOptions = { tx_json: {} }
+  ) {
+    return this.rpcSubmitMultisigned({ ...params, tx_json })
+  }
+
+  public getVersion() {
+    return this.rpcVersion()
+  }
+
+  public getRandom() {
+    return this.rpcRandom()
+  }
+
+  public getServerInfo() {
+    return this.rpcServerInfo()
+  }
+
+  public getServerState() {
+    return this.rpcServerState()
+  }
+
+  public getLedgerClosed() {
+    return this.rpcLedgerClosed()
+  }
+
+  public getLedgerCurrent() {
+    return this.rpcLedgerCurrent()
+  }
+
+  public getBlacklistInfo(params: IRpcBlacklistInfoOptions = {}) {
+    return this.rpcBlacklistInfo(params)
+  }
+
+  public getLedger(params: IRpcLedgerOptions = {}) {
+    return this.rpcLedger(params)
+  }
+
+  public getLedgerEntry(params: IRpcLedgerEntryOptions = {}) {
+    return this.rpcLedgerEntry(params)
+  }
+
+  public getLedgerData(params: IRpcLedgerDataOptions = {}) {
+    return this.rpcLedgerData(params)
+  }
+
+  public getTxHistory(
+    start: number = 0,
+    params: IRpcTxHistoryOptions = { start: 0 }
+  ) {
+    return this.rpcTxHistory({ ...params, start })
+  }
+
+  public getTx(
+    transaction: string,
+    params: IRpcTxOptions = { transaction: "" }
+  ) {
+    return this.rpcTx({ ...params, transaction })
+  }
+
+  public getTxEntry(
+    tx_hash: string,
+    params: IRpcTxEntryOptions = { tx_hash: "" }
+  ) {
+    return this.rpcTxEntry({ ...params, tx_hash })
   }
 
   public rpcVersion() {
@@ -326,35 +491,41 @@ class Remote {
       params: [{ ledger_index_min: -1, ...params }]
     })
   }
+  public async getAccountBalances(
+    address: string,
+    params: object = { account: "" }
+  ) {
+    if (!Wallet.isValidAddress(address.trim())) {
+      throw "invalid address"
+    }
+    const p_info = this.getAccountInfo(
+      address,
+      params as IRpcAccountInfoOptions
+    )
+    const p_trust = this.getAccountTrusts(
+      address,
+      params as IRpcAccountLinesOptions
+    )
+    const p_freeze = this.getAccountRelation(
+      address,
+      params as IRpcAccountRelationOptions
+    )
+    const p_offer = this.getAccountOffers(
+      address,
+      params as IRpcAccountOffersOptions
+    )
+
+    const data = await Promise.all([p_info, p_trust, p_freeze, p_offer])
+    return processBalance({
+      native: data[0],
+      lines: data[1],
+      lines2: data[2],
+      orders: data[3]
+    })
+  }
 
   public rpcBookOffers(params: IRpcBookOffersOptions) {
     return this.postRequest({ method: "book_offers", params: [params] })
-  }
-
-  public getAccountInfo(address: string): Promise<any> {
-    return this.rpcAccountInfo({ account: address.trim() })
-  }
-
-  public getAccountOffers(address: string): Promise<any> {
-    return this.rpcAccountOffers({ account: address.trim() })
-  }
-
-  public async getAccountSequence(address: string) {
-    const data = await this.getAccountInfo(address)
-    return data.account_data.Sequence
-  }
-
-  public submit(tx_blob: string) {
-    return this.rpcSubmit({ tx_blob })
-  }
-
-  public submitMultisigned(tx_json: object) {
-    return this.rpcSubmitMultisigned({ tx_json })
-  }
-
-  protected mockPrivate() {
-    this.rpcLedgerEntry.name
-    this.rpcSkywellPathFind.name
   }
 
   private rpcLedgerEntry(params: IRpcLedgerEntryOptions = {}) {
@@ -368,3 +539,72 @@ class Remote {
 }
 
 export { Remote }
+
+const FREEZE = { reserved: 20.0, each_freezed: 5.0 }
+function processBalance(data: any, condition: any = {}) {
+  const swt_value: any = Number(data.native.account_data.Balance) / 1000000.0
+  const freeze0 =
+    FREEZE.reserved +
+    (data.lines.lines.length + data.orders.offers.length) * FREEZE.each_freezed
+  const swt_data = {
+    value: swt_value,
+    currency: "SWT",
+    issuer: "",
+    freezed: freeze0
+  }
+  const _data = []
+  if (
+    (!condition.currency && !condition.issuer) ||
+    (condition.currency && condition.currency === "SWT")
+  ) {
+    _data.push(swt_data)
+  }
+  for (const item of data.lines.lines) {
+    if (condition.currency && condition.currency === "SWT") {
+      break
+    }
+    const tmpBal = {
+      value: item.balance,
+      currency: item.currency,
+      issuer: item.account,
+      freezed: 0
+    }
+    let freezed = 0
+    data.orders.offers.forEach(off => {
+      const taker_gets = utils.parseAmount(off.taker_gets)
+      if (
+        taker_gets.currency === swt_data.currency &&
+        taker_gets.issuer === swt_data.issuer
+      ) {
+        // swt遍历一次
+        swt_data.freezed =
+          parseFloat(`${swt_data.freezed}`) + parseFloat(taker_gets.value)
+      } else if (
+        taker_gets.currency === tmpBal.currency &&
+        taker_gets.issuer === tmpBal.issuer
+      ) {
+        freezed += parseFloat(taker_gets.value)
+      }
+    })
+    for (const l of data.lines2.lines) {
+      if (l.currency === tmpBal.currency && l.issuer === tmpBal.issuer) {
+        freezed += parseFloat(l.limit)
+      }
+    }
+    tmpBal.freezed = parseFloat(`${tmpBal.freezed}`) + freezed
+    tmpBal.freezed = Number(tmpBal.freezed.toFixed(6))
+    if (condition.currency && condition.currency !== tmpBal.currency) {
+      continue
+    }
+    if (condition.issuer && condition.issuer !== tmpBal.issuer) {
+      continue
+    }
+    _data.push(tmpBal)
+  }
+
+  const _ret = {
+    balances: _data,
+    sequence: data.native.account_data.Sequence
+  }
+  return _ret
+}
