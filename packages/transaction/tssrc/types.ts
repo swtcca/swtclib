@@ -106,7 +106,7 @@ export interface ISignTxOptions {
 }
 
 export interface IAccountSetTxOptions {
-  type: string
+  type: "property" | "delegate" | "signer"
   source?: string
   from?: string
   account?: string
@@ -121,14 +121,14 @@ export interface IAccountSetTxOptions {
 }
 
 export interface IRelationTxOptions {
-  type: string
+  type: "trust" | "authorize" | "freeze" | "unfreeze"
   source?: string
   from?: string
   account?: string
-  target: string
+  target?: string
   limit: IAmount
-  quality_out: any
-  quality_in: any
+  quality_out?: any
+  quality_in?: any
   memo?: string
   secret?: string
   sequence?: string | number
@@ -159,4 +159,18 @@ export interface IMultiSigningOptions {
   account?: string
   address?: string
   secret: string
+}
+
+export interface IBrokerageTxOptions {
+  account: string
+  address?: string
+  feeAccount: string
+  mol?: number
+  molecule?: number
+  den?: number
+  denominator?: number
+  amount: IAmount
+  memo?: string
+  secret?: string
+  sequence?: string | number
 }

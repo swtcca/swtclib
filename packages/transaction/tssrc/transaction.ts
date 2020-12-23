@@ -27,7 +27,8 @@ import {
   ISignerListTxOptions,
   ISignFirstTxOptions,
   ISignOtherTxOptions,
-  IMultiSigningOptions
+  IMultiSigningOptions,
+  IBrokerageTxOptions
 } from "./types"
 
 function Factory(Wallet = WalletFactory("jingtum")) {
@@ -660,7 +661,10 @@ function Factory(Wallet = WalletFactory("jingtum")) {
      *    amount, required
      * @returns {Transaction}
      */
-    public static buildBrokerageTx(options, remote: any = {}) {
+    public static buildBrokerageTx(
+      options: IBrokerageTxOptions,
+      remote: any = {}
+    ) {
       const tx = new Transaction(remote)
       if (options === null || typeof options !== "object") {
         tx.tx_json.obj = new Error("invalid options type")
@@ -678,7 +682,7 @@ function Factory(Wallet = WalletFactory("jingtum")) {
         tx.tx_json.src = new Error("invalid address")
         return tx
       }
-      if (!/^\d+$/.test(mol)) {
+      if (!/^\d+$/.test(`${mol}`)) {
         // (正整数 + 0)
         tx.tx_json.mol = new Error(
           "invalid mol, it is a positive integer or zero."
@@ -1351,6 +1355,13 @@ function Factory(Wallet = WalletFactory("jingtum")) {
       }
       normalize_memo(this.tx_json)
       normalize_swt(this.tx_json)
+      // make tx_json.Amount.value string
+      if (
+        this.tx_json.hasOwnProperty("Amount") &&
+        this.tx_json.Amount.hasOwnProperty("value")
+      ) {
+        this.tx_json.Amount.value = `${this.tx_json.Amount.value}`
+      }
 
       // const tx_json_verify = JSON.parse(JSON.stringify(this.tx_json))
       const signers = this.tx_json.Signers || []
@@ -1548,7 +1559,13 @@ function Factory(Wallet = WalletFactory("jingtum")) {
             abi: this.abi
           }
         }
-        this._remote._submit(this.command, data, this._filter, callback)
+        if (this._remote.hasOwnProperty("_submit")) {
+          // lib
+          this._remote._submit(this.command, data, this._filter, callback)
+        } else {
+          // api/proxy/rpc
+          throw new Error("please use .submitPromise() for non-ws library")
+        }
       } else {
         // 签名之后传给底层
         this.sign((err, blob) => {
@@ -1560,7 +1577,13 @@ function Factory(Wallet = WalletFactory("jingtum")) {
             } else {
               data = { tx_blob: blob, abi: this.abi }
             }
-            this._remote._submit(this.command, data, this._filter, callback)
+            if (this._remote.hasOwnProperty("_submit")) {
+              // lib
+              this._remote._submit(this.command, data, this._filter, callback)
+            } else {
+              // api/proxy/rpc
+              throw new Error("please use .submitPromise() for non-ws library")
+            }
           }
         })
       }
@@ -1605,6 +1628,17 @@ function Factory(Wallet = WalletFactory("jingtum")) {
             }
             this._remote._submit(this.command, data, this._filter, callback)
           })
+        } else if ("rpcSubmit" in this._remote) {
+          // rpc remote
+          if (this.command === "submit_multisigned") {
+            return this._remote.rpcSubmitMultisigned(data)
+          } else if (blob) {
+            delete data.blob
+            data.tx_blob = blob
+            return this._remote.rpcSubmit(data)
+          } else {
+            return Promise.reject("unable to handle for multisigned tx")
+          }
         } else if ("txSubmitPromise" in this._remote) {
           // api remote
           return this._remote.txSubmitPromise(this)
@@ -1661,6 +1695,12 @@ function Factory(Wallet = WalletFactory("jingtum")) {
               type: "trust"
             })
             .submitPromise()
+          this.tx_json.Sequence = data.account_data.Sequence
+          return Promise.resolve(this)
+        } else if ("rpcAccountInfo" in this._remote) {
+          data = await this._remote.rpcAccountInfo({
+            account: this.tx_json.Account
+          })
           this.tx_json.Sequence = data.account_data.Sequence
           return Promise.resolve(this)
         } else if ("getAccountSequence" in this._remote) {
