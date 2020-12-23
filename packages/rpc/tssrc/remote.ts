@@ -449,7 +449,7 @@ class Remote {
     params: object = { account: "" }
   ) {
     if (!Wallet.isValidAddress(address.trim())) {
-      throw "invalid address"
+      throw new Error("invalid address")
     }
     const p_info = this.getAccountInfo(
       address,
@@ -579,7 +579,7 @@ const intercept_request = config => {
       })
     }
     if (config.data.hasOwnProperty("params")) {
-      let params = config.data.params[0]
+      const params = config.data.params[0]
       if (
         params &&
         typeof params === "object" &&
