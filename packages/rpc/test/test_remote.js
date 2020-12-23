@@ -35,7 +35,7 @@ describe("Remote", function () {
     it("requests needs a method property", async function () {
       let remote = new Remote({})
       try {
-        await remote._axios.post("",{key: "value"})
+        await remote._axios.post("", { key: "value" })
       } catch (error) {
         expect(error.error).to.be.equal("validationError")
       }
@@ -43,7 +43,7 @@ describe("Remote", function () {
     it("requests needs a valid method property", async function () {
       let remote = new Remote({})
       try {
-        await remote._axios.post("",{method: "invalid_method"})
+        await remote._axios.post("", { method: "invalid_method" })
       } catch (error) {
         expect(error.error).to.be.equal("unknownCmd")
       }
@@ -58,18 +58,22 @@ describe("Remote", function () {
     })
     it("axios response error", async function () {
       let remote = new Remote({})
-      let output = remote.config({server: "http://invalid.server"})
+      let output = remote.config({ server: "http://invalid.server" })
       try {
         await remote.rpcVersion()
       } catch (error) {
         expect(error.error).to.be.equal("axiosIssue")
-        expect(error.error_message).to.be.equal("getaddrinfo ENOTFOUND invalid.server")
+        expect(error.error_message).to.be.equal(
+          "getaddrinfo ENOTFOUND invalid.server"
+        )
       }
     })
     it("rpc response error", async function () {
       let remote = new Remote({})
       try {
-        await remote.rpcAccountInfo({account: Remote.Wallet.generate().address})
+        await remote.rpcAccountInfo({
+          account: Remote.Wallet.generate().address
+        })
       } catch (error) {
         expect(error.error).to.be.equal("actNotFound")
         expect(error.error_message).to.be.equal("Account not found.")

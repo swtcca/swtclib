@@ -79,21 +79,15 @@ class Remote {
       baseURL: this._server.replace(/\/$/, ""),
       timeout: this._timeout
     })
-    this._axios.interceptors.request.use(
-      intercept_request,
-      error => {
-        throw new RpcError(error)
+    this._axios.interceptors.request.use(intercept_request, error => {
+      throw new RpcError(error)
+    })
+    this._axios.interceptors.response.use(intercept_response, error => {
+      if (error.response) {
+        throw new RpcError(error.response.data.result)
       }
-    )
-    this._axios.interceptors.response.use(
-      intercept_response,
-      error => {
-        if (error.response) {
-          throw new RpcError(error.response.data.result)
-        }
-        throw new RpcError(error)
-      }
-    )
+      throw new RpcError(error)
+    })
   }
 
   // show instance basic configuration
@@ -104,21 +98,15 @@ class Remote {
         baseURL: this._server.replace(/\/$/, ""),
         timeout: this._timeout
       })
-      this._axios.interceptors.request.use(
-        intercept_request,
-        error => {
-          throw new RpcError(error)
+      this._axios.interceptors.request.use(intercept_request, error => {
+        throw new RpcError(error)
+      })
+      this._axios.interceptors.response.use(intercept_response, error => {
+        if (error.response) {
+          throw new RpcError(error.response.data.result)
         }
-      )
-      this._axios.interceptors.response.use(
-        intercept_response,
-        error => {
-          if (error.response) {
-            throw new RpcError(error.response.data.result)
-          }
-          throw new RpcError(error)
-        }
-      )
+        throw new RpcError(error)
+      })
     }
     if ("token" in options) {
       this._token = options.token
@@ -138,8 +126,8 @@ class Remote {
   // rpc uses only POST method and always the same url
   public postRequest(data: object = {}, config: object = {}) {
     return this._axios
-        .post("", data, config)
-        .then(response => Promise.resolve(response.data.result))
+      .post("", data, config)
+      .then(response => Promise.resolve(response.data.result))
   }
 
   // here we extend beyond api calls to interact with swtc-transactions
@@ -575,25 +563,41 @@ function processBalance(data: any, condition: any = {}) {
 }
 
 const intercept_request = config => {
-    if (config.method !== "post") {
-      throw new RpcError({error: "validationError", error_code: -8888, error_message: "only post requests allowed for rpc."})
+  if (config.method !== "post") {
+    throw new RpcError({
+      error: "validationError",
+      error_code: -8888,
+      error_message: "only post requests allowed for rpc."
+    })
+  }
+  if (config.data && typeof config.data === "object") {
+    if (!config.data.hasOwnProperty("method")) {
+      throw new RpcError({
+        error: "validationError",
+        error_code: -8888,
+        error_message: "method required for rpc."
+      })
     }
-    if (config.data && typeof config.data === "object") {
-      if (!config.data.hasOwnProperty("method")) {
-        throw new RpcError({error: "validationError", error_code: -8888, error_message: "method required for rpc."})
-      }
-      if (config.data.hasOwnProperty("params")) {
-        let params = config.data.params[0]
-        if (params && typeof params === "object" && params.hasOwnProperty("account")) {
-          params.account = params.account.trim()
-          if (!Wallet.isValidAddress(params.account.trim())) {
-            throw new RpcError({error: "validationError", error_code: -8888, error_message: "invalid account specified"})
-          }
+    if (config.data.hasOwnProperty("params")) {
+      let params = config.data.params[0]
+      if (
+        params &&
+        typeof params === "object" &&
+        params.hasOwnProperty("account")
+      ) {
+        params.account = params.account.trim()
+        if (!Wallet.isValidAddress(params.account.trim())) {
+          throw new RpcError({
+            error: "validationError",
+            error_code: -8888,
+            error_message: "invalid account specified"
+          })
         }
       }
     }
-    return config
   }
+  return config
+}
 
 const intercept_response = response => {
   if (
