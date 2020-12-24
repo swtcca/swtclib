@@ -40,7 +40,8 @@ import {
   IRpcAccountOffersOptions,
   IRpcAccountTxOptions,
   IRpcBookOffersOptions,
-  IRpcSkywellPathFindOptions
+  IRpcSkywellPathFindOptions,
+  IBrokerageTxOptions
 } from "./types"
 
 class Remote {
@@ -180,13 +181,13 @@ class Remote {
   public buildContractInvokeTx(options: IContractInvokeTxOptions) {
     return Transaction.invokeContractTx(options, this)
   }
-  public buildBrokerageTx(options) {
+  public buildBrokerageTx(options: IBrokerageTxOptions) {
     return Transaction.buildBrokerageTx(options, this)
   }
   public buildSignerListTx(options: ISignerListTxOptions) {
     return Transaction.buildSignerListTx(options, this)
   }
-  public buildTx(tx_json) {
+  public buildTx(tx_json: object) {
     // 通过tx_json创建Transaction对象
     return Transaction.buildTx(tx_json, this)
   }

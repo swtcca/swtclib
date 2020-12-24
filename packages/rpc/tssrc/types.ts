@@ -18,7 +18,8 @@ export {
   ISignerListTxOptions,
   ISignFirstTxOptions,
   ISignOtherTxOptions,
-  IMultiSigningOptions
+  IMultiSigningOptions,
+  IBrokerageTxOptions
 } from "@swtc/transaction"
 
 export interface IRemoteOptions {
@@ -130,14 +131,6 @@ export interface IRequestOrderBookOptions {
   pays?: IAmount
   limit?: string | number
   marker?: IMarker
-}
-
-export interface IRequestSignerListOptions {
-  account: string
-}
-
-export interface IRequestBrokerageOptions {
-  account: string
 }
 
 export interface IRpcTxHistoryOptions {
