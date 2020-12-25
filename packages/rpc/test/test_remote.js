@@ -2,7 +2,8 @@ const expect = require("chai").expect
 //import Remote from '../src/index'
 const Remote = require("../").Remote
 const DATA = require("../../.conf/config")
-const remote = new Remote({ server: "http://swtcproxy.swtclib.ca:5050" })
+const RPC_SERVER = "http://swtclib.ca:5050"
+const remote = new Remote({ server: RPC_SERVER })
 
 let payid = "should be updated during payments query"
 let txid = "should be updated during transactions query"
@@ -25,7 +26,6 @@ describe("Remote", function () {
   })
   describe("error handling", function () {
     it("requests should use post method", async function () {
-      let remote = new Remote()
       try {
         await remote._axios.get("")
       } catch (error) {
@@ -33,7 +33,6 @@ describe("Remote", function () {
       }
     })
     it("requests needs a method property", async function () {
-      let remote = new Remote({})
       try {
         await remote._axios.post("", { key: "value" })
       } catch (error) {
@@ -41,7 +40,6 @@ describe("Remote", function () {
       }
     })
     it("requests needs a valid method property", async function () {
-      let remote = new Remote({})
       try {
         await remote._axios.post("", { method: "invalid_method" })
       } catch (error) {
@@ -49,7 +47,6 @@ describe("Remote", function () {
       }
     })
     it("requests requires valid account property if any", async function () {
-      let remote = new Remote({})
       try {
         await remote.getAccountInfo("j_invalid_address")
       } catch (error) {
@@ -69,7 +66,6 @@ describe("Remote", function () {
       }
     })
     it("rpc response error", async function () {
-      let remote = new Remote({})
       try {
         await remote.rpcAccountInfo({
           account: Remote.Wallet.generate().address
