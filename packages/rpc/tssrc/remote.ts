@@ -490,6 +490,10 @@ class Remote {
     // seems can easily crash rpc service
     return this.postRequest({ method: "skywell_path_find", params: [params] })
   }
+
+  public rpcPeers() {
+    return this.postRequest({ method: "peers", params: [] })
+  }
 }
 
 export { Remote }
