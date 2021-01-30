@@ -465,6 +465,16 @@ function processBalance(data: any, condition: any = {}) {
     issuer: "",
     freezed: freeze0
   }
+  // swt遍历offers
+  data.orders.offers.forEach(off => {
+    const taker_gets = utils.parseAmount(off.taker_gets)
+    if (
+      taker_gets.currency === swt_data.currency &&
+      taker_gets.issuer === swt_data.issuer
+    ) {
+      swt_data.freezed += parseFloat(taker_gets.value)
+    }
+  })
   const _data = []
   if (
     (!condition.currency && !condition.issuer) ||
@@ -486,13 +496,6 @@ function processBalance(data: any, condition: any = {}) {
     data.orders.offers.forEach(off => {
       const taker_gets = utils.parseAmount(off.taker_gets)
       if (
-        taker_gets.currency === swt_data.currency &&
-        taker_gets.issuer === swt_data.issuer
-      ) {
-        // swt遍历一次
-        swt_data.freezed =
-          parseFloat(`${swt_data.freezed}`) + parseFloat(taker_gets.value)
-      } else if (
         taker_gets.currency === tmpBal.currency &&
         taker_gets.issuer === tmpBal.issuer
       ) {
