@@ -1,6 +1,6 @@
 {
   "name": "@swtc/wallet",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "swtc wallet library",
   "main": "cjs/index.js",
   "module": "esm/index.js",

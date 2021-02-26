@@ -2,8 +2,8 @@ import { convertHexToString, convertStringToHex } from "./serializer"
 
 export function normalize_swt(tx_json, reverse = false) {
   // 签名时，序列化之前的字段处理
-  // assume that nobody spend more than 12 swt for transactions
-  if (tx_json.Fee > 12) {
+  // assume that nobody spend more than 10 swt for transactions
+  if (tx_json.Fee >= 10) {
     tx_json.Fee = tx_json.Fee / 1000000
     // payment
     if (tx_json.Amount && !isNaN(tx_json.Amount)) {
@@ -23,7 +23,7 @@ export function normalize_swt(tx_json, reverse = false) {
       tx_json.TakerGets = Number(tx_json.TakerGets) / 1000000
     }
   }
-  if (reverse && tx_json.Fee < 12) {
+  if (reverse && tx_json.Fee < 10) {
     tx_json.Fee = tx_json.Fee * 1000000
     // payment
     if (tx_json.Amount && !isNaN(tx_json.Amount)) {
@@ -47,8 +47,8 @@ export function normalize_swt(tx_json, reverse = false) {
 
 // for multisigning
 export function normalize_memo(tx_json, reverse = false) {
-  // assume that nobody spend more than 12 swt for transactions
-  if (tx_json.Fee > 12) {
+  // assume that nobody spend more than 10 swt for transactions
+  if (tx_json.Fee >= 10) {
     if (tx_json.Memos) {
       for (const memo of tx_json.Memos) {
         let data = memo.Memo.MemoData

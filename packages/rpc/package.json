@@ -1,6 +1,6 @@
 {
   "name": "@swtc/rpc",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "swtc lib rpc",
   "main": "cjs/index.js",
   "module": "esm/index.js",

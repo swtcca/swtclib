@@ -61,9 +61,9 @@ const Factory: any = (token_or_chain = "jingtum") => {
       issuer = Wallet.getIssuer()
     ): IAmount {
       return typeof currency === "object"
-        ? Object.assign({}, currency, { value: Number(value) })
+        ? Object.assign({}, currency, { value: `${value}` })
         : Object.assign({}, this.makeCurrency(currency, issuer), {
-            value: Number(value)
+            value: `${value}`
           })
     }
     public static generate(options: IGenerateOptions = {}): IWallet {
