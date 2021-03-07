@@ -105,8 +105,10 @@ class Remote extends EventEmitter {
     if (_opts.solidity) {
       this._solidity = true
       try {
-        this.AbiCoder = require("tum3-eth-abi").AbiCoder
-        this.Tum3 = require("swtc-tum3")
+        // this.AbiCoder = require("tum3-eth-abi").AbiCoder
+        // this.Tum3 = require("swtc-tum3")
+        this.AbiCoder = null
+        this.Tum3 = null
       } catch (error) {
         throw Error(
           "install tum3-eth-abi and swtc-tum3 to enable solidity support"

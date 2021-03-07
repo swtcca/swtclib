@@ -1,13 +1,14 @@
 {
   "name": "@swtc/nativescript",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "make @swtc nativescript easy",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha \"test/test*.js\""
+    "test": "mocha \"test/test*.js\"",
+    "postinstall": "node scripts/replace.js"
   },
   "repository": {
     "type": "git",

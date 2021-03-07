@@ -64,8 +64,10 @@ class Remote {
     this._solidity = options.solidity ? true : false
     if (this._solidity) {
       try {
-        this.AbiCoder = require("tum3-eth-abi").AbiCoder
-        this.Tum3 = require("swtc-tum3")
+        this.AbiCoder = null
+        this.Tum3 = null
+        // this.AbiCoder = require("tum3-eth-abi").AbiCoder
+        // this.Tum3 = require("swtc-tum3")
       } catch (error) {
         throw Error(
           "install tum3-eth-abi and swtc-tum3 to enable solidity support"
