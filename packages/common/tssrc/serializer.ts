@@ -174,7 +174,8 @@ const TRANSACTION_TYPES = {
       ["AuthorizedAccount", OPTIONAL]
     ]
   ],
-  TokenDel: [210, ...BASE, ...[["TokenID", REQUIRED]]]
+  TokenDel: [210, ...BASE, ...[["TokenID", REQUIRED]]],
+  SetBlackList: [201, ...BASE, ...[["BlackListAccountID", REQUIRED]]]
 }
 
 const SLE_BASE = [
@@ -489,6 +490,7 @@ const FIELDS_MAP = {
     7: "Target",
     8: "RegularKey",
     9: "FeeAccountID",
+    10: "BlackListAccountID",
     13: "Platform",
     14: "TokenOwner",
     15: "AuthorizedAccount"
@@ -667,6 +669,7 @@ const INVERSE_FIELDS_MAP = {
   Platform: [8, 13],
   TokenOwner: [8, 14],
   AuthorizedAccount: [8, 15],
+  BlackListAccountID: [8, 10],
   undefined: [15, 1],
   TransactionMetaData: [14, 2],
   CreatedNode: [14, 3],
@@ -870,6 +873,9 @@ const get_transaction_type = (structure: number | string): number | string => {
         case 101:
           output = "SetFee"
           break
+        case 201:
+          output = "SetBlackList"
+          break
         case 205:
           output = "Brokerage"
           break
@@ -917,6 +923,9 @@ const get_transaction_type = (structure: number | string): number | string => {
           break
         case "SetFee":
           output = 101
+          break
+        case "SetBlackList":
+          output = 201
           break
         case "Brokerage":
           output = 205
