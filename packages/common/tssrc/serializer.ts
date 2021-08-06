@@ -135,6 +135,9 @@ const TRANSACTION_TYPES = {
       ["Destination", OPTIONAL]
     ]
   ],
+  SetBlackList: [201, ...BASE, ...[["BlackListAccountID", REQUIRED]]],
+  RemoveBlackList: [202, ...BASE, ...[["BlackListAccountID", REQUIRED]]],
+  ManageIssuer: [203, ...BASE, ...[["IssuerAccountID", REQUIRED]]],
   Brokerage: [
     205,
     ...BASE,
@@ -145,6 +148,7 @@ const TRANSACTION_TYPES = {
       ["Amount", REQUIRED]
     ]
   ],
+  IssueSet: [206, ...BASE, ...[["TotalAmount", REQUIRED]]],
   // add for multisign
   SignerListSet: [
     207,
@@ -455,6 +459,7 @@ const FIELDS_MAP = {
     7: "HighLimit",
     8: "Fee",
     9: "SendMax",
+    10: "TotalAmount",
     16: "MinimumOffer",
     17: "JingtumEscrow",
     18: "DeliveredAmount"
@@ -489,6 +494,8 @@ const FIELDS_MAP = {
     7: "Target",
     8: "RegularKey",
     9: "FeeAccountID",
+    10: "BlackListAccountID",
+    11: "IssuerAccountID",
     13: "Platform",
     14: "TokenOwner",
     15: "AuthorizedAccount"
@@ -636,6 +643,7 @@ const INVERSE_FIELDS_MAP = {
   HighLimit: [6, 7],
   Fee: [6, 8],
   SendMax: [6, 9],
+  TotalAmount: [6, 10],
   MinimumOffer: [6, 16],
   JingtumEscrow: [6, 17],
   DeliveredAmount: [6, 18],
@@ -664,6 +672,8 @@ const INVERSE_FIELDS_MAP = {
   Target: [8, 7],
   RegularKey: [8, 8],
   FeeAccountID: [8, 9],
+  BlackListAccountID: [8, 10],
+  IssuerAccountID: [8, 11],
   Platform: [8, 13],
   TokenOwner: [8, 14],
   AuthorizedAccount: [8, 15],
@@ -870,8 +880,20 @@ const get_transaction_type = (structure: number | string): number | string => {
         case 101:
           output = "SetFee"
           break
+        case 201:
+          output = "SetBlackList"
+          break
+        case 202:
+          output = "RemoveBlackList"
+          break
+        case 203:
+          output = "ManageIssuer"
+          break
         case 205:
           output = "Brokerage"
+          break
+        case 206:
+          output = "IssueSet"
           break
         default:
           throw new Error("Invalid transaction type!")
@@ -917,6 +939,18 @@ const get_transaction_type = (structure: number | string): number | string => {
           break
         case "SetFee":
           output = 101
+          break
+        case "SetBlackList":
+          output = 201
+          break
+        case "RemoveBlackList":
+          output = 202
+          break
+        case "ManageIssuer":
+          output = 203
+          break
+        case "IssueSet":
+          output = 206
           break
         case "Brokerage":
           output = 205
