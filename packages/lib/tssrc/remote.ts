@@ -80,11 +80,9 @@ class Remote extends EventEmitter {
   public readonly _token
   public readonly _local_sign
   protected _issuer
-  private _url: string = `ws://${
-    Remote.XLIB.default_ws || "ws.swtclib.ca:5020"
-  }`
+  private _url: string = `ws://${Remote.XLIB.default_ws || "ws.bcapps.ca:5020"}`
   private _url_failover: string = `ws://${
-    Remote.XLIB.default_ws_failover || "ws-failover.swtclib.ca:5020"
+    Remote.XLIB.default_ws_failover || "ws-failover.bcapps.ca:5020"
   }`
   private _server
   private _status
@@ -1206,9 +1204,8 @@ class Remote extends EventEmitter {
                 const adr = result.ContractState[i].slice(2)
                 const buf = Buffer.alloc(20)
                 buf.write(adr, 0, "hex")
-                result.ContractState[
-                  i
-                ] = Wallet.KeyPair.addressCodec.encodeAddress(buf)
+                result.ContractState[i] =
+                  Wallet.KeyPair.addressCodec.encodeAddress(buf)
               }
             })
           }
@@ -1245,9 +1242,8 @@ class Remote extends EventEmitter {
                       const _adr2 = data2[i].slice(2)
                       const buf2 = Buffer.alloc(20)
                       buf2.write(_adr2, 0, "hex")
-                      item.data[i] = Wallet.KeyPair.addressCodec.encodeAddress(
-                        buf2
-                      )
+                      item.data[i] =
+                        Wallet.KeyPair.addressCodec.encodeAddress(buf2)
                     } else {
                       item.data[i] = data2[i]
                     }

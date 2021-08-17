@@ -260,10 +260,10 @@ const Factory: any = (wallet_or_chain_or_token: any = "jingtum") => {
     public _local_sign
     public _issuer
     public _url: string = `ws://${
-      Remote.XLIB.default_ws || "ws.swtclib.ca:5020"
+      Remote.XLIB.default_ws || "ws.bcapps.ca:5020"
     }`
     public _url_failover: string = `ws://${
-      Remote.XLIB.default_ws_failover || "ws-failover.swtclib.ca:5020"
+      Remote.XLIB.default_ws_failover || "ws-failover.bcapps.ca:5020"
     }`
     public _server
     public _status

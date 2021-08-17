@@ -2,20 +2,20 @@ const expect = require("chai").expect
 //import Remote from '../src/index'
 const Remote = require("../").Remote
 const DATA = require("../../.conf/config")
-const RPC_SERVER = "http://swtclib.ca:5050"
+const RPC_SERVER = "http://bcapps.ca:5050"
 const remote = new Remote({ server: RPC_SERVER })
 
 let payid = "should be updated during payments query"
 let txid = "should be updated during transactions query"
-let ledger_index = 17908565
+let ledger_index = 19936373
 let ledger_hash = "should be updated during ledger query"
-txid = "8039E4779E5E2818FE796F3A705921FE1CEA92713E5750808FDD5D64D565D31E"
+txid = "B57BB8F69DABCAE934A38C067F38D060940A484F8D6DEE5C167653CB7208B07F"
 
 describe("Remote", function () {
   describe("constructor", function () {
     it("instantiate a default Remote successfully", function () {
       let remote = new Remote({})
-      expect(remote._server).to.be.equal("http://swtclib.ca:5050")
+      expect(remote._server).to.be.equal("http://bcapps.ca:5050")
       expect(remote._token).to.be.equal("SWT")
     })
     it("instantiate a testnet Remote successfully", function () {
@@ -193,7 +193,7 @@ describe("Remote", function () {
     })
     xit("get tx_entry from specific ledger", async function () {
       let data = await remote.rpcTxEntry({
-        ledger_index: 17908565,
+        ledger_index: 19936373,
         tx_hash: txid
       })
       expect(data).to.have.property("status")

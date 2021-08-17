@@ -1,7 +1,7 @@
 import { web, router, state } from "../src"
 const request = require("supertest")
 const sleep = time => new Promise(res => setTimeout(() => res(), time || 1))
-state.config.value.server = "ws://swtcproxy.swtclib.ca:5020"
+state.config.value.server = "ws://swtcproxy.bcapps.ca:5020"
 const tx_json = {
   TransactionType: "Payment",
   Flags: 0,
@@ -33,28 +33,28 @@ const tx_json = {
   ]
 }
 
-describe("Multisign Test", function() {
+describe("Multisign Test", function () {
   let server = web.listen(50080)
-  test("proxy information", async function() {
+  test("proxy information", async function () {
     let result = await request(server)
       .get("/")
       .expect("Content-Type", /application\/json/)
     expect(result.ok).toBeTruthy()
     expect(JSON.parse(result.text)).toHaveProperty("version")
   })
-  test("wait for backend", async function() {
+  test("wait for backend", async function () {
     jest.setTimeout(15000)
     await sleep(11000)
     expect(state.remote.value.isConnected()).toBeTruthy()
   })
-  test("server information", async function() {
+  test("server information", async function () {
     let result = await request(server)
       .get("/v3/server/info")
       .expect("Content-Type", /application\/json/)
     expect(result.ok).toBeTruthy()
     expect(JSON.parse(result.text)).toHaveProperty("complete_ledgers")
   })
-  test("submit multisigned tx_json", async function() {
+  test("submit multisigned tx_json", async function () {
     let result
     try {
       result = await request(server)
@@ -65,7 +65,7 @@ describe("Multisign Test", function() {
     let result_json = JSON.parse(result.text)
     expect(result_json).toHaveProperty("engine_result")
   })
-  test(`clear intervals`, async function() {
+  test(`clear intervals`, async function () {
     state.funcCleanup()
     state.remote.value.disconnect()
     server.close()

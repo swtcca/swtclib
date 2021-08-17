@@ -59,7 +59,7 @@ class Remote {
   private _solidity: boolean = false
   constructor(options: IRemoteOptions = {}) {
     this._server =
-      options.server || Wallet.config.rpcserver || "http://swtclib.ca:5050"
+      options.server || Wallet.config.rpcserver || "http://bcapps.ca:5050"
     this._token = options.token || Wallet.token || "SWT"
     this._solidity = options.solidity ? true : false
     if (this._solidity) {

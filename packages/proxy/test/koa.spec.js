@@ -1,10 +1,10 @@
 import { web, router, state } from "../src"
-state.config.value.server = "ws://swtclib.ca:5020"
+state.config.value.server = "ws://bcapps.ca:5020"
 const request = require("supertest")
 const sleep = time => new Promise(res => setTimeout(() => res(), time || 1))
 const account = "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
 const payment_hash =
-  "C1E2FDDF3DF8F8B6AE5C58B65508C5CF02AB5FEEF0547FBBF253121C3703B76C"
+  "60F33D85A59BA60D72A5FF803BD9494698DE23556D16949AD5A54ACC7633AE54"
 const blob =
   "120000220000000024000000076140000000000F42406840000000000027107321029110C3744FB57BD1F4824F5B989AE75EB6402B4365B501F6EDCA9BE44A675E157446304402204043EE905953B90C486DA74B795E505B383BFF6CBC3852D724E95F51581E8E7402205C4022C3B5404C23B8D1E85E7B56B1CE9A5E6B12A8C8D9FE9C2AAC2A5DA936F481141359AA928F4D98FDB3D93E8B690C80D37DED11C3831456FE5CE2D298C9493022FB43596A1B23AE3E3728"
 
@@ -172,12 +172,12 @@ describe("Web Test", function () {
   })
   test("account transactions", async function () {
     let result = await request(server)
-      .get(`/v3/accounts/${account}/transactions?limit=4`)
+      .get(`/v3/accounts/${account}/transactions?limit=3`)
       .expect("Content-Type", /application\/json/)
     let result_json = JSON.parse(result.text)
     expect(result.ok).toBeTruthy()
     expect(result_json).toHaveProperty("transactions")
-    expect(result_json.transactions.length).toBe(4)
+    expect(result_json.transactions.length).toBe(3)
   })
   test("account transaction by hash", async function () {
     let result = await request(server)

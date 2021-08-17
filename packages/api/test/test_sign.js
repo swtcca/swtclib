@@ -2,7 +2,7 @@ const expect = require("chai").expect
 //import Remote from '../src/index'
 const Remote = require("../").Remote
 const DATA = require("../../.conf/config")
-const remote = new Remote({ server: "http://swtcproxy.swtclib.ca:5080" })
+const remote = new Remote({ server: "http://swtcproxy.bcapps.ca:5080" })
 
 let payid = "should be updated during payments query"
 let txid = "should be updated during transactions query"
