@@ -9,7 +9,10 @@ export function funcGetChain(chain_or_token: string): any {
       chain.code.toLowerCase() === chain_or_token.toLowerCase() ||
       chain.currency.toUpperCase() === chain_or_token.toUpperCase()
   )
-  return chains.length === 1 ? chains[0] : undefined
+  if (chains.length > 1) {
+    console.log(`!!!!!!!!!!more than one chains found, use first!!!!!!!!!!!!!`)
+  }
+  return chains.length > 0 ? chains[0] : undefined
 }
 
 /**
@@ -134,4 +137,10 @@ export function funcIsEmpty(value) {
     }
   }
   return !value
+}
+
+export function funcAssert(condition: any, msg = "Assertion failed") {
+  if (!condition) {
+    throw new Error(msg)
+  }
 }

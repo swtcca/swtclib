@@ -165,7 +165,8 @@ const TRANSACTION_TYPES = {
       ["TokenID", REQUIRED],
       ["Destination", REQUIRED],
       ["Domain", OPTIONAL],
-      ["FundCode", OPTIONAL]
+      ["FundCode", OPTIONAL],
+      ["TokenInfos", OPTIONAL]
     ]
   ],
   TokenIssue: [
@@ -483,7 +484,9 @@ const FIELDS_MAP = {
     15: "Payload",
     17: "ContractMethod",
     18: "Parameter",
-    20: "MethodSignature"
+    20: "MethodSignature",
+    21: "InfoData",
+    22: "InfoType"
   },
   8: {
     // Account
@@ -514,7 +517,8 @@ const FIELDS_MAP = {
     10: "Memo",
     11: "Arg",
     12: "SignerEntry",
-    13: "Signer"
+    13: "Signer",
+    15: "TokenInfo"
   },
   15: {
     // Array
@@ -529,7 +533,8 @@ const FIELDS_MAP = {
     9: "Memos",
     10: "Args",
     11: "SignerEntries",
-    12: "Signers"
+    12: "Signers",
+    14: "TokenInfos"
   },
 
   // Uncommon types
@@ -665,6 +670,8 @@ const INVERSE_FIELDS_MAP = {
   ContractMethod: [7, 17],
   Parameter: [7, 18],
   MethodSignature: [7, 20],
+  InfoData: [7, 21],
+  InfoType: [7, 22],
   Account: [8, 1],
   Owner: [8, 2],
   Destination: [8, 3],
@@ -691,6 +698,7 @@ const INVERSE_FIELDS_MAP = {
   Arg: [14, 11],
   SignerEntry: [14, 12],
   Signer: [14, 13],
+  TokenInfo: [14, 15],
   SigningAccounts: [15, 2],
   TxnSignatures: [15, 3],
   Signatures: [15, 4],
@@ -703,6 +711,7 @@ const INVERSE_FIELDS_MAP = {
   Args: [15, 10],
   SignerEntries: [15, 11],
   Signers: [15, 12],
+  TokenInfos: [15, 14],
   CloseResolution: [16, 1],
   TemplateEntryType: [16, 2],
   TransactionResult: [16, 3],
