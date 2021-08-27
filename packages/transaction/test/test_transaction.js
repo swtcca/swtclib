@@ -1,6 +1,7 @@
 const chai = require("chai")
 const expect = chai.expect
-const Transaction = require("../").Transaction
+const { Wallet } = require("@swtc/wallet")
+const Transaction = require("..").Factory(Wallet)
 const Event = require("events").EventEmitter
 const Remote = require("./remote").Remote
 const config = require("../../.conf/config")
@@ -277,8 +278,7 @@ describe("test Transaction", function () {
       let inst = new Transaction(remote)
       let sha = "19db22e0ca8b5b3c285cfbaef9386cf7d062cbb1"
       let testData = {
-        path:
-          '[[{"account":"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or","type":1,"type_hex":"0000000000000001"},{"currency":"SWT","type":16,"type_hex":"0000000000000010"}]]',
+        path: '[[{"account":"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or","type":1,"type_hex":"0000000000000001"},{"currency":"SWT","type":16,"type_hex":"0000000000000010"}]]',
         choice: "1"
       }
       remote._paths.set(sha, testData)
@@ -295,8 +295,7 @@ describe("test Transaction", function () {
       let inst = new Transaction(remote)
       let sha = "19db22e0ca8b5b3c285cfbaef9386cf7d062cbb1"
       let testData = {
-        path:
-          '[[{"account":"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or","type":1,"type_hex":"0000000000000001"},{"currency":"SWT","type":16,"type_hex":"0000000000000010"}]]',
+        path: '[[{"account":"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or","type":1,"type_hex":"0000000000000001"},{"currency":"SWT","type":16,"type_hex":"0000000000000010"}]]',
         choice: {
           currency: "JSECT",
           issuer: testAddress,
@@ -321,8 +320,7 @@ describe("test Transaction", function () {
       let inst = new Transaction(remote)
       let sha = "19db22e0ca8b5b3c285cfbaef9386cf7d062cbb1"
       let testData = {
-        path:
-          '[[{"account":"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or","type":1,"type_hex":"0000000000000001"},{"currency":"SWT","type":16,"type_hex":"0000000000000010"}]]',
+        path: '[[{"account":"jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or","type":1,"type_hex":"0000000000000001"},{"currency":"SWT","type":16,"type_hex":"0000000000000010"}]]',
         choice: 0.002
       }
       remote._paths.set(sha, testData)

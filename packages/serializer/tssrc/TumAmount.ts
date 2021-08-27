@@ -16,9 +16,8 @@ import { isNumber } from "./Utils"
 //
 
 const Factory = (Wallet = WalletFactory("jingtum")) => {
-  const { isTumCode, isAmount, isCurrency, isCustomTum } = isTumCodeFactory(
-    Wallet
-  )
+  const { isTumCode, isAmount, isCurrency, isCustomTum } =
+    isTumCodeFactory(Wallet)
   return class Amount {
     public static from_json(j): Amount {
       return new Amount().parse_json(j)
@@ -268,9 +267,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
           if (in_json.issuer && Wallet.isValidAddress(in_json.issuer)) {
             this._issuer = in_json.issuer
             // TODO, need to find a better way for extracting the exponent and digits
-            const vpow = Number(in_json.value)
-              .toExponential()
-              .toString()
+            const vpow = Number(in_json.value).toExponential().toString()
             const len = Number(vpow.substr(vpow.lastIndexOf("e") + 1))
             const offset = 15 - len
             const factor = Math.pow(10, offset)
@@ -295,6 +292,6 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
   }
 }
 
-const Amount = Factory()
+// const Amount = Factory()
 
-export { Factory, Amount }
+export { Factory }

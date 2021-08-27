@@ -787,6 +787,7 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
   }
 
   return {
+    guomi: Wallet.guomi,
     isValidAmount,
     isValidAmount0,
     parseAmount,
@@ -822,4 +823,5 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
 }
 
 const utils = Factory()
-export { Factory, utils }
+const utilsGm = Factory(WalletFactory("guomi"))
+export { Factory, utils, utilsGm }

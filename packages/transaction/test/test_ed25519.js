@@ -1,8 +1,8 @@
 const chai = require("chai")
 const expect = chai.expect
 const Remote = require("./remote").Remote
-const Transaction = require("../").Transaction
-const Wallet = Transaction.Wallet
+const { Wallet } = require("@swtc/wallet")
+const Transaction = require("..").Factory(Wallet)
 const Serializer = Transaction.Serializer
 const config = require("../../.conf/config")
 const remote = new Remote()
@@ -50,25 +50,25 @@ const TX_PAY_MULTISIGN = {
 const so_sign = new Serializer(blob_sign_ed25519)
 const so_multisign = new Serializer(blob_multisign_ed25519)
 
-describe("sign swith ed25519, serializer", function() {
+describe("sign swith ed25519, serializer", function () {
   let tx = new Transaction({}, remote)
   tx.tx_json = Object.assign({}, TX_PAY_SIGN)
 
-  describe("test signing ed25519 hash", function() {
-    it("should match tx hash", function() {
+  describe("test signing ed25519 hash", function () {
+    it("should match tx hash", function () {
       expect(so_sign.hash(0x54584e00)).to.equal(hash_blob_sign_ed25519)
     })
   })
 
-  describe("test sign with ed25519", function() {
-    it("should match blob", async function() {
+  describe("test sign with ed25519", function () {
+    it("should match blob", async function () {
       await tx.signPromise(secret_ed)
       expect(tx.tx_json.blob).to.equal(blob_sign_ed25519)
     })
   })
 
-  describe("test sign with ed25519", function() {
-    it("should match signature", async function() {
+  describe("test sign with ed25519", function () {
+    it("should match signature", async function () {
       await tx.signPromise(secret_ed)
       expect(tx.tx_json.blob).to.equal(blob_sign_ed25519)
       expect(tx.tx_json.TxnSignature).to.equal(so_sign.to_json().TxnSignature)
@@ -76,20 +76,20 @@ describe("sign swith ed25519, serializer", function() {
   })
 })
 
-describe("multisign swith ecdsa / eddsa, serializer", function() {
+describe("multisign swith ecdsa / eddsa, serializer", function () {
   let tx = new Transaction({}, remote)
   tx.tx_json = Object.assign({}, TX_PAY_MULTISIGN)
 
-  describe("test multiSigning ed25519 hash", function() {
-    it("should match multisign tx hash", function() {
+  describe("test multiSigning ed25519 hash", function () {
+    it("should match multisign tx hash", function () {
       expect(so_multisign.hash(0x54584e00)).to.equal(
         hash_blob_multisign_ed25519
       )
     })
   })
 
-  describe("test multisign with ed25519", function() {
-    it("should match multisign ed25519 signature", function() {
+  describe("test multisign with ed25519", function () {
+    it("should match multisign ed25519 signature", function () {
       tx.multiSigning(wallet_ed)
       expect(tx.tx_json.Signers[0].TxnSignature).to.equal(
         so_multisign.to_json().Signers[1].TxnSignature
@@ -97,8 +97,8 @@ describe("multisign swith ecdsa / eddsa, serializer", function() {
     })
   })
 
-  describe("test multisign with ecdsa", function() {
-    it("should match multisign ecdsa signature", function() {
+  describe("test multisign with ecdsa", function () {
+    it("should match multisign ecdsa signature", function () {
       tx.multiSigning(wallet_test)
       expect(tx.tx_json.Signers[1].TxnSignature).to.equal(
         so_multisign.to_json().Signers[0].TxnSignature
