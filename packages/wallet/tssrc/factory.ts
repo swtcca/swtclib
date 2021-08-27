@@ -15,11 +15,15 @@ const Factory: any = (token_or_chain = "jingtum") => {
   }
 
   const KeyPair = KeypairFactory(chain.code)
+  const guomi = KeyPair.guomi
 
   return class Wallet {
     public static token = chain.currency.toUpperCase()
     public static chain = chain.code.toLowerCase()
     public static KeyPair = KeyPair
+    public static seedFromPhrase = KeyPair.seedFromPhrase
+    public static hash = KeyPair.hash
+    public static guomi = guomi
     public static config = chain
     public static getCurrency(): string {
       return Wallet.token || "SWT"
@@ -78,7 +82,7 @@ const Factory: any = (token_or_chain = "jingtum") => {
 
     public static fromSecret(
       secret_or_private_key: string,
-      algorithm: IAlgorithm = "ecdsa-secp256k1"
+      algorithm: IAlgorithm = guomi ? "sm2p256v1" : "secp256k1"
     ): IWallet | null {
       try {
         let secret = secret_or_private_key
@@ -128,7 +132,7 @@ const Factory: any = (token_or_chain = "jingtum") => {
     public _secret
     constructor(
       secret_or_private_key: string,
-      algorithm: IAlgorithm = "ecdsa-secp256k1"
+      algorithm: IAlgorithm = "secp256k1"
     ) {
       // extend for hdwallet, take secret or privatekey, plugs algorithm for raw privateKey
       try {

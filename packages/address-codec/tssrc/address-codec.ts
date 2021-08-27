@@ -6,6 +6,7 @@ import baseCodec from "base-x"
 // Pure JavaScript hash functions in the browser, native hash functions in Node.js
 import createHash from "create-hash"
 import {
+  SM3,
   funcGetChain,
   funcSeqEqual as seqEqual,
   funcConcatArgs as concatArgs
@@ -77,7 +78,7 @@ export class Codec {
     opts: {
       versions: (number | number[])[]
       expectedLength?: number
-      versionTypes?: ["ed25519", "secp256k1"]
+      versionTypes?: string[]
     }
   ): {
     version: number[]
@@ -160,9 +161,11 @@ export function Factory(chain_or_token = "jingtum") {
   } else {
     alphabet = active_chain.ACCOUNT_ALPHABET
   }
+  const guomi = active_chain.guomi
   const codecOptions = {
-    sha256: (bytes: Uint8Array) =>
-      createHash("sha256").update(Buffer.from(bytes)).digest(),
+    sha256: guomi
+      ? (bytes: Uint8Array) => new SM3().update(bytes).digest()
+      : (bytes: Uint8Array) => createHash("sha256").update(bytes).digest(),
     alphabet
   }
   const codecWithAlphabet = new Codec(codecOptions)
@@ -171,7 +174,7 @@ export function Factory(chain_or_token = "jingtum") {
   // type is 'ed25519' or 'secp256k1'
   const encodeSeed = (
     entropy: Buffer,
-    type: "ed25519" | "secp256k1"
+    type: "ed25519" | "secp256k1" | "sm2p256v1"
   ): string => {
     if (entropy.length !== 16) {
       throw new Error("entropy must have length 16")
@@ -188,11 +191,11 @@ export function Factory(chain_or_token = "jingtum") {
   const decodeSeed = (
     seed: string,
     opts: {
-      versionTypes: ["ed25519", "secp256k1"]
+      versionTypes: string[]
       versions: (number | number[])[]
       expectedLength: number
     } = {
-      versionTypes: ["ed25519", "secp256k1"],
+      versionTypes: guomi ? ["ed25519", "sm2p256v1"] : ["ed25519", "secp256k1"],
       versions: [ED25519_SEED, FAMILY_SEED],
       expectedLength: 16
     }
@@ -248,6 +251,7 @@ export function Factory(chain_or_token = "jingtum") {
   }
 
   return {
+    guomi,
     chain: active_chain.code,
     codec: codecWithAlphabet,
     encode: codecWithAlphabet.encode,

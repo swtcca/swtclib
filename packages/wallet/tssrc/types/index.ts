@@ -19,4 +19,4 @@ export interface ICurrency {
   issuer: string
 }
 
-export type IAlgorithm = "ecdsa-secp256k1" | "ed25519"
+export type IAlgorithm = "ed25519" | "secp256k1" | "sm2p256v1"

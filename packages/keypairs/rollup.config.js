@@ -22,6 +22,7 @@ export default [
       "brorand",
       "elliptic",
       "inherits",
+      "@swtc/sm.js",
       "@swtc/common",
       "@swtc/address-codec"
     ],
