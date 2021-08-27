@@ -37,9 +37,16 @@ const MULTISIGN_JSON = {
 module.exports = {
   WSS_NODE: "wss://s.jingtum.com:5020",
   JT_NODE: "ws://swtcproxy.bcapps.ca:5020",
+  JT_NODE_GM: "ws://139.198.19.157:4920",
+  JT_NODE_GM_RPC: "http://139.198.19.157:4950",
   TEST_NODE: "ws://testnode.bcapps.ca:5030",
   testAddress: "jfdqBEDsbk3eMSXX2t7CGeu2RPkEjHs6ie",
   testSecret: "shVCQFSxkF7DLXkrHY8X2PBKCKxS9",
+  testAddressOffersGm: "jJFMRsG1uRvZRgYsMsRc9ZcArJ4kGNhFis",
+  testAddressGm: "j3TbonCBTcorBu7TeK57aDGTidqkuRMAsi",
+  testSecretGm: "sndZWd9nbsHR34om4eS3B6zM7CeHe",
+  testAddressGmEd: "ja48NQV8n4ymru8ZrzG2Gs2G5TjjBSfDPF",
+  testSecretGmEd: "sEdT6GjwtHJ86zSrj474iPpgNVUiX2r",
   testDestinationAddress: "jLXCzapdDd1K11EtUv4Nz4agj8DPVbARjk",
   testCreateHash:
     "DE0C9D201B6CAAEE81908B6D0AF9548BCE1073CD7B1C2E3541A2081B3537F5E9",
