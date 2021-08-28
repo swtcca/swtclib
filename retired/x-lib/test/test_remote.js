@@ -18,21 +18,21 @@ let {
   testPlatform
 } = config
 
-describe("test remote", function() {
-  describe("test constructor", function() {
-    xit("throw error if the arguments is undefined", function() {
+describe("test remote", function () {
+  describe("test constructor", function () {
+    xit("throw error if the arguments is undefined", function () {
       let remote = new Remote()
       expect(remote.type).to.be.an("error")
     })
 
-    it("the default _token is swt", function() {
+    it("the default _token is swt", function () {
       let remote = new Remote({
         server: JT_NODE
       })
       expect(remote._token.toLowerCase()).to.be.equal("swt")
     })
 
-    it("if the server is ws", function() {
+    it("if the server is ws", function () {
       let remote = new Remote({
         server: TEST_NODE
       })
@@ -40,8 +40,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test _updateServerStatus", function() {
-    it("the server is offline if the online states does not include the server status", function() {
+  describe("test _updateServerStatus", function () {
+    it("the server is offline if the online states does not include the server status", function () {
       let remote = new Remote({
         server: JT_NODE
       })
@@ -54,7 +54,7 @@ describe("test remote", function() {
       expect(remote.isConnected()).to.equal(false)
     })
 
-    it("connect in error if the _server is empty", function(done) {
+    it("connect in error if the _server is empty", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -68,7 +68,7 @@ describe("test remote", function() {
       })
     })
 
-    it("not call disconnet if the _server is empty", function() {
+    it("not call disconnet if the _server is empty", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -81,8 +81,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestServerInfo", function() {
-    xit("should request server info successfully", function(done) {
+  describe("test requestServerInfo", function () {
+    xit("should request server info successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: WSS_NODE,
@@ -102,8 +102,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestPeers", function() {
-    it("should request peers successfully", function() {
+  describe("test requestPeers", function () {
+    it("should request peers successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -115,8 +115,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestLedgerClosed", function() {
-    xit("should request ledger closed successfully", function(done) {
+  describe("test requestLedgerClosed", function () {
+    xit("should request ledger closed successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -135,8 +135,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestLedger", function() {
-    xit("should request ledger successfully if the option of full is true", function(done) {
+  describe("test requestLedger", function () {
+    xit("should request ledger successfully if the option of full is true", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -159,7 +159,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request ledger successfully if the option of expand is true", function() {
+    it("should request ledger successfully if the option of expand is true", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -175,7 +175,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request ledger successfully if the option of transactions is true", function() {
+    it("should request ledger successfully if the option of transactions is true", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -197,7 +197,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request ledger successfully if the option of accounts is true", function() {
+    it("should request ledger successfully if the option of accounts is true", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -213,7 +213,7 @@ describe("test remote", function() {
       })
     })
 
-    xit("should request ledger successfully if the option is empty object", function(done) {
+    xit("should request ledger successfully if the option is empty object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -232,7 +232,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -247,8 +247,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestTx", function() {
-    xit("should request tx successfully", function(done) {
+  describe("test requestTx", function () {
+    xit("should request tx successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -275,7 +275,7 @@ describe("test remote", function() {
       })
     })
 
-    xit("should request tx in error", function(done) {
+    xit("should request tx in error", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -284,8 +284,7 @@ describe("test remote", function() {
       })
       remote.connect((err, result) => {
         let req = remote.requestTx({
-          hash:
-            "20753B803666F729F99B3F2E90AD4E9731572D773B0E3E0DEB733197196F4EB5"
+          hash: "20753B803666F729F99B3F2E90AD4E9731572D773B0E3E0DEB733197196F4EB5"
         })
         expect(req._command).to.equal("tx")
         req.submit((err, result) => {
@@ -297,7 +296,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -311,7 +310,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the hash is invalid", function(done) {
+    it("throw error if the hash is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -328,8 +327,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestAccountInfo", function() {
-    xit("should request account info successfully", function(done) {
+  describe("test requestAccountInfo", function () {
+    xit("should request account info successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -360,7 +359,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the peer is valid, limit is less than 0 and marker is valid", function() {
+    it("if the peer is valid, limit is less than 0 and marker is valid", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -384,7 +383,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the limit is more than 1e9", function() {
+    it("if the limit is more than 1e9", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -406,7 +405,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the ledger is hash code", function() {
+    it("if the ledger is hash code", function () {
       this.timeout(0)
       let remote = new Remote({
         server: TEST_NODE,
@@ -428,7 +427,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -442,7 +441,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the address is invalid", function(done) {
+    it("throw error if the address is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -459,8 +458,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestAccountTums", function() {
-    xit("should request account tums successfully", function(done) {
+  describe("test requestAccountTums", function () {
+    xit("should request account tums successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -486,7 +485,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -501,8 +500,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestAccountRelations", function() {
-    it("should request account relations successfully if the type is trust", function(done) {
+  describe("test requestAccountRelations", function () {
+    it("should request account relations successfully if the type is trust", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -529,7 +528,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request account relations successfully if the type is freeze", function() {
+    it("should request account relations successfully if the type is freeze", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -549,7 +548,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request account relations successfully if the type is authorize", function() {
+    it("should request account relations successfully if the type is authorize", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -569,7 +568,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -583,7 +582,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the type is invalid", function(done) {
+    it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -601,7 +600,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the type is unfreeze", function(done) {
+    it("throw error if the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -620,8 +619,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestAccountOffers", function() {
-    it("should request account offers successfully", function(done) {
+  describe("test requestAccountOffers", function () {
+    it("should request account offers successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -648,7 +647,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -663,8 +662,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestAccountTx", function() {
-    it("should request account tx successfully with more options", function(done) {
+  describe("test requestAccountTx", function () {
+    it("should request account tx successfully with more options", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -689,7 +688,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request account tx successfully", function() {
+    it("should request account tx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -724,7 +723,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -738,7 +737,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -755,8 +754,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestOrderBook", function() {
-    it("should request order book successfully", function(done) {
+  describe("test requestOrderBook", function () {
+    it("should request order book successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -797,7 +796,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should request order book successfully if the option of taker is empty", function() {
+    it("should request order book successfully if the option of taker is empty", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -829,7 +828,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -843,7 +842,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the gets is invalid", function(done) {
+    it("throw error if the gets is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -863,7 +862,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the pays is invalid", function(done) {
+    it("throw error if the pays is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -884,8 +883,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestBrokerage", function() {
-    it("if the options is valid", function() {
+  describe("test requestBrokerage", function () {
+    it("if the options is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -901,7 +900,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -915,7 +914,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is not object", function(done) {
+    it("throw error if the account is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -931,7 +930,7 @@ describe("test remote", function() {
       })
     })
 
-    xit("throw error if the app is not object", function(done) {
+    xit("throw error if the app is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -948,7 +947,7 @@ describe("test remote", function() {
       })
     })
 
-    xit("throw error if the currency is not object", function(done) {
+    xit("throw error if the currency is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -967,8 +966,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test requestPathFind", function() {
-    it("should request path successfully", function(done) {
+  describe("test requestPathFind", function () {
+    it("should request path successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1000,7 +999,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1014,7 +1013,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid", function(done) {
+    it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1030,7 +1029,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the destination is invalid", function(done) {
+    it("throw error if the destination is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1047,7 +1046,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the amount is invalid", function(done) {
+    it("throw error if the amount is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1065,7 +1064,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the amount is more than 100000000000", function(done) {
+    it("throw error if the amount is more than 100000000000", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1090,8 +1089,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test createAccountStub", function() {
-    it("create account stub successfully", function() {
+  describe("test createAccountStub", function () {
+    it("create account stub successfully", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -1102,8 +1101,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test createOrderBookStub", function() {
-    it("create order book stub successfully", function() {
+  describe("test createOrderBookStub", function () {
+    it("create order book stub successfully", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -1114,8 +1113,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildOfferCreateTx", function() {
-    it("should buildOfferCreateTx successfully if the type is sell", function() {
+  describe("test buildOfferCreateTx", function () {
+    it("should buildOfferCreateTx successfully if the type is sell", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1151,7 +1150,7 @@ describe("test remote", function() {
       })
     })
 
-    it("should buildOfferCreateTx successfully: case 2", function() {
+    it("should buildOfferCreateTx successfully: case 2", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1189,7 +1188,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1203,7 +1202,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid", function(done) {
+    it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1219,7 +1218,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the type is invalid", function(done) {
+    it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1236,7 +1235,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the taker_gets is string but invalid", function(done) {
+    it("throw error if the taker_gets is string but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1254,7 +1253,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the taker_gets is object but invalid", function(done) {
+    it("throw error if the taker_gets is object but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1272,7 +1271,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the taker_pays is string but invalid", function(done) {
+    it("throw error if the taker_pays is string but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1291,7 +1290,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the taker_pays is object but invalid", function(done) {
+    it("throw error if the taker_pays is object but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1310,7 +1309,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the platform is not valid address", function(done) {
+    it("throw error if the platform is not valid address", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1339,8 +1338,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildPaymentTx", function() {
-    it("should buildPaymentTx successfully", function() {
+  describe("test buildPaymentTx", function () {
+    it("should buildPaymentTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1366,7 +1365,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1380,7 +1379,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is not object", function(done) {
+    it("throw error if the account is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1396,7 +1395,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the destination is not object", function(done) {
+    it("throw error if the destination is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1413,7 +1412,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the amount is not object", function(done) {
+    it("throw error if the amount is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1432,8 +1431,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildOfferCancelTx", function() {
-    it("should buildOfferCancelTx successfully", function() {
+  describe("test buildOfferCancelTx", function () {
+    it("should buildOfferCancelTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1453,7 +1452,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1467,7 +1466,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is not object", function(done) {
+    it("throw error if the account is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1483,7 +1482,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the sequence is not object", function(done) {
+    it("throw error if the sequence is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1501,8 +1500,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test deployContractTx", function() {
-    it("should deployContractTx successfully", function() {
+  describe("test deployContractTx", function () {
+    it("should deployContractTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1533,7 +1532,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1547,7 +1546,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid", function(done) {
+    it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1563,7 +1562,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the amount is invalid", function(done) {
+    it("throw error if the amount is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1580,7 +1579,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the payload is not string", function(done) {
+    it("throw error if the payload is not string", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1598,7 +1597,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the params is not array", function(done) {
+    it("throw error if the params is not array", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1618,8 +1617,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test callContractTx", function() {
-    it("should callContractTx successfully", function() {
+  describe("test callContractTx", function () {
+    it("should callContractTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1650,7 +1649,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1664,7 +1663,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid", function(done) {
+    it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1680,7 +1679,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the destination is invalid", function(done) {
+    it("throw error if the destination is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1697,7 +1696,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the params is not array", function(done) {
+    it("throw error if the params is not array", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1715,7 +1714,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the item in params is not string", function(done) {
+    it("throw error if the item in params is not string", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1734,7 +1733,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the func is not string", function(done) {
+    it("throw error if the func is not string", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1754,8 +1753,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildSignTx", function() {
-    it("should buildSignTx successfully", function() {
+  describe("test buildSignTx", function () {
+    it("should buildSignTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1773,7 +1772,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1788,8 +1787,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildBrokerageTx", function() {
-    it("should buildBrokerageTx successfully", function() {
+  describe("test buildBrokerageTx", function () {
+    it("should buildBrokerageTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1819,7 +1818,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the options is not object", function(done) {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1833,7 +1832,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid", function(done) {
+    it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1849,7 +1848,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the molecule is invalid", function(done) {
+    it("throw error if the molecule is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1866,7 +1865,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the denominator is invalid", function(done) {
+    it("throw error if the denominator is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1890,7 +1889,7 @@ describe("test remote", function() {
       })
     })
 
-    xit("throw error if the app is invalid", function(done) {
+    xit("throw error if the app is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1910,7 +1909,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the molecule is more than denominator", function(done) {
+    it("throw error if the molecule is more than denominator", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1931,7 +1930,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the amount is invalid", function(done) {
+    it("throw error if the amount is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1952,8 +1951,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildAccountSetTx", function() {
-    it("throw error if the options is not object", function(done) {
+  describe("test buildAccountSetTx", function () {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1967,7 +1966,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the type is invalid", function(done) {
+    it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -1983,7 +1982,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid when the type is property", function(done) {
+    it("throw error if the account is invalid when the type is property", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2000,7 +1999,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the set and clear flag is string when the type is property", function() {
+    it("if the set and clear flag is string when the type is property", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2023,7 +2022,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the set and clear flag is number  when the type is property", function() {
+    it("if the set and clear flag is number  when the type is property", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2046,7 +2045,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the set and clear flag is empty  when the type is property", function() {
+    it("if the set and clear flag is empty  when the type is property", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2065,7 +2064,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid when the type is delegate", function(done) {
+    it("throw error if the account is invalid when the type is delegate", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2082,7 +2081,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the delegate_key is invalid when the type is delegate", function(done) {
+    it("throw error if the delegate_key is invalid when the type is delegate", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2100,7 +2099,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the options is valid when the type is delegate", function() {
+    it("if the options is valid when the type is delegate", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2121,7 +2120,7 @@ describe("test remote", function() {
       })
     })
 
-    xit("return null when the type is signer", function() {
+    xit("return null when the type is signer", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2135,8 +2134,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test buildRelationTx", function() {
-    it("throw error if the options is not object", function(done) {
+  describe("test buildRelationTx", function () {
+    it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2150,7 +2149,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the type is invalid", function(done) {
+    it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2166,7 +2165,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid when the type is trust", function(done) {
+    it("throw error if the account is invalid when the type is trust", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2183,7 +2182,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the limit is invalid when the type is trust", function(done) {
+    it("throw error if the limit is invalid when the type is trust", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2201,7 +2200,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the options is valid when the type is trust", function() {
+    it("if the options is valid when the type is trust", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2236,7 +2235,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the quality_in and quality_out is empty when the type is trust", function() {
+    it("if the quality_in and quality_out is empty when the type is trust", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2265,7 +2264,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid when the type is authorize", function(done) {
+    it("throw error if the account is invalid when the type is authorize", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2282,7 +2281,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the target is invalid when the type is authorize", function(done) {
+    it("throw error if the target is invalid when the type is authorize", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2300,7 +2299,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the limit is invalid when the type is authorize", function(done) {
+    it("throw error if the limit is invalid when the type is authorize", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2318,7 +2317,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the quality_in and quality_out is empty when the type is authorize", function() {
+    it("if the quality_in and quality_out is empty when the type is authorize", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2350,7 +2349,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid when the type is freeze", function(done) {
+    it("throw error if the account is invalid when the type is freeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2367,7 +2366,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the target is invalid when the type is freeze", function(done) {
+    it("throw error if the target is invalid when the type is freeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2385,7 +2384,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the limit is invalid when the type is freeze", function(done) {
+    it("throw error if the limit is invalid when the type is freeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2403,7 +2402,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the quality_in and quality_out is empty when the type is freeze", function() {
+    it("if the quality_in and quality_out is empty when the type is freeze", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2435,7 +2434,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the account is invalid when the type is unfreeze", function(done) {
+    it("throw error if the account is invalid when the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2452,7 +2451,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the target is invalid when the type is unfreeze", function(done) {
+    it("throw error if the target is invalid when the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2470,7 +2469,7 @@ describe("test remote", function() {
       })
     })
 
-    it("throw error if the limit is invalid when the type is unfreeze", function(done) {
+    it("throw error if the limit is invalid when the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2488,7 +2487,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the quality_in and quality_out is empty when the type is unfreeze", function() {
+    it("if the quality_in and quality_out is empty when the type is unfreeze", function () {
       this.timeout(0)
       let remote = new Remote({
         server: JT_NODE,
@@ -2521,8 +2520,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test subscribe", function() {
-    it("if the streams is empty", function() {
+  describe("test subscribe", function () {
+    it("if the streams is empty", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2533,7 +2532,7 @@ describe("test remote", function() {
       expect(req.message).to.deep.equal({})
     })
 
-    it("if the streams is not array", function() {
+    it("if the streams is not array", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2546,7 +2545,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the streams is array", function() {
+    it("if the streams is array", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2560,8 +2559,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test unsubscribe", function() {
-    it("if the streams is empty", function() {
+  describe("test unsubscribe", function () {
+    it("if the streams is empty", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2572,7 +2571,7 @@ describe("test remote", function() {
       expect(req.message).to.deep.equal({})
     })
 
-    it("if the streams is not array", function() {
+    it("if the streams is not array", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2585,7 +2584,7 @@ describe("test remote", function() {
       })
     })
 
-    it("if the streams is array", function() {
+    it("if the streams is array", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2599,8 +2598,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test _handleMessage", function() {
-    it("if the data is not object", function() {
+  describe("test _handleMessage", function () {
+    it("if the data is not object", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2619,7 +2618,7 @@ describe("test remote", function() {
       expect(s5.called).to.equal(false)
     })
 
-    it("if the type is ledgerClosed", function() {
+    it("if the type is ledgerClosed", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2642,7 +2641,7 @@ describe("test remote", function() {
       expect(s5.called).to.equal(false)
     })
 
-    it("if the type is serverStatus", function() {
+    it("if the type is serverStatus", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2665,7 +2664,7 @@ describe("test remote", function() {
       expect(s5.called).to.equal(false)
     })
 
-    it("if the type is response", function() {
+    it("if the type is response", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2688,7 +2687,7 @@ describe("test remote", function() {
       expect(s5.called).to.equal(false)
     })
 
-    it("if the type is transaction", function() {
+    it("if the type is transaction", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2714,7 +2713,7 @@ describe("test remote", function() {
       expect(s5.called).to.equal(false)
     })
 
-    it("if the type is path_find", function() {
+    it("if the type is path_find", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2738,8 +2737,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test _handleTransaction", function() {
-    it("if the ledger index of data is more than ledger index of _status", function() {
+  describe("test _handleTransaction", function () {
+    it("if the ledger index of data is more than ledger index of _status", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2761,7 +2760,7 @@ describe("test remote", function() {
       expect(spy.args[0][1]).to.deep.equal(data)
     })
 
-    it("if the ledger index of data is not more than ledger index of _status", function() {
+    it("if the ledger index of data is not more than ledger index of _status", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2784,8 +2783,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test newListener", function() {
-    it("if the type is removeListener", function() {
+  describe("test newListener", function () {
+    it("if the type is removeListener", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2794,7 +2793,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "subscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("removeListener", callback)
       remote.emit("removeListener", callback)
       expect(s1.called).to.equal(false)
@@ -2802,7 +2801,7 @@ describe("test remote", function() {
       sinon.restore()
     })
 
-    it("if the type is transactions", function() {
+    it("if the type is transactions", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2811,7 +2810,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "subscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("transactions", callback)
       remote.emit("transactions", callback)
       expect(s1.calledOnce).to.equal(true)
@@ -2820,7 +2819,7 @@ describe("test remote", function() {
       sinon.restore()
     })
 
-    it("if the type is ledger_closed", function() {
+    it("if the type is ledger_closed", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2829,7 +2828,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "subscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("ledger_closed", callback)
       remote.emit("ledger_closed", callback)
       expect(s1.calledOnce).to.equal(true)
@@ -2838,7 +2837,7 @@ describe("test remote", function() {
       sinon.restore()
     })
 
-    it("if the type is others", function() {
+    it("if the type is others", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2847,7 +2846,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "subscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("test", callback)
       remote.emit("test", callback)
       expect(s1.called).to.equal(false)
@@ -2856,8 +2855,8 @@ describe("test remote", function() {
     })
   })
 
-  describe("test removeListener", function() {
-    it("if it is not connected", function() {
+  describe("test removeListener", function () {
+    it("if it is not connected", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2865,7 +2864,7 @@ describe("test remote", function() {
       })
       let s1 = sinon.spy(remote, "unsubscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("transactions", callback)
       remote.removeListener("transactions", callback)
       expect(s1.called).to.equal(false)
@@ -2873,7 +2872,7 @@ describe("test remote", function() {
       sinon.restore()
     })
 
-    it("if the type is transactions", function() {
+    it("if the type is transactions", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2882,7 +2881,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "unsubscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("transactions", callback)
       remote.removeListener("transactions", callback)
       expect(s1.calledOnce).to.equal(true)
@@ -2891,7 +2890,7 @@ describe("test remote", function() {
       sinon.restore()
     })
 
-    it("if the type is others", function() {
+    it("if the type is others", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2900,7 +2899,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "unsubscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("test", callback)
       remote.removeListener("test", callback)
       expect(s1.called).to.equal(false)
@@ -2908,7 +2907,7 @@ describe("test remote", function() {
       sinon.restore()
     })
 
-    it("if the type is ledger_closed", function() {
+    it("if the type is ledger_closed", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -2917,7 +2916,7 @@ describe("test remote", function() {
       remote._server._connected = true
       let s1 = sinon.spy(remote, "unsubscribe")
       let s2 = sinon.spy(Request.prototype, "submit")
-      let callback = function() {}
+      let callback = function () {}
       remote.on("ledger_closed", callback)
       remote.removeListener("ledger_closed", callback)
       expect(s1.calledOnce).to.equal(true)

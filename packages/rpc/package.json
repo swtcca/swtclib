@@ -24,6 +24,7 @@
     "build": "tsc && webpack",
     "tslint": "tslint tssrc/*.ts",
     "test": "mocha \"test/test*.js\"",
+    "test:guomi": "mocha \"test/guomi*.js\"",
     "test:api": "mocha \"test/test*.js\""
   },
   "repository": {

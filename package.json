@@ -19,7 +19,8 @@
     "pretty": "lerna run pretty-quick --stream",
     "sync_version": "node scripts/sync_version.js",
     "test": "npm run bootstrap && npm run lint && npm run testonly",
-    "testonly": "lerna run compile --stream && lerna run build --stream && lerna run test --stream",
+    "testguomi": "lerna run compile --stream && lerna run build --stream && lerna run test:guomi --stream",
+    "testonly": "lerna run compile --stream && lerna run build --stream && lerna run test --stream && lerna run test:guomi --stream",
     "testreal": "lerna run compile --stream && lerna run build --stream && lerna run test:api --stream"
   },
   "dependencies": {

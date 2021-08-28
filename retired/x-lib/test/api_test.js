@@ -19,10 +19,10 @@ let {
   issuer
 } = config
 
-describe("test async actions", function() {
+describe("test async actions", function () {
   this.timeout(10000)
-  describe("test .connectPromise() requestServerInfo", function() {
-    it("should request server info successfully", async function() {
+  describe("test .connectPromise() requestServerInfo", function () {
+    it("should request server info successfully", async function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -40,8 +40,8 @@ describe("test async actions", function() {
     })
   })
 
-  describe("test submitPromise() requestLedgerClosed", function() {
-    it("should request ledger closed successfully", async function() {
+  describe("test submitPromise() requestLedgerClosed", function () {
+    it("should request ledger closed successfully", async function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -56,8 +56,8 @@ describe("test async actions", function() {
     })
   })
 
-  describe("test requestAccountInfo", function() {
-    it("should request account info successfully", async function() {
+  describe("test requestAccountInfo", function () {
+    it("should request account info successfully", async function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true,
@@ -85,8 +85,8 @@ describe("test async actions", function() {
     })
   })
 
-  describe("test Tx actions", function() {
-    it("should Tx signPromise() submitPromise()", async function() {
+  describe("test Tx actions", function () {
+    it("should Tx signPromise() submitPromise()", async function () {
       let remote = new Remote({
         server: "ws://ts5.jingtum.com:5030",
         local_sign: true,

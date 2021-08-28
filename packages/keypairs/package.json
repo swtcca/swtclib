@@ -47,6 +47,7 @@
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tslint": "tslint tssrc/*.ts",
     "test:jest": "jest",
+    "test:guomi": "mocha \"test/guomi*.js\"",
     "test": "mocha test/test*js"
   },
   "repository": {

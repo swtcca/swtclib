@@ -8,9 +8,9 @@ const sinon = require("sinon")
 const utils = Remote.utils
 let { JT_NODE, testAddress } = config
 
-describe("test account", function() {
-  describe("test constructor", function() {
-    it("if the given token is empty", function() {
+describe("test account", function () {
+  describe("test constructor", function () {
+    it("if the given token is empty", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -21,9 +21,9 @@ describe("test account", function() {
     })
   })
 
-  describe("test transactions event", function() {
+  describe("test transactions event", function () {
     // temporary
-    it("emit transactions with meta data", function() {
+    it("emit transactions with meta data", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -36,7 +36,7 @@ describe("test account", function() {
     })
 
     // temporary
-    it("emit transactions without meta data", function() {
+    it("emit transactions without meta data", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -49,26 +49,26 @@ describe("test account", function() {
     })
   })
 
-  describe("test newListener", function() {
-    it("if the new event name is not removeListener and the account is valid", function() {
+  describe("test newListener", function () {
+    it("if the new event name is not removeListener and the account is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let account = new Account(remote)
-      let callback = function() {}
+      let callback = function () {}
       account.on(testAddress, callback)
       account.emit(testAddress, "test")
       expect(account._accounts[testAddress]).to.deep.equal(callback)
     })
 
-    it("if the new event name is not removeListener and the account is invalid", function() {
+    it("if the new event name is not removeListener and the account is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let account = new Account(remote)
-      let callback = function() {}
+      let callback = function () {}
       account.on(testAddress.substring(1), callback)
       account.emit(testAddress.substring(1), "test")
       expect(account.account).to.be.an("error")
@@ -76,14 +76,14 @@ describe("test account", function() {
     })
   })
 
-  describe("test removeListener", function() {
-    it("if the account is valid", function() {
+  describe("test removeListener", function () {
+    it("if the account is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let account = new Account(remote)
-      let callback = function() {}
+      let callback = function () {}
       account.on(testAddress, callback)
       account.emit(testAddress, "test")
       expect(account._accounts[testAddress]).to.deep.equal(callback)
@@ -91,13 +91,13 @@ describe("test account", function() {
       expect(account._accounts).to.deep.equal({})
     })
 
-    it("if the account is invalid", function() {
+    it("if the account is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let account = new Account(remote)
-      let callback = function() {}
+      let callback = function () {}
       account.on(testAddress.substring(1), callback)
       account.emit(testAddress.substring(1), "test")
       expect(account._accounts).to.deep.equal({})
