@@ -1,3 +1,7 @@
-import { Remote } from "./remote"
+import { Factory } from "./factory"
+import { WalletGm } from "@swtc/wallet"
 
-export { Remote }
+const Remote = Factory()
+const RemoteGm = Factory(WalletGm)
+
+export { Factory, Remote, RemoteGm }

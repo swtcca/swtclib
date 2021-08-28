@@ -22,10 +22,12 @@
     "prettier:check": "prettier -c tssrc/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
     "tsc": "tsc",
+    "mocha": "mocha",
     "compile": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build": "tsc; webpack",
     "rollup": "tsc; rollup -c",
     "tslint": "tslint tssrc/*.ts",
+    "test:guomi": "mocha \"test/guomi*.js\"",
     "test": "mocha \"test/test*.js\"",
     "test:api": "mocha \"test/*.js\"",
     "test:nyc": "nyc --extension=.ts --reporter=html --reporter=text mocha test/test*.js"
