@@ -239,8 +239,8 @@ export function Factory(chain_or_token = "jingtum") {
     // return guomi ? methods[`${algorithm}guomi`] : methods[algorithm]
     return algorithm === "ed25519"
       ? guomi
-        ? methods["ed25519guomi"]
-        : methods["ed25519"]
+        ? methods.ed25519guomi
+        : methods.ed25519
       : methods[algorithm]
   }
 

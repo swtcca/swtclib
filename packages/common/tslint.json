@@ -2,6 +2,7 @@
   "defaultSeverity": "error",
   "extends": ["tslint:recommended"],
   "rules": {
+    "no-console": false,
     "array-type": [true, "array"],
     "curly": [true, "ignore-same-line"],
     "arrow-parens": [true, "ban-single-arg-parens"],
