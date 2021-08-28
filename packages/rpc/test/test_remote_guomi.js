@@ -1,8 +1,8 @@
 const expect = require("chai").expect
 //import Remote from '../src/index'
-const Remote = require("../").Remote
+const Remote = require("../").RemoteGm
 const DATA = require("../../.conf/config")
-const remote = new Remote({ server: DATA.JT_NODE_RPC })
+const remote = new Remote({ server: DATA.JT_NODE_GM_RPC })
 
 let payid = "should be updated during payments query"
 let txid = "should be updated during transactions query"
@@ -11,7 +11,7 @@ let ledger_hash = "should be updated during ledger query"
 let ledger_txid
 txid = "B57BB8F69DABCAE934A38C067F38D060940A484F8D6DEE5C167653CB7208B07F"
 
-describe("Remote JINGTUM", function () {
+describe("Remote GUOMI", function () {
   describe("constructor", function () {
     it("instantiate a default Remote successfully", function () {
       let remote = new Remote({})
@@ -159,12 +159,12 @@ describe("Remote JINGTUM", function () {
     it("get ledger entry", async function () {
       let data = await remote.rpcLedgerEntry({
         type: "account_root",
-        account_root: DATA.address
+        account_root: DATA.addressGm
       })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("node")
-      expect(data.node.Account).to.be.equal(DATA.address)
+      expect(data.node.Account).to.be.equal(DATA.addressGm)
     })
   })
   describe("rpcTx", function () {
@@ -175,6 +175,7 @@ describe("Remote JINGTUM", function () {
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("txs")
       txid = data.txs[0].hash
+      console.log(txid)
       ledger_txid = data.txs[0].ledger_index
     })
     it("get transaction", async function () {
@@ -216,7 +217,7 @@ describe("Remote JINGTUM", function () {
       expect(data).to.have.property("tx_json")
       // expect(data.tx_json.hash).to.be.equal(txid)
     })
-    it("submit multisigned tx_json", async function () {
+    xit("submit multisigned tx_json", async function () {
       let data = await remote.rpcSubmitMultisigned({
         tx_json: DATA.MULTISIGN_JSON
       })
@@ -232,7 +233,7 @@ describe("Remote JINGTUM", function () {
   describe("rpcAccount", function () {
     this.timeout(15000)
     it("get AccountInfo", async function () {
-      let data = await remote.rpcAccountInfo({ account: DATA.address })
+      let data = await remote.rpcAccountInfo({ account: DATA.addressGm })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("account_data")
@@ -240,14 +241,14 @@ describe("Remote JINGTUM", function () {
       expect(data.account_data).to.have.property("Sequence")
     })
     it("get AccountObjects", async function () {
-      let data = await remote.rpcAccountObjects({ account: DATA.address })
+      let data = await remote.rpcAccountObjects({ account: DATA.addressGm })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("account_objects")
       expect(data.account_objects).to.be.a("array")
     })
     it("get AccountCurrencies", async function () {
-      let data = await remote.rpcAccountCurrencies({ account: DATA.address })
+      let data = await remote.rpcAccountCurrencies({ account: DATA.addressGm })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("receive_currencies")
@@ -256,14 +257,14 @@ describe("Remote JINGTUM", function () {
       expect(data.send_currencies).to.be.a("array")
     })
     it("get AccountLines", async function () {
-      let data = await remote.rpcAccountLines({ account: DATA.address })
+      let data = await remote.rpcAccountLines({ account: DATA.addressGm })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("lines")
       expect(data.lines).to.be.a("array")
     })
     it("get AccountRelataion", async function () {
-      let data = await remote.rpcAccountRelation({ account: DATA.address })
+      let data = await remote.rpcAccountRelation({ account: DATA.addressGm })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("lines")
@@ -271,7 +272,7 @@ describe("Remote JINGTUM", function () {
     })
     it("get AccountOffers", async function () {
       let data = await remote.rpcAccountOffers({
-        account: DATA.address,
+        account: DATA.addressGm,
         limit: 5
       })
       expect(data).to.have.property("status")
@@ -280,13 +281,16 @@ describe("Remote JINGTUM", function () {
       expect(data.offers).to.be.a("array")
     })
     it("get AccountTx", async function () {
-      let data = await remote.rpcAccountTx({ account: DATA.address, limit: 5 })
+      let data = await remote.rpcAccountTx({
+        account: DATA.addressGm,
+        limit: 5
+      })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("transactions")
       expect(data.transactions).to.be.a("array")
     })
-    it("get FeeInfo", async function () {
+    xit("get FeeInfo", async function () {
       let data = await remote.rpcFeeInfo({
         account: "jDXCeSHSpZ9LiX6ihckWaYDeDt5hFrdTto"
       })
@@ -295,7 +299,7 @@ describe("Remote JINGTUM", function () {
       expect(data).to.have.property("brokerages")
     })
     it("get BlacklistInfo with account", async function () {
-      let data = await remote.rpcBlacklistInfo({ account: DATA.address })
+      let data = await remote.rpcBlacklistInfo({ account: DATA.addressGm })
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("blacklist")
@@ -343,7 +347,7 @@ describe("Remote JINGTUM", function () {
   describe("derived methods", function () {
     this.timeout(45000)
     it("get account info", async function () {
-      let data = await remote.getAccountInfo(DATA.address)
+      let data = await remote.getAccountInfo(DATA.addressGm)
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")
       expect(data).to.have.property("account_data")
@@ -352,7 +356,7 @@ describe("Remote JINGTUM", function () {
       expect(data.account_data.Sequence).to.be.a("number")
     })
     it("get account sequence", async function () {
-      let data = await remote.getAccountSequence(DATA.address)
+      let data = await remote.getAccountSequence(DATA.addressGm)
       expect(data).to.be.a("number")
     })
     it("submit blob", async function () {
@@ -365,7 +369,7 @@ describe("Remote JINGTUM", function () {
       expect(data).to.have.property("tx_json")
       expect(data.tx_json.hash).to.be.equal(txid)
     })
-    it("submit multisigned tx_json", async function () {
+    xit("submit multisigned tx_json", async function () {
       let data = await remote.submitMultisigned(DATA.MULTISIGN_JSON)
       expect(data).to.have.property("status")
       expect(data.status).to.be.equal("success")

@@ -4,7 +4,7 @@ const Remote = require("../").Remote
 const config = require("../../.conf/config")
 const DATA = require("../../.conf/config")
 const sinon = require("sinon")
-const utils = require("@swtc/utils").utils
+const utils = Remote.Transaction.utils
 const sleep = time => new Promise(res => setTimeout(() => res(), time))
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
@@ -217,7 +217,7 @@ describe("test transaction additions", function () {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("engine_result")
-      expect(result.engine_result).to.be.equal("tesSUCCESS")
+      expect(result.engine_result).to.be.oneOf(["tesSUCCESS", "telINSUF_FUND"])
       expect(result).to.have.property("tx_blob")
       expect(result).to.have.property("tx_json")
     })
@@ -232,7 +232,7 @@ describe("test transaction additions", function () {
       expect(tx.tx_json).to.have.property("Sequence")
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
-      expect(result.engine_result).to.be.equal("tesSUCCESS")
+      expect(result.engine_result).to.be.oneOf(["tesSUCCESS", "telINSUF_FUND"])
       expect(result).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.tx_blob)
     })
@@ -253,7 +253,7 @@ describe("test transaction additions", function () {
       expect(tx.tx_json.Sequence).to.be.a("number")
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("engine_result")
-      expect(result.engine_result).to.be.equal("tesSUCCESS")
+      expect(result.engine_result).to.be.oneOf(["tesSUCCESS", "telINSUF_FUND"])
       expect(result).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.tx_blob)
     })
@@ -270,7 +270,7 @@ describe("test transaction additions", function () {
       expect(tx.tx_json.Sequence).to.be.equal(10)
       expect(tx.tx_json).to.have.property("blob")
       expect(result).to.have.property("engine_result")
-      expect(result.engine_result).to.be.equal("tefPAST_SEQ")
+      expect(result.engine_result).to.be.oneOf(["tefPAST_SEQ", "telINSUF_FUND"])
       expect(result).to.have.property("tx_blob")
       expect(tx.tx_json.blob).to.be.equal(result.tx_blob)
     })

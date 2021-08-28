@@ -1,9 +1,9 @@
 const chai = require("chai")
 chai.use(require("chai-json-schema"))
-const Remote = require("../").Remote
+const { WalletGm } = require("@swtc/wallet")
+const Remote = require("../").Factory(WalletGm)
 const schema = require("./schema")
 const expect = chai.expect
-const TEST_NODE = "ws://ts5.jingtum.com:5020"
 const Request = Remote.Request
 const config = require("../../.conf/config")
 const sinon = require("sinon")
@@ -11,13 +11,20 @@ const OrderBook = Remote.OrderBook
 let {
   WSS_NODE,
   JT_NODE,
+  JT_NODE_GM,
+  TEST_NODE_GM,
   testAddress,
-  testDestinationAddress,
-  testCreateHash,
+  testAddressGm,
+  testAddressGmEd,
   testPlatform
 } = config
+const TEST_NODE = TEST_NODE_GM
+const testDestinationAddress = testAddressGmEd
 
-describe("test remote", function () {
+const txid = "95AE80EA7BEB873559702DF0C051FF785BB0B8928F8302278D6BD0A7CDBDDC0C"
+const testCreateHash = txid
+
+describe("test remote GUOMI", function () {
   describe("test constructor", function () {
     xit("throw error if the arguments is undefined", function () {
       let remote = new Remote()
@@ -26,7 +33,7 @@ describe("test remote", function () {
 
     it("the default _token is swt", function () {
       let remote = new Remote({
-        server: JT_NODE
+        server: JT_NODE_GM
       })
       expect(remote._token.toLowerCase()).to.be.equal("swt")
     })
@@ -42,7 +49,7 @@ describe("test remote", function () {
   describe("test _updateServerStatus", function () {
     it("the server is offline if the online states does not include the server status", function () {
       let remote = new Remote({
-        server: JT_NODE
+        server: JT_NODE_GM
       })
       remote._updateServerStatus({
         load_base: 256,
@@ -56,7 +63,7 @@ describe("test remote", function () {
     it("connect in error if the _server is empty", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -70,7 +77,7 @@ describe("test remote", function () {
     it("not call disconnet if the _server is empty", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -84,7 +91,7 @@ describe("test remote", function () {
     it("should request server info successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE
+        server: JT_NODE_GM
       })
       remote.connect((err, result) => {
         if (err) {
@@ -114,7 +121,7 @@ describe("test remote", function () {
     it("should request peers successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -127,7 +134,7 @@ describe("test remote", function () {
     it("should request ledger closed successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -147,7 +154,7 @@ describe("test remote", function () {
     it("should request ledger successfully if the option of full is true", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -170,7 +177,7 @@ describe("test remote", function () {
     it("should request ledger successfully if the option of expand is true", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -186,7 +193,7 @@ describe("test remote", function () {
     it("should request ledger successfully if the option of transactions is true", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -208,7 +215,7 @@ describe("test remote", function () {
     it("should request ledger successfully if the option of accounts is true", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -224,7 +231,7 @@ describe("test remote", function () {
     it("should request ledger successfully if the option is empty object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -243,7 +250,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -259,7 +266,7 @@ describe("test remote", function () {
     it("should request tx successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -270,7 +277,7 @@ describe("test remote", function () {
           done()
         }
         let req = remote.requestTx({
-          hash: testCreateHash
+          hash: txid
         })
         expect(req._command).to.equal("tx")
         expect(req.message).to.deep.equal({
@@ -293,7 +300,7 @@ describe("test remote", function () {
     it("should request tx in error", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -303,8 +310,11 @@ describe("test remote", function () {
         })
         expect(req._command).to.equal("tx")
         req.submit((err, result) => {
+          console.log("replied")
+          console.log(err)
           expect(err).to.not.null
           expect(result).to.equal(undefined)
+          console.log(result)
           remote.disconnect()
           done()
         })
@@ -314,7 +324,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -328,7 +338,7 @@ describe("test remote", function () {
     it("throw error if the hash is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -346,20 +356,20 @@ describe("test remote", function () {
     it("should request account info successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       remote.connect((err, result) => {
         let req = remote.requestAccountInfo({
-          account: testAddress,
+          account: testAddressGm,
           peer: testDestinationAddress,
           limit: -1,
           type: "trust"
         })
         expect(req._command).to.equal("account_info")
         expect(req.message).to.deep.equal({
-          account: testAddress,
+          account: testAddressGm,
           peer: testDestinationAddress,
           limit: 0,
           relation_type: 0,
@@ -367,7 +377,7 @@ describe("test remote", function () {
         })
         req.submit((err, result) => {
           expect(result).to.be.jsonSchema(schema.ACCOUNT_INFO_SCHEMA)
-          expect(result.account_data.Account).to.equal(testAddress)
+          expect(result.account_data.Account).to.equal(testAddressGm)
           remote.disconnect()
           done()
         })
@@ -377,7 +387,7 @@ describe("test remote", function () {
     it("if the peer is valid, limit is less than 0 and marker is valid", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -401,19 +411,19 @@ describe("test remote", function () {
     it("if the limit is more than 1e9", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestAccountInfo({
-        account: testAddress,
+        account: testAddressGm,
         limit: 2e9,
         type: "freeze",
         ledger: 111
       })
       expect(req._command).to.equal("account_info")
       expect(req.message).to.deep.equal({
-        account: testAddress,
+        account: testAddressGm,
         limit: 1e9,
         relation_type: 3,
         ledger_index: 111
@@ -428,14 +438,14 @@ describe("test remote", function () {
         token: "swt"
       })
       let req = remote.requestAccountInfo({
-        account: testAddress,
+        account: testAddressGm,
         limit: 2e9,
         type: "freeze",
         ledger: testCreateHash
       })
       expect(req._command).to.equal("account_info")
       expect(req.message).to.deep.equal({
-        account: testAddress,
+        account: testAddressGm,
         limit: 1e9,
         relation_type: 3,
         ledger_hash: testCreateHash
@@ -445,7 +455,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -459,12 +469,12 @@ describe("test remote", function () {
     it("throw error if the address is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestAccountInfo({
-        account: testAddress.substring(1)
+        account: testAddressGm.substring(1)
       })
       req.submit((err, result) => {
         expect(err).to.equal("invalid account")
@@ -477,18 +487,18 @@ describe("test remote", function () {
     it("should request account tums successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       remote.connect((err, result) => {
         let req = remote.requestAccountTums({
-          account: testAddress,
+          account: testAddressGm,
           type: "trust"
         })
         expect(req._command).to.equal("account_currencies")
         expect(req.message).to.deep.equal({
-          account: testAddress,
+          account: testAddressGm,
           ledger_index: "validated",
           relation_type: 0
         })
@@ -503,7 +513,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -519,24 +529,24 @@ describe("test remote", function () {
     it("should request account relations successfully if the type is trust", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       remote.connect((err, result) => {
         let req = remote.requestAccountRelations({
-          account: testAddress,
+          account: testAddressGm,
           type: "trust"
         })
         expect(req._command).to.equal("account_lines")
         expect(req.message).to.deep.equal({
-          account: testAddress,
+          account: testAddressGm,
           ledger_index: "validated",
           relation_type: 0
         })
         req.submit((err, result) => {
           expect(result).to.be.jsonSchema(schema.ACCOUNT_RELATIONS_SCHEMA)
-          expect(result.account).to.equal(testAddress)
+          expect(result.account).to.equal(testAddressGm)
           remote.disconnect()
           done()
         })
@@ -546,18 +556,18 @@ describe("test remote", function () {
     it("should request account relations successfully if the type is freeze", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestAccountRelations({
-        account: testAddress,
+        account: testAddressGm,
         type: "freeze",
         ledger: "10000"
       })
       expect(req._command).to.equal("account_relation")
       expect(req.message).to.deep.equal({
-        account: testAddress,
+        account: testAddressGm,
         ledger_index: 10000,
         relation_type: 3
       })
@@ -566,18 +576,18 @@ describe("test remote", function () {
     it("should request account relations successfully if the type is authorize", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestAccountRelations({
-        account: testAddress,
+        account: testAddressGm,
         type: "authorize",
         ledger: "10000"
       })
       expect(req._command).to.equal("account_relation")
       expect(req.message).to.deep.equal({
-        account: testAddress,
+        account: testAddressGm,
         ledger_index: 10000,
         relation_type: 1
       })
@@ -586,7 +596,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -600,12 +610,12 @@ describe("test remote", function () {
     it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestAccountRelations({
-        account: testAddress,
+        account: testAddressGm,
         type: "authorizes",
         ledger_index: "10000"
       })
@@ -618,12 +628,12 @@ describe("test remote", function () {
     it("throw error if the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestAccountRelations({
-        account: testAddress,
+        account: testAddressGm,
         type: "unfreeze",
         ledger_index: "10000"
       })
@@ -638,24 +648,24 @@ describe("test remote", function () {
     it("should request account offers successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       remote.connect((err, result) => {
         let req = remote.requestAccountOffers({
-          account: testAddress,
+          account: testAddressGm,
           type: "trust"
         })
         expect(req._command).to.equal("account_offers")
         expect(req.message).to.deep.equal({
-          account: testAddress,
+          account: testAddressGm,
           relation_type: 0,
           ledger_index: "validated"
         })
         req.submit((err, result) => {
           expect(result).to.be.jsonSchema(schema.ACCOUNT_OFFERS_SCHEMA)
-          expect(result.account).to.equal(testAddress)
+          expect(result.account).to.equal(testAddressGm)
           remote.disconnect()
           done()
         })
@@ -665,7 +675,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -681,17 +691,17 @@ describe("test remote", function () {
     it("should request account tx successfully with more options", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       remote.connect((err, result) => {
         let req = remote.requestAccountTx({
-          account: testAddress
+          account: testAddressGm
         })
         expect(req._command).to.equal("account_tx")
         expect(req.message).to.deep.equal({
-          account: testAddress,
+          account: testAddressGm,
           ledger_index_min: 0,
           ledger_index_max: -1
         })
@@ -706,13 +716,13 @@ describe("test remote", function () {
     it("should request account tx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
 
       let req = remote.requestAccountTx({
-        account: testAddress,
+        account: testAddressGm,
         ledger_min: 1,
         ledger_max: 1000,
         limit: 10,
@@ -725,7 +735,7 @@ describe("test remote", function () {
       })
       expect(req._command).to.equal("account_tx")
       expect(req.message).to.deep.equal({
-        account: testAddress,
+        account: testAddressGm,
         ledger_index_min: 1,
         ledger_index_max: 1000,
         limit: 10,
@@ -741,7 +751,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -755,7 +765,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -773,7 +783,7 @@ describe("test remote", function () {
     it("should request order book successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE
+        server: JT_NODE_GM
       })
       remote.connect((error, result) => {
         if (error) {
@@ -781,16 +791,16 @@ describe("test remote", function () {
           done()
         } else {
           let req = remote.requestOrderBook({
-            gets: remote.makeCurrency("CNY"),
-            pays: remote.makeCurrency(),
-            taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
+            pays: remote.makeCurrency("TEST"),
+            gets: remote.makeCurrency(),
+            taker: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W",
             limit: 10
           })
           expect(req._command).to.equal("book_offers")
           expect(req.message).to.deep.equal({
-            taker_gets: remote.makeCurrency(),
-            taker_pays: remote.makeCurrency("cny"),
-            taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
+            taker_pays: remote.makeCurrency(),
+            taker_gets: remote.makeCurrency("test"),
+            taker: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W",
             limit: 10
           })
           req.submit((err, res) => {
@@ -811,14 +821,14 @@ describe("test remote", function () {
     it("should request order book successfully if the option of taker is empty", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestOrderBook({
         gets: {
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
         pays: {
           currency: "SWT",
@@ -832,10 +842,10 @@ describe("test remote", function () {
           issuer: ""
         },
         taker_pays: {
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
-        taker: "jjjjjjjjjjjjjjjjjjjjBZbvri",
+        taker: "jjjjjjjjjjjjjjjjjjjjwVBfmE",
         limit: 300
       })
     })
@@ -843,7 +853,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -857,14 +867,14 @@ describe("test remote", function () {
     it("throw error if the gets is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestOrderBook({
         gets: {
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
         pays: null
       })
@@ -877,7 +887,7 @@ describe("test remote", function () {
     it("throw error if the pays is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -898,16 +908,16 @@ describe("test remote", function () {
   describe("test requestBrokerage", function () {
     it("if the options is valid", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        account: testPlatform
+        account: testAddressGm
       })
       expect(req._command).to.equal("Fee_Info")
       expect(req.message).to.deep.equal({
-        account: testPlatform,
+        account: testAddressGm,
         ledger_index: "validated"
       })
     })
@@ -915,7 +925,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -929,7 +939,7 @@ describe("test remote", function () {
     it("throw error if the account is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -945,12 +955,12 @@ describe("test remote", function () {
     xit("throw error if the app is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        account: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        account: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W",
         app: "aa"
       })
       req.submit((err, result) => {
@@ -962,12 +972,12 @@ describe("test remote", function () {
     xit("throw error if the currency is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestBrokerage({
-        account: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+        account: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W",
         app: 1,
         currency: "Sw"
       })
@@ -982,13 +992,13 @@ describe("test remote", function () {
     it("should request path successfully", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       remote.connect((err, result) => {
         let req = remote.requestPathFind({
-          account: testAddress,
+          account: testAddressGm,
           destination: testDestinationAddress,
           amount: {
             value: "0.001",
@@ -999,7 +1009,7 @@ describe("test remote", function () {
         expect(req._command).to.equal("path_find")
         expect(req.message).to.deep.equal({
           subcommand: "create",
-          source_account: testAddress,
+          source_account: testAddressGm,
           destination_account: testDestinationAddress,
           destination_amount: "1000"
         })
@@ -1014,7 +1024,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1028,7 +1038,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1044,12 +1054,12 @@ describe("test remote", function () {
     it("throw error if the destination is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestPathFind({
-        account: testAddress,
+        account: testAddressGm,
         destination: "aaaa"
       })
       req.submit((err, result) => {
@@ -1061,12 +1071,12 @@ describe("test remote", function () {
     it("throw error if the amount is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestPathFind({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         amount: null
       })
@@ -1079,12 +1089,12 @@ describe("test remote", function () {
     it("throw error if the amount is more than 100000000000", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.requestPathFind({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         amount: {
           value: "1000000000000",
@@ -1103,9 +1113,9 @@ describe("test remote", function () {
 
   describe("test createAccountStub", function () {
     it("create account stub successfully", function () {
-      let Account = require("../").Account
+      let Account = Remote.Account
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1117,7 +1127,7 @@ describe("test remote", function () {
   describe("test createOrderBookStub", function () {
     it("create order book stub successfully", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1130,17 +1140,17 @@ describe("test remote", function () {
     it("should buildOfferCreateTx successfully if the type is sell", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let options = {
         type: "Sell",
-        account: testAddress,
+        account: testAddressGm,
         taker_gets: {
           value: "0.00001",
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
         taker_pays: {
           value: "1",
@@ -1153,12 +1163,12 @@ describe("test remote", function () {
         Flags: 524288,
         Fee: 10000,
         TransactionType: "OfferCreate",
-        Account: testAddress,
+        Account: testAddressGm,
         TakerPays: "1000000",
         TakerGets: {
           value: "0.00001",
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         }
       })
     })
@@ -1166,45 +1176,45 @@ describe("test remote", function () {
     it("should buildOfferCreateTx successfully: case 2", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let options = {
         type: "Buy",
-        account: testAddress,
+        account: testAddressGm,
         pays: {
           value: "0.00001",
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
         gets: {
           value: "1",
           currency: "SWT",
           issuer: ""
         },
-        platform: testPlatform
+        platform: testAddressGmEd
       }
       let tx = remote.buildOfferCreateTx(options)
       expect(tx.tx_json).to.deep.equal({
         Flags: 0,
         Fee: 10000,
         TransactionType: "OfferCreate",
-        Account: testAddress,
+        Account: testAddressGm,
         TakerPays: "1000000",
         TakerGets: {
           value: "0.00001",
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
-        Platform: testPlatform
+        Platform: testAddressGmEd
       })
     })
 
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1218,12 +1228,12 @@ describe("test remote", function () {
     it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress.substring(1)
+        account: testAddressGm.substring(1)
       })
       req.submit((err, result) => {
         expect(err).to.equal("invalid source address")
@@ -1234,12 +1244,12 @@ describe("test remote", function () {
     it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress,
+        account: testAddressGm,
         type: "sell"
       })
       req.submit((err, result) => {
@@ -1251,12 +1261,12 @@ describe("test remote", function () {
     it("throw error if the taker_gets is string but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress,
+        account: testAddressGm,
         type: "Sell",
         pays: "aaa"
       })
@@ -1269,12 +1279,12 @@ describe("test remote", function () {
     it("throw error if the taker_gets is object but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress,
+        account: testAddressGm,
         type: "Sell",
         pays: {}
       })
@@ -1287,12 +1297,12 @@ describe("test remote", function () {
     it("throw error if the taker_pays is string but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress,
+        account: testAddressGm,
         type: "Sell",
         pays: "1",
         gets: "sss"
@@ -1306,12 +1316,12 @@ describe("test remote", function () {
     it("throw error if the taker_pays is object but invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress,
+        account: testAddressGm,
         type: "Sell",
         pays: "1",
         gets: {}
@@ -1325,17 +1335,17 @@ describe("test remote", function () {
     it("throw error if the platform is not valid address", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCreateTx({
-        account: testAddress,
+        account: testAddressGm,
         type: "Sell",
         pays: {
           value: "0.00001",
-          currency: "CNY",
-          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+          currency: "TEST",
+          issuer: "jHgKXtmDXGJLupHWoeJyisirpZnrvnAA9W"
         },
         gets: {
           value: "1",
@@ -1355,12 +1365,12 @@ describe("test remote", function () {
     it("should buildPaymentTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let tx = remote.buildPaymentTx({
-        account: testAddress,
+        account: testAddressGm,
         to: testDestinationAddress,
         amount: {
           value: 1,
@@ -1372,7 +1382,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "Payment",
-        Account: testAddress,
+        Account: testAddressGm,
         Amount: "1000000",
         Destination: testDestinationAddress
       })
@@ -1381,7 +1391,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1395,7 +1405,7 @@ describe("test remote", function () {
     it("throw error if the account is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1411,12 +1421,12 @@ describe("test remote", function () {
     it("throw error if the destination is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildPaymentTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: "aaa"
       })
       req.submit((err, result) => {
@@ -1428,12 +1438,12 @@ describe("test remote", function () {
     it("throw error if the amount is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildPaymentTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         amount: null
       })
@@ -1448,19 +1458,19 @@ describe("test remote", function () {
     it("should buildOfferCancelTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let tx = remote.buildOfferCancelTx({
-        account: testAddress,
+        account: testAddressGm,
         sequence: 1
       })
       expect(tx.tx_json).to.deep.equal({
         Flags: 0,
         Fee: 10000,
         TransactionType: "OfferCancel",
-        Account: testAddress,
+        Account: testAddressGm,
         OfferSequence: 1
       })
     })
@@ -1468,7 +1478,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1482,7 +1492,7 @@ describe("test remote", function () {
     it("throw error if the account is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1498,12 +1508,12 @@ describe("test remote", function () {
     it("throw error if the sequence is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildOfferCancelTx({
-        account: testAddress,
+        account: testAddressGm,
         sequence: "aaaa"
       })
       req.submit((err, result) => {
@@ -1517,12 +1527,12 @@ describe("test remote", function () {
     it("should deployContractTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let tx = remote.deployContractTx({
-        account: testAddress,
+        account: testAddressGm,
         amount: "1",
         payload: "aaa",
         params: ["sss"]
@@ -1531,7 +1541,7 @@ describe("test remote", function () {
         TransactionType: "ConfigContract",
         Fee: 10000,
         Flags: 0,
-        Account: testAddress,
+        Account: testAddressGm,
         Amount: 1000000,
         Method: 0,
         Args: [
@@ -1548,7 +1558,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1562,7 +1572,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1578,12 +1588,12 @@ describe("test remote", function () {
     it("throw error if the amount is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.deployContractTx({
-        account: testAddress,
+        account: testAddressGm,
         amount: "aaa"
       })
       req.submit((err, result) => {
@@ -1595,12 +1605,12 @@ describe("test remote", function () {
     it("throw error if the payload is not string", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.deployContractTx({
-        account: testAddress,
+        account: testAddressGm,
         amount: 1,
         payload: null
       })
@@ -1613,12 +1623,12 @@ describe("test remote", function () {
     it("throw error if the params is not array", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.deployContractTx({
-        account: testAddress,
+        account: testAddressGm,
         amount: 1,
         payload: "aaa",
         params: "aaa"
@@ -1634,12 +1644,12 @@ describe("test remote", function () {
     it("should callContractTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let tx = remote.callContractTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         func: "test",
         params: ["sss"]
@@ -1648,7 +1658,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "ConfigContract",
-        Account: testAddress,
+        Account: testAddressGm,
         Method: 1,
         ContractMethod: "74657374",
         Destination: testDestinationAddress,
@@ -1665,7 +1675,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1679,7 +1689,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1695,12 +1705,12 @@ describe("test remote", function () {
     it("throw error if the destination is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.callContractTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: "aaa"
       })
       req.submit((err, result) => {
@@ -1712,12 +1722,12 @@ describe("test remote", function () {
     it("throw error if the params is not array", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.callContractTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         params: "aaa"
       })
@@ -1730,12 +1740,12 @@ describe("test remote", function () {
     it("throw error if the item in params is not string", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.callContractTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         func: "test",
         params: [null]
@@ -1749,12 +1759,12 @@ describe("test remote", function () {
     it("throw error if the func is not string", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.callContractTx({
-        account: testAddress,
+        account: testAddressGm,
         destination: testDestinationAddress,
         params: ["aaa"],
         func: 111
@@ -1770,7 +1780,7 @@ describe("test remote", function () {
     it("should buildSignTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1788,7 +1798,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1804,15 +1814,15 @@ describe("test remote", function () {
     it("should buildBrokerageTx successfully", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let tx = remote.buildBrokerageTx({
-        account: testAddress,
+        account: testAddressGm,
         molecule: 10,
         denominator: 20,
-        feeAccount: testPlatform,
+        feeAccount: testAddressGmEd,
         amount: {
           value: "1",
           currency: "SWT",
@@ -1823,8 +1833,8 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "Brokerage",
-        Account: testAddress,
-        FeeAccountID: testPlatform,
+        Account: testAddressGm,
+        FeeAccountID: testAddressGmEd,
         OfferFeeRateNum: 10,
         OfferFeeRateDen: 20,
         Amount: "1000000"
@@ -1834,7 +1844,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1848,7 +1858,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1864,12 +1874,12 @@ describe("test remote", function () {
     it("throw error if the molecule is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildBrokerageTx({
-        account: testAddress,
+        account: testAddressGm,
         molecule: "aa"
       })
       req.submit((err, result) => {
@@ -1881,12 +1891,12 @@ describe("test remote", function () {
     it("throw error if the denominator is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildBrokerageTx({
-        account: testAddress,
+        account: testAddressGm,
         feeAccount: testPlatform,
         molecule: 10,
         amount: {
@@ -1905,12 +1915,12 @@ describe("test remote", function () {
     xit("throw error if the app is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildBrokerageTx({
-        account: testAddress,
+        account: testAddressGm,
         feeAccount: testPlatform,
         molecule: 10,
         denominator: 20,
@@ -1925,12 +1935,12 @@ describe("test remote", function () {
     it("throw error if the molecule is more than denominator", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildBrokerageTx({
-        account: testAddress,
+        account: testAddressGm,
         molecule: 10,
         denominator: 5,
         app: 1
@@ -1946,12 +1956,12 @@ describe("test remote", function () {
     it("throw error if the amount is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildBrokerageTx({
-        account: testAddress,
+        account: testAddressGm,
         molecule: 10,
         denominator: 20,
         app: 1,
@@ -1968,7 +1978,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1982,7 +1992,7 @@ describe("test remote", function () {
     it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -1998,13 +2008,13 @@ describe("test remote", function () {
     it("throw error if the account is invalid when the type is property", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "property",
-        account: testAddress.substring(1)
+        account: testAddressGm.substring(1)
       })
       req.submit((err, result) => {
         expect(err).to.equal("invalid source address")
@@ -2015,13 +2025,13 @@ describe("test remote", function () {
     it("if the set and clear flag is string when the type is property", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "property",
-        account: testAddress,
+        account: testAddressGm,
         set: "asfRequireDest",
         clear: "GlobalFreeze"
       })
@@ -2029,7 +2039,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "AccountSet",
-        Account: testAddress,
+        Account: testAddressGm,
         SetFlag: 1,
         ClearFlag: 7
       })
@@ -2038,13 +2048,13 @@ describe("test remote", function () {
     it("if the set and clear flag is number  when the type is property", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "property",
-        account: testAddress,
+        account: testAddressGm,
         set: 1,
         clear: 7
       })
@@ -2052,7 +2062,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "AccountSet",
-        Account: testAddress,
+        Account: testAddressGm,
         SetFlag: 1,
         ClearFlag: 7
       })
@@ -2061,32 +2071,32 @@ describe("test remote", function () {
     it("if the set and clear flag is empty  when the type is property", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "property",
-        account: testAddress
+        account: testAddressGm
       })
       expect(req.tx_json).to.deep.equal({
         Flags: 0,
         Fee: 10000,
         TransactionType: "AccountSet",
-        Account: testAddress
+        Account: testAddressGm
       })
     })
 
     it("throw error if the account is invalid when the type is delegate", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "delegate",
-        account: testAddress.substring(1)
+        account: testAddressGm.substring(1)
       })
       req.submit((err, result) => {
         expect(err).to.equal("invalid source address")
@@ -2097,13 +2107,13 @@ describe("test remote", function () {
     it("throw error if the delegate_key is invalid when the type is delegate", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "delegate",
-        account: testAddress,
+        account: testAddressGm,
         delegate_key: testDestinationAddress.substring(1)
       })
       req.submit((err, result) => {
@@ -2115,20 +2125,20 @@ describe("test remote", function () {
     it("if the options is valid when the type is delegate", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildAccountSetTx({
         type: "delegate",
-        from: testAddress,
+        from: testAddressGm,
         delegate_key: testDestinationAddress
       })
       expect(req.tx_json).to.deep.equal({
         Flags: 0,
         Fee: 10000,
         TransactionType: "SetRegularKey",
-        Account: testAddress,
+        Account: testAddressGm,
         RegularKey: testDestinationAddress
       })
     })
@@ -2136,7 +2146,7 @@ describe("test remote", function () {
     xit("return null when the type is signer", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2151,7 +2161,7 @@ describe("test remote", function () {
     it("throw error if the options is not object", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2165,7 +2175,7 @@ describe("test remote", function () {
     it("throw error if the type is invalid", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2181,7 +2191,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid when the type is trust", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2198,13 +2208,13 @@ describe("test remote", function () {
     it("throw error if the limit is invalid when the type is trust", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "trust",
-        account: testAddress,
+        account: testAddressGm,
         limit: null
       })
       req.submit((err, result) => {
@@ -2216,7 +2226,7 @@ describe("test remote", function () {
     it("if the options is valid when the type is trust", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt",
         quality_in: 0.6,
@@ -2224,7 +2234,7 @@ describe("test remote", function () {
       })
       let req = remote.buildRelationTx({
         type: "trust",
-        account: testAddress,
+        account: testAddressGm,
         limit: {
           value: "1",
           currency: "SWT",
@@ -2237,7 +2247,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "TrustSet",
-        Account: testAddress,
+        Account: testAddressGm,
         LimitAmount: {
           value: "1",
           currency: "SWT",
@@ -2251,13 +2261,13 @@ describe("test remote", function () {
     it("if the quality_in and quality_out is empty when the type is trust", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "trust",
-        account: testAddress,
+        account: testAddressGm,
         limit: {
           value: "1",
           currency: "SWT",
@@ -2268,7 +2278,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "TrustSet",
-        Account: testAddress,
+        Account: testAddressGm,
         LimitAmount: {
           value: "1",
           currency: "SWT",
@@ -2280,7 +2290,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid when the type is authorize", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2297,13 +2307,13 @@ describe("test remote", function () {
     it("throw error if the target is invalid when the type is authorize", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "authorize",
-        account: testAddress,
+        account: testAddressGm,
         target: "aaa"
       })
       req.submit((err, result) => {
@@ -2315,13 +2325,13 @@ describe("test remote", function () {
     it("throw error if the limit is invalid when the type is authorize", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "authorize",
-        account: testAddress,
+        account: testAddressGm,
         target: testDestinationAddress
       })
       req.submit((err, result) => {
@@ -2333,13 +2343,13 @@ describe("test remote", function () {
     it("if the quality_in and quality_out is empty when the type is authorize", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "authorize",
-        account: testAddress,
+        account: testAddressGm,
         target: testDestinationAddress,
         limit: {
           value: "1",
@@ -2351,7 +2361,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "RelationSet",
-        Account: testAddress,
+        Account: testAddressGm,
         Target: testDestinationAddress,
         RelationType: 1,
         LimitAmount: {
@@ -2365,7 +2375,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid when the type is freeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2382,13 +2392,13 @@ describe("test remote", function () {
     it("throw error if the target is invalid when the type is freeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "freeze",
-        account: testAddress,
+        account: testAddressGm,
         target: "aaa"
       })
       req.submit((err, result) => {
@@ -2400,13 +2410,13 @@ describe("test remote", function () {
     it("throw error if the limit is invalid when the type is freeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "freeze",
-        account: testAddress,
+        account: testAddressGm,
         target: testDestinationAddress
       })
       req.submit((err, result) => {
@@ -2418,13 +2428,13 @@ describe("test remote", function () {
     it("if the quality_in and quality_out is empty when the type is freeze", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "freeze",
-        account: testAddress,
+        account: testAddressGm,
         target: testDestinationAddress,
         limit: {
           value: "1",
@@ -2436,7 +2446,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "RelationSet",
-        Account: testAddress,
+        Account: testAddressGm,
         Target: testDestinationAddress,
         RelationType: 3,
         LimitAmount: {
@@ -2450,7 +2460,7 @@ describe("test remote", function () {
     it("throw error if the account is invalid when the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2467,13 +2477,13 @@ describe("test remote", function () {
     it("throw error if the target is invalid when the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "unfreeze",
-        account: testAddress,
+        account: testAddressGm,
         target: "aaa"
       })
       req.submit((err, result) => {
@@ -2485,13 +2495,13 @@ describe("test remote", function () {
     it("throw error if the limit is invalid when the type is unfreeze", function (done) {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "unfreeze",
-        account: testAddress,
+        account: testAddressGm,
         target: testDestinationAddress
       })
       req.submit((err, result) => {
@@ -2503,13 +2513,13 @@ describe("test remote", function () {
     it("if the quality_in and quality_out is empty when the type is unfreeze", function () {
       this.timeout(0)
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
       let req = remote.buildRelationTx({
         type: "unfreeze",
-        account: testAddress,
+        account: testAddressGm,
         target: testDestinationAddress,
         limit: {
           value: "1",
@@ -2521,7 +2531,7 @@ describe("test remote", function () {
         Flags: 0,
         Fee: 10000,
         TransactionType: "RelationDel",
-        Account: testAddress,
+        Account: testAddressGm,
         Target: testDestinationAddress,
         RelationType: 3,
         LimitAmount: {
@@ -2536,7 +2546,7 @@ describe("test remote", function () {
   describe("test subscribe", function () {
     it("if the streams is empty", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2547,7 +2557,7 @@ describe("test remote", function () {
 
     it("if the streams is not array", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2560,7 +2570,7 @@ describe("test remote", function () {
 
     it("if the streams is array", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2575,7 +2585,7 @@ describe("test remote", function () {
   describe("test unsubscribe", function () {
     it("if the streams is empty", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2586,7 +2596,7 @@ describe("test remote", function () {
 
     it("if the streams is not array", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2599,7 +2609,7 @@ describe("test remote", function () {
 
     it("if the streams is array", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2614,7 +2624,7 @@ describe("test remote", function () {
   describe("test _handleMessage", function () {
     it("if the data is not object", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2633,7 +2643,7 @@ describe("test remote", function () {
 
     it("if the type is ledgerClosed", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2656,7 +2666,7 @@ describe("test remote", function () {
 
     it("if the type is serverStatus", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2679,7 +2689,7 @@ describe("test remote", function () {
 
     it("if the type is response", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2702,7 +2712,7 @@ describe("test remote", function () {
 
     it("if the type is transaction", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2728,7 +2738,7 @@ describe("test remote", function () {
 
     it("if the type is path_find", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2753,7 +2763,7 @@ describe("test remote", function () {
   describe("test _handleTransaction", function () {
     it("if the ledger index of data is more than ledger index of _status", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2775,7 +2785,7 @@ describe("test remote", function () {
 
     it("if the ledger index of data is not more than ledger index of _status", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2799,7 +2809,7 @@ describe("test remote", function () {
   describe("test newListener", function () {
     it("if the type is removeListener", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2816,7 +2826,7 @@ describe("test remote", function () {
 
     it("if the type is transactions", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2834,7 +2844,7 @@ describe("test remote", function () {
 
     it("if the type is ledger_closed", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2852,7 +2862,7 @@ describe("test remote", function () {
 
     it("if the type is others", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2871,7 +2881,7 @@ describe("test remote", function () {
   describe("test removeListener", function () {
     it("if it is not connected", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2887,7 +2897,7 @@ describe("test remote", function () {
 
     it("if the type is transactions", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2905,7 +2915,7 @@ describe("test remote", function () {
 
     it("if the type is others", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })
@@ -2922,7 +2932,7 @@ describe("test remote", function () {
 
     it("if the type is ledger_closed", function () {
       let remote = new Remote({
-        server: JT_NODE,
+        server: JT_NODE_GM,
         local_sign: true,
         token: "swt"
       })

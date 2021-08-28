@@ -1,17 +1,17 @@
 const chai = require("chai")
 const expect = chai.expect
-const OrderBook = require("../").OrderBook
 const Remote = require("../").Remote
+const OrderBook = Remote.OrderBook
 const config = require("../../.conf/config")
 const txData = require("./tx_data")
 const sinon = require("sinon")
-const utils = require("@swtc/utils").utils
+const utils = Remote.utils
 let { JT_NODE } = config
 let pair = "SWT:JJCC/jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 
-describe("test orderbook", function() {
-  describe("test constructor", function() {
-    it("if the given token is empty", function() {
+describe("test orderbook", function () {
+  describe("test constructor", function () {
+    it("if the given token is empty", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -22,8 +22,8 @@ describe("test orderbook", function() {
     })
   })
 
-  describe("test transaction event", function() {
-    it("emit transactions with meta data", function() {
+  describe("test transaction event", function () {
+    it("emit transactions with meta data", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -34,7 +34,7 @@ describe("test orderbook", function() {
       expect(spy.calledOnce).to.equal(true)
       sinon.restore()
     })
-    it("emit transactions without meta data", function() {
+    it("emit transactions without meta data", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
@@ -47,26 +47,26 @@ describe("test orderbook", function() {
     })
   })
 
-  describe("test newListener", function() {
-    it("if the new event name is not removeListener and the account is valid", function() {
+  describe("test newListener", function () {
+    it("if the new event name is not removeListener and the account is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let orderBook = new OrderBook(remote)
-      let callback = function() {}
+      let callback = function () {}
       orderBook.on(pair, callback)
       orderBook.emit(pair, "test")
       expect(orderBook._books[pair]).to.deep.equal(callback)
     })
 
-    it("if the new event name is not removeListener and the account is invalid", function() {
+    it("if the new event name is not removeListener and the account is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let orderBook = new OrderBook(remote)
-      let callback = function() {}
+      let callback = function () {}
       orderBook.on(pair.substring(1), callback)
       orderBook.emit(pair.substring(1), "test")
       expect(orderBook.pair).to.be.an("error")
@@ -74,14 +74,14 @@ describe("test orderbook", function() {
     })
   })
 
-  describe("test removeListener", function() {
-    it("if the account is valid", function() {
+  describe("test removeListener", function () {
+    it("if the account is valid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let orderBook = new OrderBook(remote)
-      let callback = function() {}
+      let callback = function () {}
       orderBook.on(pair, callback)
       orderBook.emit(pair, "test")
       expect(orderBook._books[pair]).to.deep.equal(callback)
@@ -89,13 +89,13 @@ describe("test orderbook", function() {
       expect(orderBook._books).to.deep.equal({})
     })
 
-    it("if the account is invalid", function() {
+    it("if the account is invalid", function () {
       let remote = new Remote({
         server: JT_NODE,
         local_sign: true
       })
       let orderBook = new OrderBook(remote)
-      let callback = function() {}
+      let callback = function () {}
       orderBook.on(pair.substring(1), callback)
       orderBook.emit(pair.substring(1), "test")
       expect(orderBook._books).to.deep.equal({})
