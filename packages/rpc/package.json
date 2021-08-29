@@ -1,6 +1,6 @@
 {
   "name": "@swtc/rpc",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "swtc lib rpc",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -43,14 +43,14 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "@swtc/address-codec": "^1.0.13",
-    "@swtc/common": "^1.0.21",
-    "@swtc/keypairs": "^1.0.16",
-    "@swtc/lib": "^1.0.17",
-    "@swtc/serializer": "^1.0.15",
-    "@swtc/transaction": "^1.0.20",
-    "@swtc/utils": "^1.0.14",
-    "@swtc/wallet": "^1.0.18",
+    "@swtc/address-codec": "^1.0.16",
+    "@swtc/common": "^1.0.23",
+    "@swtc/keypairs": "^1.0.17",
+    "@swtc/lib": "^1.0.18",
+    "@swtc/serializer": "^1.0.16",
+    "@swtc/transaction": "^1.0.21",
+    "@swtc/utils": "^1.0.15",
+    "@swtc/wallet": "^1.0.19",
     "axios": "^0.21.0"
   },
   "devDependencies": {

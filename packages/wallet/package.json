@@ -1,6 +1,6 @@
 {
   "name": "@swtc/wallet",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "swtc wallet library",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -41,9 +41,9 @@
   },
   "homepage": "https://github.com/swtcca/swtclib",
   "dependencies": {
-    "@swtc/address-codec": "^1.0.13",
-    "@swtc/common": "^1.0.21",
-    "@swtc/keypairs": "^1.0.16"
+    "@swtc/address-codec": "^1.0.16",
+    "@swtc/common": "^1.0.23",
+    "@swtc/keypairs": "^1.0.17"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",
