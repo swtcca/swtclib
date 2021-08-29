@@ -22,7 +22,7 @@ import {
   seedFromPhrase,
   seedFromPhraseGm
 } from "./utils"
-import { IKeypair, IGenerateOptions, IAlgorithm } from "./types"
+import { IKeypair, IGenerateOptions, IAlgorithm, IChainConfig } from "./types"
 
 const Ed25519 = eddsa("ed25519")
 const Secp256k1 = ec("secp256k1")
@@ -35,7 +35,7 @@ function hashGm(message) {
   return new SM3().update(message).digest().slice(0, 32)
 }
 
-export function Factory(chain_or_token = "jingtum") {
+export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
   const addressCodec = AddressCodecFactory(chain_or_token)
   const guomi = addressCodec.guomi
   const hash = guomi ? hashGm : hashOpen
@@ -369,7 +369,6 @@ export function Factory(chain_or_token = "jingtum") {
     guomi,
     // for swtc libs
     addressCodec,
-    chain: addressCodec.chain,
     deriveKeyPair: deriveKeypair,
     hash,
     seedFromPhrase: guomi ? seedFromPhraseGm : seedFromPhrase,

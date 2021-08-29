@@ -1,6 +1,6 @@
 const expect = require("chai").expect
 //import Remote from '../src/index'
-const Remote = require("../").RemoteGm
+const Remote = require("../").Factory({ guomi: true })
 const DATA = require("../../.conf/config")
 const remote = new Remote({ server: DATA.JT_NODE_GM_RPC })
 

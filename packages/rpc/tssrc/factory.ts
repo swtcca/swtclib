@@ -8,6 +8,7 @@ import {
   // IMarker,
   // IAmount,
   // ISwtcTxOptions,
+  IChainConfig,
   ICurrency,
   IPaymentTxOptions,
   IOfferCreateTxOptions,
@@ -55,7 +56,18 @@ const intercept_response = response => {
   return response
 }
 
-const Factory: any = (Wallet = WalletFactory("jingtum")) => {
+const Factory: any = (
+  chain_or_wallet: () => {} | string | IChainConfig = WalletFactory("jingtum")
+) => {
+  let Wallet
+  if (typeof chain_or_wallet === "function") {
+    Wallet = chain_or_wallet
+  } else {
+    Wallet = WalletFactory(chain_or_wallet)
+  }
+  if (!Wallet.hasOwnProperty("KeyPair")) {
+    throw Error("transaction needs a Wallet class")
+  }
   const Transaction = TransactionFactory(Wallet)
   const utils = Transaction.utils
   const FREEZE = { reserved: 20.0, each_freezed: 5.0 }
@@ -104,15 +116,15 @@ const Factory: any = (Wallet = WalletFactory("jingtum")) => {
     public readonly Tum3: any = null
     private _server: string
     private _timeout: number = 50 * 1000
-    private _token: string
-    private _issuer: string
+    private _token: string = Wallet.config.currency
+    private _issuer: string = Wallet.config.issuer
     private _backend: string = "rpc"
     private _axios: any
     private _solidity: boolean = false
     constructor(options: IRemoteOptions = {}) {
       this._server =
         options.server || Wallet.config.rpcserver || "http://bcapps.ca:5050"
-      this._token = options.token || Wallet.token || "SWT"
+      // this._token = options.token || Wallet.token || "SWT"
       this._solidity = options.solidity ? true : false
       if (this._solidity) {
         try {
@@ -126,10 +138,7 @@ const Factory: any = (Wallet = WalletFactory("jingtum")) => {
           )
         }
       }
-      this._issuer =
-        options.issuer ||
-        Wallet.config.issuer ||
-        "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+      this._issuer = options.issuer || Wallet.config.issuer
       this._axios = axios.create({
         baseURL: this._server.replace(/\/$/, ""),
         timeout: this._timeout

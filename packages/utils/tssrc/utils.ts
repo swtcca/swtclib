@@ -823,5 +823,4 @@ const Factory = (Wallet = WalletFactory("jingtum")) => {
 }
 
 const utils = Factory()
-const utilsGm = Factory(WalletFactory("guomi"))
-export { Factory, utils, utilsGm }
+export { Factory, utils }

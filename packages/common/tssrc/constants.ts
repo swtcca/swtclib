@@ -95,7 +95,7 @@ export const CHAINS = [
     code: "guomi",
     guomi: true,
     currency: "SWT",
-    issuer: "jnACoGYBQEy2nmhFPfD19Fvxy8Ef7rgT51",
+    issuer: "j9syYwWgtmjchcbqhVB18pmFqXUYahZvvg",
     CURRENCIES: {
       CNT: "CNY"
     },
@@ -105,7 +105,7 @@ export const CHAINS = [
     ACCOUNT_PREFIX: 0,
     ACCOUNT_ZERO: "jjjjjjjjjjjjjjjjjjjjjn1TT5q",
     ACCOUNT_ONE: "jjjjjjjjjjjjjjjjjjjjwVBfmE",
-    fee: 10000
+    fee: 100
   },
   {
     code: "bizain",

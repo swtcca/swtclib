@@ -1,15 +1,14 @@
 "use strict"
 
 import { Factory } from "./transaction"
-import { WalletGm } from "@swtc/wallet"
 const Transaction = Factory()
-const TransactionGm = Factory(WalletGm)
 
-export { Factory, Transaction, TransactionGm }
+export { Factory, Transaction }
 export {
-  IMarker,
   ICurrency,
   IAmount,
+  IMarker,
+  IChainConfig,
   ISwtcTxOptions,
   IPaymentTxOptions,
   IOfferCreateTxOptions,

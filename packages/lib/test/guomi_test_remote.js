@@ -1,6 +1,7 @@
 const chai = require("chai")
 chai.use(require("chai-json-schema"))
-const { WalletGm } = require("@swtc/wallet")
+// const { WalletGm } = require("@swtc/wallet")
+const WalletGm = require("@swtc/wallet").Factory({ guomi: true, fee: 10000 })
 const Remote = require("../").Factory(WalletGm)
 const schema = require("./schema")
 const expect = chai.expect

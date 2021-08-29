@@ -1,4 +1,4 @@
-export type IAlgorithm = "ed25519" | "secp256k1" | "sm2p256v1"
+import { IAlgorithm, IChainConfig } from "@swtc/address-codec"
 
 export interface IGenerateOptions {
   entropy?: Uint8Array
@@ -9,3 +9,5 @@ export interface IKeypair {
   privateKey: string
   publicKey: string
 }
+
+export { IAlgorithm, IChainConfig }

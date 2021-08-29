@@ -1,17 +1,9 @@
+import { ICurrency, IAmount, IChainConfig } from "@swtc/Wallet"
+export { ICurrency, IAmount, IChainConfig }
+
 export interface IMarker {
   ledger: string | number
   seq: string | number
-}
-
-export interface ICurrency {
-  currency: string
-  issuer: string
-}
-
-export interface IAmount {
-  currency: string
-  issuer: string
-  value: number
 }
 
 export interface ISwtcTxOptions {

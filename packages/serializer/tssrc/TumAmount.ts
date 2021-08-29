@@ -6,19 +6,76 @@ import Bignumber from "bignumber.js"
 import BN from "bn-plus.js"
 import extend from "extend"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import { AMOUNT_CONSTS } from "@swtc/common"
-import { Factory as isTumCodeFactory } from "./DataCheck"
 import { IAmount } from "./model"
 import { isNumber } from "./Utils"
+import {
+  AMOUNT_CONSTS,
+  allNumeric,
+  isCurrency,
+  isCustomTum,
+  isFloat,
+  isLetterNumer,
+  isRelation,
+  isTumCode
+} from "@swtc/common"
 //
 // Amount class in the style of Java's BigInteger class
 // https://docs.oracle.com/javase/7/docs/api/java/math/BigInteger.html
 //
 
 const Factory = (Wallet = WalletFactory("jingtum")) => {
-  const { isTumCode, isAmount, isCurrency, isCustomTum } =
-    isTumCodeFactory(Wallet)
+  const isAmount = (obj: any): boolean => {
+    if (
+      obj === null ||
+      typeof obj !== "object" ||
+      typeof obj.value !== "string" ||
+      !isFloat(obj.value) ||
+      !isTumCode(obj.currency)
+    ) {
+      return false
+    }
+    if (obj.issuer) {
+      if (!Wallet.isValidAddress(obj.issuer)) {
+        return false
+      }
+    } else {
+      if (obj.currency !== Wallet.getCurrency()) {
+        return false
+      }
+      obj.issuer = ""
+    }
+    return true
+  }
+
+  const isBalance = (obj: any): boolean => {
+    if (
+      obj === null ||
+      typeof obj !== "object" ||
+      !isFloat(obj.freezed) ||
+      !isFloat(obj.value) ||
+      !isTumCode(obj.currency)
+    ) {
+      return false
+    }
+    if (!Wallet.isValidAddress(obj.counterparty)) {
+      return false
+    }
+    return true
+  }
+
+  const DataCheck = {
+    allNumeric,
+    isCustomTum,
+    isRelation,
+    isTumCode,
+    isCurrency,
+    isLetterNumer,
+    isAmount,
+    isBalance
+  }
+
   return class Amount {
+    public static DataCheck = DataCheck
     public static from_json(j): Amount {
       return new Amount().parse_json(j)
     }

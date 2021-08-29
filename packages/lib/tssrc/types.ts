@@ -3,6 +3,7 @@ export {
   IMarker,
   ICurrency,
   IAmount,
+  IChainConfig,
   ISwtcTxOptions,
   IPaymentTxOptions,
   IOfferCreateTxOptions,

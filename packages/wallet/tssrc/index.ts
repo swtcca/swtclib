@@ -1,7 +1,17 @@
+export {
+  IAlgorithm,
+  IKeypair,
+  IGenerateOptions,
+  IWallet,
+  IAmount,
+  ICurrency,
+  IXlib,
+  ICurrencies,
+  IChainConfig
+} from "./types"
+
 import { Factory } from "./factory"
 const Wallet = Factory("jingtum")
-const WalletGm = Factory("guomi")
 const KeyPair = Wallet.KeyPair
-const KeyPairGm = WalletGm.KeyPair
 
-export { Factory, KeyPair, KeyPairGm, Wallet, WalletGm }
+export { Factory, KeyPair, Wallet }

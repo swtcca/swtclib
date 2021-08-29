@@ -11,8 +11,8 @@ import {
 import {
   // IMarker
   // ICurrency,
-  // IAmount,
   // ISwtcTxOptions,
+  IChainConfig,
   IPaymentTxOptions,
   IOfferCreateTxOptions,
   IOfferCancelTxOptions,
@@ -31,7 +31,15 @@ import {
   IBrokerageTxOptions
 } from "./types"
 
-function Factory(Wallet = WalletFactory("jingtum")) {
+function Factory(
+  chain_or_wallet: () => {} | string | IChainConfig = WalletFactory("jingtum")
+) {
+  let Wallet
+  if (typeof chain_or_wallet === "function") {
+    Wallet = chain_or_wallet
+  } else {
+    Wallet = WalletFactory(chain_or_wallet)
+  }
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("transaction needs a Wallet class")
   }

@@ -27,9 +27,10 @@
     "build": "tsc; webpack",
     "rollup": "tsc; rollup -c",
     "tslint": "tslint tssrc/*.ts",
-    "test:guomi": "mocha \"test/guomi*.js\"",
+    "test:guomi": "mocha \"test/guomi_test*.js\"",
     "test": "mocha \"test/test*.js\"",
-    "test:api": "mocha \"test/*.js\"",
+    "test:api": "mocha \"test/api*.js\"",
+    "test:guomiapi": "mocha \"test/guomi_api*.js\"",
     "test:nyc": "nyc --extension=.ts --reporter=html --reporter=text mocha test/test*.js"
   },
   "repository": {

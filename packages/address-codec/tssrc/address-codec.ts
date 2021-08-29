@@ -2,6 +2,13 @@
  * Codec class
  */
 
+export interface IChainConfig {
+  guomi?: boolean
+  ACCOUNT_ALPHABET?: string
+  [key: string]: any
+}
+export type IAlgorithm = "ed25519" | "secp256k1" | "sm2p256v1"
+
 import baseCodec from "base-x"
 // Pure JavaScript hash functions in the browser, native hash functions in Node.js
 import createHash from "create-hash"
@@ -152,16 +159,27 @@ const ACCOUNT_ID = 0
 const FAMILY_SEED = 0x21 // 33
 const ED25519_SEED = [0x01, 0xe1, 0x4b] // [1, 225, 75]
 
-export function Factory(chain_or_token = "jingtum") {
-  let alphabet
-  const active_chain = funcGetChain(chain_or_token)
-  if (!active_chain) {
-    // if it is not provided in SWTC_CHAINS
-    throw new Error("the chain you specified is not available yet")
-  } else {
-    alphabet = active_chain.ACCOUNT_ALPHABET
+export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
+  // we need two params for codec for now: alphabet and guomi
+  let config: IChainConfig
+  const config_default = {
+    guomi: false,
+    ACCOUNT_ALPHABET:
+      "jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz"
   }
-  const guomi = active_chain.guomi
+  if (typeof chain_or_token === "string") {
+    const active_chain = funcGetChain(chain_or_token)
+    if (!active_chain) {
+      // if it is not provided in SWTC_CHAINS
+      throw new Error("the chain you specified is not registered")
+    } else {
+      config = active_chain as IChainConfig
+    }
+  } else {
+    config = chain_or_token as IChainConfig
+  }
+  const guomi = config.guomi || config_default.guomi
+  const alphabet = config.ACCOUNT_ALPHABET || config_default.ACCOUNT_ALPHABET
   const codecOptions = {
     sha256: guomi
       ? (bytes: Uint8Array) => new SM3().update(bytes).digest()
@@ -174,7 +192,7 @@ export function Factory(chain_or_token = "jingtum") {
   // type is 'ed25519' or 'secp256k1'
   const encodeSeed = (
     entropy: Buffer,
-    type: "ed25519" | "secp256k1" | "sm2p256v1"
+    type: IAlgorithm = guomi ? "sm2p256v1" : "secp256k1"
   ): string => {
     if (entropy.length !== 16) {
       throw new Error("entropy must have length 16")
@@ -252,7 +270,6 @@ export function Factory(chain_or_token = "jingtum") {
 
   return {
     guomi,
-    chain: active_chain.code,
     codec: codecWithAlphabet,
     encode: codecWithAlphabet.encode,
     decode: codecWithAlphabet.decode,

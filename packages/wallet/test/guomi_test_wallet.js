@@ -1,5 +1,5 @@
 const assert = require("assert")
-const Wallet = require("..").WalletGm
+const Wallet = require("..").Factory("guomi")
 const expect = require("chai").expect
 
 const VALID_SECRET = "snvdjvSszL1o1w76a7pXqt9AZQKk7"

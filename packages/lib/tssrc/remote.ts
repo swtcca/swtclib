@@ -8,6 +8,7 @@ import sha1 from "sha1"
 import { Factory as WalletFactory } from "@swtc/wallet"
 import { LEDGER_STATES } from "@swtc/common"
 import {
+  IChainConfig,
   IRemoteOptions,
   IRequestLedgerOptions,
   IRequestAccountsOptions,
@@ -54,7 +55,15 @@ function getRelationType(type) {
   }
 }
 
-const Factory: any = (Wallet = WalletFactory("jingtum")) => {
+const Factory: any = (
+  chain_or_wallet: () => {} | string | IChainConfig = WalletFactory("jingtum")
+) => {
+  let Wallet
+  if (typeof chain_or_wallet === "function") {
+    Wallet = chain_or_wallet
+  } else {
+    Wallet = WalletFactory(chain_or_wallet)
+  }
   if (!Wallet.hasOwnProperty("KeyPair")) {
     throw Error("Account need a Wallet class")
   }

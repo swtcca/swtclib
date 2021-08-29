@@ -1,50 +1,82 @@
-import { funcGetChain } from "@swtc/common"
+import { funcGetChain, ACCOUNT_ID_ZERO, ACCOUNT_ID_ONE } from "@swtc/common"
 import { Factory as KeypairFactory } from "@swtc/keypairs"
 import {
   IAlgorithm,
   IAmount,
   ICurrency,
   IGenerateOptions,
-  IWallet
+  IWallet,
+  IChainConfig
 } from "./types"
 
-const Factory: any = (token_or_chain = "jingtum") => {
-  const chain = funcGetChain(token_or_chain)
-  if (!chain) {
-    throw Error("token or chain not supported")
+const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
+  let config: IChainConfig
+  const KeyPair = KeypairFactory(token_or_chain)
+  const addressCodec = KeyPair.addressCodec
+  const config_default = {
+    code: "jingtum",
+    currency: "SWT",
+    fee: 10
+    // issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
   }
-
-  const KeyPair = KeypairFactory(chain.code)
-  const guomi = KeyPair.guomi
+  if (typeof token_or_chain === "string") {
+    const active_chain = funcGetChain(token_or_chain)
+    if (!active_chain) {
+      throw new Error("the chain you specified is not registered")
+    } else {
+      config = active_chain as IChainConfig
+    }
+  } else {
+    config = token_or_chain as IChainConfig
+  }
+  config.currency = (config.currency || config_default.currency).toUpperCase()
+  config.code = (config.code || config_default.code).toLowerCase()
+  config.fee = config.fee || config_default.fee
+  config.guomi = KeyPair.guomi
+  config.ACCOUNT_ALPHABET = KeyPair.addressCodec.codec.alphabet
+  config.ACCOUNT_ZERO = addressCodec.encodeAccountID(
+    Buffer.from(Buffer.from(ACCOUNT_ID_ZERO, "hex").toJSON().data)
+  )
+  config.ACCOUNT_ONE = addressCodec.encodeAccountID(
+    Buffer.from(Buffer.from(ACCOUNT_ID_ONE, "hex").toJSON().data)
+  )
+  config.ACCOUNT_GENESIS = KeyPair.deriveAddress(
+    KeyPair.deriveKeypair(
+      addressCodec.encodeSeed(
+        Buffer.from(KeyPair.seedFromPhrase("masterpassphrase"))
+      )
+    ).publicKey
+  )
+  config.issuer = config.issuer || config.ACCOUNT_GENESIS
 
   return class Wallet {
-    public static token = chain.currency.toUpperCase()
-    public static chain = chain.code.toLowerCase()
+    public static token = config.currency
+    public static chain = config.code
     public static KeyPair = KeyPair
     public static seedFromPhrase = KeyPair.seedFromPhrase
     public static hash = KeyPair.hash
-    public static guomi = guomi
-    public static config = chain
+    public static guomi = config.guomi
+    public static config = config
     public static getCurrency(): string {
-      return Wallet.token || "SWT"
+      return Wallet.config.currency
     }
     public static getCurrencies() {
       return Wallet.config.CURRENCIES || {}
     }
     public static getChain(): string {
-      return Wallet.chain || "jingtum"
+      return Wallet.config.code || "jingtum"
     }
     public static getFee(): number {
-      return Wallet.config.fee || 10000
+      return Wallet.config.fee || 10
     }
     public static getAccountZero(): string {
-      return Wallet.config.ACCOUNT_ZERO || "jjjjjjjjjjjjjjjjjjjjjhoLvTp"
+      return Wallet.config.ACCOUNT_ZERO
     }
     public static getAccountOne(): string {
-      return Wallet.config.ACCOUNT_ONE || "jjjjjjjjjjjjjjjjjjjjBZbvri"
+      return Wallet.config.ACCOUNT_ONE
     }
     public static getIssuer(): string {
-      return Wallet.config.issuer || "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+      return Wallet.config.issuer || "shouldnotfalltothisdefault"
     }
     public static makeCurrency(
       currency = Wallet.token,
@@ -82,7 +114,7 @@ const Factory: any = (token_or_chain = "jingtum") => {
 
     public static fromSecret(
       secret_or_private_key: string,
-      algorithm: IAlgorithm = guomi ? "sm2p256v1" : "secp256k1"
+      algorithm: IAlgorithm = Wallet.guomi ? "sm2p256v1" : "secp256k1"
     ): IWallet | null {
       try {
         let secret = secret_or_private_key

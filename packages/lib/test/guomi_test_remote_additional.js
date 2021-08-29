@@ -1,6 +1,7 @@
 const chai = require("chai")
 const expect = chai.expect
-const { WalletGm } = require("@swtc/wallet")
+// const { WalletGm } = require("@swtc/wallet")
+const WalletGm = require("@swtc/wallet").Factory({ guomi: true, fee: 10000 })
 const Remote = require("../").Factory(WalletGm)
 const config = require("../../.conf/config")
 const DATA = require("../../.conf/config")

@@ -15,7 +15,6 @@ import {
   TYPES_MAP
 } from "@swtc/common"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import { Factory as dataCheckFactory } from "./DataCheck"
 import { Factory as tumFactory } from "./TumAmount"
 import STAccount from "./types/STAccount"
 import STAmount from "./types/STAmount"
@@ -38,7 +37,7 @@ import { get_ledger_entry_type, get_transaction_type } from "./Utils"
 function Factory(Wallet = WalletFactory("jingtum")) {
   const KeyPair = Wallet.KeyPair
   const Amount = tumFactory(Wallet)
-  const DataCheck = dataCheckFactory(Wallet)
+  const DataCheck = Amount.DataCheck
 
   const Methods = {
     Int8: STInt8,
