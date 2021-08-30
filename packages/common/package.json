@@ -1,6 +1,6 @@
 {
   "name": "@swtc/common",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "swtc chain information",
   "main": "cjs/index.js",
   "module": "esm/index.js",
