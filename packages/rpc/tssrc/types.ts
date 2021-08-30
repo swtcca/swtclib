@@ -1,6 +1,14 @@
-import { IMarker as IObjMarker, ICurrency, IAmount } from "@swtc/transaction"
+import {
+  IMarker as IObjMarker,
+  ICurrency,
+  IAmount,
+  IXlib,
+  ICurrencies
+} from "@swtc/transaction"
 type IMarker = IObjMarker | string
 export {
+  IXlib,
+  ICurrencies,
   IMarker,
   ICurrency,
   IAmount,
@@ -31,6 +39,8 @@ export interface IRemoteOptions {
   backend?: string
   local_sign?: boolean
   timeout?: number
+  CURRENCIES?: ICurrencies
+  XLIB?: IXlib
 }
 
 export interface IParams {

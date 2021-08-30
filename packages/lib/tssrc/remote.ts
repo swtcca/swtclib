@@ -254,11 +254,11 @@ const Factory: any = (
     public static utils: any = utils
     public static XLIB = Wallet.config.XLIB || {}
     public type
-    public readonly AbiCoder: any = null
-    public readonly Tum3: any = null
-    public readonly _token
-    public readonly _local_sign
-    protected _issuer
+    public readonly _token = Wallet.token || "SWT"
+    public readonly _local_sign = true
+    protected AbiCoder: any = null
+    protected Tum3: any = null
+    protected _issuer = Wallet.config.issuer || Wallet.config.ACCOUNT_GENESIS
     private _url: string = `ws://${
       Remote.XLIB.default_ws || "ws.bcapps.ca:5020"
     }`
@@ -276,11 +276,17 @@ const Factory: any = (
     constructor(options: IRemoteOptions = { local_sign: true }) {
       super()
       const _opts = options || {}
+      if (
+        _opts.hasOwnProperty("issuer") &&
+        Wallet.isValidAddress(_opts.issuer)
+      ) {
+        this._issuer = _opts.issuer
+        Wallet.config.issuer = _opts.issuer
+      }
       if (_opts.hasOwnProperty("timeout")) {
         const timeout = Number(_opts.timeout)
         this._timeout = timeout > 5 * 1000 ? timeout : 20 * 1000
       }
-      this._local_sign = true
       if (_opts.solidity) {
         this._solidity = true
         try {
@@ -311,18 +317,13 @@ const Factory: any = (
         this._url_failover = _opts.server_failover
       }
       if (_opts.failover) {
-        this._failover = true
+        this._failover = _opts.failover
       }
       this._server = new Server(this, this._url)
       this._status = {
         ledger_index: 0
       }
       this._requests = {}
-      this._token = options.token || Wallet.token || "swt"
-      this._issuer =
-        options.issuer ||
-        Wallet.config.issuer ||
-        "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
       this._cache = new LRU({
         max: 100,
         maxAge: 1000 * 60 * 5
@@ -331,6 +332,10 @@ const Factory: any = (
         max: 100,
         maxAge: 1000 * 60 * 5
       }) // 2100 size, 5 min
+      _opts.hasOwnProperty("CURRENCIES") &&
+        Object.assign(Wallet.config.CURRENCIES, _opts.CURRENCIES)
+      _opts.hasOwnProperty("XLIB") &&
+        Object.assign(Wallet.config.XLIB, _opts.XLIB)
 
       this.on("newListener", type => {
         if (!this._server.isConnected()) return
@@ -354,7 +359,41 @@ const Factory: any = (
     }
 
     // show instance basic configuration
-    public config() {
+    public config(_opts: IRemoteOptions = {}) {
+      if (
+        _opts.hasOwnProperty("issuer") &&
+        Wallet.isValidAddress(_opts.issuer)
+      ) {
+        this._issuer = _opts.issuer
+        Wallet.config.issuer = _opts.issuer
+      }
+      if (_opts.hasOwnProperty("timeout")) {
+        const timeout = Number(_opts.timeout)
+        this._timeout = timeout > 5 * 1000 ? timeout : 20 * 1000
+      }
+      if (_opts.solidity) {
+        this._solidity = true
+        try {
+          this.AbiCoder = null
+          this.Tum3 = null
+        } catch (error) {
+          throw Error(
+            "install tum3-eth-abi and swtc-tum3 to enable solidity support"
+          )
+        }
+      }
+      if (_opts.hasOwnProperty("server_failover")) {
+        if (typeof _opts.server_failover === "string") {
+          this._url_failover = _opts.server_failover
+        }
+      }
+      if (_opts.failover) {
+        this._failover = _opts.failover
+      }
+      _opts.hasOwnProperty("CURRENCIES") &&
+        Object.assign(Wallet.config.CURRENCIES, _opts.CURRENCIES)
+      _opts.hasOwnProperty("XLIB") &&
+        Object.assign(Wallet.config.XLIB, _opts.XLIB)
       return {
         _local_sign: this._local_sign,
         _failover: this._failover,
@@ -364,7 +403,8 @@ const Factory: any = (
         _token: this._token,
         _issuer: this._issuer,
         _solidity: this._solidity,
-        _timeout: this._timeout
+        _timeout: this._timeout,
+        currencies: Wallet.config.CURRENCIES
       }
     }
 

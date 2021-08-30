@@ -31,7 +31,7 @@
     "tslint": "tslint tssrc/**/*.ts",
     "build": "tsc",
     "start": "tsc; node start.js",
-    "test": "tsc; jest test/functions.spec.js test/store.spec.js; jest test/koa.spec.js; jest test/multisign.spec.js",
+    "test": "tsc; jest -i test/functions.spec.js test/store.spec.js; jest test/koa.spec.js; jest test/multisign.spec.js",
     "test:api": "tsc; jest test/koa.spec.js",
     "test:multisign": "tsc; jest test/multisign.spec.js",
     "test:detect": "tsc; jest --detectOpenHandles",

@@ -7,7 +7,7 @@ export interface IWallet {
 
 export interface IAmount {
   currency: string
-  value: number
+  value: string | number
   issuer: string
 }
 
@@ -26,7 +26,7 @@ export interface ICurrencies {
 
 export interface IChainConfig {
   code?: string
-  currenty?: string
+  currency?: string
   issuer?: string
   guomi?: boolean
   ACCOUNT_ALPHABET?: string

@@ -5,6 +5,8 @@ const Transaction = Factory()
 
 export { Factory, Transaction }
 export {
+  IXlib,
+  ICurrencies,
   ICurrency,
   IAmount,
   IMarker,

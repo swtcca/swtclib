@@ -15,7 +15,6 @@ const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
   const addressCodec = KeyPair.addressCodec
   const config_default = {
     code: "jingtum",
-    currency: "SWT",
     fee: 10
     // issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
   }
@@ -29,8 +28,8 @@ const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
   } else {
     config = token_or_chain as IChainConfig
   }
-  config.currency = (config.currency || config_default.currency).toUpperCase()
   config.code = (config.code || config_default.code).toLowerCase()
+  config.currency = KeyPair.token
   config.fee = config.fee || config_default.fee
   config.guomi = KeyPair.guomi
   config.ACCOUNT_ALPHABET = KeyPair.addressCodec.codec.alphabet
@@ -48,17 +47,18 @@ const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
     ).publicKey
   )
   config.issuer = config.issuer || config.ACCOUNT_GENESIS
+  config.CURRENCIES = config.CURRENCIES || {}
+  config.XLIB = config.XLIB || {}
 
   return class Wallet {
+    public static config = config
     public static token = config.currency
     public static chain = config.code
     public static KeyPair = KeyPair
-    public static seedFromPhrase = KeyPair.seedFromPhrase
     public static hash = KeyPair.hash
     public static guomi = config.guomi
-    public static config = config
     public static getCurrency(): string {
-      return Wallet.config.currency
+      return Wallet.config.currency || "SWT"
     }
     public static getCurrencies() {
       return Wallet.config.CURRENCIES || {}
@@ -79,7 +79,7 @@ const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
       return Wallet.config.issuer || "shouldnotfalltothisdefault"
     }
     public static makeCurrency(
-      currency = Wallet.token,
+      currency = Wallet.getCurrency(),
       issuer = Wallet.getIssuer()
     ): ICurrency {
       const CURRENCIES = Wallet.getCurrencies()
@@ -87,13 +87,13 @@ const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
       currency = CURRENCIES.hasOwnProperty(currency)
         ? CURRENCIES[currency]
         : currency
-      return currency === Wallet.token
+      return currency === Wallet.getCurrency()
         ? { currency, issuer: "" }
         : { currency, issuer }
     }
     public static makeAmount(
       value = 1,
-      currency = Wallet.token,
+      currency = Wallet.getCurrency(),
       issuer = Wallet.getIssuer()
     ): IAmount {
       return typeof currency === "object"
@@ -111,7 +111,18 @@ const Factory: any = (token_or_chain: string | IChainConfig = "jingtum") => {
         address
       }
     }
-
+    public static fromPhrase(
+      phrase: string,
+      algorithm: IAlgorithm = Wallet.guomi ? "sm2p256v1" : "secp256k1"
+    ): IWallet | null {
+      return Wallet.fromSecret(
+        addressCodec.encodeSeed(
+          Buffer.from(KeyPair.seedFromPhrase(phrase)),
+          algorithm
+        ),
+        algorithm
+      )
+    }
     public static fromSecret(
       secret_or_private_key: string,
       algorithm: IAlgorithm = Wallet.guomi ? "sm2p256v1" : "secp256k1"

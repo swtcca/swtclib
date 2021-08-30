@@ -33,6 +33,13 @@ describe("Wallet", function () {
     })
   })
 
+  describe("fromPhrase", function () {
+    it("generate a wallet from phrase", function () {
+      let phrase = "masterpassphrase"
+      let wallet = Wallet.fromPhrase(phrase)
+      expect(wallet.address).to.equal(Wallet.config.ACCOUNT_GENESIS)
+    })
+  })
   describe("fromSecret", function () {
     it("should generate one from secret", function () {
       var wallet = Wallet.fromSecret(VALID_SECRET)

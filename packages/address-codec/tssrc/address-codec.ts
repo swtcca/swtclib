@@ -4,6 +4,7 @@
 
 export interface IChainConfig {
   guomi?: boolean
+  currency?: string
   ACCOUNT_ALPHABET?: string
   [key: string]: any
 }
@@ -164,6 +165,7 @@ export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
   let config: IChainConfig
   const config_default = {
     guomi: false,
+    currency: "SWT",
     ACCOUNT_ALPHABET:
       "jpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65rkm8oFqi1tuvAxyz"
   }
@@ -179,6 +181,7 @@ export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
     config = chain_or_token as IChainConfig
   }
   const guomi = config.guomi || config_default.guomi
+  const token = (config.currency || config_default.currency).toUpperCase()
   const alphabet = config.ACCOUNT_ALPHABET || config_default.ACCOUNT_ALPHABET
   const codecOptions = {
     sha256: guomi
@@ -270,6 +273,7 @@ export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
 
   return {
     guomi,
+    token,
     codec: codecWithAlphabet,
     encode: codecWithAlphabet.encode,
     decode: codecWithAlphabet.decode,

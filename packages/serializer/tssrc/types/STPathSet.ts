@@ -98,7 +98,7 @@ const STPathSet = new SerializedType({
       if (tag_byte & this.typeCurrency) {
         // console.log('entry.currency');
         entry.currency = this.STCurrency.parse(so)
-        if (entry.currency !== "SWT") {
+        if (entry.currency !== this.KeyPair.token) {
           entry.non_native = true
         }
       }

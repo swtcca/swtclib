@@ -47,4 +47,17 @@ describe("remote methods", function () {
       expect(remote2.makeAmount(2, "VCC").issuer).to.be.equal(DATA.issuer)
     })
   })
+  describe("ed25519 tx", function () {
+    it("sign submit ed tx", async function () {
+      const tx = remote.buildPaymentTx({
+        from: DATA.address_ed,
+        to: DATA.address,
+        amount: remote.makeAmount()
+      })
+      await tx.signPromise(DATA.secret_ed)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      const response = await tx.submitPromise()
+      expect(response.engine_result).to.be.equal("tesSUCCESS")
+    })
+  })
 })

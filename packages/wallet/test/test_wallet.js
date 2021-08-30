@@ -344,4 +344,15 @@ describe("Wallet", function () {
       }
     })
   })
+
+  describe("fromPhrase", function () {
+    it("generate a wallet from phrase", function () {
+      for (let chain of chains) {
+        let Wallet = WalletFactory(chain)
+        let phrase = "masterpassphrase"
+        let wallet = Wallet.fromPhrase(phrase)
+        expect(wallet.address).to.equal(Wallet.config.ACCOUNT_GENESIS)
+      }
+    })
+  })
 })

@@ -38,6 +38,7 @@ function hashGm(message) {
 export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
   const addressCodec = AddressCodecFactory(chain_or_token)
   const guomi = addressCodec.guomi
+  const token = addressCodec.token
   const hash = guomi ? hashGm : hashOpen
   const secp256k1 = {
     deriveKeypair: (entropy, options: any = {}): IKeypair => {
@@ -367,6 +368,7 @@ export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
     // ed25519,
     // decodeSeed: addressCodec.decodeSeed
     guomi,
+    token,
     // for swtc libs
     addressCodec,
     deriveKeyPair: deriveKeypair,

@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "pretty": true,
     "outDir": "src",
     "rootDir": "tssrc",
-    "target": "esnext",
-    "module": "esnext",
+    "target": "es2015",
+    "module": "es2015",
     "moduleResolution": "node",
     "strictNullChecks": false,
     "noImplicitAny": false,

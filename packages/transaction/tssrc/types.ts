@@ -1,5 +1,11 @@
-import { ICurrency, IAmount, IChainConfig } from "@swtc/Wallet"
-export { ICurrency, IAmount, IChainConfig }
+import {
+  ICurrency,
+  IAmount,
+  IXlib,
+  ICurrencies,
+  IChainConfig
+} from "@swtc/Wallet"
+export { ICurrency, IAmount, IXlib, ICurrencies, IChainConfig }
 
 export interface IMarker {
   ledger: string | number

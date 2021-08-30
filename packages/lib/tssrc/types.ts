@@ -1,5 +1,7 @@
-import { IMarker, IAmount } from "@swtc/transaction"
+import { IMarker, IAmount, ICurrencies, IXlib } from "@swtc/transaction"
 export {
+  ICurrencies,
+  IXlib,
   IMarker,
   ICurrency,
   IAmount,
@@ -30,6 +32,8 @@ export interface IRemoteOptions {
   local_sign?: boolean
   timeout?: number
   failover?: boolean
+  CURRENCIES?: ICurrencies
+  XLIB?: IXlib
 }
 
 export interface IRequestLedgerOptions {

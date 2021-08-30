@@ -112,18 +112,20 @@ const Factory: any = (
     public static Wallet = Wallet
     public static Transaction: any = Transaction
     public static utils: any = utils
-    public readonly AbiCoder: any = null
-    public readonly Tum3: any = null
+    public readonly _token: string = Wallet.config.currency
+    public AbiCoder: any = null
+    public Tum3: any = null
     private _server: string
     private _timeout: number = 50 * 1000
-    private _token: string = Wallet.config.currency
     private _issuer: string = Wallet.config.issuer
     private _backend: string = "rpc"
     private _axios: any
     private _solidity: boolean = false
     constructor(options: IRemoteOptions = {}) {
       this._server =
-        options.server || Wallet.config.rpcserver || "http://bcapps.ca:5050"
+        options.server ||
+        Wallet.config.XLIB.default_rpc ||
+        "http://bcapps.ca:5050"
       // this._token = options.token || Wallet.token || "SWT"
       this._solidity = options.solidity ? true : false
       if (this._solidity) {
@@ -152,6 +154,10 @@ const Factory: any = (
         }
         throw new RpcError(error)
       })
+      options.hasOwnProperty("CURRENCIES") &&
+        Object.assign(Wallet.config.CURRENCIES, options.CURRENCIES)
+      options.hasOwnProperty("XLIB") &&
+        Object.assign(Wallet.config.XLIB, options.XLIB)
     }
 
     // show instance basic configuration
@@ -172,18 +178,34 @@ const Factory: any = (
           throw new RpcError(error)
         })
       }
-      if ("token" in options) {
-        this._token = options.token
-      }
-      if ("issuer" in options) {
+      if ("issuer" in options && Wallet.isValidAddress(options.issuer)) {
         this._issuer = options.issuer
+        Wallet.config.issuer = options.issuer
       }
+      this._solidity = options.hasOwnProperty("solidity")
+        ? options.solidity
+        : this._solidity
+      if (this._solidity) {
+        try {
+          this.AbiCoder = null
+          this.Tum3 = null
+        } catch (error) {
+          throw Error(
+            "install tum3-eth-abi and swtc-tum3 to enable solidity support"
+          )
+        }
+      }
+      options.hasOwnProperty("CURRENCIES") &&
+        Object.assign(Wallet.config.CURRENCIES, options.CURRENCIES)
+      options.hasOwnProperty("XLIB") &&
+        Object.assign(Wallet.config.XLIB, options.XLIB)
       return {
-        server: this._server,
         token: this._token,
-        solidity: this._solidity,
         issuer: this._issuer,
-        backend: this._backend
+        server: this._server,
+        solidity: this._solidity,
+        backend: this._backend,
+        currencies: Wallet.config.CURRENCIES
       }
     }
 

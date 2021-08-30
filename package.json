@@ -7,24 +7,26 @@
     }
   },
   "scripts": {
-    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && lerna run compile --stream",
-    "docs:dev": "echo vuepress dev docs",
-    "docs:build": "echo vuepress build docs",
+    "test": "lerna run test --stream && lerna run test:guomi --stream",
+    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && npm run lint",
+    "lint": "lerna run tslint --stream",
+    "compile": "lerna run compile --stream",
+    "build": "lerna run build --stream",
     "lerna": "lerna",
     "clean": "lerna run clean; lerna clean --yes",
     "cleanall": "lerna run clean; lerna clean --yes && rm -fr node_modules package-lock.json",
-    "build": "lerna run build --stream",
-    "lint": "lerna run tslint --stream; lerna run tsc --stream",
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "sync_version": "node scripts/sync_version.js",
-    "test": "npm run bootstrap && npm run lint && npm run testonly",
-    "testguomi": "lerna run compile --stream && lerna run build --stream && lerna run test:guomi --stream",
-    "testonly": "lerna run compile --stream && lerna run build --stream && lerna run test --stream && lerna run test:guomi --stream",
-    "testreal": "lerna run compile --stream && lerna run build --stream && lerna run test:api --stream"
+    "postinstall": "lerna bootstrap --hoist; npm run lint; npm run compile; npm run build",
+    "docs:dev": "echo vuepress dev docs",
+    "docs:build": "echo vuepress build docs",
+    "test:guomi": "lerna run test:guomi --stream",
+    "test:guomiapi": "lerna run test:guomiapi --stream",
+    "test:api": "lerna run test:api --stream"
   },
   "dependencies": {
-    "lerna": "^3.22.1"
+    "lerna": "^4.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^14.0.0",

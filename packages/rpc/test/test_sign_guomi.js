@@ -23,8 +23,8 @@ describe("remote methods", function () {
       expect(remote.makeCurrency("vcc", DATA.issuer).currency).to.be.equal(
         "VCC"
       )
-      remote.config({ issuer: DATA.issuer })
-      expect(remote.makeCurrency("VCC").issuer).to.be.equal(DATA.issuer)
+      remote.config({ issuer: DATA.issuerGm })
+      expect(remote.makeCurrency("VCC").issuer).to.be.equal(DATA.issuerGm)
     })
   })
   describe("test makeAmount", function () {
@@ -45,6 +45,19 @@ describe("remote methods", function () {
       )
       let remote2 = new Remote({ server: DATA.server, issuer: DATA.issuer })
       expect(remote2.makeAmount(2, "VCC").issuer).to.be.equal(DATA.issuer)
+    })
+  })
+  describe("ed25519 tx", function () {
+    it("sign submit ed tx", async function () {
+      const tx = remote.buildPaymentTx({
+        from: DATA.testAddressGmEd,
+        to: DATA.testAddressGm,
+        amount: remote.makeAmount()
+      })
+      await tx.signPromise(DATA.testSecretGmEd)
+      expect(tx.tx_json.Sequence).to.be.a("number")
+      const response = await tx.submitPromise()
+      expect(response.engine_result).to.be.equal("tesSUCCESS")
     })
   })
 })
