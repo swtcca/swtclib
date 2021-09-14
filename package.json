@@ -19,8 +19,10 @@
     "pretty": "lerna run pretty-quick --stream",
     "sync_version": "node scripts/sync_version.js",
     "postinstall": "lerna bootstrap --hoist; npm run lint; npm run compile; npm run build",
-    "docs:dev": "echo vuepress dev docs",
-    "docs:build": "echo vuepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:width": "sed -ie 's/48rem/72rem/' node_modules/vitepress/dist/client/theme-default/components/Page.vue",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
     "test:guomi": "lerna run test:guomi --stream",
     "test:guomiapi": "lerna run test:guomiapi --stream",
     "test:api": "lerna run test:api --stream"
@@ -52,7 +54,10 @@
     "ts-jest": "^26.1.4",
     "tslib": "^2.0.0",
     "tslint": "^6.1.2",
+    "typed.js": "^2.0.12",
     "typescript": "^3.9.7",
+    "vitepress": "^0.17.3",
+    "vpress-mdi-details": "^1.1.9",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }

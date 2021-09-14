@@ -1,0 +1,47 @@
+stateDiagram-v2
+    direction BT
+    state "Class Remote by websocket" as LIB
+    state LIB {
+        LIBFactory: require("@swtc/lib").Factory(chain_or_wallet)
+    }
+    state "Class Remote by rpc" as RPC
+    state RPC {
+        RPCFactory: require("@swtc/rpc").Factory(chain_or_wallet)
+    }
+    state "Class Transaction" as Transaction
+    state Transaction {
+        TransactionFactory: require("@swtc/transaction").Factory(Wallet)
+    }
+    state "Class Serializer" as Serializer
+    state Serializer {
+        SerializerFactory: require("@swtc/serializer").Factory(Wallet)
+    }
+    state "Class Keypair" as Keypair
+    state Keypair {
+        KeypairFactory: require("@swtc/keypairs").Factory(chain)
+    }
+    state "Class Wallet" as Wallet
+    state Wallet {
+        WalletFactory: require("@swtc/wallet").Factory(chain)
+    }
+    state AddressCodec {
+        CodecFactory: require("@swtc/address-codec").Factory(chain)
+    }
+    state Utils {
+        UtilsFactory: require("@swtc/utils").Factory(Wallet)
+    }
+
+
+    common --> AddressCodec
+    AddressCodec --> Keypair
+    Keypair --> Wallet
+    Wallet --> LIB : 依赖
+    Wallet --> Serializer : 依赖
+    Serializer --> Transaction
+    Wallet --> Transaction : 依赖
+    Wallet --> Utils : 依赖
+    Utils --> Transaction
+    Wallet --> RPC : 依赖
+    Transaction --> LIB : 依赖
+    Transaction --> RPC : 依赖
+

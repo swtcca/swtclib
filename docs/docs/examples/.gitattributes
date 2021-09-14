@@ -1,0 +1,18 @@
+* text=auto
+
+*.c text
+*.cpp text
+*.h text
+*.java text
+*.py text
+*.js text
+*.vue text
+*.jsx text
+
+*.svg binary
+*.png binary
+*.jpg binary
+*.gif binary
+*.jar binary
+*.tar binary
+*.tar.gz binary
