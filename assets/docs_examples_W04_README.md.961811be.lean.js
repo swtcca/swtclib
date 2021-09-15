@@ -1,0 +1,1 @@
+import{o as n,c as s,e as a}from"./app.4dcb24bf.js";const t='{"title":"Vue.js Web 应用","description":"","frontmatter":{},"headers":[{"level":2,"title":"准备","slug":"准备"}],"relativePath":"docs/examples/W04/README.md","lastUpdated":1631590647094}',p={},o=[a('',18)];p.render=function(a,t,p,e,c,l){return n(),s("div",null,o)};export{t as __pageData,p as default};

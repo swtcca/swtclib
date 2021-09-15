@@ -1,0 +1,1 @@
+import{o as n,c as s,e as a}from"./app.4dcb24bf.js";const t='{"title":"KOA example","description":"","frontmatter":{},"relativePath":"docs/examples/A05/index.md","lastUpdated":1631590646294}',p={},o=[a('',7)];p.render=function(a,t,p,e,c,u){return n(),s("div",null,o)};export{t as __pageData,p as default};

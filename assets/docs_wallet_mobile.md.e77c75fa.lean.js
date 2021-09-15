@@ -1,0 +1,1 @@
+import{o as n,c as s,e as a}from"./app.4dcb24bf.js";const t='{"title":"移动开发","description":"","frontmatter":{},"headers":[{"level":2,"title":"移动开发","slug":"移动开发"}],"relativePath":"docs/wallet/mobile.md","lastUpdated":1631590649773}',p={},o=[a('',2)];p.render=function(a,t,p,e,c,u){return n(),s("div",null,o)};export{t as __pageData,p as default};

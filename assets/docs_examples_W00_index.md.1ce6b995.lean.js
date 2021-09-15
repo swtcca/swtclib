@@ -1,0 +1,1 @@
+import{o as a,c as e,e as i}from"./app.4dcb24bf.js";const r='{"title":"浏览器运行时环境","description":"","frontmatter":{},"headers":[{"level":2,"title":"准备","slug":"准备"}],"relativePath":"docs/examples/W00/index.md","lastUpdated":1631590646668}',s={},t=[i('',3)];s.render=function(i,r,s,d,c,n){return a(),e("div",null,t)};export{r as __pageData,s as default};

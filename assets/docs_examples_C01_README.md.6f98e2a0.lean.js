@@ -1,0 +1,1 @@
+import{o as n,c as s,e as a}from"./app.4dcb24bf.js";const t='{"title":"终端程序","description":"","frontmatter":{},"relativePath":"docs/examples/C01/index.md","lastUpdated":1631590646352}',p={},o=[a('',6)];p.render=function(a,t,p,c,e,u){return n(),s("div",null,o)};export{t as __pageData,p as default};
