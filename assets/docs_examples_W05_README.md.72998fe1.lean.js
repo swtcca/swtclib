@@ -1,0 +1,1 @@
+import{o as n,c as a,e as s}from"./app.1312ad2f.js";const t='{"title":"Vue.js Web 应用","description":"","frontmatter":{},"headers":[{"level":2,"title":"准备","slug":"准备"}],"relativePath":"docs/examples/W05/index.md","lastUpdated":1631590647252}',p={},o=[s('',16)];p.render=function(s,t,p,c,e,l){return n(),a("div",null,o)};export{t as __pageData,p as default};

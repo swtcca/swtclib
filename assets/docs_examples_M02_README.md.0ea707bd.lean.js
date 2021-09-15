@@ -1,0 +1,1 @@
+import{o as n,c as a,e as s}from"./app.1312ad2f.js";const t='{"title":"NativeScript Vue 移动应用","description":"","frontmatter":{},"headers":[{"level":2,"title":"准备","slug":"准备"}],"relativePath":"docs/examples/M02/README.md","lastUpdated":1631590646527}',p={},o=[s('',16)];p.render=function(s,t,p,c,e,u){return n(),a("div",null,o)};export{t as __pageData,p as default};
