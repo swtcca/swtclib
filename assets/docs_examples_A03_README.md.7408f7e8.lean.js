@@ -1,1 +1,0 @@
-import{o as n,c as s,e as a}from"./app.2c18be1c.js";const t='{"title":"Async/Await 是对 Promise 的进一步简化，让程序看起来像是同步运行一样","description":"","frontmatter":{},"relativePath":"docs/examples/A03/README.md","lastUpdated":1631590646258}',p={},o=[a('',5)];p.render=function(a,t,p,c,e,l){return n(),s("div",null,o)};export{t as __pageData,p as default};
