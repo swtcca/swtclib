@@ -1,0 +1,1 @@
+import{o as s,c as a,e as n}from"./app.2c18be1c.js";const e='{"title":"模块支持","description":"","frontmatter":{},"headers":[{"level":2,"title":"模块支持","slug":"模块支持"}],"relativePath":"docs/examples/A01/README.md","lastUpdated":1631590646222}',t={},o=[n('',7)];t.render=function(n,e,t,p,c,l){return s(),a("div",null,o)};export{e as __pageData,t as default};

@@ -1,1 +1,0 @@
-import{o as n,c as s,e as a}from"./app.1312ad2f.js";const t='{"title":"终端程序","description":"","frontmatter":{},"relativePath":"docs/examples/C01/README.md","lastUpdated":1631590646352}',p={},o=[a('',6)];p.render=function(a,t,p,c,e,u){return n(),s("div",null,o)};export{t as __pageData,p as default};
