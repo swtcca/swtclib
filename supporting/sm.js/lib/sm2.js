@@ -323,9 +323,12 @@ SM2KeyPair.prototype.sign = function (msg) {
   if (this.pri == null) {
     throw "cannot sign message without private key"
   }
-  if (typeof msg === "string")
-    return this.signDigest(new sm3().sum(this._combine(utils.strToBytes(msg))))
-  else return this.signDigest(new sm3().sum(this._combine(msg)))
+
+  return this.signDigest(msg)
+  // if (typeof msg === "string")
+  //   return this.signDigest(new sm3().sum(this._combine(utils.strToBytes(msg))))
+  // else
+  //   return this.signDigest(new sm3().sum(this._combine(msg)))
 }
 
 /**
@@ -341,7 +344,9 @@ SM2KeyPair.prototype.verify = function (msg, r, s) {
   if (this.pub == null) {
     throw "cannot verify signature without public key"
   }
-  return this.verifyDigest(new sm3().sum(this._combine(msg)), r, s)
+
+  return this.verifyDigest(msg, r, s)
+  // return this.verifyDigest(new sm3().sum(this._combine(msg)), r, s)
 }
 
 /**

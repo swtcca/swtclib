@@ -16,6 +16,12 @@ module.exports = {
     editLinkText: "Edit",
     lastUpdated: "Last Updated",
 
+    algolia: {
+      appId: "RE37438XEQ",
+      apiKey: "09f7f91c52839ca2543f18c839d9c844",
+      indexName: "swtclib"
+    },
+
     nav: [
       { text: "国密综合", link: "/docs/swtcxlib/", activeMatch: "/swtcxlib/" },
       { text: "钱包", link: "/docs/wallet/", activeMatch: "/wallet/" },
