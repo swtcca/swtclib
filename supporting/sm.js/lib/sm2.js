@@ -102,12 +102,7 @@ function SM2KeyPair(pub, pri) {
       this._pubFromString(pub)
     } else if (Array.isArray(pub)) {
       this._pubFromBytes(pub)
-    } else if (
-      "x" in pub &&
-      pub.x instanceof BN &&
-      "y" in pub &&
-      pub.y instanceof BN
-    ) {
+    } else if ("x" in pub && BN.isBN(pub.x) && "y" in pub && BN.isBN(pub.y)) {
       // pub is already the Point object
       this.pub = pub
       validPub = true
@@ -118,7 +113,7 @@ function SM2KeyPair(pub, pri) {
   if (pri != null) {
     if (typeof pri === "string") {
       this.pri = new BN(pri, 16)
-    } else if (pri instanceof BN) {
+    } else if (BN.isBN(pri)) {
       this.pri = pri
       validPri = true
     } else {
