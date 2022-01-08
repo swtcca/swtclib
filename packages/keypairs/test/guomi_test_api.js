@@ -55,38 +55,40 @@ describe("api-jingtum-guomi", () => {
     assert.strictEqual(address, fixtures.ed25519.address)
   })
 
-  it("sign - secp256k1", () => {
+  it("sign - sm2p256k1", () => {
     const privateKey = fixtures.secp256k1.keypair.privateKey
     const message = fixtures.secp256k1.message
-    const messageHex = Buffer.from(message, "utf8").toString("hex")
+    const messageHex = Buffer.from(message, "hex").toString("hex")
+    assert(message === messageHex)
     const signature = api.sign(messageHex, privateKey)
     console.log(`changing? ${signature}`)
     assert.strictEqual(typeof signature, "string")
   })
 
-  it("verify - secp256k1", () => {
+  it("verify - sm2p256k1", () => {
     const signature = fixtures.secp256k1.signature
     const publicKey = fixtures.secp256k1.keypair.publicKey
     const message = fixtures.secp256k1.message
-    const messageHex = Buffer.from(message, "utf8").toString("hex")
+    const messageHex = Buffer.from(message, "hex").toString("hex")
+    assert(message === messageHex)
     assert(api.verify(messageHex, signature, publicKey))
   })
 
-  it("signTx - secp256k1", () => {
+  it("signTx - sm2p256k1", () => {
     const privateKey = fixtures.secp256k1.keypair.privateKey
     const message = fixtures.secp256k1.message
-    const messageBytes = api.hash(message)
-    const signature = api.signTx(messageBytes, privateKey)
+    // const messageBytes = api.hash(message)
+    const signature = api.signTx(message, privateKey)
     console.log(`changing? ${signature}`)
     assert.strictEqual(typeof signature, "string")
   })
 
-  it("verifyTx - secp256k1", () => {
+  it("verifyTx - sm2p256k1", () => {
     const signature = fixtures.secp256k1.signature
     const publicKey = fixtures.secp256k1.keypair.publicKey
     const message = fixtures.secp256k1.message
     const messageBytes = api.hash(message)
-    assert(api.verifyTx(messageBytes, signature, publicKey))
+    assert(api.verifyTx(message, signature, publicKey))
   })
 
   it("sign - ed25519", () => {

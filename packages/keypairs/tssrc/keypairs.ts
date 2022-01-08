@@ -114,13 +114,26 @@ export function Factory(chain_or_token: string | IChainConfig = "jingtum") {
       return keypair.verify(hash(message), sig.r, sig.s)
     },
     signTx: (message, privateKey): string => {
+      if (typeof message === "string" && /^[0-9A-F]{16}/i.test(message)) {
+        // if in hex format
+        message = hexToBytes(message)
+      }
       const keypair = Secp256k1Gm.SM2KeyPair(null, new BN(privateKey, "hex"))
       return bytesToHex(new Signature(keypair.sign(message)).toDER())
+      // return this.sign(message, privateKey)
     },
     verifyTx: (message, signature, publicKey): boolean => {
+      if (typeof message === "string" && /^[0-9A-F]{16}/i.test(message)) {
+        // if in hex format
+        message = hexToBytes(message)
+      }
+      // if (typeof signature === "string" && /^[0-9A-F]{16}/i.test(signature)) {
+      //   // if in hex format
+      //   signature = hexToBytes(signature)
+      // }
       const keypair = Secp256k1Gm.SM2KeyPair(publicKey)
       const sig = new Signature(signature, "hex")
-      return keypair.verify(message, sig.r, sig.s)
+      return keypair.verify(hash(message), sig.r, sig.s)
     }
   }
 

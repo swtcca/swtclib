@@ -1,6 +1,6 @@
 {
   "name": "@swtc/sm.js",
-  "version": "0.1.9",
+  "version": "0.1.11",
   "description": "SM series cryptography in javascript implementation",
   "main": "index.js",
   "scripts": {

@@ -1,6 +1,6 @@
 {
   "name": "@swtc/keypairs",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "swtc keypairs",
   "files": [
     "dist",
