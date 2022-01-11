@@ -11,6 +11,7 @@ var BN = require("bn.js")
 var DRBG = require("hmac-drbg")
 var hash = require("hash.js")
 var inherits = require("inherits")
+var SM2
 
 var _drbg = new DRBG({
   hash: hash.sha256,
@@ -46,7 +47,8 @@ var _sm2Params = {
   ]
 }
 
-exports.curve = SM2 = SM2Curve(_sm2Params)
+SM2 = SM2Curve(_sm2Params)
+exports.curve = SM2
 
 /**
  * Return a point on the curve.

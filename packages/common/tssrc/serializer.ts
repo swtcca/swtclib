@@ -148,7 +148,15 @@ const TRANSACTION_TYPES = {
       ["Amount", REQUIRED]
     ]
   ],
-  IssueSet: [206, ...BASE, ...[["TotalAmount", REQUIRED]]],
+  IssueSet: [
+    206,
+    ...BASE,
+    ...[
+      ["TotalAmount", REQUIRED],
+      ["IssuedAmount", OPTIONAL],
+      ["TotalUsers", OPTIONAL]
+    ]
+  ],
   // add for multisign
   SignerListSet: [
     207,
@@ -424,6 +432,7 @@ const FIELDS_MAP = {
     8: "HighNode",
     9: "OfferFeeRateNum",
     10: "OfferFeeRateDen",
+    12: "TotalUsers",
     13: "TokenSize",
     14: "TokenIssued"
   },
@@ -461,6 +470,7 @@ const FIELDS_MAP = {
     8: "Fee",
     9: "SendMax",
     10: "TotalAmount",
+    11: "IssuedAmount",
     16: "MinimumOffer",
     17: "JingtumEscrow",
     18: "DeliveredAmount"
@@ -621,6 +631,7 @@ const INVERSE_FIELDS_MAP = {
   HighNode: [3, 8],
   OfferFeeRateNum: [3, 9],
   OfferFeeRateDen: [3, 10],
+  TotalUsers: [3, 12],
   TokenSize: [3, 13],
   TokenIssued: [3, 14],
   EmailHash: [4, 1],
@@ -649,6 +660,7 @@ const INVERSE_FIELDS_MAP = {
   Fee: [6, 8],
   SendMax: [6, 9],
   TotalAmount: [6, 10],
+  IssuedAmount: [6, 11],
   MinimumOffer: [6, 16],
   JingtumEscrow: [6, 17],
   DeliveredAmount: [6, 18],

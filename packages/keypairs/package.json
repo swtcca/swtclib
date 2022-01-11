@@ -1,6 +1,6 @@
 {
   "name": "@swtc/keypairs",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "swtc keypairs",
   "files": [
     "dist",
@@ -12,7 +12,7 @@
   "dependencies": {
     "@swtc/address-codec": "^1.1.0",
     "@swtc/common": "^1.1.0",
-    "@swtc/sm.js": "^0.1.9",
+    "@swtc/sm.js": "^0.1.12",
     "bn.js": "^4.4.0",
     "brorand": "^1.1.0",
     "elliptic": "^6.4.0",
