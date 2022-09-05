@@ -953,6 +953,118 @@ function Factory(
       return tx
     }
 
+    public static buildIssueSetTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const { managerAccount, amount } = options
+      if (!utils.isValidAddress(managerAccount)) {
+        tx.tx_json.src = new Error("invalid address")
+        return tx
+      }
+
+      if (!utils.isValidAmount(amount)) {
+        tx.tx_json.amount = new Error("invalid amount")
+        return tx
+      }
+
+      tx.tx_json.TransactionType = "IssueSet"
+      tx.tx_json.Account = managerAccount
+      tx.tx_json.TotalAmount = utils.ToAmount(amount)
+      tx.tx_json.Flags = 0
+      if ("memo" in options && options.memo) {
+        tx.addMemo(options.memo)
+      }
+
+      return tx
+    }
+
+    public static buildSetBlackListTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const { managerAccount, blockAccount } = options
+      if (!utils.isValidAddress(managerAccount)) {
+        tx.tx_json.src = new Error("invalid manager address")
+        return tx
+      }
+
+      if (!utils.isValidAddress(blockAccount)) {
+        tx.tx_json.src = new Error("invalid block address")
+        return tx
+      }
+
+      tx.tx_json.TransactionType = "SetBlackList"
+      tx.tx_json.Account = managerAccount
+      tx.tx_json.BlackListAccountID = blockAccount
+      tx.tx_json.Flags = 0
+      if ("memo" in options && options.memo) {
+        tx.addMemo(options.memo)
+      }
+
+      return tx
+    }
+
+    public static buildManageIssuerTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const { managerAccount, issuerAccount } = options
+      if (!utils.isValidAddress(managerAccount)) {
+        tx.tx_json.src = new Error("invalid manager address")
+        return tx
+      }
+
+      if (!utils.isValidAddress(issuerAccount)) {
+        tx.tx_json.src = new Error("invalid issuer address")
+        return tx
+      }
+
+      tx.tx_json.TransactionType = "ManageIssuer"
+      tx.tx_json.Account = managerAccount
+      tx.tx_json.IssuerAccountID = issuerAccount
+      tx.tx_json.Flags = 0
+      if ("memo" in options && options.memo) {
+        tx.addMemo(options.memo)
+      }
+
+      return tx
+    }
+
+    public static buildRemoveBlackListTx(options, remote: any = {}) {
+      const tx = new Transaction(remote)
+      if (options === null || typeof options !== "object") {
+        tx.tx_json.obj = new Error("invalid options type")
+        return tx
+      }
+      const { managerAccount, blockAccount } = options
+      if (!utils.isValidAddress(managerAccount)) {
+        tx.tx_json.src = new Error("invalid manager address")
+        return tx
+      }
+
+      if (!utils.isValidAddress(blockAccount)) {
+        tx.tx_json.src = new Error("invalid block address")
+        return tx
+      }
+
+      tx.tx_json.TransactionType = "RemoveBlackList"
+      tx.tx_json.Account = managerAccount
+      tx.tx_json.BlackListAccountID = blockAccount
+      tx.tx_json.Flags = 0
+      if ("memo" in options && options.memo) {
+        tx.addMemo(options.memo)
+      }
+
+      return tx
+    }
+
     public static __buildTrustSet(options, tx) {
       const src = options.source || options.from || options.account
       const limit = options.limit

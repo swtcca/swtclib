@@ -1,6 +1,12 @@
 import axios from "axios"
 import { Factory as WalletFactory } from "@swtc/wallet"
-import { Factory as TransactionFactory } from "@swtc/transaction"
+import {
+  Factory as TransactionFactory,
+  IIssueSetTxOptions,
+  IManageIssuerTxOptions,
+  IRemoveBlackListTxOptions,
+  ISetBlackListTxOptions
+} from "@swtc/transaction"
 import { IRemoteOptions } from "./types"
 import { RpcError } from "./errors"
 // import { IRemoteOptions, IParams } from "./types"
@@ -269,6 +275,23 @@ const Factory: any = (
     public buildBrokerageTx(options: IBrokerageTxOptions) {
       return Transaction.buildBrokerageTx(options, this)
     }
+
+    public buildIssueSetTx(options: IIssueSetTxOptions) {
+      return Transaction.buildIssueSetTx(options, this)
+    }
+
+    public buildSetBlackListTx(options: ISetBlackListTxOptions) {
+      return Transaction.buildSetBlackListTx(options, this)
+    }
+
+    public buildManageIssuerTx(options: IManageIssuerTxOptions) {
+      return Transaction.buildManageIssuerTx(options, this)
+    }
+
+    public buildRemoveBlackListTx(options: IRemoveBlackListTxOptions) {
+      return Transaction.buildRemoveBlackListTx(options, this)
+    }
+
     public buildSignerListTx(options: ISignerListTxOptions) {
       return Transaction.buildSignerListTx(options, this)
     }
