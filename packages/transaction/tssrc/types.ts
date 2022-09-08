@@ -172,3 +172,27 @@ export interface IBrokerageTxOptions {
   secret?: string
   sequence?: string | number
 }
+
+export interface IIssueSetTxOptions {
+  managerAccount: string
+  amount: IAmount
+  memo?: string
+}
+
+export interface ISetBlackListTxOptions {
+  managerAccount: string
+  blockAccount: string
+  memo?: string
+}
+
+export interface IRemoveBlackListTxOptions {
+  managerAccount: string
+  blockAccount: string
+  memo?: string
+}
+
+export interface IManageIssuerTxOptions {
+  managerAccount: string
+  issuerAccount: string
+  memo?: string
+}

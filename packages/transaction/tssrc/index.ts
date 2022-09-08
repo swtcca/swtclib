@@ -26,5 +26,9 @@ export {
   ISignFirstTxOptions,
   ISignOtherTxOptions,
   IMultiSigningOptions,
-  IBrokerageTxOptions
+  IBrokerageTxOptions,
+  IIssueSetTxOptions,
+  IManageIssuerTxOptions,
+  IRemoveBlackListTxOptions,
+  ISetBlackListTxOptions
 } from "./types"

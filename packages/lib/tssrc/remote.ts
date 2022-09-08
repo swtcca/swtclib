@@ -1,6 +1,12 @@
 import { EventEmitter } from "events"
 import { Server } from "./server"
-import { Factory as TransactionFactory } from "@swtc/transaction"
+import {
+  Factory as TransactionFactory,
+  IIssueSetTxOptions,
+  IManageIssuerTxOptions,
+  IRemoveBlackListTxOptions,
+  ISetBlackListTxOptions
+} from "@swtc/transaction"
 
 import LRU from "lru-cache"
 import sha1 from "sha1"
@@ -1207,6 +1213,22 @@ const Factory: any = (
      */
     public buildSignerListTx(options: ISignerListTxOptions) {
       return Transaction.buildSignerListTx(options, this)
+    }
+
+    public buildIssueSetTx(options: IIssueSetTxOptions) {
+      return Transaction.buildIssueSetTx(options, this)
+    }
+
+    public buildSetBlackListTx(options: ISetBlackListTxOptions) {
+      return Transaction.buildSetBlackListTx(options, this)
+    }
+
+    public buildManageIssuerTx(options: IManageIssuerTxOptions) {
+      return Transaction.buildManageIssuerTx(options, this)
+    }
+
+    public buildRemoveBlackListTx(options: IRemoveBlackListTxOptions) {
+      return Transaction.buildRemoveBlackListTx(options, this)
     }
 
     public buildSignFirstTx(options: ISignFirstTxOptions) {
