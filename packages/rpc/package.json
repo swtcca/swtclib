@@ -1,6 +1,6 @@
 {
   "name": "@swtc/rpc",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "swtc lib rpc",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -47,9 +47,9 @@
     "@swtc/address-codec": "^1.1.1",
     "@swtc/common": "^1.1.1",
     "@swtc/keypairs": "^1.1.4",
-    "@swtc/lib": "^1.1.1",
+    "@swtc/lib": "^1.1.2",
     "@swtc/serializer": "^1.1.1",
-    "@swtc/transaction": "^1.1.1",
+    "@swtc/transaction": "^1.1.2",
     "@swtc/utils": "^1.1.1",
     "@swtc/wallet": "^1.1.1",
     "axios": "^0.21.0"
