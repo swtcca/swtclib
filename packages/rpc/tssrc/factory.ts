@@ -5,7 +5,10 @@ import {
   IIssueSetTxOptions,
   IManageIssuerTxOptions,
   IRemoveBlackListTxOptions,
-  ISetBlackListTxOptions
+  ISetBlackListTxOptions,
+  ITokenDelTxOptions,
+  ITransferTokenTxOptions,
+  IPublishTokenTxOptions
 } from "@swtc/transaction"
 import {
   IRemoteOptions,
@@ -294,6 +297,36 @@ const Factory: any = (
 
     public buildRemoveBlackListTx(options: IRemoveBlackListTxOptions) {
       return Transaction.buildRemoveBlackListTx(options, this)
+    }
+
+    /**
+     * 销毁721
+     *
+     * @param {ITokenDelTxOptions} options
+     * @returns
+     */
+    public buildTokenDelTx(options: ITokenDelTxOptions) {
+      return Transaction.buildTokenDelTx(options, this)
+    }
+
+    /**
+     * 721转账
+     *
+     * @param {ITransferTokenTxOptions} options
+     * @returns
+     */
+    public buildTokenTransferTx(options: ITransferTokenTxOptions) {
+      return Transaction.buildTransferTokenTx(options)
+    }
+
+    /**
+     * 721发行
+     *
+     * @param {IPublishTokenTxOptions} options
+     * @returns
+     */
+    public buildTokenPublishTx(options: IPublishTokenTxOptions) {
+      return Transaction.buildTransferTokenTx(options)
     }
 
     public buildSignerListTx(options: ISignerListTxOptions) {
