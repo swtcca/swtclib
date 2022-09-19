@@ -7,7 +7,11 @@ import {
   IRemoveBlackListTxOptions,
   ISetBlackListTxOptions
 } from "@swtc/transaction"
-import { IRemoteOptions } from "./types"
+import {
+  IRemoteOptions,
+  IRpcAccountTokenOptions,
+  IRpcErcInfoOptions
+} from "./types"
 import { RpcError } from "./errors"
 // import { IRemoteOptions, IParams } from "./types"
 import {
@@ -686,6 +690,26 @@ const Factory: any = (
         sequence: data.native.account_data.Sequence
       }
       return _ret
+    }
+
+    /**
+     * 查询账号所有的721
+     *
+     * @param {IRpcAccountTokenOptions} params
+     * @returns
+     */
+    public rpcAccountErc(params: IRpcAccountTokenOptions) {
+      return this.postRequest({ method: "account_erc", params: [params] })
+    }
+
+    /**
+     * 查询721信息
+     *
+     * @param {IRpcErcInfoOptions} params
+     * @returns
+     */
+    public rpcErcInfo(params: IRpcErcInfoOptions) {
+      return this.postRequest({ method: "erc_info", params: [params] })
     }
   }
 }
