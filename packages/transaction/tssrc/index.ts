@@ -30,5 +30,8 @@ export {
   IIssueSetTxOptions,
   IManageIssuerTxOptions,
   IRemoveBlackListTxOptions,
-  ISetBlackListTxOptions
+  ISetBlackListTxOptions,
+  ITokenDelTxOptions,
+  ITransferTokenTxOptions,
+  IPublishTokenTxOptions
 } from "./types"
