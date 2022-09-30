@@ -260,3 +260,11 @@ export interface IRpcSkywellPathFindOptions {
   ledger_hash?: string
   binary?: boolean
 }
+
+export interface IRpcAccountTokenOptions {
+  account: string
+}
+
+export interface IRpcErcInfoOptions {
+  tokenid: string
+}

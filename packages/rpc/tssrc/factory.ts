@@ -5,9 +5,16 @@ import {
   IIssueSetTxOptions,
   IManageIssuerTxOptions,
   IRemoveBlackListTxOptions,
-  ISetBlackListTxOptions
+  ISetBlackListTxOptions,
+  ITokenDelTxOptions,
+  ITransferTokenTxOptions,
+  IPublishTokenTxOptions
 } from "@swtc/transaction"
-import { IRemoteOptions } from "./types"
+import {
+  IRemoteOptions,
+  IRpcAccountTokenOptions,
+  IRpcErcInfoOptions
+} from "./types"
 import { RpcError } from "./errors"
 // import { IRemoteOptions, IParams } from "./types"
 import {
@@ -290,6 +297,36 @@ const Factory: any = (
 
     public buildRemoveBlackListTx(options: IRemoveBlackListTxOptions) {
       return Transaction.buildRemoveBlackListTx(options, this)
+    }
+
+    /**
+     * 销毁721
+     *
+     * @param {ITokenDelTxOptions} options
+     * @returns
+     */
+    public buildTokenDelTx(options: ITokenDelTxOptions) {
+      return Transaction.buildTokenDelTx(options, this)
+    }
+
+    /**
+     * 721转账
+     *
+     * @param {ITransferTokenTxOptions} options
+     * @returns
+     */
+    public buildTokenTransferTx(options: ITransferTokenTxOptions) {
+      return Transaction.buildTransferTokenTx(options)
+    }
+
+    /**
+     * 721发行
+     *
+     * @param {IPublishTokenTxOptions} options
+     * @returns
+     */
+    public buildTokenPublishTx(options: IPublishTokenTxOptions) {
+      return Transaction.buildTransferTokenTx(options)
     }
 
     public buildSignerListTx(options: ISignerListTxOptions) {
@@ -686,6 +723,26 @@ const Factory: any = (
         sequence: data.native.account_data.Sequence
       }
       return _ret
+    }
+
+    /**
+     * 查询账号所有的721
+     *
+     * @param {IRpcAccountTokenOptions} params
+     * @returns
+     */
+    public rpcAccountErc(params: IRpcAccountTokenOptions) {
+      return this.postRequest({ method: "account_erc", params: [params] })
+    }
+
+    /**
+     * 查询721信息
+     *
+     * @param {IRpcErcInfoOptions} params
+     * @returns
+     */
+    public rpcErcInfo(params: IRpcErcInfoOptions) {
+      return this.postRequest({ method: "erc_info", params: [params] })
     }
   }
 }

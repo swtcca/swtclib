@@ -196,3 +196,19 @@ export interface IManageIssuerTxOptions {
   issuerAccount: string
   memo?: string
 }
+
+export interface ITokenDelTxOptions {
+  publisher: string
+  tokenId: string
+}
+
+export interface ITransferTokenTxOptions {
+  publisher: string
+  receiver: string
+  tokenId: string
+  memo?: string
+}
+
+export interface IPublishTokenTxOptions extends ITransferTokenTxOptions {
+  token: string
+}
