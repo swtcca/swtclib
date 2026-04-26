@@ -1,5 +1,5 @@
 import { Remote, Transaction, Wallet } from "@swtc/lib"
-import { ref, computed, watch } from "@vue/runtime-core"
+import { ref, computed, watch, markRaw } from "@vue/runtime-core"
 import CONFIG from "../../config"
 import chalk from "chalk"
 
@@ -9,7 +9,7 @@ function setup() {
   const LIMIT = ref(20)
   const config: any = ref({})
   const server = computed(() => config.value.server || "")
-  const remote: any = ref({})
+  const remote: any = ref(markRaw(new Remote()))
   const wsConnected = ref(false)
   const interval_detect: any = ref(0)
   const interval_heal: any = ref(0)
@@ -76,7 +76,7 @@ function setup() {
     () => server.value,
     async (value, old_value) => {
       console.log("config change detected")
-      remote.value = value ? new Remote({ server: value }) : new Remote()
+      remote.value = markRaw(value ? new Remote({ server: value }) : new Remote())
       try {
         await remote.value.connectPromise()
         wsConnected.value = true

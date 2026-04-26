@@ -1,8 +1,8 @@
 import fs from "fs"
 import path from "path"
-import Router from "koa-router"
+import Router from "@koa/router"
 
-const apiRouter = Router()
+const apiRouter = new Router()
 
 // add url-route in /controllers:
 

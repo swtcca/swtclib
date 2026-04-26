@@ -8,5 +8,13 @@ module.exports = {
     library: "swtc_wallet",
     path: path.resolve(__dirname, "dist"),
     filename: "swtc-wallet.js"
+  },
+  resolve: {
+    fallback: {
+      stream: false,
+      crypto: false,
+      url: false,
+      string_decoder: false
+    }
   }
 }

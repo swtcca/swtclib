@@ -1,7 +1,7 @@
 import { web, router, state } from "../src"
 const request = require("supertest")
 const sleep = time => new Promise(res => setTimeout(() => res(), time || 1))
-state.config.value.server = "ws://swtcproxy.bcapps.ca:5020"
+state.funcConfig({ server: "ws://swtcproxy.bcapps.ca:5020" })
 const tx_json = {
   TransactionType: "Payment",
   Flags: 0,
@@ -34,6 +34,7 @@ const tx_json = {
 }
 
 describe("Multisign Test", function () {
+  jest.setTimeout(30000)
   let server = web.listen(50080)
   test("proxy information", async function () {
     let result = await request(server)

@@ -8,8 +8,8 @@ import {
   ISetBlackListTxOptions
 } from "@swtc/transaction"
 
-import LRU from "lru-cache"
-import sha1 from "sha1"
+import { LRUCache } from "lru-cache"
+import { createHash } from "crypto"
 
 import { Factory as WalletFactory } from "@swtc/wallet"
 import { LEDGER_STATES } from "@swtc/common"
@@ -330,13 +330,13 @@ const Factory: any = (
         ledger_index: 0
       }
       this._requests = {}
-      this._cache = new LRU({
+      this._cache = new LRUCache({
         max: 100,
-        maxAge: 1000 * 60 * 5
+        ttl: 1000 * 60 * 5
       }) // 100 size, 5 min
-      this._paths = new LRU({
+      this._paths = new LRUCache({
         max: 100,
-        maxAge: 1000 * 60 * 5
+        ttl: 1000 * 60 * 5
       }) // 2100 size, 5 min
       _opts.hasOwnProperty("CURRENCIES") &&
         Object.assign(Wallet.config.CURRENCIES, _opts.CURRENCIES)
@@ -1008,7 +1008,7 @@ const Factory: any = (
         request2.submit()
         const _result = []
         for (const item of data.alternatives) {
-          const key = sha1(JSON.stringify(item))
+          const key = createHash("sha256").update(JSON.stringify(item)).digest("hex")
           this._paths.set(key, {
             path: JSON.stringify(item.paths_computed),
             choice: item.source_amount

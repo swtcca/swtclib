@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "pretty": true,
-    "lib": ["es2019"],
+    "lib": [
+      "es2019"
+    ],
     "target": "es2019",
     "outDir": "src",
     "rootDir": "tssrc",
@@ -19,7 +21,10 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "removeComments": true
+    "removeComments": true,
+    "skipLibCheck": true
   },
-  "include": ["tssrc"]
+  "include": [
+    "tssrc"
+  ]
 }

@@ -3,8 +3,8 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "target": "es2015",
-    "module": "es2015",
+    "module": "commonjs",
     "outDir": "cjs",
-    "module": "commonjs"
+    "skipLibCheck": true
   }
 }

@@ -113,7 +113,9 @@ function Factory(Wallet = WalletFactory("jingtum")) {
     try {
       serialized_object_type.serialize(so, value)
     } catch (e) {
-      e.message += " (" + field_name + ")"
+      if (e instanceof Error) {
+        e.message += " (" + field_name + ")"
+      }
       throw e
     }
   }

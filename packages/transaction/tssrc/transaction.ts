@@ -420,10 +420,17 @@ function Factory(
         const myContractInstance = MyContract.at(des) // initiate contract for an address
         let result: any = false
         if (fun in myContractInstance) {
-          result = new Function(
-            "contractInstance",
-            `"use strict"; return contractInstance.${func}`
-          )(myContractInstance) // call constant function
+          if (
+            Object.prototype.hasOwnProperty.call(myContractInstance, func) &&
+            typeof myContractInstance[func] === "function"
+          ) {
+            result = myContractInstance[func]() // call constant function
+          } else {
+            tx.tx_json.func = new Error(
+              `function ${func} is not a callable property`
+            )
+            return tx
+          }
         } else {
           tx.tx_json.func = new Error(`function ${fun} no found in contract`)
           return tx

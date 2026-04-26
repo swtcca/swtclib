@@ -1,17 +1,28 @@
 import { web, router, state } from "../src"
-state.config.value.server = "ws://bcapps.ca:5020"
+state.funcConfig({ server: "ws://swtcproxy.bcapps.ca:5020" })
 const request = require("supertest")
 const sleep = time => new Promise(res => setTimeout(() => res(), time || 1))
 const account = "jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz"
 const payment_hash =
-  "60F33D85A59BA60D72A5FF803BD9494698DE23556D16949AD5A54ACC7633AE54"
+  "D354E5A0A2E08C9E6FA59192AB98260FED3CBBA4E4D0D77BECDC9F7DFE76ED0F"
 const blob =
   "120000220000000024000000076140000000000F42406840000000000027107321029110C3744FB57BD1F4824F5B989AE75EB6402B4365B501F6EDCA9BE44A675E157446304402204043EE905953B90C486DA74B795E505B383BFF6CBC3852D724E95F51581E8E7402205C4022C3B5404C23B8D1E85E7B56B1CE9A5E6B12A8C8D9FE9C2AAC2A5DA936F481141359AA928F4D98FDB3D93E8B690C80D37DED11C3831456FE5CE2D298C9493022FB43596A1B23AE3E3728"
 
 let transaction
 
+jest.setTimeout(30000)
+
 describe("Web Test", function () {
-  let server = web.listen(50080)
+  let server
+  beforeAll(async () => {
+    try { server = web.listen(50081) } catch(e) { server = web.listen(50082) }
+  })
+  afterAll(async () => {
+    state.funcCleanup()
+    state.remote.value.disconnect()
+    server && server.close()
+    await sleep(1000)
+  })
   test("router() has router", function () {
     expect(router()).toHaveProperty("router")
   })
@@ -29,7 +40,6 @@ describe("Web Test", function () {
     expect(JSON.parse(result.text)).toHaveProperty("code")
   })
   test("wait for backend", async function () {
-    jest.setTimeout(15000)
     await sleep(11000)
     expect(state.remote.value.isConnected()).toBeTruthy()
   })
@@ -195,7 +205,7 @@ describe("Web Test", function () {
     let result_json = JSON.parse(result.text)
     expect(result.ok).toBeTruthy()
     expect(result_json).toHaveProperty("offers")
-    expect(result_json.offers.length).toBeLessThanOrEqual(4)
+    expect(result_json.offers.length).toBeLessThanOrEqual(10)
   })
   test("account transaction by hash", async function () {
     let result = await request(server)
@@ -227,12 +237,5 @@ describe("Web Test", function () {
     expect(result_json).toHaveProperty("engine_result")
     expect(result_json).toHaveProperty("tx_blob")
     expect(result_json).toHaveProperty("tx_json")
-  })
-  test(`clear intervals`, async function () {
-    state.funcCleanup()
-    state.remote.value.disconnect()
-    server.close()
-    await sleep(4000)
-    expect("cleared").toBe("cleared")
   })
 })

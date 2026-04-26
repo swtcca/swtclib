@@ -1,9 +1,14 @@
 {
   "extends": "./tsconfig",
   "compilerOptions": {
-    "lib": ["es2015"],
+    "lib": [
+      "es2015"
+    ],
     "target": "es2015",
     "outDir": "esm",
-    "module": "es2015"
+    "module": "es2015",
+    "skipLibCheck": true,
+    "declaration": false,
+    "declarationMap": false
   }
 }

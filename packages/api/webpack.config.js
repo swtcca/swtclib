@@ -8,5 +8,15 @@ module.exports = {
     library: "swtc_api",
     path: path.resolve(__dirname, "dist"),
     filename: "swtc-api.js"
+  },
+  resolve: {
+    fallback: {
+      stream: false,
+      crypto: false,
+      url: false,
+      http: false,
+      https: false,
+      string_decoder: false
+    }
   }
 }
