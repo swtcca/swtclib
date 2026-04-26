@@ -1,18 +1,18 @@
-# swtclib 修改说明
+# swtclib — Engineering Upgrade, Security Audit & Supply Chain Risk Reduction
 
-> 本次针对 swtclib monorepo 进行了安全审计、工程环境优化与告警消除三个维度的系统性整改。所有 11 个包测试套件全部通过（`lerna success`，0 failures）。
+> A systematic overhaul of the swtclib monorepo covering three dimensions: security audit, engineering environment upgrade, and elimination of supply chain risks through dependency refactoring. All 11 package test suites pass (`lerna success`, 0 failures).
 
 ---
 
-## 一、安全修复
+## 1. Security Fixes
 
-### 1. 消除 `new Function()` 动态代码执行
+### 1.1 Eliminate `new Function()` Dynamic Code Execution
 
-**文件**：`packages/transaction/tssrc/transaction.ts`（约 L423）
+**File**: `packages/transaction/tssrc/transaction.ts` (around L423)
 
-**问题**：原代码用 `new Function(...)` 拼接字符串动态执行，若 `func` 来自不可信输入，存在代码注入风险（OWASP A03）。
+**Problem**: The original code used `new Function(...)` to dynamically execute a string constructed from the `func` parameter. If `func` originates from untrusted input, this is a code injection vulnerability (OWASP A03).
 
-**修改**：替换为属性存在性检查 + 类型守卫：
+**Fix**: Replaced with explicit property existence check and type guard:
 
 ```diff
 - new Function("contractInstance", `"use strict"; return contractInstance.${func}`)
@@ -22,63 +22,63 @@
 + }
 ```
 
-### 2. 新增 `npm audit` 脚本
+### 1.2 Add `npm audit` Script
 
-**文件**：`package.json`（根）
+**File**: `package.json` (root)
 
 ```json
 "audit": "npm audit --audit-level=moderate"
 ```
 
-便于 CI 或手动执行安全扫描，拦截中危及以上漏洞。
+Enables security scanning in CI or manually, blocking moderate-severity and above vulnerabilities.
 
-### 3. HTTP 默认端点（待后续处理）
+### 1.3 HTTP Default Endpoint (Pending)
 
-`packages/rpc/tssrc/factory.ts` 默认端点 `http://bcapps.ca:5050` 本次尝试改为 `https`，但测试断言硬编码了该 URL，改动后测试失败，已回滚。**需修改测试与源码同步进行。**
+The default endpoint `http://bcapps.ca:5050` in `packages/rpc/tssrc/factory.ts` was attempted to be changed to `https`, but test assertions hard-code the URL and failed after the change. The change was reverted. **Requires coordinated update of both source and tests.**
 
 ---
 
-## 二、工程环境优化
+## 2. Engineering Environment Upgrade
 
-### 4. 移除 `postinstall` 自动全量构建
+### 2.1 Remove Automatic Full Build on `postinstall`
 
-**文件**：`package.json`（根）
+**File**: `package.json` (root)
 
-**问题**：`postinstall: "npm run lint; npm run compile; npm run build"` 导致任何 `npm install`（本地/CI/Docker）都触发完整构建，严重拖慢安装速度。
+**Problem**: `postinstall: "npm run lint; npm run compile; npm run build"` triggered a full build on every `npm install` (local, CI, Docker), severely slowing installation.
 
-**修改**：删除 `postinstall` 字段；将 `compile` 步骤迁移至 `bootstrap` 脚本末尾，显式 bootstrap 时才触发：
+**Fix**: Removed the `postinstall` field. Moved `compile` to the end of the `bootstrap` script so it only runs on explicit bootstrap:
 
 ```json
 "bootstrap": "lerna clean --yes && npm install && npm run lint && npm run compile"
 ```
 
-### 5. 更新 `lerna.json`
+### 2.2 Update `lerna.json`
 
-**文件**：`lerna.json`
+**File**: `lerna.json`
 
-| 字段 | 说明 |
-|------|------|
-| `"$schema"` | 添加 JSON Schema 路径，启用编辑器校验 |
-| `"npmClient": "npm"` | 显式声明包管理器 |
-| `"useNx": false` | 禁用 Nx 集成，消除 Nx 相关警告 |
-| `"command.run.stream": true` | 所有 `lerna run` 实时流式输出 |
-| `"command.run.sort": true` | 按依赖拓扑顺序执行各包任务 |
-| 删除旧 `command.bootstrap` 块 | lerna v7+ 已移除 bootstrap 命令 |
+| Field | Description |
+|-------|-------------|
+| `"$schema"` | Added JSON Schema path for editor validation |
+| `"npmClient": "npm"` | Explicitly declare the package manager |
+| `"useNx": false` | Disable Nx integration to suppress Nx-related warnings |
+| `"command.run.stream": true` | Enable real-time streaming output for all `lerna run` |
+| `"command.run.sort": true` | Execute tasks in dependency topological order |
+| Removed old `command.bootstrap` block | lerna v7+ removed the bootstrap command |
 
-### 6. 修复 Webpack 持久缓存
+### 2.3 Enable Webpack Persistent Cache
 
-**文件**：`packages/lib/webpack.config.js`
+**File**: `packages/lib/webpack.config.js`
 
 ```diff
 - cache: false
 + cache: { type: "filesystem" }
 ```
 
-Webpack 5 默认支持文件系统缓存，`cache: false` 禁用后每次全量构建，开启后可显著提速。
+Webpack 5 supports filesystem caching natively. Disabling it forces a full rebuild every time; enabling it significantly speeds up incremental builds.
 
-### 7. 移除子包遗留 ESLint 配置
+### 2.4 Remove Legacy ESLint Configs from Sub-packages
 
-**删除文件（共 8 个）**：
+**Deleted files (8 total)**:
 
 - `packages/api/.eslintrc.js`
 - `packages/lib/.eslintrc.js`
@@ -89,58 +89,58 @@ Webpack 5 默认支持文件系统缓存，`cache: false` 禁用后每次全量�
 - `packages/common/.eslintrc.js`
 - `packages/serializer/.eslintrc.js`
 
-**原因**：ESLint 9 使用根目录 `eslint.config.mjs` 的扁平配置，已覆盖整个 monorepo。子包的遗留 `.eslintrc.js` 文件在新版本中被忽略或产生冲突警告。
+**Reason**: ESLint 9 uses the root-level flat config (`eslint.config.mjs`) which already covers the entire monorepo. Legacy `.eslintrc.js` files in sub-packages are silently ignored or cause config conflict warnings.
 
 ---
 
-## 三、Package 元信息规范化
+## 3. Package Metadata Normalization
 
-### 8. 全部 10 个库包添加 `types` 字段
+### 3.1 Add `types` Field to All 10 Library Packages
 
-**涉及文件**：`packages/*/package.json`（address-codec、api、common、keypairs、lib、rpc、serializer、transaction、utils、wallet）
+**Files**: `packages/*/package.json` (address-codec, api, common, keypairs, lib, rpc, serializer, transaction, utils, wallet)
 
 ```json
 "types": "cjs/index.d.ts"
 ```
 
-（`utils` 包例外，入口文件名为 `utils.ts`，故为 `"cjs/utils.d.ts"`）
+(Exception: `utils` uses `"cjs/utils.d.ts"` since its entry is `utils.ts`)
 
-TypeScript 消费者无需额外配置 `typeRoots` 即可获得类型提示。
+TypeScript consumers can now resolve types without configuring `typeRoots`.
 
-### 9. 补充 `files` 字段
+### 3.2 Add `files` Field to Prevent Over-publishing
 
-**涉及文件**：`packages/{api,lib,rpc,transaction,wallet}/package.json`
+**Files**: `packages/{api,lib,rpc,transaction,wallet}/package.json`
 
 ```json
 "files": ["cjs", "esm", "dist"]
 ```
 
-防止 `npm publish` 将源码、测试、配置文件等一并发布，精确控制发布内容。
+Prevents source, tests, and config files from being included in `npm publish`.
 
-### 10. 移除 `serializer` 的无效字段
+### 3.3 Remove Invalid Field from `serializer`
 
-**文件**：`packages/serializer/package.json`
+**File**: `packages/serializer/package.json`
 
-删除 `"deprecated": false`（npm 仅识别字符串形式的 deprecation 消息，布尔值无实际语义）。
+Removed `"deprecated": false`. npm only recognizes string values for deprecation notices; a boolean has no effect.
 
-### 11. 修复 ESM 构建产生重复类型声明文件
+### 3.4 Stop ESM Build from Generating Duplicate Type Declarations
 
-**涉及文件**：全部 10 个库包的 `tsconfig.esm.json`
+**Files**: All 10 library packages' `tsconfig.esm.json`
 
 ```json
 "declaration": false,
 "declarationMap": false
 ```
 
-类型声明（`.d.ts`）应由 CJS 构建（`tsconfig.cjs.json`）统一生成，ESM 构建无需重复输出，避免 `esm/` 目录下产生冗余的 `.d.ts` 文件。
+Type declarations (`.d.ts`) are generated exclusively by the CJS build (`tsconfig.cjs.json`). The ESM build no longer produces redundant `.d.ts` files under `esm/`.
 
 ---
 
-## 四、测试配置修复
+## 4. Test Configuration Fixes
 
-### 12. 修复 Jest 覆盖率扫描路径
+### 4.1 Fix Jest Coverage Collection Paths
 
-**文件**：
+**Files**:
 - `packages/address-codec/jest.config.js`
 - `packages/keypairs/jest.config.js`
 
@@ -149,62 +149,66 @@ TypeScript 消费者无需额外配置 `typeRoots` 即可获得类型提示。
 + collectCoverageFrom: ["tssrc/**/*.ts"]
 ```
 
-两个包的 TypeScript 源码位于 `tssrc/`，原配置指向不存在的 `src/`，导致覆盖率始终为 0%。
+TypeScript sources for both packages live in `tssrc/`. The original config pointed to a non-existent `src/` directory, resulting in 0% coverage always being reported.
 
-### 13. 简化 proxy 测试脚本
+### 4.2 Simplify proxy Test Script
 
-**文件**：`packages/proxy/package.json`
+**File**: `packages/proxy/package.json`
 
 ```diff
 - "test": "jest -i test/function.spec.js test/store.spec.js; jest test/koa.spec.js; jest test/multisign.spec.js"
 + "test": "jest --runInBand"
 ```
 
-`--runInBand` 等价于 `-i`（串行执行），自动发现所有测试文件，无需手动枚举。
+`--runInBand` is equivalent to `-i` (serial execution) and auto-discovers all test files, removing the need to enumerate them manually.
 
 ---
 
-## 五、预存未提交变更（非本次新增，经审查确认合理）
+## 5. Supply Chain Risk Reduction — Pre-existing Changes
 
-以下变更在本次工作开始前已存在于工作区，经逐一审查后确认合理，一并提交。
+The following changes existed in the working tree before this session. Each was reviewed and confirmed correct; they are included in this commit.
 
 ### 5.1 `packages/api/tsconfig.cjs.json`
 
-新增 `"skipLibCheck": true`，跳过第三方 `.d.ts` 的类型错误，解决依赖链类型兼容问题。
+Added `"skipLibCheck": true` to suppress type errors from third-party `.d.ts` files, resolving dependency chain type compatibility issues.
 
 ### 5.2 `packages/api/webpack.config.js`
 
-新增 `resolve.fallback` 配置，为 Node.js 内置模块（`crypto`、`stream` 等）提供浏览器环境 polyfill，支持浏览器端打包。
+Added `resolve.fallback` entries to provide browser-compatible polyfills for Node.js built-ins (`crypto`, `stream`, etc.), enabling browser-side bundling.
 
-### 5.3 `packages/lib/tssrc/remote.ts`
+### 5.3 `packages/lib/tssrc/remote.ts` — Migrate `lru-cache` v6 → v10+
 
-将 `lru-cache` API 从 v6 迁移至 v10+：
-
-| 旧 | 新 |
-|----|----|
+| Before | After |
+|--------|-------|
 | `import LRU from "lru-cache"` | `import { LRUCache } from "lru-cache"` |
 | `new LRU(...)` | `new LRUCache(...)` |
-| `maxAge` 选项 | `ttl` 选项 |
+| `maxAge` option | `ttl` option |
 | `sha1(...)` | `createHash("sha256")(...)` |
+
+Eliminates dependency on the abandoned v6 API and upgrades the hash algorithm from SHA-1 to SHA-256.
 
 ### 5.4 `packages/proxy/tssrc/store/index.ts`
 
-用 `markRaw(new Remote())` 包裹 Remote 实例，防止 Vue 3 的响应式系统对非普通对象做深度代理，避免潜在的性能问题和运行时错误。
+Wrapped the `Remote` instance with `markRaw(new Remote())` to prevent Vue 3's reactivity system from deeply proxying a non-plain object, avoiding potential performance issues and runtime errors.
 
-### 5.5 `packages/proxy/tssrc/web/static-files.ts`
+### 5.5 `packages/proxy/tssrc/web/static-files.ts` — Replace `static-koa-router` with `koa-static`
 
-用 `koa-static`（Koa 官方生态，活跃维护）替换无人维护的 `static-koa-router` + `koa-router`。手动实现 URL 前缀剥离逻辑，返回 `{ routes: () => middleware }` 保持调用接口兼容，上层无需修改。
+Replaced the unmaintained `static-koa-router` + `koa-router` with `koa-static` (official Koa ecosystem, actively maintained). URL prefix stripping is implemented manually; the return shape `{ routes: () => middleware }` preserves the existing call interface so no upstream changes are required.
 
 ### 5.6 `packages/proxy/tssrc/functions/v2.ts`
 
-修正路由参数取用错误：`ctx.params.address` → `ctx.params.account`，与路由定义的参数命名一致。
+Fixed a route parameter name mismatch: `ctx.params.address` → `ctx.params.account`, aligning with the route definition.
 
-### 5.7 `packages/address-codec/tslint.json`（已删除）
+### 5.7 `packages/lib/test/tx_data.js`
 
-tslint 于 2019 年停止维护，该配置文件无实际效果，已删除。
+Replaced test fixture account address `jHdWAmh8AAjhjqG7zEDA5RBgAnQHyd2g5m` with `jpmKEm2sUevfpFjS7QHdT8Sx7ZGoEXTJAz` (both are public on-chain addresses; no security implications).
+
+### 5.8 `packages/address-codec/tslint.json` — Deleted
+
+tslint was abandoned in 2019. The config file had no practical effect and has been removed.
 
 ---
 
-## 六、验证结果
+## 6. Verification
 
-全部 11 个包（address-codec、api、common、keypairs、lib、proxy、rpc、serializer、transaction、utils、wallet）测试套件通过，`lerna run test` 以 `lerna success` 结束，0 failures。
+All 11 packages (address-codec, api, common, keypairs, lib, proxy, rpc, serializer, transaction, utils, wallet) pass their test suites. `lerna run test` completes with `lerna success`, 0 failures.
