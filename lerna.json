@@ -1,15 +1,18 @@
 {
   "packages": ["packages/*"],
   "version": "independent",
+  "npmClient": "npm",
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "useNx": false,
   "command": {
+    "run": {
+      "stream": true,
+      "sort": true
+    },
     "publish": {
       "access": "public",
       "ignoreChanges": ["ignore.file", "*.md"],
       "message": "chore(release): publish"
-    },
-    "bootstrap": {
-      "ignore": "component-*",
-      "npmClientArgs": ["--no-package-lock"]
     }
   }
 }

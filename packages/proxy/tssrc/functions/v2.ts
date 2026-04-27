@@ -224,7 +224,7 @@ async function getAccountTransaction(ctx) {
           e =>
             e.ModifiedNode &&
             e.ModifiedNode.FinalFields &&
-            e.ModifiedNode.FinalFields.Account === ctx.params.address
+            e.ModifiedNode.FinalFields.Account === ctx.params.account
         ).length === 1
       ) {
         // effects

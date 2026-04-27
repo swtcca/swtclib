@@ -2,7 +2,9 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "pretty": true,
-    "lib": ["es2015"],
+    "lib": [
+      "es2015"
+    ],
     "outDir": "src",
     "rootDir": "tssrc",
     "target": "es2015",
@@ -20,7 +22,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "skipLibCheck": true
   },
-  "include": ["tssrc"]
+  "include": [
+    "tssrc"
+  ]
 }

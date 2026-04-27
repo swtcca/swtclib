@@ -16,7 +16,7 @@ module.exports = {
   },
   coverageDirectory: "coverage",
   coverageReporters: ["html", "text"],
-  collectCoverageFrom: ["src/**/*.ts"],
+  collectCoverageFrom: ["tssrc/**/*.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "json"],
   //  moduleNameMapper: {
   //    "^@swtc/(.*?)$": "<rootDir>/../$1/src"

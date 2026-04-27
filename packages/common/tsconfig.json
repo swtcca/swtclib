@@ -12,7 +12,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "removeComments": false,
+    "removeComments": true,
     "preserveConstEnums": false,
     "suppressImplicitAnyIndexErrors": false,
     "declaration": true,
@@ -21,8 +21,12 @@
     "strict": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "removeComments": true
+    "skipLibCheck": true
   },
-  "include": ["tssrc/**/*ts"],
-  "exclude": ["tssrc/**/*.d.ts"]
+  "include": [
+    "tssrc/**/*ts"
+  ],
+  "exclude": [
+    "tssrc/**/*.d.ts"
+  ]
 }

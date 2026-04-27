@@ -1,9 +1,13 @@
 {
   "name": "@swtc/serializer",
   "version": "1.1.1",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "author": "Lospring Liu",
   "main": "cjs/index.js",
   "module": "esm/index.js",
+  "types": "cjs/index.d.ts",
   "dependencies": {
     "@swtc/address-codec": "^1.1.1",
     "@swtc/common": "^1.1.1",
@@ -12,25 +16,22 @@
     "bignumber.js": "^9.0.0",
     "bn-plus.js": "^1.0.0",
     "extend": "^3.0.2",
-    "jsbn": "^1.1.0",
-    "sha1": "^1.1.1"
+    "jsbn": "^1.1.0"
   },
-  "deprecated": false,
   "description": "swtc serializer",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^14.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@rollup/plugin-typescript": "^5.0.2",
-    "@types/node": "^14.0.27",
-    "husky": "^4.2.5",
-    "mocha": "^8.0.1",
-    "nyc": "^15.1.0",
-    "prettier": "^2.0.5",
-    "rollup": "^2.23.0",
-    "rollup-plugin-terser": "^6.1.0",
-    "tslib": "^2.0.0",
-    "typescript": "^3.9.7"
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.0.0",
+    "@types/node": "^20.0.0",
+    "husky": "^9.0.0",
+    "mocha": "^10.0.0",
+    "prettier": "^3.0.0",
+    "rollup": "^4.0.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.7.0"
   },
   "directories": {
     "lib": "lib"
@@ -54,8 +55,8 @@
     "compile": "tsc -p tsconfig.lib.json; tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build": "rollup -c",
     "rollup": "rollup -c",
-    "tslint": "tslint tssrc/**/*.ts",
-    "test": "tsc -p tsconfig.lib.json && mocha test/*.spec.js",
+    "lint": "eslint tssrc/",
+    "test": "tsc -p tsconfig.lib.json && mocha test/*.spec.js --exit --timeout 5000",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "test:nyc": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js"
   },

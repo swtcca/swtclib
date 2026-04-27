@@ -1,9 +1,13 @@
 {
   "name": "@swtc/utils",
   "version": "1.1.1",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "description": "swtc utils",
   "main": "cjs/utils.js",
   "module": "esm/utils.js",
+  "types": "cjs/utils.d.ts",
   "files": [
     "dist",
     "cjs",
@@ -15,12 +19,12 @@
     "rollup": "rollup -c",
     "compile": "tsc -p tsconfig.cjs.json; tsc -p tsconfig.esm.json",
     "build": "rollup -c",
-    "tslint": "tslint tssrc/*.ts",
+    "lint": "eslint tssrc/",
     "prettier": "prettier",
     "pretty-quick": "pretty-quick",
     "prettier:check": "prettier -c tssrc/*.ts",
     "prettier:tabs": "prettier --use-tabs --write package.json tssrc/*.ts",
-    "test": "mocha \"test/test_utils.js\"",
+    "test": "mocha \"test/test_utils.js\" --exit --timeout 5000",
     "test:api": "mocha \"test/*.js\"",
     "test:nyc": "nyc --extension=.ts --reporter=html --reporter=text mocha test/test_utils.js"
   },
@@ -47,19 +51,17 @@
     "bignumber.js": "^9.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^14.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@rollup/plugin-typescript": "^5.0.2",
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.0.0",
     "chai": "^4.2.0",
-    "mocha": "^8.0.1",
-    "nyc": "^15.1.0",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
-    "rollup": "^2.23.0",
-    "rollup-plugin-terser": "^6.1.0",
-    "tslib": "^2.0.0",
-    "tslint": "^6.1.2",
-    "typescript": "^3.9.7"
+    "mocha": "^10.0.0",
+    "prettier": "^3.0.0",
+    "pretty-quick": "^4.0.0",
+    "rollup": "^4.0.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.7.0"
   }
 }

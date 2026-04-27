@@ -3,6 +3,8 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "outDir": "esm",
-    "module": "es2015"
+    "module": "es2015",
+    "declaration": false,
+    "declarationMap": false
   }
 }

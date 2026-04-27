@@ -6,7 +6,7 @@ module.exports = {
   preset: "ts-jest",
   coverageDirectory: "coverage",
   coverageReporters: ["html", "text"],
-  collectCoverageFrom: ["src/**/*.ts"],
+  collectCoverageFrom: ["tssrc/**/*.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "json"],
   moduleNameMapper: {
     "^swtc-(.*?)$": "<rootDir>/../swtc-$1/"

@@ -1,5 +1,4 @@
 import { EventEmitter } from "events"
-import url from "url"
 import WS from "ws"
 
 /**
@@ -36,13 +35,18 @@ class Server extends EventEmitter {
     this.setMaxListeners(0)
 
     if (typeof opts === "string") {
-      const parsed = url.parse(opts)
-      const secure = parsed.protocol === "wss:"
-      opts = {
-        host: parsed.hostname,
-        port: parsed.port ? Number(parsed.port) : secure ? 443 : 80,
-        secure,
-        path: parsed.path
+      try {
+        const parsed = new URL(opts)
+        const secure = parsed.protocol === "wss:"
+        opts = {
+          host: parsed.hostname,
+          port: parsed.port ? Number(parsed.port) : secure ? 443 : 80,
+          secure,
+          path: parsed.pathname
+        }
+      } catch (e) {
+        this.opts = new TypeError("invalid server url: " + opts)
+        return this
       }
     }
     if (opts === null || typeof opts !== "object") {

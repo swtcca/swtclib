@@ -1,15 +1,26 @@
 {
   "name": "root",
   "private": true,
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier"
-    }
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "overrides": {
+    "@koa/router": {
+      "path-to-regexp": "^6.3.0"
+    },
+    "elliptic": "^6.6.0",
+    "bn.js": "^4.12.3",
+    "crypto-js": "^4.2.0",
+    "serialize-javascript": "^7.0.5",
+    "lodash": "^4.18.1"
   },
   "scripts": {
     "test": "lerna run test --stream && lerna run test:guomi --stream",
-    "bootstrap": "lerna clean --yes && lerna bootstrap --hoist && npm run lint",
-    "lint": "lerna run tslint --stream",
+    "bootstrap": "lerna clean --yes && npm install && npm run lint && npm run compile",
+    "lint": "lerna run lint --stream",
     "compile": "lerna run compile --stream",
     "build": "lerna run build --stream",
     "lerna": "lerna",
@@ -18,7 +29,7 @@
     "prettier": "pretty-quick --staged --no-restage --verbose --bail",
     "pretty": "lerna run pretty-quick --stream",
     "sync_version": "node scripts/sync_version.js",
-    "postinstall": "lerna bootstrap --hoist; npm run lint; npm run compile; npm run build",
+    "audit": "npm audit --audit-level=moderate",
     "docs:dev": "vitepress dev docs",
     "docs:width": "sed -ie 's/48rem/72rem/' node_modules/vitepress/dist/client/theme-default/components/Page.vue",
     "docs:build": "vitepress build docs",
@@ -28,39 +39,37 @@
     "test:api": "lerna run test:api --stream"
   },
   "dependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^9.0.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^14.0.0",
-    "@rollup/plugin-inject": "^4.0.2",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@rollup/plugin-typescript": "^5.0.2",
-    "@types/jest": "^26.0.8",
-    "@types/node": "^14.0.27",
-    "@types/prettier": "<2.6.0",
-    "@types/express-serve-static-core": "4.17.28",
+    "@babel/preset-env": "^7.29.2",
+    "@rollup/plugin-commonjs": "^28.0.0",
+    "@rollup/plugin-inject": "^5.0.5",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.0.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "chai": "^4.2.0",
     "chai-json-schema": "^1.5.1",
-    "husky": "^4.2.5",
-    "jest": "^26.1.0",
-    "jest-esm-transformer": "^1.0.0",
-    "jshint": "^2.11.1",
-    "mocha": "^8.0.1",
-    "nyc": "^15.1.0",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
-    "rollup": "^2.23.0",
-    "rollup-plugin-terser": "^6.1.0",
-    "sinon": "^9.0.2",
-    "ts-jest": "^26.1.4",
-    "tslib": "^2.0.0",
-    "tslint": "^6.1.2",
+    "eslint": "^9.0.0",
+    "husky": "^9.0.0",
+    "jest": "^29.0.0",
+    "mocha": "^10.0.0",
+    "prettier": "^3.0.0",
+    "pretty-quick": "^4.0.0",
+    "rollup": "^4.0.0",
+    "sinon": "^21.1.2",
+    "ts-jest": "^29.0.0",
+    "tslib": "^2.6.0",
     "typed.js": "^2.0.12",
-    "typescript": "^3.9.7",
-    "vitepress": "^0.17.3",
+    "typescript": "^5.7.0",
+    "vitepress": "^1.6.4",
     "vpress-mdi-details": "^1.1.9",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "webpack": "^5.0.0",
+    "webpack-cli": "^5.0.0"
   }
 }
