@@ -72,5 +72,6 @@
     "rollup": "^4.0.0",
     "tslib": "^2.6.0",
     "typescript": "^5.7.0"
-  }
+  },
+  "gitHead": "7e16cc86c0e36a72266eee05bdf87c60df761fa0"
 }

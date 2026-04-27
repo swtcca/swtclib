@@ -74,5 +74,6 @@
     "typescript": "^5.7.0",
     "webpack": "^5.0.0",
     "webpack-cli": "^5.0.0"
-  }
+  },
+  "gitHead": "7e16cc86c0e36a72266eee05bdf87c60df761fa0"
 }

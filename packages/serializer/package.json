@@ -69,5 +69,6 @@
     "dist",
     "cjs",
     "esm"
-  ]
+  ],
+  "gitHead": "7e16cc86c0e36a72266eee05bdf87c60df761fa0"
 }
