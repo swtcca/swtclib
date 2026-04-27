@@ -67,5 +67,8 @@ typings/
 *.pyc
 **/node_modules
 **/dist
-**/package-lock.json
 **/*local.js
+
+## lerna publish
+## **/package-lock.json
+.npmrc

@@ -11,8 +11,13 @@
     },
     "publish": {
       "access": "public",
-      "ignoreChanges": ["ignore.file", "*.md"],
+      "ignoreChanges": ["ignore.file", "*.md", "**/package-lock.json"],
       "message": "chore(release): publish"
+    },
+    "version": {
+      "ignoreChanges": [
+        "**/package-lock.json"
+      ]
     }
   }
 }
