@@ -69,7 +69,7 @@
     "@swtc/utils": "^1.2.0",
     "@swtc/wallet": "^1.2.0",
     "lru-cache": "^11.3.5",
-    "ws": "^8.20.0"
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "axios": "^1.6.0",
