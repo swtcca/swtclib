@@ -61,7 +61,7 @@
     "@swtc/transaction": "^1.2.0",
     "@swtc/utils": "^1.2.0",
     "@swtc/wallet": "^1.2.0",
-    "axios": "^1.6.0"
+    "axios": "^1.18.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
